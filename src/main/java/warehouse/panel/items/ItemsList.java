@@ -27,6 +27,6 @@ package warehouse.panel.items;
  *
  * @author Saleh
  */
-public class Items {
+public class ItemsList {
     
 }
