@@ -23,10 +23,31 @@
  */
 package warehouse.panel;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import warehouse.panel.items.ItemsTab;
+
 /**
  *
  * @author Saleh
  */
-public class Tabs {
-    
+public class Tabs extends JPanel {
+
+    private JTabbedPane tabs;
+    private ItemsTab itemsTab;
+
+    public Tabs() {
+
+        this.setLayout(new BorderLayout());
+        tabs = new JTabbedPane();
+        itemsTab = new ItemsTab();
+
+        tabs.add(itemsTab, "Items");
+        this.add(tabs, BorderLayout.CENTER);
+        this.setPreferredSize(new Dimension(1000, 500));
+
+    }
+
 }

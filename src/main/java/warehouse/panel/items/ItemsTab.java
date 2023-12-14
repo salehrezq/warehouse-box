@@ -23,10 +23,47 @@
  */
 package warehouse.panel.items;
 
+import java.awt.BorderLayout;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+
 /**
  *
  * @author Saleh
  */
-public class ItemsTab {
-    
+public class ItemsTab extends JPanel {
+
+    private JSplitPane splitRightAndLeftPanes;
+    private JSplitPane splitSearchAndItemsListPane;
+    private JPanel panelGatherLeft;
+    private JPanel panelGatherRight;
+    private ItemsSearch itemsSearch;
+    private ItemsList itemsList;
+    private ItemsImages itemsImages;
+
+    public ItemsTab() {
+
+        setLayout(new BorderLayout());
+        panelGatherLeft = new JPanel(new BorderLayout());
+        panelGatherRight = new JPanel(new BorderLayout());
+
+        itemsSearch = new ItemsSearch();
+        itemsList = new ItemsList();
+        itemsImages = new ItemsImages();
+
+        // Add the scroll panes to a split pane.
+        splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        splitSearchAndItemsListPane.setDividerSize(5);
+        splitSearchAndItemsListPane.setTopComponent(itemsSearch);
+        splitSearchAndItemsListPane.setBottomComponent(itemsList);
+        panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
+        panelGatherRight.add(itemsImages, BorderLayout.CENTER);
+
+        splitRightAndLeftPanes = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitRightAndLeftPanes.setDividerSize(5);
+        splitRightAndLeftPanes.setTopComponent(panelGatherLeft);
+        splitRightAndLeftPanes.setBottomComponent(panelGatherRight);
+        splitRightAndLeftPanes.setDividerLocation(700);
+        add(splitRightAndLeftPanes);
+    }
 }

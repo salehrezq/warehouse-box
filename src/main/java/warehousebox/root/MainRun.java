@@ -23,10 +23,37 @@
  */
 package warehousebox.root;
 
+import javax.swing.JFrame;
+import warehouse.panel.Tabs;
+
 /**
  *
  * @author Saleh
  */
 public class MainRun {
-    
+
+    private static JFrame frame;
+    private Tabs tabs;
+
+    public static JFrame getFrame() {
+        return MainRun.frame;
+    }
+
+    private void createAndShowGUI() {
+        tabs = new Tabs();
+        frame = new JFrame("Warehouse Box");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(tabs);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        //Schedule a job for the event-dispatching thread:
+        //creating and showing this application's GUI.
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            MainRun mainRun = new MainRun();
+            mainRun.createAndShowGUI();
+        });
+    }
 }

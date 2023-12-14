@@ -23,10 +23,12 @@
  */
 package warehouse.panel.items;
 
+import javax.swing.JPanel;
+
 /**
  *
  * @author Saleh
  */
-public class ItemsImages {
-    
+public class ItemsImages extends JPanel {
+
 }
