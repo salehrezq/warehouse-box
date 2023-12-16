@@ -23,10 +23,30 @@
  */
 package warehouse.panel.createandupdate;
 
+import java.awt.BorderLayout;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+
 /**
  *
  * @author Saleh
  */
-public class CreateUpdateTab {
+public class CreateUpdateTab extends JPanel {
+
+    private JSplitPane splitPane;
+    private ItemForm itemForm;
+    private ItemsImages itemsImages;
+
+    public CreateUpdateTab() {
+        setLayout(new BorderLayout());
+        itemForm = new ItemForm();
+        itemsImages = new ItemsImages();
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane.setDividerSize(5);
+        splitPane.setTopComponent(itemForm);
+        splitPane.setBottomComponent(itemsImages);
+        splitPane.setDividerLocation(500);
+        add(splitPane);
+    }
 
 }

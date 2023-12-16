@@ -23,10 +23,59 @@
  */
 package warehouse.panel.createandupdate;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 /**
  *
  * @author Saleh
  */
-public class ItemForm {
-    
+public class ItemForm extends JPanel {
+
+    private final JPanel panelItemForm;
+    private JComponent[] componentsRefrence;
+    private JTextField tfCode, tfName, tfSpecs, tfLocation, tfStore, tfUnit;
+    private final String tfInitialValue = "0";
+
+    public ItemForm() {
+
+        setLayout(new GridBagLayout());
+        GridBagConstraints c;
+
+        JComponent[] components = {
+            tfCode = new JTextField(10),
+            tfName = new JTextField(10),
+            tfSpecs = new JTextField(10),
+            tfLocation = new JTextField(10),
+            tfStore = new JTextField(10),
+            tfUnit = new JTextField(10)
+        };
+
+        componentsRefrence = components;
+
+        String[] labels = {
+            "Code",
+            "Name",
+            "Specifications",
+            "Location",
+            "Store",
+            "Unit"};
+
+        for (JComponent component : componentsRefrence) {
+            JTextField tf = (JTextField) component;
+            //  tf.setEditable(false);
+            //  tf.setText(tfInitialValue);
+        }
+
+        panelItemForm = (JPanel) TwoColumnsLabelsAndFields.getTwoColumnLayout(labels, components);
+        c = new GridBagConstraints();
+        c.gridy = 0;
+        c.insets = new Insets(20, 0, 0, 0);
+        c.anchor = GridBagConstraints.PAGE_START;
+        add(panelItemForm, c);
+    }
 }
