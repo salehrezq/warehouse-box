@@ -23,6 +23,7 @@
  */
 package warehouse.panel.items;
 
+import java.awt.BorderLayout;
 import java.awt.Font;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -40,6 +41,8 @@ public class ItemsList extends JPanel {
     private JScrollPane scrollTable;
 
     public ItemsList() {
+
+        setLayout(new BorderLayout());
 
         model = new DefaultTableModel(new String[]{"Name", "Specification", "Location", "Store", "Qty.", "Unit"}, 0) {
             @Override
@@ -59,6 +62,6 @@ public class ItemsList extends JPanel {
         table.getColumnModel().getColumn(5).setPreferredWidth(1);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        add(scrollTable);
+        add(scrollTable, BorderLayout.CENTER);
     }
 }
