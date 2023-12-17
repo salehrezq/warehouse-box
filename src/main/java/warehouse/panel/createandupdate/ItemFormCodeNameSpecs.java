@@ -27,6 +27,6 @@ package warehouse.panel.createandupdate;
  *
  * @author Saleh
  */
-public class ItemFormInitial {
+public class ItemFormCodeNameSpecs {
 
 }
