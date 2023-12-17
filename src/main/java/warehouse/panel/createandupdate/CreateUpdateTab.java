@@ -23,9 +23,12 @@
  */
 package warehouse.panel.createandupdate;
 
-import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 
 /**
  *
@@ -33,20 +36,32 @@ import javax.swing.JSplitPane;
  */
 public class CreateUpdateTab extends JPanel {
 
-    private JSplitPane splitPane;
-    private ItemForm itemForm;
-    private ItemsImages itemsImages;
+    private JPanel cards;
+    private CardLayout cardLayout;
+    private final static String FORMCODENAMESPECS = "Card code name specs";
+    private final static String LOCATION = "Card locatiob";
+    private ItemFormCodeNameSpecs itemFormCodeNameSpecs;
+    private ItemFormLocation itemFormLocation;
+    private FormTraverse formTraverse;
+    private BoxLayout boxLayout;
 
     public CreateUpdateTab() {
-        setLayout(new BorderLayout());
-        itemForm = new ItemForm();
-        itemsImages = new ItemsImages();
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        splitPane.setDividerSize(5);
-        splitPane.setTopComponent(itemForm);
-        splitPane.setBottomComponent(itemsImages);
-        splitPane.setDividerLocation(500);
-        add(splitPane);
+        boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
+        setLayout(boxLayout);
+        cardLayout = new CardLayout();
+        cards = new JPanel(cardLayout);
+        cards.setMaximumSize(new Dimension(250, 400));
+        cards.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+        itemFormCodeNameSpecs = new ItemFormCodeNameSpecs();
+        itemFormLocation = new ItemFormLocation();
+        cards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);
+        cards.add(itemFormLocation, LOCATION);
+        cardLayout.show(cards, FORMCODENAMESPECS);
+        formTraverse = new FormTraverse();
+        formTraverse.setMaximumSize(new Dimension(200, 50));
+        formTraverse.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+        add(cards);
+        add(formTraverse);
     }
 
 }

@@ -45,9 +45,9 @@ public class ItemFormCodeNameSpecs extends JPanel {
         lbName = new JLabel("Name");
         lbSpecs = new JLabel("Specs");
 
-        tfCode = new JTextField();
-        tfName = new JTextField();
-        tfSpecs = new JTextField();
+        tfCode = new JTextField(10);
+        tfName = new JTextField(10);
+        tfSpecs = new JTextField(10);
 
         add(lbCode);
         add(tfCode, "wrap");

@@ -23,10 +23,28 @@
  */
 package warehouse.panel.createandupdate;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import net.miginfocom.swing.MigLayout;
+
 /**
  *
  * @author Saleh
  */
-public class ItemFormLocation {
+public class ItemFormLocation extends JPanel {
 
+    private JTextField tfLocation;
+    private JLabel lbLocation;
+
+    public ItemFormLocation() {
+
+        setLayout(new MigLayout());
+
+        lbLocation = new JLabel("Location");
+        tfLocation = new JTextField(10);
+
+        add(lbLocation);
+        add(tfLocation);
+    }
 }

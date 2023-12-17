@@ -23,10 +23,25 @@
  */
 package warehouse.panel.createandupdate;
 
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
 /**
  *
  * @author Saleh
  */
-public class FormTraverse {
+public class FormTraverse extends JPanel {
+
+    private JButton btnNext;
+    private JButton btnPrevious;
+
+    public FormTraverse() {
+
+        btnNext = new JButton("Next>>");
+        btnPrevious = new JButton("<<Previous");
+
+        add(btnPrevious);
+        add(btnNext);
+    }
 
 }
