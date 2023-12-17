@@ -30,12 +30,12 @@ import javax.swing.JPanel;
  *
  * @author Saleh
  */
-public class FormTraverse extends JPanel {
+public class FormNavigation extends JPanel {
 
     private JButton btnNext;
     private JButton btnPrevious;
 
-    public FormTraverse() {
+    public FormNavigation() {
 
         btnNext = new JButton("Next>>");
         btnPrevious = new JButton("<<Previous");

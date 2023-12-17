@@ -42,7 +42,7 @@ public class CreateUpdateTab extends JPanel {
     private final static String LOCATION = "Card locatiob";
     private ItemFormCodeNameSpecs itemFormCodeNameSpecs;
     private ItemFormLocation itemFormLocation;
-    private FormTraverse formTraverse;
+    private FormNavigation formTraverse;
     private BoxLayout boxLayout;
 
     public CreateUpdateTab() {
@@ -57,7 +57,7 @@ public class CreateUpdateTab extends JPanel {
         cards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);
         cards.add(itemFormLocation, LOCATION);
         cardLayout.show(cards, FORMCODENAMESPECS);
-        formTraverse = new FormTraverse();
+        formTraverse = new FormNavigation();
         formTraverse.setMaximumSize(new Dimension(200, 50));
         formTraverse.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         add(cards);
