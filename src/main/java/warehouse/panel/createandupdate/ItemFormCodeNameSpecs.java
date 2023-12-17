@@ -23,10 +23,37 @@
  */
 package warehouse.panel.createandupdate;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import net.miginfocom.swing.MigLayout;
+
 /**
  *
  * @author Saleh
  */
-public class ItemFormCodeNameSpecs {
+public class ItemFormCodeNameSpecs extends JPanel {
 
+    private JTextField tfCode, tfName, tfSpecs;
+    private JLabel lbCode, lbName, lbSpecs;
+
+    public ItemFormCodeNameSpecs() {
+
+        setLayout(new MigLayout());
+
+        lbCode = new JLabel("code");
+        lbName = new JLabel("Name");
+        lbSpecs = new JLabel("Specs");
+
+        tfCode = new JTextField();
+        tfName = new JTextField();
+        tfSpecs = new JTextField();
+
+        add(lbCode);
+        add(tfCode, "wrap");
+        add(lbName);
+        add(tfName, "wrap");
+        add(lbSpecs);
+        add(tfSpecs);
+    }
 }
