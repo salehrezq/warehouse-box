@@ -23,10 +23,26 @@
  */
 package warehouse.panel;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+
 /**
  *
  * @author Saleh
  */
 public class Menu {
+
+    private JMenuBar menubar;
+    private JMenu menuFile;
+
+    public Menu() {
+        menubar = new JMenuBar();
+        menuFile = new JMenu("File");
+        menubar.add(menuFile);
+    }
+
+    public JMenuBar getMenuBar() {
+        return this.menubar;
+    }
 
 }

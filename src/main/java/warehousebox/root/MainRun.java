@@ -24,6 +24,7 @@
 package warehousebox.root;
 
 import javax.swing.JFrame;
+import warehouse.panel.Menu;
 import warehouse.panel.Tabs;
 
 /**
@@ -34,16 +35,19 @@ public class MainRun {
 
     private static JFrame frame;
     private Tabs tabs;
+    private Menu menu;
 
     public static JFrame getFrame() {
         return MainRun.frame;
     }
 
     private void createAndShowGUI() {
+        menu = new Menu();
         tabs = new Tabs();
         frame = new JFrame("Warehouse Box");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(tabs);
+        frame.setJMenuBar(menu.getMenuBar());
         frame.pack();
         frame.setVisible(true);
     }
