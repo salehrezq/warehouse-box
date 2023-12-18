@@ -25,6 +25,7 @@ package warehouse.panel;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 /**
  *
@@ -34,10 +35,19 @@ public class Menu {
 
     private JMenuBar menubar;
     private JMenu menuFile;
+    private JMenuItem menuItemMangeLocations;
+    private JMenuItem menuItemMangeStores;
+    private JMenuItem menuItemMangeUnits;
 
     public Menu() {
         menubar = new JMenuBar();
-        menuFile = new JMenu("File");
+        menuFile = new JMenu("Manage");
+        menuItemMangeLocations = new JMenuItem("Manage locations...");
+        menuItemMangeStores = new JMenuItem("Manage stores...");
+        menuItemMangeUnits = new JMenuItem("Manage units...");
+        menuFile.add(menuItemMangeLocations);
+        menuFile.add(menuItemMangeStores);
+        menuFile.add(menuItemMangeUnits);
         menubar.add(menuFile);
     }
 
