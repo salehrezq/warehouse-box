@@ -36,14 +36,17 @@ public class ItemFormLocation extends JPanel {
 
     private JTextField tfLocation;
     private JLabel lbLocation;
+    private List list;
 
     public ItemFormLocation() {
 
         setLayout(new MigLayout("center center"));
 
+        list = new List();
         lbLocation = new JLabel("Location");
         tfLocation = new JTextField(10);
 
+        add(list.getList(), "wrap, span 2");
         add(lbLocation);
         add(tfLocation);
     }

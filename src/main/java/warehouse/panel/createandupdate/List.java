@@ -23,10 +23,48 @@
  */
 package warehouse.panel.createandupdate;
 
+import java.awt.Component;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 /**
  *
  * @author Saleh
  */
-public class List {
+public class List implements ListSelectionListener {
+
+    private JList list;
+    private DefaultListModel listModel;
+    private JScrollPane scrollPane;
+
+    public List() {
+        list = new JList();
+        listModel = new DefaultListModel();
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setSelectedIndex(0);
+        list.setVisibleRowCount(5);
+        scrollPane = new JScrollPane(list);
+    }
+
+    public Component getList() {
+        return scrollPane;
+    }
+
+    public void addElement(Object o) {
+        listModel.addElement(o);
+    }
+
+    public void selectResposivity() {
+        list.addListSelectionListener(this);
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        System.out.println("List value changed");
+    }
 
 }
