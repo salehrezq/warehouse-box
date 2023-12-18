@@ -23,6 +23,9 @@
  */
 package warehouse.panel.createandupdate;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -34,14 +37,49 @@ public class FormNavigation extends JPanel {
 
     private JButton btnNext;
     private JButton btnPrevious;
+    private ArrayList<Navigatable> navigatables;
+    private NavigateButtonsListener navigateButtonsListener;
 
     public FormNavigation() {
 
+        navigatables = new ArrayList<>();
         btnNext = new JButton("Next>>");
         btnPrevious = new JButton("<<Previous");
+        navigateButtonsListener = new NavigateButtonsListener();
+        btnNext.addActionListener(navigateButtonsListener);
+        btnPrevious.addActionListener(navigateButtonsListener);
 
         add(btnPrevious);
         add(btnNext);
+    }
+
+    public void addNavigationListner(Navigatable navigatable) {
+        this.navigatables.add(navigatable);
+    }
+
+    public void notifyNext() {
+        this.navigatables.forEach((form) -> {
+            form.next();
+        });
+    }
+
+    public void notifyPrevious() {
+        this.navigatables.forEach((form) -> {
+            form.previous();
+        });
+    }
+
+    private class NavigateButtonsListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton btnNavigate = (JButton) e.getSource();
+            if (btnNavigate == btnNext) {
+                notifyNext();
+            } else if (btnNavigate == btnPrevious) {
+                notifyPrevious();
+            }
+        }
     }
 
 }

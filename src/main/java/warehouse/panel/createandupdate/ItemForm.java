@@ -23,59 +23,59 @@
  */
 package warehouse.panel.createandupdate;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import javax.swing.JComponent;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  *
  * @author Saleh
  */
-public class ItemForm extends JPanel {
+public class ItemForm extends JPanel implements Navigatable {
 
-    private final JPanel panelItemForm;
-    private JComponent[] componentsRefrence;
-    private JTextField tfCode, tfName, tfSpecs, tfLocation, tfStore, tfUnit;
-    private final String tfInitialValue = "0";
+    private JPanel cards;
+    private CardLayout cardLayout;
+    private final static String FORMCODENAMESPECS = "Card code name specs";
+    private final static String LOCATION = "Card locatiob";
+    private ItemFormCodeNameSpecs itemFormCodeNameSpecs;
+    private ItemFormLocation itemFormLocation;
+    private FormNavigation formNavigation;
+    private BoxLayout boxLayout;
 
     public ItemForm() {
-
-        setLayout(new GridBagLayout());
-        GridBagConstraints c;
-
-        JComponent[] components = {
-            tfCode = new JTextField(10),
-            tfName = new JTextField(10),
-            tfSpecs = new JTextField(10),
-            tfLocation = new JTextField(10),
-            tfStore = new JTextField(10),
-            tfUnit = new JTextField(10)
-        };
-
-        componentsRefrence = components;
-
-        String[] labels = {
-            "Code",
-            "Name",
-            "Specifications",
-            "Location",
-            "Store",
-            "Unit"};
-
-        for (JComponent component : componentsRefrence) {
-            JTextField tf = (JTextField) component;
-            //  tf.setEditable(false);
-            //  tf.setText(tfInitialValue);
-        }
-
-        panelItemForm = (JPanel) TwoColumnsLabelsAndFields.getTwoColumnLayout(labels, components);
-        c = new GridBagConstraints();
-        c.gridy = 0;
-        c.insets = new Insets(20, 0, 0, 0);
-        c.anchor = GridBagConstraints.PAGE_START;
-        add(panelItemForm, c);
+        boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
+        setLayout(boxLayout);
+        cardLayout = new CardLayout();
+        cards = new JPanel(cardLayout);
+        cards.setMaximumSize(new Dimension(250, 400));
+        cards.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+        itemFormCodeNameSpecs = new ItemFormCodeNameSpecs();
+        itemFormLocation = new ItemFormLocation();
+        cards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);
+        cards.add(itemFormLocation, LOCATION);
+        cardLayout.show(cards, FORMCODENAMESPECS);
+        formNavigation = new FormNavigation();
+        formNavigation.setMaximumSize(new Dimension(200, 50));
+        formNavigation.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+        add(cards);
+        add(formNavigation);
     }
+
+    protected FormNavigation getFormNavigation() {
+        return this.formNavigation;
+    }
+
+    @Override
+    public void next() {
+        System.out.println("Next clicked");
+    }
+
+    @Override
+    public void previous() {
+        System.out.println("Previous clicked");
+    }
+
 }

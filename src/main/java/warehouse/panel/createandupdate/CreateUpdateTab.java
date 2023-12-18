@@ -23,11 +23,6 @@
  */
 package warehouse.panel.createandupdate;
 
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 /**
@@ -36,32 +31,14 @@ import javax.swing.JPanel;
  */
 public class CreateUpdateTab extends JPanel {
 
-    private JPanel cards;
-    private CardLayout cardLayout;
-    private final static String FORMCODENAMESPECS = "Card code name specs";
-    private final static String LOCATION = "Card locatiob";
-    private ItemFormCodeNameSpecs itemFormCodeNameSpecs;
-    private ItemFormLocation itemFormLocation;
-    private FormNavigation formTraverse;
-    private BoxLayout boxLayout;
+    private ItemForm itemForm;
+    private FormNavigation formNavigation;
 
     public CreateUpdateTab() {
-        boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
-        setLayout(boxLayout);
-        cardLayout = new CardLayout();
-        cards = new JPanel(cardLayout);
-        cards.setMaximumSize(new Dimension(250, 400));
-        cards.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
-        itemFormCodeNameSpecs = new ItemFormCodeNameSpecs();
-        itemFormLocation = new ItemFormLocation();
-        cards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);
-        cards.add(itemFormLocation, LOCATION);
-        cardLayout.show(cards, FORMCODENAMESPECS);
-        formTraverse = new FormNavigation();
-        formTraverse.setMaximumSize(new Dimension(200, 50));
-        formTraverse.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
-        add(cards);
-        add(formTraverse);
+        itemForm = new ItemForm();
+        formNavigation = itemForm.getFormNavigation();
+        formNavigation.addNavigationListner(itemForm);
+        add(itemForm);
     }
 
 }
