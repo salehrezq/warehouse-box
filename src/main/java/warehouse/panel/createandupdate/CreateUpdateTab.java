@@ -23,6 +23,7 @@
  */
 package warehouse.panel.createandupdate;
 
+import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
 /**
@@ -35,6 +36,7 @@ public class CreateUpdateTab extends JPanel {
     private FormNavigation formNavigation;
 
     public CreateUpdateTab() {
+        setLayout(new BorderLayout());
         itemForm = new ItemForm();
         formNavigation = itemForm.getFormNavigation();
         formNavigation.addNavigationListner(itemForm);

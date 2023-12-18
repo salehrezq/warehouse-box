@@ -39,7 +39,7 @@ public class ItemFormCodeNameSpecs extends JPanel {
 
     public ItemFormCodeNameSpecs() {
 
-        setLayout(new MigLayout());
+        setLayout(new MigLayout("center center"));
 
         lbCode = new JLabel("code");
         lbName = new JLabel("Name");
