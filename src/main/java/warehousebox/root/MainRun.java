@@ -24,7 +24,7 @@
 package warehousebox.root;
 
 import javax.swing.JFrame;
-import warehouse.panel.Menu;
+import warehouse.panel.menus.Menu;
 import warehouse.panel.Tabs;
 
 /**

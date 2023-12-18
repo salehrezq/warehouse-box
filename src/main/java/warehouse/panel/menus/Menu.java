@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel;
+package warehouse.panel.menus;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
