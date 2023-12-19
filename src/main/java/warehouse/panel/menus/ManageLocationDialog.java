@@ -27,6 +27,6 @@ package warehouse.panel.menus;
  *
  * @author Saleh
  */
-public class LocationMenuItem {
+public class ManageLocationDialog {
 
 }
