@@ -23,6 +23,8 @@
  */
 package warehouse.panel.menus;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -40,6 +42,8 @@ public class Menu {
             menuItemMangeStores,
             menuItemMangeUnits;
     private JFrame target;
+    private ManageLocationDialog manageLocationDialog;
+    private MenuItemsListener menuItemsListener;
 
     public Menu() {
         menubar = new JMenuBar();
@@ -51,6 +55,10 @@ public class Menu {
         menuFile.add(menuItemMangeStores);
         menuFile.add(menuItemMangeUnits);
         menubar.add(menuFile);
+
+        menuItemsListener = new MenuItemsListener();
+        manageLocationDialog = new ManageLocationDialog(target, "Manage locations", true);
+        menuItemMangeLocations.addActionListener(menuItemsListener);
     }
 
     public JMenuBar getMenuBar() {
@@ -59,6 +67,19 @@ public class Menu {
 
     public void setTarget(JFrame target) {
         this.target = target;
+    }
+
+    private class MenuItemsListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object source = e.getSource();
+            if (source == menuItemMangeLocations) {
+                manageLocationDialog.setVisible(true);
+                System.out.println("menu ManageLocationDialog");
+            }
+        }
+
     }
 
 }

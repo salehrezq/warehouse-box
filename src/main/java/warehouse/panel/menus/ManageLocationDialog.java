@@ -25,6 +25,8 @@ package warehouse.panel.menus;
 
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -47,17 +49,29 @@ public class ManageLocationDialog extends Dialog {
     public ManageLocationDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         mig = new MigLayout("center center");
-        panel.setLayout(mig);
+        panel = new JPanel(mig);
 
         lbLocation = new JLabel("Location:");
         tfLocation = new JTextField(15);
         btnSubmit = new JButton("Submit");
+        btnSubmit.addActionListener(new SubmitListener());
         list = new List();
 
         panel.add(lbLocation);
         panel.add(tfLocation);
         panel.add(btnSubmit, "wrap");
         panel.add(list.getList());
+        add(panel);
     }
 
+    private class SubmitListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == btnSubmit) {
+                System.out.println("submit dialoge");
+                ManageLocationDialog.this.dispose();
+            }
+        }
+    }
 }
