@@ -32,6 +32,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
+import warehouse.db.CRUDSourceLocation;
+import warehouse.db.model.SourceLocation;
 
 /**
  *
@@ -45,6 +47,7 @@ public class ManageSourceLocationDialog extends Dialog {
     private JTextField tfSourceLocation;
     private JButton btnSubmit;
     private List list;
+    private SourceLocation sourceLocation;
 
     public ManageSourceLocationDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -69,6 +72,9 @@ public class ManageSourceLocationDialog extends Dialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == btnSubmit) {
+                sourceLocation = new SourceLocation();
+                sourceLocation.setSourceLocation(tfSourceLocation.getText());
+                CRUDSourceLocation.create(sourceLocation);
                 System.out.println("submit dialoge");
                 ManageSourceLocationDialog.this.dispose();
             }
