@@ -23,6 +23,7 @@
  */
 package warehouse.panel.menus;
 
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -38,6 +39,7 @@ public class Menu {
     private JMenuItem menuItemMangeLocations;
     private JMenuItem menuItemMangeStores;
     private JMenuItem menuItemMangeUnits;
+    private JFrame target;
 
     public Menu() {
         menubar = new JMenuBar();
@@ -55,4 +57,7 @@ public class Menu {
         return this.menubar;
     }
 
+    public void setTarget(JFrame target) {
+        this.target = target;
+    }
 }

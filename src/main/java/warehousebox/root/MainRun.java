@@ -45,6 +45,7 @@ public class MainRun {
         menu = new Menu();
         tabs = new Tabs();
         frame = new JFrame("Warehouse Box");
+        menu.setTarget(frame);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(tabs);
         frame.setJMenuBar(menu.getMenuBar());
