@@ -23,10 +23,33 @@
  */
 package warehouse.db;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import warehouse.db.model.SourceLocation;
+
 /**
  *
  * @author Saleh
  */
 public class CRUDSourceLocation {
 
+    private static Connection con;
+
+    public static int create(SourceLocation sourceLocation) {
+        int insert = 0;
+        String sqlCreateSourceLocation = "INSERT INTO source_location (`location`) VALUES (?)";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement createLocationStatement = con.prepareStatement(sqlCreateSourceLocation);
+            createLocationStatement.setString(1, sourceLocation.getSourceLocation());
+            insert = createLocationStatement.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDSourceLocation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return insert;
+    }
 }
