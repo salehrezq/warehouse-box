@@ -45,37 +45,45 @@ public class ManageSourceLocationDialog extends Dialog {
     private MigLayout mig;
     private JLabel lbSourceLocation;
     private JTextField tfSourceLocation;
-    private JButton btnSubmit;
+    private JButton btnSubmit, btnCancel;
     private List list;
     private SourceLocation sourceLocation;
+    private ActionListener btnListner;
 
     public ManageSourceLocationDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         mig = new MigLayout("center center");
         panel = new JPanel(mig);
 
+        btnListner = new BtnListener();
         lbSourceLocation = new JLabel("Source location:");
         tfSourceLocation = new JTextField(15);
         btnSubmit = new JButton("Submit");
-        btnSubmit.addActionListener(new SubmitListener());
+        btnSubmit.addActionListener(btnListner);
         list = new List();
+        btnCancel = new JButton("Cancel");
+        btnCancel.addActionListener(btnListner);
 
         panel.add(lbSourceLocation);
         panel.add(tfSourceLocation);
         panel.add(btnSubmit, "wrap");
         panel.add(list.getList(), "span");
+        panel.add(btnCancel);
         add(panel);
     }
 
-    private class SubmitListener implements ActionListener {
+    private class BtnListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == btnSubmit) {
+            Object source = e.getSource();
+            if (source == btnSubmit) {
                 sourceLocation = new SourceLocation();
                 sourceLocation.setSourceLocation(tfSourceLocation.getText());
                 CRUDSourceLocation.create(sourceLocation);
                 System.out.println("submit dialoge");
+                ManageSourceLocationDialog.this.dispose();
+            } else if (source == btnCancel) {
                 ManageSourceLocationDialog.this.dispose();
             }
         }
