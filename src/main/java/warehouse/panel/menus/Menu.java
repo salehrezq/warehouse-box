@@ -36,9 +36,9 @@ public class Menu {
 
     private JMenuBar menubar;
     private JMenu menuFile;
-    private JMenuItem menuItemMangeLocations;
-    private JMenuItem menuItemMangeStores;
-    private JMenuItem menuItemMangeUnits;
+    private JMenuItem menuItemMangeLocations,
+            menuItemMangeStores,
+            menuItemMangeUnits;
     private JFrame target;
 
     public Menu() {
@@ -60,4 +60,5 @@ public class Menu {
     public void setTarget(JFrame target) {
         this.target = target;
     }
+
 }
