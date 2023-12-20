@@ -34,8 +34,8 @@ import net.miginfocom.swing.MigLayout;
  */
 public class ItemFormSourceLocation extends JPanel {
 
-    private JTextField tfLocation;
-    private JLabel lbLocation;
+    private JTextField tfSourceLocation;
+    private JLabel lbSourceLocation;
     private List list;
 
     public ItemFormSourceLocation() {
@@ -43,11 +43,11 @@ public class ItemFormSourceLocation extends JPanel {
         setLayout(new MigLayout("center center"));
 
         list = new List();
-        lbLocation = new JLabel("Location");
-        tfLocation = new JTextField(10);
+        lbSourceLocation = new JLabel("Source Location");
+        tfSourceLocation = new JTextField(10);
 
         add(list.getList(), "wrap, span 2");
-        add(lbLocation);
-        add(tfLocation);
+        add(lbSourceLocation);
+        add(tfSourceLocation);
     }
 }

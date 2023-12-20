@@ -37,28 +37,28 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author Saleh
  */
-public class ManageLocationDialog extends Dialog {
+public class ManageSourceLocationDialog extends Dialog {
 
     private JPanel panel;
     private MigLayout mig;
-    private JLabel lbLocation;
-    private JTextField tfLocation;
+    private JLabel lbSourceLocation;
+    private JTextField tfSourceLocation;
     private JButton btnSubmit;
     private List list;
 
-    public ManageLocationDialog(Frame owner, String title, boolean modal) {
+    public ManageSourceLocationDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         mig = new MigLayout("center center");
         panel = new JPanel(mig);
 
-        lbLocation = new JLabel("Location:");
-        tfLocation = new JTextField(15);
+        lbSourceLocation = new JLabel("Source location:");
+        tfSourceLocation = new JTextField(15);
         btnSubmit = new JButton("Submit");
         btnSubmit.addActionListener(new SubmitListener());
         list = new List();
 
-        panel.add(lbLocation);
-        panel.add(tfLocation);
+        panel.add(lbSourceLocation);
+        panel.add(tfSourceLocation);
         panel.add(btnSubmit, "wrap");
         panel.add(list.getList(), "span");
         add(panel);
@@ -70,7 +70,7 @@ public class ManageLocationDialog extends Dialog {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == btnSubmit) {
                 System.out.println("submit dialoge");
-                ManageLocationDialog.this.dispose();
+                ManageSourceLocationDialog.this.dispose();
             }
         }
     }

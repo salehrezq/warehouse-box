@@ -39,9 +39,9 @@ public class ItemForm extends JPanel implements Navigatable {
     private JPanel panelCards;
     private CardLayout cardLayout;
     private final static String FORMCODENAMESPECS = "Card code name specs";
-    private final static String LOCATION = "Card locatiob";
+    private final static String SOURCE_LOCATION = "Card locatiob";
     private ItemFormCodeNameSpecs itemFormCodeNameSpecs;
-    private ItemFormSourceLocation itemFormLocation;
+    private ItemFormSourceLocation itemFormSourceLocation;
     private FormNavigation formNavigation;
     private BoxLayout boxLayout;
 
@@ -51,9 +51,9 @@ public class ItemForm extends JPanel implements Navigatable {
         panelCards = new JPanel(cardLayout);
         panelCards.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         itemFormCodeNameSpecs = new ItemFormCodeNameSpecs();
-        itemFormLocation = new ItemFormSourceLocation();
+        itemFormSourceLocation = new ItemFormSourceLocation();
         panelCards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);
-        panelCards.add(itemFormLocation, LOCATION);
+        panelCards.add(itemFormSourceLocation, SOURCE_LOCATION);
         cardLayout.show(panelCards, FORMCODENAMESPECS);
         formNavigation = new FormNavigation();
         formNavigation.setBorder(BorderFactory.createLineBorder(Color.RED, 1));

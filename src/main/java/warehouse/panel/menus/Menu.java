@@ -38,27 +38,27 @@ public class Menu {
 
     private JMenuBar menubar;
     private JMenu menuFile;
-    private JMenuItem menuItemMangeLocations,
+    private JMenuItem menuItemMangeSourceLocations,
             menuItemMangeStores,
             menuItemMangeUnits;
     private JFrame target;
-    private ManageLocationDialog manageLocationDialog;
+    private ManageSourceLocationDialog manageSourceLocationDialog;
     private MenuItemsListener menuItemsListener;
 
     public Menu() {
         menubar = new JMenuBar();
         menuFile = new JMenu("Manage");
-        menuItemMangeLocations = new JMenuItem("Manage locations...");
+        menuItemMangeSourceLocations = new JMenuItem("Manage locations...");
         menuItemMangeStores = new JMenuItem("Manage stores...");
         menuItemMangeUnits = new JMenuItem("Manage units...");
-        menuFile.add(menuItemMangeLocations);
+        menuFile.add(menuItemMangeSourceLocations);
         menuFile.add(menuItemMangeStores);
         menuFile.add(menuItemMangeUnits);
         menubar.add(menuFile);
 
         menuItemsListener = new MenuItemsListener();
-        manageLocationDialog = new ManageLocationDialog(target, "Manage locations", true);
-        menuItemMangeLocations.addActionListener(menuItemsListener);
+        manageSourceLocationDialog = new ManageSourceLocationDialog(target, "Manage locations", true);
+        menuItemMangeSourceLocations.addActionListener(menuItemsListener);
     }
 
     public JMenuBar getMenuBar() {
@@ -74,12 +74,10 @@ public class Menu {
         @Override
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
-            if (source == menuItemMangeLocations) {
-                manageLocationDialog.setVisible(true);
-                System.out.println("menu ManageLocationDialog");
+            if (source == menuItemMangeSourceLocations) {
+                manageSourceLocationDialog.setVisible(true);
+                System.out.println("menu manageSourceLocationDialog");
             }
         }
-
     }
-
 }
