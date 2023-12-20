@@ -24,6 +24,7 @@
 package warehouse.panel.menus;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -48,6 +49,7 @@ public class List implements ListSelectionListener {
         list.setSelectedIndex(0);
         list.setVisibleRowCount(5);
         scrollPane = new JScrollPane(list);
+        scrollPane.setPreferredSize(new Dimension(300, 100));
     }
 
     public Component getList() {

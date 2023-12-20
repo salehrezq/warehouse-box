@@ -60,7 +60,7 @@ public class ManageLocationDialog extends Dialog {
         panel.add(lbLocation);
         panel.add(tfLocation);
         panel.add(btnSubmit, "wrap");
-        panel.add(list.getList());
+        panel.add(list.getList(), "span");
         add(panel);
     }
 
