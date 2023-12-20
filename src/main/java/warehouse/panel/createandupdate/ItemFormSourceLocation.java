@@ -21,12 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.db;
+package warehouse.panel.createandupdate;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
  * @author Saleh
  */
-public class CRUDLocation {
+public class ItemFormSourceLocation extends JPanel {
 
+    private JTextField tfLocation;
+    private JLabel lbLocation;
+    private List list;
+
+    public ItemFormSourceLocation() {
+
+        setLayout(new MigLayout("center center"));
+
+        list = new List();
+        lbLocation = new JLabel("Location");
+        tfLocation = new JTextField(10);
+
+        add(list.getList(), "wrap, span 2");
+        add(lbLocation);
+        add(tfLocation);
+    }
 }
