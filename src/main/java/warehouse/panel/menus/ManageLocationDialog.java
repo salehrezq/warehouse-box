@@ -23,10 +23,41 @@
  */
 package warehouse.panel.menus;
 
+import java.awt.Dialog;
+import java.awt.Frame;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import net.miginfocom.swing.MigLayout;
+
 /**
  *
  * @author Saleh
  */
-public class ManageLocationDialog {
+public class ManageLocationDialog extends Dialog {
+
+    private JPanel panel;
+    private MigLayout mig;
+    private JLabel lbLocation;
+    private JTextField tfLocation;
+    private JButton btnSubmit;
+    private List list;
+
+    public ManageLocationDialog(Frame owner, String title, boolean modal) {
+        super(owner, title, modal);
+        mig = new MigLayout("center center");
+        panel.setLayout(mig);
+
+        lbLocation = new JLabel("Location:");
+        tfLocation = new JTextField(15);
+        btnSubmit = new JButton("Submit");
+        list = new List();
+
+        panel.add(lbLocation);
+        panel.add(tfLocation);
+        panel.add(btnSubmit, "wrap");
+        panel.add(list.getList());
+    }
 
 }
