@@ -49,7 +49,7 @@ public class List implements ListSelectionListener {
         list.setSelectedIndex(0);
         list.setVisibleRowCount(5);
         scrollPane = new JScrollPane(list);
-        scrollPane.setPreferredSize(new Dimension(300, 100));
+        scrollPane.setPreferredSize(new Dimension(350, 100));
     }
 
     public Component getList() {
