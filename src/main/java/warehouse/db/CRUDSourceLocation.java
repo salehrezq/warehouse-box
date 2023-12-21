@@ -25,6 +25,7 @@ package warehouse.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,5 +52,22 @@ public class CRUDSourceLocation {
             Logger.getLogger(CRUDSourceLocation.class.getName()).log(Level.SEVERE, null, ex);
         }
         return insert;
+    }
+
+    public static boolean isExist(SourceLocation sourceLocation) {
+        boolean exist = false;
+        String sqlIsLocationExist = "SELECT EXISTS(SELECT * FROM source_location WHERE `location` = ?) AS is_location_exist";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement isExistStatement = con.prepareStatement(sqlIsLocationExist);
+            isExistStatement.setString(1, sourceLocation.getSourceLocation());
+            ResultSet result = isExistStatement.executeQuery();
+            if (result.next()) {
+                exist = result.getInt("is_location_exist") == 1;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDSourceLocation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return exist;
     }
 }

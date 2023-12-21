@@ -80,9 +80,13 @@ public class ManageSourceLocationDialog extends Dialog {
             if (source == btnSubmit) {
                 sourceLocation = new SourceLocation();
                 sourceLocation.setSourceLocation(tfSourceLocation.getText());
-                CRUDSourceLocation.create(sourceLocation);
-                System.out.println("submit dialoge");
-                ManageSourceLocationDialog.this.dispose();
+                if (CRUDSourceLocation.isExist(sourceLocation)) {
+                    ManageSourceLocationDialog.this.dispose();
+                } else {
+                    CRUDSourceLocation.create(sourceLocation);
+                    System.out.println("submit dialoge");
+                    ManageSourceLocationDialog.this.dispose();
+                }
             } else if (source == btnCancel) {
                 ManageSourceLocationDialog.this.dispose();
             }
