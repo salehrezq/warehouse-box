@@ -24,6 +24,7 @@
 package warehouse.panel.menus;
 
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,7 +55,6 @@ public class ManageSourceLocationDialog extends Dialog {
         super(owner, title, modal);
         mig = new MigLayout("center center");
         panel = new JPanel(mig);
-
         btnListner = new BtnListener();
         lbSourceLocation = new JLabel("Source location:");
         tfSourceLocation = new JTextField(15);
@@ -70,6 +70,7 @@ public class ManageSourceLocationDialog extends Dialog {
         panel.add(list.getList(), "span");
         panel.add(btnCancel);
         add(panel);
+        pack();
     }
 
     private class BtnListener implements ActionListener {
