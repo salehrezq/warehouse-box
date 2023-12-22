@@ -24,12 +24,12 @@
 package warehouse.panel.menus;
 
 import java.awt.Dialog;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
@@ -50,9 +50,11 @@ public class ManageSourceLocationDialog extends Dialog {
     private List list;
     private SourceLocation sourceLocation;
     private ActionListener btnListner;
+    private ManageSourceLocationDialog sourceLocationDialog;
 
     public ManageSourceLocationDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
+        sourceLocationDialog = ManageSourceLocationDialog.this;
         mig = new MigLayout("center center");
         panel = new JPanel(mig);
         btnListner = new BtnListener();
@@ -82,14 +84,27 @@ public class ManageSourceLocationDialog extends Dialog {
                 sourceLocation = new SourceLocation();
                 sourceLocation.setSourceLocation(tfSourceLocation.getText());
                 if (CRUDSourceLocation.isExist(sourceLocation)) {
-                    ManageSourceLocationDialog.this.dispose();
+                    JOptionPane.showMessageDialog(sourceLocationDialog,
+                            "Location " + tfSourceLocation.getText() + " is already exist!.",
+                            "Duplicate location",
+                            JOptionPane.ERROR_MESSAGE);
+                    //ManageSourceLocationDialog.this.dispose();
                 } else {
-                    CRUDSourceLocation.create(sourceLocation);
-                    System.out.println("submit dialoge");
-                    ManageSourceLocationDialog.this.dispose();
+                    if (CRUDSourceLocation.create(sourceLocation) == 1) {
+                        JOptionPane.showMessageDialog(sourceLocationDialog,
+                                "Location " + tfSourceLocation.getText() + " was added successfully.",
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        tfSourceLocation.setText(null);
+                    } else {
+                        JOptionPane.showMessageDialog(sourceLocationDialog,
+                                "Some problem happened, location CANNOT be added!.",
+                                "Failure",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             } else if (source == btnCancel) {
-                ManageSourceLocationDialog.this.dispose();
+                sourceLocationDialog.dispose();
             }
         }
     }
