@@ -46,7 +46,7 @@ public class ManageSourceLocationDialog extends Dialog {
     private MigLayout mig;
     private JLabel lbSourceLocation;
     private JTextField tfSourceLocation;
-    private JButton btnSubmit, btnCancel;
+    private JButton btnSubmit, btnClose;
     private List list;
     private SourceLocation sourceLocation;
     private ActionListener btnListner;
@@ -63,14 +63,14 @@ public class ManageSourceLocationDialog extends Dialog {
         btnSubmit = new JButton("Submit");
         btnSubmit.addActionListener(btnListner);
         list = new List();
-        btnCancel = new JButton("Cancel");
-        btnCancel.addActionListener(btnListner);
+        btnClose = new JButton("Close X");
+        btnClose.addActionListener(btnListner);
 
         panel.add(lbSourceLocation);
         panel.add(tfSourceLocation);
         panel.add(btnSubmit, "wrap");
         panel.add(list.getList(), "span");
-        panel.add(btnCancel);
+        panel.add(btnClose);
         add(panel);
         pack();
     }
@@ -103,7 +103,7 @@ public class ManageSourceLocationDialog extends Dialog {
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 }
-            } else if (source == btnCancel) {
+            } else if (source == btnClose) {
                 sourceLocationDialog.dispose();
             }
         }
