@@ -61,6 +61,10 @@ public class List implements ListSelectionListener {
         listModel.addElement(o);
     }
 
+    public void removeAllElements() {
+        listModel.removeAllElements();
+    }
+
     public void selectResposivity() {
         list.addListSelectionListener(this);
     }

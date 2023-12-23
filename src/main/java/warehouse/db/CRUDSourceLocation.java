@@ -64,6 +64,7 @@ public class CRUDSourceLocation {
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 SourceLocation sourceLocation = new SourceLocation();
+                sourceLocation.setId(result.getInt("id"));
                 sourceLocation.setSourceLocation(result.getString("location"));
                 sourceLocations.add(sourceLocation);
             }

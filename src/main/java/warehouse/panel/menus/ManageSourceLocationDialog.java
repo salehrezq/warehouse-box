@@ -74,10 +74,10 @@ public class ManageSourceLocationDialog extends Dialog {
         panel.add(btnClose);
         add(panel);
         pack();
-        this.populateLocationsList();
     }
 
-    public void populateLocationsList() {
+    public void rePopulateLocationsList() {
+        list.removeAllElements();
         ArrayList<SourceLocation> sourceLocations = CRUDSourceLocation.getAll();
         sourceLocations.forEach(location -> {
             list.addElement(location.getSourceLocation());
@@ -100,6 +100,7 @@ public class ManageSourceLocationDialog extends Dialog {
                     //ManageSourceLocationDialog.this.dispose();
                 } else {
                     if (CRUDSourceLocation.create(sourceLocation) == 1) {
+                        rePopulateLocationsList();
                         JOptionPane.showMessageDialog(sourceLocationDialog,
                                 "Location " + tfSourceLocation.getText() + " was added successfully.",
                                 "Success",
