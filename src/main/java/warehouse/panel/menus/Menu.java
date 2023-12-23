@@ -76,7 +76,6 @@ public class Menu {
             Object source = e.getSource();
             if (source == menuItemMangeSourceLocations) {
                 manageSourceLocationDialog.setVisible(true);
-                System.out.println("menu manageSourceLocationDialog");
             }
         }
     }

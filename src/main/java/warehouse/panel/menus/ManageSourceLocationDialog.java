@@ -27,6 +27,7 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -73,6 +74,14 @@ public class ManageSourceLocationDialog extends Dialog {
         panel.add(btnClose);
         add(panel);
         pack();
+        this.populateLocationsList();
+    }
+
+    public void populateLocationsList() {
+        ArrayList<SourceLocation> sourceLocations = CRUDSourceLocation.getAll();
+        sourceLocations.forEach(location -> {
+            list.addElement(location.getSourceLocation());
+        });
     }
 
     private class BtnListener implements ActionListener {

@@ -45,6 +45,7 @@ public class List implements ListSelectionListener {
     public List() {
         list = new JList();
         listModel = new DefaultListModel();
+        list.setModel(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         list.setVisibleRowCount(5);
@@ -56,7 +57,7 @@ public class List implements ListSelectionListener {
         return scrollPane;
     }
 
-    public void addElement(Object o) {
+    public void addElement(String o) {
         listModel.addElement(o);
     }
 

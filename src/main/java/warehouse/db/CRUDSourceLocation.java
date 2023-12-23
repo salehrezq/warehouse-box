@@ -27,6 +27,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import warehouse.db.model.SourceLocation;
@@ -52,6 +53,24 @@ public class CRUDSourceLocation {
             Logger.getLogger(CRUDSourceLocation.class.getName()).log(Level.SEVERE, null, ex);
         }
         return insert;
+    }
+
+    public static ArrayList<SourceLocation> getAll() {
+        ArrayList<SourceLocation> sourceLocations = new ArrayList<>();
+        String sqlSelectStatement = "SELECT * FROM source_location ORDER BY `location` ASC";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sqlSelectStatement);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                SourceLocation sourceLocation = new SourceLocation();
+                sourceLocation.setSourceLocation(result.getString("location"));
+                sourceLocations.add(sourceLocation);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDSourceLocation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return sourceLocations;
     }
 
     public static boolean isExist(SourceLocation sourceLocation) {
