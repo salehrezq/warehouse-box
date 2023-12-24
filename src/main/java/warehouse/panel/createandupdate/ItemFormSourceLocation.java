@@ -54,9 +54,10 @@ public class ItemFormSourceLocation extends JPanel {
         setLayout(new MigLayout("center center"));
 
         list = new List();
+        list.setSize(300, 300);
 
         lbSourceLocation = new JLabel("Search & select");
-        tfSourceLocationSearch = new JTextField(13);
+        tfSourceLocationSearch = new JTextField(17);
         tFListener = new TfSourceLocationSearchListener();
         docListener = new DeferredDocumentListener(700, tFListener, false);
         tfSourceLocationSearch.getDocument().addDocumentListener(docListener);

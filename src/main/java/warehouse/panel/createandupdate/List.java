@@ -24,6 +24,7 @@
 package warehouse.panel.createandupdate;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -65,6 +66,10 @@ public class List implements ListSelectionListener {
 
     public void selectResposivity() {
         list.addListSelectionListener(this);
+    }
+
+    public void setSize(int width, int height) {
+        scrollPane.setPreferredSize(new Dimension(width, height));
     }
 
     @Override
