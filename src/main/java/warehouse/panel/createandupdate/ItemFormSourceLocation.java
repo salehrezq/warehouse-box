@@ -84,7 +84,7 @@ public class ItemFormSourceLocation extends JPanel {
         list.removeAllElements();
         ArrayList<SourceLocation> sourceLocations = CRUDSourceLocation.getSearch(tfSourceLocationSearch.getText());
         sourceLocations.forEach(location -> {
-            list.addElement(location.getSourceLocation());
+            list.addElement(location);
         });
     }
 
