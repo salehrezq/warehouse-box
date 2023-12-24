@@ -92,7 +92,9 @@ public class ItemFormSourceLocation extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            rePopulateLocationsListSearch();
+            if (!tfSourceLocationSearch.getText().isBlank()) {
+                rePopulateLocationsListSearch();
+            }
         }
     }
 
