@@ -23,10 +23,20 @@
  */
 package warehouse.panel.createandupdate;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import net.miginfocom.swing.MigLayout;
+import warehouse.db.CRUDSourceLocation;
+import warehouse.db.model.SourceLocation;
 
 /**
  *
@@ -34,20 +44,88 @@ import net.miginfocom.swing.MigLayout;
  */
 public class ItemFormSourceLocation extends JPanel {
 
-    private JTextField tfSourceLocation;
+    private JTextField tfSourceLocationSearch;
     private JLabel lbSourceLocation;
     private List list;
+    private DeferredDocumentListener docListener;
+    private TfSourceLocationSearchListener tFListener;
 
     public ItemFormSourceLocation() {
-
         setLayout(new MigLayout("center center"));
 
         list = new List();
-        lbSourceLocation = new JLabel("Source Location");
-        tfSourceLocation = new JTextField(10);
 
-        add(list.getList(), "wrap, span 2");
+        lbSourceLocation = new JLabel("Search & select");
+        tfSourceLocationSearch = new JTextField(13);
+        tFListener = new TfSourceLocationSearchListener();
+        docListener = new DeferredDocumentListener(700, tFListener, false);
+        tfSourceLocationSearch.getDocument().addDocumentListener(docListener);
+        tfSourceLocationSearch.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                // no writting
+                docListener.start();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                // writting
+                docListener.stop();
+            }
+        });
+
         add(lbSourceLocation);
-        add(tfSourceLocation);
+        add(tfSourceLocationSearch, "wrap");
+        add(list.getList(), "span 2");
+    }
+
+    public void rePopulateLocationsListSearch() {
+        list.removeAllElements();
+        ArrayList<SourceLocation> sourceLocations = CRUDSourceLocation.getSearch(tfSourceLocationSearch.getText());
+        sourceLocations.forEach(location -> {
+            list.addElement(location.getSourceLocation());
+        });
+    }
+
+    private class TfSourceLocationSearchListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            rePopulateLocationsListSearch();
+        }
+    }
+
+    private class DeferredDocumentListener implements DocumentListener {
+
+        private final Timer timer;
+
+        public DeferredDocumentListener(int timeOut, ActionListener listener, boolean repeats) {
+            timer = new Timer(timeOut, listener);
+            timer.setRepeats(repeats);
+        }
+
+        public void start() {
+            timer.start();
+        }
+
+        public void stop() {
+            timer.stop();
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            timer.restart();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            timer.restart();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            timer.restart();
+        }
+
     }
 }

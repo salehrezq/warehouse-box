@@ -90,4 +90,24 @@ public class CRUDSourceLocation {
         }
         return exist;
     }
+
+    public static ArrayList<SourceLocation> getSearch(String str) {
+        ArrayList<SourceLocation> sourceLocations = new ArrayList<>();
+        String sqlSelectStatement = "SELECT * FROM source_location WHERE location LIKE '%" + str + "%'";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sqlSelectStatement);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                SourceLocation sourceLocation = new SourceLocation();
+                sourceLocation.setId(result.getInt("id"));
+                sourceLocation.setSourceLocation(result.getString("location"));
+                sourceLocations.add(sourceLocation);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDSourceLocation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return sourceLocations;
+    }
+
 }
