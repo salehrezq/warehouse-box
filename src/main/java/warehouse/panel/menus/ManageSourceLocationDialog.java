@@ -80,7 +80,7 @@ public class ManageSourceLocationDialog extends Dialog {
         list.removeAllElements();
         ArrayList<SourceLocation> sourceLocations = CRUDSourceLocation.getAll();
         sourceLocations.forEach(location -> {
-            list.addElement(location.getSourceLocation());
+            list.addElement(location);
         });
     }
 

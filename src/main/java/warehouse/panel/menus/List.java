@@ -25,12 +25,14 @@ package warehouse.panel.menus;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import warehouse.db.model.SourceLocation;
 
 /**
  *
@@ -44,6 +46,7 @@ public class List implements ListSelectionListener {
 
     public List() {
         list = new JList();
+        list.setCellRenderer(new ListCellSourceLocationRenderer());
         listModel = new DefaultListModel();
         list.setModel(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -57,8 +60,8 @@ public class List implements ListSelectionListener {
         return scrollPane;
     }
 
-    public void addElement(String o) {
-        listModel.addElement(o);
+    public void addElement(SourceLocation sourceLocation) {
+        listModel.addElement(sourceLocation);
     }
 
     public void removeAllElements() {
@@ -72,6 +75,28 @@ public class List implements ListSelectionListener {
     @Override
     public void valueChanged(ListSelectionEvent e) {
         System.out.println("List value changed");
+    }
+
+    private class ListCellSourceLocationRenderer extends DefaultListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList<?> list,
+                Object item,
+                int index,
+                boolean isSelected,
+                boolean cellHasFocus) {
+
+            super.getListCellRendererComponent(list,
+                    item,
+                    index,
+                    isSelected,
+                    cellHasFocus);
+            if (item != null && (item instanceof SourceLocation)) {
+                SourceLocation sourceLocation = (SourceLocation) item;
+                setText(sourceLocation.getSourceLocation());
+            }
+            return this;
+        }
     }
 
 }
