@@ -46,7 +46,7 @@ public class CRUDSourceLocation {
         con = Connect.getConnection();
         try {
             PreparedStatement createLocationStatement = con.prepareStatement(sqlCreateSourceLocation);
-            createLocationStatement.setString(1, sourceLocation.getSourceLocation());
+            createLocationStatement.setString(1, sourceLocation.getLocation());
             insert = createLocationStatement.executeUpdate();
             con.commit();
         } catch (SQLException ex) {
@@ -65,7 +65,7 @@ public class CRUDSourceLocation {
             while (result.next()) {
                 SourceLocation sourceLocation = new SourceLocation();
                 sourceLocation.setId(result.getInt("id"));
-                sourceLocation.setSourceLocation(result.getString("location"));
+                sourceLocation.setLocation(result.getString("location"));
                 sourceLocations.add(sourceLocation);
             }
         } catch (SQLException ex) {
@@ -80,7 +80,7 @@ public class CRUDSourceLocation {
         con = Connect.getConnection();
         try {
             PreparedStatement isExistStatement = con.prepareStatement(sqlIsLocationExist);
-            isExistStatement.setString(1, sourceLocation.getSourceLocation());
+            isExistStatement.setString(1, sourceLocation.getLocation());
             ResultSet result = isExistStatement.executeQuery();
             if (result.next()) {
                 exist = result.getInt("is_location_exist") == 1;
@@ -101,7 +101,7 @@ public class CRUDSourceLocation {
             while (result.next()) {
                 SourceLocation sourceLocation = new SourceLocation();
                 sourceLocation.setId(result.getInt("id"));
-                sourceLocation.setSourceLocation(result.getString("location"));
+                sourceLocation.setLocation(result.getString("location"));
                 sourceLocations.add(sourceLocation);
             }
         } catch (SQLException ex) {

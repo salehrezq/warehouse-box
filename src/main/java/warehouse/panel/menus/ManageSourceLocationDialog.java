@@ -91,7 +91,7 @@ public class ManageSourceLocationDialog extends Dialog {
             Object source = e.getSource();
             if (source == btnSubmit) {
                 sourceLocation = new SourceLocation();
-                sourceLocation.setSourceLocation(tfSourceLocation.getText());
+                sourceLocation.setLocation(tfSourceLocation.getText());
                 if (CRUDSourceLocation.isExist(sourceLocation)) {
                     JOptionPane.showMessageDialog(sourceLocationDialog,
                             "Location " + tfSourceLocation.getText() + " is already exist!.",

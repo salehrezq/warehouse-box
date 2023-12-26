@@ -96,7 +96,7 @@ public class List implements ListSelectionListener {
                     cellHasFocus);
             if (item != null && (item instanceof SourceLocation)) {
                 SourceLocation sourceLocation = (SourceLocation) item;
-                setText(sourceLocation.getSourceLocation());
+                setText(sourceLocation.getLocation());
             }
             return this;
         }

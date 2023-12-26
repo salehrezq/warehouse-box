@@ -30,7 +30,7 @@ package warehouse.db.model;
 public class SourceLocation {
 
     private int id;
-    private String sourceLocation;
+    private String location;
 
     public int getId() {
         return id;
@@ -40,11 +40,11 @@ public class SourceLocation {
         this.id = id;
     }
 
-    public String getSourceLocation() {
-        return sourceLocation;
+    public String getLocation() {
+        return location;
     }
 
-    public void setSourceLocation(String sourceLocation) {
-        this.sourceLocation = sourceLocation;
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
