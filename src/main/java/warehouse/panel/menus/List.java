@@ -56,7 +56,7 @@ public class List implements ListSelectionListener {
         scrollPane.setPreferredSize(new Dimension(350, 100));
     }
 
-    public Component getList() {
+    public Component getListScrolledPane() {
         return scrollPane;
     }
 

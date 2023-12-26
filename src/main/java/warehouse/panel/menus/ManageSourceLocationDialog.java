@@ -70,7 +70,7 @@ public class ManageSourceLocationDialog extends Dialog {
         panel.add(lbSourceLocation);
         panel.add(tfSourceLocation);
         panel.add(btnSubmit, "wrap");
-        panel.add(list.getList(), "span");
+        panel.add(list.getListScrolledPane(), "span");
         panel.add(btnClose);
         add(panel);
         pack();
