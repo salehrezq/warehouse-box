@@ -27,12 +27,18 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 import warehouse.db.CRUDSourceLocation;
 import warehouse.db.model.SourceLocation;
@@ -49,6 +55,7 @@ public class ManageSourceLocationDialog extends Dialog {
     private JTextField tfSourceLocation;
     private JButton btnSubmit, btnClose;
     private List list;
+    private JList listLocations;
     private SourceLocation sourceLocation;
     private ActionListener btnListner;
     private ManageSourceLocationDialog sourceLocationDialog;
@@ -64,6 +71,8 @@ public class ManageSourceLocationDialog extends Dialog {
         btnSubmit = new JButton("Submit");
         btnSubmit.addActionListener(btnListner);
         list = new List();
+        listLocations = list.getJList();
+        listLocations.addMouseListener(new MouseJListHandler());
         btnClose = new JButton("Close X");
         btnClose.addActionListener(btnListner);
 
@@ -117,5 +126,31 @@ public class ManageSourceLocationDialog extends Dialog {
                 sourceLocationDialog.dispose();
             }
         }
+    }
+
+    private class MouseJListHandler extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (SwingUtilities.isRightMouseButton(e)) {
+                listLocations.setSelectedIndex(listLocations.locationToIndex(e.getPoint()));
+
+                JPopupMenu menu = new JPopupMenu();
+                JMenuItem itemRemove = new JMenuItem("Remove");
+                itemRemove.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // This could probably be improved, but assuming you
+                        // also keep the values in an ArrayList, you can 
+                        // remove the element with this:
+                        //array_list.remove(listbox.getSelectedValue());
+                        //listbox.setListData((String[]) array_list.toArray(new String[array_list.size()]));
+                        System.out.println("Remove the element in position " + listLocations.getSelectedValue());
+                    }
+                });
+                menu.add(itemRemove);
+                menu.show(listLocations, e.getPoint().x, e.getPoint().y);
+            }
+        }
+
     }
 }

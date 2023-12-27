@@ -60,6 +60,10 @@ public class List implements ListSelectionListener {
         return scrollPane;
     }
 
+    public JList getJList() {
+        return this.list;
+    }
+
     public void addElement(SourceLocation sourceLocation) {
         listModel.addElement(sourceLocation);
     }
