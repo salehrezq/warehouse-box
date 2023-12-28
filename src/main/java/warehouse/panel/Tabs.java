@@ -27,7 +27,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import warehouse.panel.createandupdate.CreateUpdateTab;
 import warehouse.panel.items.ItemsTab;
 
 /**
@@ -38,17 +37,14 @@ public class Tabs extends JPanel {
 
     private JTabbedPane tabs;
     private ItemsTab itemsTab;
-    private CreateUpdateTab createUpdateTab;
 
     public Tabs() {
 
         this.setLayout(new BorderLayout());
         tabs = new JTabbedPane();
         itemsTab = new ItemsTab();
-        createUpdateTab = new CreateUpdateTab();
 
         tabs.add(itemsTab, "Items");
-        tabs.add(createUpdateTab, "Create | Update");
         this.add(tabs, BorderLayout.CENTER);
         this.setPreferredSize(new Dimension(1000, 500));
 

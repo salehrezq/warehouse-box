@@ -38,27 +38,32 @@ public class Menu {
 
     private JMenuBar menubar;
     private JMenu menuFile;
-    private JMenuItem menuItemMangeSourceLocations,
+    private JMenuItem menuCreateItem, menuItemMangeSourceLocations,
             menuItemMangeStores,
             menuItemMangeUnits;
     private JFrame target;
     private ManageSourceLocationDialog manageSourceLocationDialog;
+    private CreateItemDialog createItemDialog;
     private MenuItemsListener menuItemsListener;
 
     public Menu() {
         menubar = new JMenuBar();
         menuFile = new JMenu("Manage");
+        menuCreateItem = new JMenuItem("Create new item");
         menuItemMangeSourceLocations = new JMenuItem("Manage locations...");
         menuItemMangeStores = new JMenuItem("Manage stores...");
         menuItemMangeUnits = new JMenuItem("Manage units...");
+        menuFile.add(menuCreateItem);
         menuFile.add(menuItemMangeSourceLocations);
         menuFile.add(menuItemMangeStores);
         menuFile.add(menuItemMangeUnits);
         menubar.add(menuFile);
 
         menuItemsListener = new MenuItemsListener();
+        createItemDialog = new CreateItemDialog(target, "Create Item", true);
         manageSourceLocationDialog = new ManageSourceLocationDialog(target, "Manage locations", true);
         menuItemMangeSourceLocations.addActionListener(menuItemsListener);
+        menuCreateItem.addActionListener(menuItemsListener);
     }
 
     public JMenuBar getMenuBar() {
@@ -77,6 +82,8 @@ public class Menu {
             if (source == menuItemMangeSourceLocations) {
                 manageSourceLocationDialog.rePopulateLocationsList();
                 manageSourceLocationDialog.setVisible(true);
+            } else if (source == menuCreateItem) {
+                createItemDialog.setVisible(true);
             }
         }
     }

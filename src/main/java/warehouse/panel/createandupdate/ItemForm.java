@@ -61,7 +61,7 @@ public class ItemForm extends JPanel implements Navigatable {
         add(formNavigation, BorderLayout.PAGE_END);
     }
 
-    protected FormNavigation getFormNavigation() {
+    public FormNavigation getFormNavigation() {
         return this.formNavigation;
     }
 
