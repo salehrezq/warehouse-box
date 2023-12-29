@@ -49,7 +49,7 @@ public class Menu {
     public Menu() {
         menubar = new JMenuBar();
         menuFile = new JMenu("Manage");
-        menuCreateItem = new JMenuItem("Create new item");
+        menuCreateItem = new JMenuItem("Create new item...");
         menuItemMangeSourceLocations = new JMenuItem("Manage locations...");
         menuItemMangeStores = new JMenuItem("Manage stores...");
         menuItemMangeUnits = new JMenuItem("Manage units...");

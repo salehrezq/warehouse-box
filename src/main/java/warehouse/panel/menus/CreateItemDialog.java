@@ -43,6 +43,7 @@ public class CreateItemDialog extends JDialog {
         formNavigation = itemForm.getFormNavigation();
         formNavigation.addNavigationListner(itemForm);
         add(itemForm);
+        pack();
     }
 
 }
