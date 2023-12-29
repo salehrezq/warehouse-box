@@ -27,10 +27,10 @@ package warehouse.db.model;
  *
  * @author Saleh
  */
-public class SourceLocation {
+public class QuantityUnit {
 
     private int id;
-    private String location;
+    private String unit;
 
     public int getId() {
         return id;
@@ -40,11 +40,11 @@ public class SourceLocation {
         this.id = id;
     }
 
-    public String getLocation() {
-        return location;
+    public String getUnit() {
+        return unit;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }

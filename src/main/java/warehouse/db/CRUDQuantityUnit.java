@@ -30,84 +30,84 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import warehouse.db.model.SourceLocation;
+import warehouse.db.model.QuantityUnit;
 
 /**
  *
  * @author Saleh
  */
-public class CRUDSourceLocation {
+public class CRUDQuantityUnit {
 
     private static Connection con;
 
-    public static int create(SourceLocation sourceLocation) {
+    public static int create(QuantityUnit unit) {
         int insert = 0;
-        String sqlCreateSourceLocation = "INSERT INTO source_location (`location`) VALUES (?)";
+        String sqlCreateQuantityUnit = "INSERT INTO quantity_unit (`unit`) VALUES (?)";
         con = Connect.getConnection();
         try {
-            PreparedStatement createLocationStatement = con.prepareStatement(sqlCreateSourceLocation);
-            createLocationStatement.setString(1, sourceLocation.getLocation());
-            insert = createLocationStatement.executeUpdate();
+            PreparedStatement createQuantityUnitStatement = con.prepareStatement(sqlCreateQuantityUnit);
+            createQuantityUnitStatement.setString(1, unit.getUnit());
+            insert = createQuantityUnitStatement.executeUpdate();
             con.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(CRUDSourceLocation.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDQuantityUnit.class.getName()).log(Level.SEVERE, null, ex);
         }
         return insert;
     }
 
-    public static ArrayList<SourceLocation> getAll() {
-        ArrayList<SourceLocation> sourceLocations = new ArrayList<>();
-        String sqlSelectStatement = "SELECT * FROM source_location ORDER BY `location` ASC";
+    public static ArrayList<QuantityUnit> getAll() {
+        ArrayList<QuantityUnit> quantityUnits = new ArrayList<>();
+        String sqlSelectStatement = "SELECT * FROM quantity_unit ORDER BY `unit` ASC";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sqlSelectStatement);
             ResultSet result = p.executeQuery();
             while (result.next()) {
-                SourceLocation sourceLocation = new SourceLocation();
-                sourceLocation.setId(result.getInt("id"));
-                sourceLocation.setLocation(result.getString("location"));
-                sourceLocations.add(sourceLocation);
+                QuantityUnit quantityUnit = new QuantityUnit();
+                quantityUnit.setId(result.getInt("id"));
+                quantityUnit.setUnit(result.getString("unit"));
+                quantityUnits.add(quantityUnit);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CRUDSourceLocation.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDQuantityUnit.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return sourceLocations;
+        return quantityUnits;
     }
 
-    public static boolean isExist(SourceLocation sourceLocation) {
+    public static boolean isExist(QuantityUnit unit) {
         boolean exist = false;
-        String sqlIsLocationExist = "SELECT EXISTS(SELECT * FROM source_location WHERE `location` = ?) AS is_location_exist";
+        String sqlIsUnitExist = "SELECT EXISTS(SELECT * FROM quantity_unit WHERE `unit` = ?) AS is_unit_exist";
         con = Connect.getConnection();
         try {
-            PreparedStatement isExistStatement = con.prepareStatement(sqlIsLocationExist);
-            isExistStatement.setString(1, sourceLocation.getLocation());
+            PreparedStatement isExistStatement = con.prepareStatement(sqlIsUnitExist);
+            isExistStatement.setString(1, unit.getUnit());
             ResultSet result = isExistStatement.executeQuery();
             if (result.next()) {
-                exist = result.getInt("is_location_exist") == 1;
+                exist = result.getInt("is_unit_exist") == 1;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CRUDSourceLocation.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDQuantityUnit.class.getName()).log(Level.SEVERE, null, ex);
         }
         return exist;
     }
 
-    public static ArrayList<SourceLocation> getSearch(String str) {
-        ArrayList<SourceLocation> sourceLocations = new ArrayList<>();
-        String sqlSelectStatement = "SELECT * FROM source_location WHERE location LIKE '%" + str + "%'";
+    public static ArrayList<QuantityUnit> getSearch(String str) {
+        ArrayList<QuantityUnit> quantityUnits = new ArrayList<>();
+        String sqlSelectStatement = "SELECT * FROM quantity_unit WHERE unit LIKE '%" + str + "%'";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sqlSelectStatement);
             ResultSet result = p.executeQuery();
             while (result.next()) {
-                SourceLocation sourceLocation = new SourceLocation();
-                sourceLocation.setId(result.getInt("id"));
-                sourceLocation.setLocation(result.getString("location"));
-                sourceLocations.add(sourceLocation);
+                QuantityUnit quantityUnit = new QuantityUnit();
+                quantityUnit.setId(result.getInt("id"));
+                quantityUnit.setUnit(result.getString("unit"));
+                quantityUnits.add(quantityUnit);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CRUDSourceLocation.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDQuantityUnit.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return sourceLocations;
+        return quantityUnits;
     }
 
 }

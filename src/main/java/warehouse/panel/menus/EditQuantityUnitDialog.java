@@ -29,6 +29,6 @@ import javax.swing.JDialog;
  *
  * @author Saleh
  */
-public class EditSourceLocationDialog extends JDialog {
+public class EditQuantityUnitDialog extends JDialog {
 
 }

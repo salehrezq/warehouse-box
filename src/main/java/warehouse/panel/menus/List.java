@@ -32,7 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import warehouse.db.model.SourceLocation;
+import warehouse.db.model.QuantityUnit;
 
 /**
  *
@@ -46,7 +46,7 @@ public class List implements ListSelectionListener {
 
     public List() {
         list = new JList();
-        list.setCellRenderer(new ListCellSourceLocationRenderer());
+        list.setCellRenderer(new ListCellQuantityUnitRenderer());
         listModel = new DefaultListModel();
         list.setModel(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -64,8 +64,8 @@ public class List implements ListSelectionListener {
         return this.list;
     }
 
-    public void addElement(SourceLocation sourceLocation) {
-        listModel.addElement(sourceLocation);
+    public void addElement(QuantityUnit quantityUnit) {
+        listModel.addElement(quantityUnit);
     }
 
     public void removeAllElements() {
@@ -81,7 +81,7 @@ public class List implements ListSelectionListener {
         System.out.println("List value changed");
     }
 
-    private class ListCellSourceLocationRenderer extends DefaultListCellRenderer {
+    private class ListCellQuantityUnitRenderer extends DefaultListCellRenderer {
 
         @Override
         public Component getListCellRendererComponent(JList<?> list,
@@ -95,9 +95,9 @@ public class List implements ListSelectionListener {
                     index,
                     isSelected,
                     cellHasFocus);
-            if (item != null && (item instanceof SourceLocation)) {
-                SourceLocation sourceLocation = (SourceLocation) item;
-                setText(sourceLocation.getLocation());
+            if (item != null && (item instanceof QuantityUnit)) {
+                QuantityUnit quantityUnit = (QuantityUnit) item;
+                setText(quantityUnit.getUnit());
             }
             return this;
         }

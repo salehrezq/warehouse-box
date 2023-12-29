@@ -35,33 +35,33 @@ import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.miginfocom.swing.MigLayout;
-import warehouse.db.CRUDSourceLocation;
-import warehouse.db.model.SourceLocation;
+import warehouse.db.CRUDQuantityUnit;
+import warehouse.db.model.QuantityUnit;
 
 /**
  *
  * @author Saleh
  */
-public class ItemFormSourceLocation extends JPanel {
+public class ItemFormQuantityUnit extends JPanel {
 
-    private JTextField tfSourceLocationSearch;
-    private JLabel lbSourceLocation;
+    private JTextField tfQuantityUnitSearch;
+    private JLabel lbQuantityUnit;
     private List list;
     private DeferredDocumentListener docListener;
-    private TfSourceLocationSearchListener tFListener;
+    private TfQuantityUnitSearchListener tFListener;
 
-    public ItemFormSourceLocation() {
+    public ItemFormQuantityUnit() {
         setLayout(new MigLayout("center center"));
 
         list = new List();
         list.setSize(300, 300);
 
-        lbSourceLocation = new JLabel("Search & select");
-        tfSourceLocationSearch = new JTextField(17);
-        tFListener = new TfSourceLocationSearchListener();
+        lbQuantityUnit = new JLabel("Search & select");
+        tfQuantityUnitSearch = new JTextField(17);
+        tFListener = new TfQuantityUnitSearchListener();
         docListener = new DeferredDocumentListener(700, tFListener, false);
-        tfSourceLocationSearch.getDocument().addDocumentListener(docListener);
-        tfSourceLocationSearch.addFocusListener(new FocusListener() {
+        tfQuantityUnitSearch.getDocument().addDocumentListener(docListener);
+        tfQuantityUnitSearch.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 // no writting
@@ -75,25 +75,25 @@ public class ItemFormSourceLocation extends JPanel {
             }
         });
 
-        add(lbSourceLocation);
-        add(tfSourceLocationSearch, "wrap");
+        add(lbQuantityUnit);
+        add(tfQuantityUnitSearch, "wrap");
         add(list.getList(), "span 2");
     }
 
-    public void rePopulateLocationsListSearch() {
+    public void rePopulateUnitsListSearch() {
         list.removeAllElements();
-        ArrayList<SourceLocation> sourceLocations = CRUDSourceLocation.getSearch(tfSourceLocationSearch.getText());
-        sourceLocations.forEach(location -> {
-            list.addElement(location);
+        ArrayList<QuantityUnit> quantityUnits = CRUDQuantityUnit.getSearch(tfQuantityUnitSearch.getText());
+        quantityUnits.forEach(unit -> {
+            list.addElement(unit);
         });
     }
 
-    private class TfSourceLocationSearchListener implements ActionListener {
+    private class TfQuantityUnitSearchListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!tfSourceLocationSearch.getText().isBlank()) {
-                rePopulateLocationsListSearch();
+            if (!tfQuantityUnitSearch.getText().isBlank()) {
+                rePopulateUnitsListSearch();
             }
         }
     }

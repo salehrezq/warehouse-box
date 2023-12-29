@@ -38,11 +38,11 @@ public class Menu {
 
     private JMenuBar menubar;
     private JMenu menuFile;
-    private JMenuItem menuCreateItem, menuItemMangeSourceLocations,
+    private JMenuItem menuCreateItem, menuItemMangeQuantityUnit,
             menuItemMangeStores,
             menuItemMangeUnits;
     private JFrame target;
-    private ManageSourceLocationDialog manageSourceLocationDialog;
+    private ManageQuantityUnitDialog manageQuantityUnitDialog;
     private CreateItemDialog createItemDialog;
     private MenuItemsListener menuItemsListener;
 
@@ -50,19 +50,19 @@ public class Menu {
         menubar = new JMenuBar();
         menuFile = new JMenu("Manage");
         menuCreateItem = new JMenuItem("Create new item...");
-        menuItemMangeSourceLocations = new JMenuItem("Manage locations...");
+        menuItemMangeQuantityUnit = new JMenuItem("Manage units...");
         menuItemMangeStores = new JMenuItem("Manage stores...");
         menuItemMangeUnits = new JMenuItem("Manage units...");
         menuFile.add(menuCreateItem);
-        menuFile.add(menuItemMangeSourceLocations);
+        menuFile.add(menuItemMangeQuantityUnit);
         menuFile.add(menuItemMangeStores);
         menuFile.add(menuItemMangeUnits);
         menubar.add(menuFile);
 
         menuItemsListener = new MenuItemsListener();
         createItemDialog = new CreateItemDialog(target, "Create Item", true);
-        manageSourceLocationDialog = new ManageSourceLocationDialog(target, "Manage locations", true);
-        menuItemMangeSourceLocations.addActionListener(menuItemsListener);
+        manageQuantityUnitDialog = new ManageQuantityUnitDialog(target, "Manage units", true);
+        menuItemMangeQuantityUnit.addActionListener(menuItemsListener);
         menuCreateItem.addActionListener(menuItemsListener);
     }
 
@@ -79,9 +79,9 @@ public class Menu {
         @Override
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
-            if (source == menuItemMangeSourceLocations) {
-                manageSourceLocationDialog.rePopulateLocationsList();
-                manageSourceLocationDialog.setVisible(true);
+            if (source == menuItemMangeQuantityUnit) {
+                manageQuantityUnitDialog.rePopulateUnitsList();
+                manageQuantityUnitDialog.setVisible(true);
             } else if (source == menuCreateItem) {
                 createItemDialog.setVisible(true);
             }
