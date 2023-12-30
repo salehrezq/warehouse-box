@@ -44,7 +44,7 @@ public class ItemsList extends JPanel {
 
         setLayout(new BorderLayout());
 
-        model = new DefaultTableModel(new String[]{"Code", "Name", "Specification", "Location", "Store", "Qty.", "Unit"}, 0) {
+        model = new DefaultTableModel(new String[]{"Code", "Name", "Specification", "Unit"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Disable cells editing.
@@ -58,9 +58,6 @@ public class ItemsList extends JPanel {
         table.getColumnModel().getColumn(1).setPreferredWidth(1);
         table.getColumnModel().getColumn(2).setPreferredWidth(1);
         table.getColumnModel().getColumn(3).setPreferredWidth(1);
-        table.getColumnModel().getColumn(4).setPreferredWidth(1);
-        table.getColumnModel().getColumn(5).setPreferredWidth(1);
-        table.getColumnModel().getColumn(6).setPreferredWidth(1);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
