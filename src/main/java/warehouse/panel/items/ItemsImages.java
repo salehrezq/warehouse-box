@@ -23,6 +23,7 @@
  */
 package warehouse.panel.items;
 
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 /**
@@ -30,5 +31,17 @@ import javax.swing.JPanel;
  * @author Saleh
  */
 public class ItemsImages extends JPanel {
+
+    ImagePlace imagePlace;
+    private BufferedImage image;
+
+    public ItemsImages() {
+        imagePlace = new ImagePlace();
+        imagePlace.loadImage("C:/ImageTest/pp.jpg");
+        imagePlace.initComponents();
+        imagePlace.setImage(imagePlace.image);
+        add(imagePlace.getGui());
+        imagePlace.paintImage();
+    }
 
 }
