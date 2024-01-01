@@ -23,6 +23,7 @@
  */
 package warehouse.panel.items;
 
+import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
@@ -37,10 +38,13 @@ public class ItemsImages extends JPanel {
 
     public ItemsImages() {
         imagePlace = new ImagePlace();
+        // this.setBackground(Color.BLUE);
+        this.setLayout(new BorderLayout());
+        //   this.setBorder(BorderFactory.createLineBorder(Color.BLUE, 1));
         imagePlace.loadImage("C:/ImageTest/pp.jpg");
         imagePlace.initComponents();
         imagePlace.setImage(imagePlace.image);
-        add(imagePlace.getGui());
+        this.add(imagePlace.getGui(), BorderLayout.CENTER);
         imagePlace.paintImage();
     }
 

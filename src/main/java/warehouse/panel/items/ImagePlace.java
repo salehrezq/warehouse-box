@@ -28,41 +28,39 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSlider;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author Saleh
  */
-public class ImagePlace extends JComponent implements ChangeListener {
+public class ImagePlace implements MouseWheelListener {
 
     JPanel panel;
+    JScrollPane imageScroll;
     /**
      * Displays the image.
      */
     JLabel lbImage;
     Dimension size;
-    double scale = 0.1;
+    double scale = 0.2;
     public BufferedImage image;
 
     public void loadImage(String imagePAth) {
         size = new Dimension(10, 10);
-        setBackground(Color.black);
+
         try {
             image = ImageIO.read(new File(imagePAth));
         } catch (Exception ex) {
@@ -77,31 +75,33 @@ public class ImagePlace extends JComponent implements ChangeListener {
     public void initComponents() {
         if (panel == null) {
             panel = new JPanel(new BorderLayout());
-            panel.setBorder(new EmptyBorder(5, 5, 5, 5));
+//            panel.setBackground(Color.green);
+//            panel.setBorder(new EmptyBorder(5, 5, 5, 5));
+            panel.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
             lbImage = new JLabel();
-            JPanel imageCenter = new JPanel(new GridBagLayout());
-            imageCenter.add(lbImage);
-            JScrollPane imageScroll = new JScrollPane(imageCenter);
-            imageScroll.setPreferredSize(new Dimension(300, 100));
-            panel.add(imageScroll, BorderLayout.CENTER);
+            lbImage.setBorder(BorderFactory.createLineBorder(Color.WHITE, 6));
+            lbImage.setHorizontalAlignment(JLabel.CENTER);
+            lbImage.setVerticalAlignment(JLabel.CENTER);
+
+//            JPanel imageCenter = new JPanel(new GridBagLayout());
+//            imageCenter.add(lbImage);
+            panel.add(lbImage, BorderLayout.CENTER);
+            imageScroll = new JScrollPane();
+            imageScroll.setViewportView(panel);
+//            imageScroll.setBackground(Color.GREEN);
+            //     imageScroll.setPreferredSize(new Dimension(100, 100));
+//            panel.add(imageScroll, BorderLayout.CENTER);
+            imageScroll.addMouseWheelListener(this);
         }
     }
 
     public Container getGui() {
-
-        return panel;
-    }
-
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        int value = ((JSlider) e.getSource()).getValue();
-        scale = value / 100.0;
-        paintImage();
+        return imageScroll;
     }
 
     protected void paintImage() {
-        int w = getWidth();
-        int h = getHeight();
+        int w = panel.getWidth();
+        int h = panel.getHeight();
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
         BufferedImage bi = new BufferedImage(
@@ -109,8 +109,12 @@ public class ImagePlace extends JComponent implements ChangeListener {
                 (int) (imageHeight * scale),
                 image.getType());
         Graphics2D g2 = bi.createGraphics();
+
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
+
+//          g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+//                RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         double x = (w - scale * imageWidth) / 2;
         double y = (h - scale * imageHeight) / 2;
         AffineTransform at = AffineTransform.getTranslateInstance(0, 0);
@@ -120,33 +124,22 @@ public class ImagePlace extends JComponent implements ChangeListener {
     }
 
     @Override
-    public Dimension getPreferredSize() {
-        int w = (int) (scale * size.width);
-        int h = (int) (scale * size.height);
-        return new Dimension(w, h);
-    }
+    public void mouseWheelMoved(MouseWheelEvent e) {
 
-    private JSlider getControl() {
-        JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 500, 10);
-        slider.setMajorTickSpacing(50);
-        slider.setMinorTickSpacing(25);
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
-        slider.addChangeListener(this);
-        return slider;
-    }
+        if (e.isControlDown()) {
 
-    //  public static void main(String[] args) {
-    //  ImagePlace app = new ImagePlace();
-    //  JFrame frame = new JFrame();
-    //   frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    //   frame.setContentPane(app.getGui());
-    //  app.setImage(app.image);
-    //   app.paintImage();
-    // frame.getContentPane().add(new JScrollPane(app));  
-    //  frame.getContentPane().add(app.getControl(), "Last");
-    //  frame.setSize(700, 500);
-    //  frame.setLocation(200, 200);
-    //  frame.setVisible(true);
-    //  }
+            if (e.getWheelRotation() < 0) {
+                if (scale < 1.5) {
+                    scale += 0.01;
+                    paintImage();
+                }
+            } else if (scale > 0.03) {
+                scale -= 0.01;
+                paintImage();
+            }
+        } else {
+            // scrollPanelUsed.getListeners(MouseWheelListener.class)[0].mouseWheelMoved(e);
+            //  getParent().dispatchEvent(e);
+        }
+    }
 }
