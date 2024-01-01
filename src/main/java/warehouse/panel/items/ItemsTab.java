@@ -39,7 +39,7 @@ public class ItemsTab extends JPanel {
     private JPanel panelGatherRight;
     private ItemsSearch itemsSearch;
     private ItemsList itemsList;
-    private ItemsImages itemsImages;
+    private ItemImage itemsImages;
 
     public ItemsTab() {
 
@@ -49,7 +49,7 @@ public class ItemsTab extends JPanel {
 
         itemsSearch = new ItemsSearch();
         itemsList = new ItemsList();
-        itemsImages = new ItemsImages();
+        itemsImages = new ItemImage();
 
         // Add the scroll panes to a split pane.
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);

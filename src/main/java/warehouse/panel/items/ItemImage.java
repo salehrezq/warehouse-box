@@ -30,11 +30,11 @@ import javax.swing.JPanel;
  *
  * @author Saleh
  */
-public class ItemsImages extends JPanel {
+public class ItemImage extends JPanel {
 
     ImagePlace imagePlace;
 
-    public ItemsImages() {
+    public ItemImage() {
         imagePlace = new ImagePlace();
         this.setLayout(new BorderLayout());
         imagePlace.loadImage("C:/ImageTest/pp.jpg");
