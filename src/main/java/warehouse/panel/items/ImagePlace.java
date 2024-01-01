@@ -23,7 +23,6 @@
  */
 package warehouse.panel.items;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -36,25 +35,33 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 /**
  *
  * @author Saleh
  */
-public class ImagePlace implements MouseWheelListener {
+public class ImagePlace {
 
-    JPanel panel;
-    JScrollPane scrollPane;
-    JLabel lbImage;
-    double scale = 0.2;
+    private JScrollPane scrollableContainer;
+    private JLabel lbImage;
+    double scale = 0.1;
     public BufferedImage image;
+    private MouseWheelMovedHandler mouseWheelMovedHandler;
+
+    public ImagePlace() {
+        lbImage = new JLabel();
+        lbImage.setHorizontalAlignment(JLabel.CENTER);
+        lbImage.setVerticalAlignment(JLabel.CENTER);
+        scrollableContainer = new JScrollPane();
+        scrollableContainer.setViewportView(lbImage);
+        mouseWheelMovedHandler = new MouseWheelMovedHandler();
+        scrollableContainer.addMouseWheelListener(mouseWheelMovedHandler);
+    }
 
     public void loadImage(String imagePAth) {
         try {
             image = ImageIO.read(new File(imagePAth));
-            lbImage = new JLabel();
             setImage(image);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -65,25 +72,11 @@ public class ImagePlace implements MouseWheelListener {
         lbImage.setIcon(new ImageIcon(image));
     }
 
-    public void initComponents() {
-        if (panel == null) {
-            panel = new JPanel(new BorderLayout());
-            lbImage.setHorizontalAlignment(JLabel.CENTER);
-            lbImage.setVerticalAlignment(JLabel.CENTER);
-            panel.add(lbImage, BorderLayout.CENTER);
-            scrollPane = new JScrollPane();
-            scrollPane.setViewportView(panel);
-            scrollPane.addMouseWheelListener(this);
-        }
-    }
-
-    public Container getGui() {
-        return scrollPane;
+    public Container getContainer() {
+        return scrollableContainer;
     }
 
     protected void paintImage() {
-        int w = panel.getWidth();
-        int h = panel.getHeight();
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
         BufferedImage bi = new BufferedImage(
@@ -91,37 +84,31 @@ public class ImagePlace implements MouseWheelListener {
                 (int) (imageHeight * scale),
                 image.getType());
         Graphics2D g2 = bi.createGraphics();
-
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-
 //          g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 //                RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        double x = (w - scale * imageWidth) / 2;
-        double y = (h - scale * imageHeight) / 2;
         AffineTransform at = AffineTransform.getTranslateInstance(0, 0);
         at.scale(scale, scale);
         g2.drawRenderedImage(image, at);
         setImage(bi);
     }
 
-    @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
+    private class MouseWheelMovedHandler implements MouseWheelListener {
 
-        if (e.isControlDown()) {
-
-            if (e.getWheelRotation() < 0) {
-                if (scale < 1.5) {
-                    scale += 0.01;
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            if (e.isControlDown()) {
+                if (e.getWheelRotation() < 0) {
+                    if (scale < 1.5) {
+                        scale += 0.01;
+                        paintImage();
+                    }
+                } else if (scale > 0.03) {
+                    scale -= 0.01;
                     paintImage();
                 }
-            } else if (scale > 0.03) {
-                scale -= 0.01;
-                paintImage();
             }
-        } else {
-            // scrollPanelUsed.getListeners(MouseWheelListener.class)[0].mouseWheelMoved(e);
-            //  getParent().dispatchEvent(e);
         }
     }
 }

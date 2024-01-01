@@ -38,8 +38,8 @@ public class ItemsImages extends JPanel {
         imagePlace = new ImagePlace();
         this.setLayout(new BorderLayout());
         imagePlace.loadImage("C:/ImageTest/pp.jpg");
-        imagePlace.initComponents();
-        this.add(imagePlace.getGui(), BorderLayout.CENTER);
+        // imagePlace.initComponents();
+        this.add(imagePlace.getContainer(), BorderLayout.CENTER);
         imagePlace.paintImage();
     }
 
