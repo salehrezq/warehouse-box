@@ -24,9 +24,7 @@
 package warehouse.panel.items;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -36,7 +34,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -49,20 +46,16 @@ import javax.swing.JScrollPane;
 public class ImagePlace implements MouseWheelListener {
 
     JPanel panel;
-    JScrollPane imageScroll;
-    /**
-     * Displays the image.
-     */
+    JScrollPane scrollPane;
     JLabel lbImage;
-    Dimension size;
     double scale = 0.2;
     public BufferedImage image;
 
     public void loadImage(String imagePAth) {
-        size = new Dimension(10, 10);
-
         try {
             image = ImageIO.read(new File(imagePAth));
+            lbImage = new JLabel();
+            setImage(image);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -75,28 +68,17 @@ public class ImagePlace implements MouseWheelListener {
     public void initComponents() {
         if (panel == null) {
             panel = new JPanel(new BorderLayout());
-//            panel.setBackground(Color.green);
-//            panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-            panel.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
-            lbImage = new JLabel();
-            lbImage.setBorder(BorderFactory.createLineBorder(Color.WHITE, 6));
             lbImage.setHorizontalAlignment(JLabel.CENTER);
             lbImage.setVerticalAlignment(JLabel.CENTER);
-
-//            JPanel imageCenter = new JPanel(new GridBagLayout());
-//            imageCenter.add(lbImage);
             panel.add(lbImage, BorderLayout.CENTER);
-            imageScroll = new JScrollPane();
-            imageScroll.setViewportView(panel);
-//            imageScroll.setBackground(Color.GREEN);
-            //     imageScroll.setPreferredSize(new Dimension(100, 100));
-//            panel.add(imageScroll, BorderLayout.CENTER);
-            imageScroll.addMouseWheelListener(this);
+            scrollPane = new JScrollPane();
+            scrollPane.setViewportView(panel);
+            scrollPane.addMouseWheelListener(this);
         }
     }
 
     public Container getGui() {
-        return imageScroll;
+        return scrollPane;
     }
 
     protected void paintImage() {
