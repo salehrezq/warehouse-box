@@ -40,8 +40,10 @@ public class ItemForm extends JPanel implements Navigatable {
     private CardLayout cardLayout;
     private final static String FORMCODENAMESPECS = "Card code name specs";
     private final static String QUANTITY_UNIT = "Card quantity unit";
+    private final static String IMAGEPREVIEW = "Card image";
     private ItemFormCodeNameSpecs itemFormCodeNameSpecs;
     private ItemFormQuantityUnit itemFormQuantityUnit;
+    private ItemFormImage itemFormImage;
     private FormNavigation formNavigation;
     private BoxLayout boxLayout;
 
@@ -52,8 +54,10 @@ public class ItemForm extends JPanel implements Navigatable {
         panelCards.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         itemFormCodeNameSpecs = new ItemFormCodeNameSpecs();
         itemFormQuantityUnit = new ItemFormQuantityUnit();
+        itemFormImage = new ItemFormImage();
         panelCards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);
         panelCards.add(itemFormQuantityUnit, QUANTITY_UNIT);
+        panelCards.add(itemFormImage.getScrollableScalableImageContainer(), IMAGEPREVIEW);
         cardLayout.show(panelCards, FORMCODENAMESPECS);
         formNavigation = new FormNavigation();
         formNavigation.setBorder(BorderFactory.createLineBorder(Color.RED, 1));

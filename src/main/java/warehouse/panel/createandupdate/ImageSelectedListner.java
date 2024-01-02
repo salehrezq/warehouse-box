@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2023 Saleh.
+ * Copyright 2024 Saleh.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,26 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.items;
-
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
+package warehouse.panel.createandupdate;
 
 /**
  *
  * @author Saleh
  */
-public class ItemImage extends JPanel {
+public interface ImageSelectedListner {
 
-    ScrollableScalableImageContainer imagePlace;
-
-    public ItemImage() {
-        imagePlace = new ScrollableScalableImageContainer();
-        this.setLayout(new BorderLayout());
-        imagePlace.loadImage("C:/ImageTest/pp.jpg");
-        // imagePlace.initComponents();
-        this.add(imagePlace.getContainer(), BorderLayout.CENTER);
-        imagePlace.paintImage();
-    }
-
+    public void imageSelected(byte[] photoInBytes);
 }

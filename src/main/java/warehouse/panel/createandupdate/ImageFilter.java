@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2023 Saleh.
+ * Copyright 2024 Saleh.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,26 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.items;
+package warehouse.panel.createandupdate;
 
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
+import java.io.File;
+import javax.swing.filechooser.FileFilter;
 
 /**
  *
  * @author Saleh
  */
-public class ItemImage extends JPanel {
+public class ImageFilter extends FileFilter {
 
-    ScrollableScalableImageContainer imagePlace;
+    //Accept all directories and all gif, jpg, tiff, or png files.
+    @Override
+    public boolean accept(File f) {
+        if (f.isDirectory()) {
+            return true;
+        }
 
-    public ItemImage() {
-        imagePlace = new ScrollableScalableImageContainer();
-        this.setLayout(new BorderLayout());
-        imagePlace.loadImage("C:/ImageTest/pp.jpg");
-        // imagePlace.initComponents();
-        this.add(imagePlace.getContainer(), BorderLayout.CENTER);
-        imagePlace.paintImage();
+        String extension = Utils.getExtension(f);
+        if (extension != null) {
+            if (extension.equals(Utils.tiff)
+                    || extension.equals(Utils.tif)
+                    || extension.equals(Utils.gif)
+                    || extension.equals(Utils.jpeg)
+                    || extension.equals(Utils.jpg)
+                    || extension.equals(Utils.png)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    //The description of this filter
+    @Override
+    public String getDescription() {
+        return "Just Images";
     }
 
 }

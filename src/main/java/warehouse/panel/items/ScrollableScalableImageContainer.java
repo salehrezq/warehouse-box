@@ -23,7 +23,6 @@
  */
 package warehouse.panel.items;
 
-import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -41,7 +40,7 @@ import javax.swing.JScrollPane;
  *
  * @author Saleh
  */
-public class ImagePlace {
+public class ScrollableScalableImageContainer {
 
     private JScrollPane scrollableContainer;
     private JLabel lbImage;
@@ -49,7 +48,7 @@ public class ImagePlace {
     public BufferedImage image;
     private MouseWheelMovedHandler mouseWheelMovedHandler;
 
-    public ImagePlace() {
+    public ScrollableScalableImageContainer() {
         lbImage = new JLabel();
         lbImage.setHorizontalAlignment(JLabel.CENTER);
         lbImage.setVerticalAlignment(JLabel.CENTER);
@@ -72,11 +71,11 @@ public class ImagePlace {
         lbImage.setIcon(new ImageIcon(image));
     }
 
-    public Container getContainer() {
+    public JScrollPane getContainer() {
         return scrollableContainer;
     }
 
-    protected void paintImage() {
+    public void paintImage() {
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
         BufferedImage bi = new BufferedImage(
