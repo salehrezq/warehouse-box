@@ -61,6 +61,7 @@ public class ScrollableScalableImageContainer {
         try {
             image = ImageIO.read(new File(imagePAth));
             setImage(image);
+            paintImage();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -69,11 +70,13 @@ public class ScrollableScalableImageContainer {
     public void loadBufferedImage(BufferedImage image) {
         this.image = image;
         setImage(image);
+        paintImage();
     }
 
     private void setImage(BufferedImage image) {
         //  this.image = image;
         lbImage.setIcon(new ImageIcon(image));
+        //  paintImage();
     }
 
     public JScrollPane getContainer() {

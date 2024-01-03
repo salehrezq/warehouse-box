@@ -38,9 +38,6 @@ public class ItemImage extends JPanel {
         imagePlace = new ScrollableScalableImageContainer();
         this.setLayout(new BorderLayout());
         imagePlace.loadImage("C:/ImageTest/pp.jpg");
-        // imagePlace.initComponents();
         this.add(imagePlace.getContainer(), BorderLayout.CENTER);
-        imagePlace.paintImage();
     }
-
 }

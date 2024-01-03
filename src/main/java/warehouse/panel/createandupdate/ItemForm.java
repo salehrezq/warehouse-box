@@ -46,7 +46,6 @@ public class ItemForm extends JPanel implements Navigatable {
     private ItemFormImage itemFormImage;
     private FormNavigation formNavigation;
     private BoxLayout boxLayout;
-    private IMGFileChooser iMGFileChooserResponse;
 
     public ItemForm() {
         setLayout(new BorderLayout());
@@ -56,8 +55,6 @@ public class ItemForm extends JPanel implements Navigatable {
         itemFormCodeNameSpecs = new ItemFormCodeNameSpecs();
         itemFormQuantityUnit = new ItemFormQuantityUnit();
         itemFormImage = new ItemFormImage();
-        iMGFileChooserResponse = new IMGFileChooser();
-        itemFormImage.setFormBtnAndImageContainerResponsivity(iMGFileChooserResponse);
         panelCards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);
         panelCards.add(itemFormQuantityUnit, QUANTITY_UNIT);
         panelCards.add(itemFormImage.getFormContainer(), IMAGEPREVIEW);

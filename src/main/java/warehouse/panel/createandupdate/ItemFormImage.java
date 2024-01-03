@@ -35,12 +35,14 @@ import warehouse.panel.items.ScrollableScalableImageContainer;
  *
  * @author Saleh
  */
+@SuppressWarnings("LeakingThisInConstructor")
 public class ItemFormImage implements ImageSelectedListner {
 
     private JPanel panelContainer, panelContols;
     private JButton btnBrowse;
     private JLabel lbImagePreview;
     private ScrollableScalableImageContainer scalableImageContainer;
+    private IMGFileChooser iMGFileChooser;
 
     public ItemFormImage() {
         panelContainer = new JPanel(new BorderLayout());
@@ -50,13 +52,9 @@ public class ItemFormImage implements ImageSelectedListner {
         panelContols.add(btnBrowse);
         panelContainer.add(scalableImageContainer.getContainer(), BorderLayout.CENTER);
         panelContainer.add(panelContols, BorderLayout.PAGE_END);
-
-        //  scalableImageContainer.paintImage();
-    }
-
-    public void setFormBtnAndImageContainerResponsivity(IMGFileChooser iMGFileChooserResponsivity) {
-        this.btnBrowse.addActionListener(iMGFileChooserResponsivity);
-        iMGFileChooserResponsivity.addImageSelectedListner(this);
+        iMGFileChooser = new IMGFileChooser();
+        btnBrowse.addActionListener(iMGFileChooser);
+        iMGFileChooser.addImageSelectedListner(this);
     }
 
     public JScrollPane getScrollableScalableImageContainer() {
@@ -69,14 +67,7 @@ public class ItemFormImage implements ImageSelectedListner {
 
     @Override
     public void imageSelected(BufferedImage bufferedImage) {
-        //     ByteArrayInputStream bis = new ByteArrayInputStream(bufferedImage);
-        //   try {
-        //      BufferedImage image = ImageIO.read(bis);
-//            lbImagePreview.setIcon(new ImageIcon(bufferedImage));
         scalableImageContainer.loadBufferedImage(bufferedImage);
-        // } catch (IOException ex) {
-        //      Logger.getLogger(ItemFormImage.class.getName()).log(Level.SEVERE, null, ex);
-        //  }
     }
 
 }
