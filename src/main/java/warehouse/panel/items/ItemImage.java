@@ -23,6 +23,7 @@
  */
 package warehouse.panel.items;
 
+import utility.imagepane.ScrollableScalableImageContainer;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
@@ -37,7 +38,7 @@ public class ItemImage extends JPanel {
     public ItemImage() {
         imagePlace = new ScrollableScalableImageContainer();
         this.setLayout(new BorderLayout());
-        imagePlace.loadImage("C:/ImageTest/pp.jpg");
+        imagePlace.loadImageViaString("C:/ImageTest/pp.jpg");
         this.add(imagePlace.getContainer(), BorderLayout.CENTER);
     }
 }

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.createandupdate;
+package utility.imagefilechooser;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+import warehouse.panel.createandupdate.ImageFilter;
 
 /**
  *

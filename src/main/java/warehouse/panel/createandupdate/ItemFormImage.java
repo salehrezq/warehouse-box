@@ -23,13 +23,14 @@
  */
 package warehouse.panel.createandupdate;
 
+import utility.imagefilechooser.IMGFileChooser;
+import utility.imagefilechooser.ImageSelectedListner;
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import warehouse.panel.items.ScrollableScalableImageContainer;
+import utility.imagepane.ScrollableScalableImageContainer;
 
 /**
  *
@@ -40,7 +41,6 @@ public class ItemFormImage implements ImageSelectedListner {
 
     private JPanel panelContainer, panelContols;
     private JButton btnBrowse;
-    private JLabel lbImagePreview;
     private ScrollableScalableImageContainer scalableImageContainer;
     private IMGFileChooser iMGFileChooser;
 
@@ -67,7 +67,7 @@ public class ItemFormImage implements ImageSelectedListner {
 
     @Override
     public void imageSelected(BufferedImage bufferedImage) {
-        scalableImageContainer.loadBufferedImage(bufferedImage);
+        scalableImageContainer.setBufferedImage(bufferedImage);
     }
 
 }

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.items;
+package utility.imagepane;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -57,7 +57,7 @@ public class ScrollableScalableImageContainer {
         scrollableContainer.addMouseWheelListener(mouseWheelMovedHandler);
     }
 
-    public void loadImage(String imagePAth) {
+    public void loadImageViaString(String imagePAth) {
         try {
             image = ImageIO.read(new File(imagePAth));
             setImage(image);
@@ -67,16 +67,14 @@ public class ScrollableScalableImageContainer {
         }
     }
 
-    public void loadBufferedImage(BufferedImage image) {
+    public void setBufferedImage(BufferedImage image) {
         this.image = image;
         setImage(image);
         paintImage();
     }
 
     private void setImage(BufferedImage image) {
-        //  this.image = image;
         lbImage.setIcon(new ImageIcon(image));
-        //  paintImage();
     }
 
     public JScrollPane getContainer() {
