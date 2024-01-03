@@ -24,7 +24,6 @@
 package warehouse.panel.items;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -67,7 +66,13 @@ public class ScrollableScalableImageContainer {
         }
     }
 
-    public void setImage(Image image) {
+    public void loadBufferedImage(BufferedImage image) {
+        this.image = image;
+        setImage(image);
+    }
+
+    private void setImage(BufferedImage image) {
+        //  this.image = image;
         lbImage.setIcon(new ImageIcon(image));
     }
 

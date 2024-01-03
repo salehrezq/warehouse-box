@@ -53,6 +53,7 @@ public class IMGFileChooser implements ActionListener {
 
     public IMGFileChooser() {
         this.imageSelectedListners = new ArrayList<>();
+
     }
 
     public void setParentComponent(Component parent) {
@@ -75,9 +76,9 @@ public class IMGFileChooser implements ActionListener {
         this.imageSelectedListners.add(var);
     }
 
-    public void notifyImageSelected(byte[] photoInBytesvar) {
+    public void notifyImageSelected(BufferedImage bufferedImage) {
         this.imageSelectedListners.forEach((implementer) -> {
-            implementer.imageSelected(photoInBytesvar);
+            implementer.imageSelected(bufferedImage);
         });
     }
 
@@ -101,7 +102,7 @@ public class IMGFileChooser implements ActionListener {
                 ImageIO.write(image, "jpg", baos);
                 baos.flush();
                 photoInBytes = baos.toByteArray();
-                notifyImageSelected(photoInBytes);
+                notifyImageSelected(image);
                 prefs.put(LAST_USED_FOLDER, fileChooser.getSelectedFile().getParent());
             } catch (IOException ex) {
                 Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);

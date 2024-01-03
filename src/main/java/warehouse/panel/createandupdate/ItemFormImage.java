@@ -25,12 +25,6 @@ package warehouse.panel.createandupdate;
 
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,37 +37,46 @@ import warehouse.panel.items.ScrollableScalableImageContainer;
  */
 public class ItemFormImage implements ImageSelectedListner {
 
-    private JPanel panelContainer, panelImage, panelContols;
+    private JPanel panelContainer, panelContols;
     private JButton btnBrowse;
     private JLabel lbImagePreview;
     private ScrollableScalableImageContainer scalableImageContainer;
 
     public ItemFormImage() {
         panelContainer = new JPanel(new BorderLayout());
-        panelImage = new JPanel(new BorderLayout());
-        panelContols = new JPanel();
-        panelContainer.add(panelImage, BorderLayout.CENTER);
-        panelContainer.add(panelContols, BorderLayout.PAGE_END);
         scalableImageContainer = new ScrollableScalableImageContainer();
-        scalableImageContainer.loadImage("C:/ImageTest/pp.jpg");
-        // imagePlace.initComponents();
-        panelImage.add(scalableImageContainer.getContainer(), BorderLayout.CENTER);
-        scalableImageContainer.paintImage();
+        panelContols = new JPanel();
+        btnBrowse = new JButton("Browse...");
+        panelContols.add(btnBrowse);
+        panelContainer.add(scalableImageContainer.getContainer(), BorderLayout.CENTER);
+        panelContainer.add(panelContols, BorderLayout.PAGE_END);
+
+        //  scalableImageContainer.paintImage();
+    }
+
+    public void setFormBtnAndImageContainerResponsivity(IMGFileChooser iMGFileChooserResponsivity) {
+        this.btnBrowse.addActionListener(iMGFileChooserResponsivity);
+        iMGFileChooserResponsivity.addImageSelectedListner(this);
     }
 
     public JScrollPane getScrollableScalableImageContainer() {
         return scalableImageContainer.getContainer();
     }
 
+    public JPanel getFormContainer() {
+        return panelContainer;
+    }
+
     @Override
-    public void imageSelected(byte[] photoInBytes) {
-        ByteArrayInputStream bis = new ByteArrayInputStream(photoInBytes);
-        try {
-            BufferedImage image = ImageIO.read(bis);
-            lbImagePreview.setIcon(new ImageIcon(image));
-        } catch (IOException ex) {
-            Logger.getLogger(ItemFormImage.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void imageSelected(BufferedImage bufferedImage) {
+        //     ByteArrayInputStream bis = new ByteArrayInputStream(bufferedImage);
+        //   try {
+        //      BufferedImage image = ImageIO.read(bis);
+//            lbImagePreview.setIcon(new ImageIcon(bufferedImage));
+        scalableImageContainer.loadBufferedImage(bufferedImage);
+        // } catch (IOException ex) {
+        //      Logger.getLogger(ItemFormImage.class.getName()).log(Level.SEVERE, null, ex);
+        //  }
     }
 
 }

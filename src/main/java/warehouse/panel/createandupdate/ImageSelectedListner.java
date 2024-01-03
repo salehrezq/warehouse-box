@@ -23,11 +23,14 @@
  */
 package warehouse.panel.createandupdate;
 
+import java.awt.image.BufferedImage;
+
 /**
  *
  * @author Saleh
  */
 public interface ImageSelectedListner {
 
-    public void imageSelected(byte[] photoInBytes);
+    // public void imageSelected(byte[] photoInBytes);
+    public void imageSelected(BufferedImage bufferedImage);
 }
