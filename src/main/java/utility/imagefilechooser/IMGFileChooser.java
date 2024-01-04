@@ -36,7 +36,6 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
-import warehouse.panel.createandupdate.ImageFilter;
 
 /**
  *
