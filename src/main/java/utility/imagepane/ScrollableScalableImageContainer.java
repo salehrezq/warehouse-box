@@ -29,8 +29,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -55,16 +53,6 @@ public class ScrollableScalableImageContainer {
         scrollableContainer.setViewportView(lbImage);
         mouseWheelMovedHandler = new MouseWheelMovedHandler();
         scrollableContainer.addMouseWheelListener(mouseWheelMovedHandler);
-    }
-
-    public void loadImageViaString(String imagePAth) {
-        try {
-            image = ImageIO.read(new File(imagePAth));
-            setImage(image);
-            paintImage();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     public void setBufferedImage(BufferedImage image) {
