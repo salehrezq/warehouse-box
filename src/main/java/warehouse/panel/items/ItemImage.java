@@ -25,6 +25,12 @@ package warehouse.panel.items;
 
 import utility.imagepane.ScrollableScalableImageContainer;
 import java.awt.BorderLayout;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 /**
@@ -34,11 +40,23 @@ import javax.swing.JPanel;
 public class ItemImage extends JPanel {
 
     ScrollableScalableImageContainer imagePlace;
+    private BufferedImage image;
 
     public ItemImage() {
         imagePlace = new ScrollableScalableImageContainer();
         this.setLayout(new BorderLayout());
-        imagePlace.loadImageViaString("C:/ImageTest/pp.jpg");
+        loadImage();
+        imagePlace.setBufferedImage(image);
         this.add(imagePlace.getContainer(), BorderLayout.CENTER);
     }
+
+    private BufferedImage loadImage() {
+        try {
+            image = ImageIO.read(new File("C:/ImageTest/pp.jpg"));
+        } catch (IOException ex) {
+            Logger.getLogger(ItemImage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return image;
+    }
+
 }
