@@ -60,9 +60,11 @@ public class ItemForm extends JPanel implements Navigatable {
         panelCards.add(itemFormImage.getFormContainer(), IMAGEPREVIEW);
         cardLayout.show(panelCards, FORMCODENAMESPECS);
         formNavigation = new FormNavigation();
+        formNavigation.setFormLastStep(panelCards.getComponentCount());
         formNavigation.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         add(panelCards, BorderLayout.CENTER);
         add(formNavigation, BorderLayout.PAGE_END);
+
     }
 
     public FormNavigation getFormNavigation() {

@@ -35,10 +35,11 @@ import javax.swing.JPanel;
  */
 public class FormNavigation extends JPanel {
 
-    private JButton btnNext;
-    private JButton btnPrevious;
+    private JButton btnNext, btnPrevious, btnSubmit;
     private ArrayList<Navigatable> navigatables;
     private NavigateButtonsListener navigateButtonsListener;
+    private int formLastStep;
+    private int navigateTracker;
 
     public FormNavigation() {
 
@@ -48,9 +49,17 @@ public class FormNavigation extends JPanel {
         navigateButtonsListener = new NavigateButtonsListener();
         btnNext.addActionListener(navigateButtonsListener);
         btnPrevious.addActionListener(navigateButtonsListener);
+        btnSubmit = new JButton("Submit");
+        btnSubmit.setEnabled(false);
+        btnPrevious.setEnabled(false);
 
         add(btnPrevious);
         add(btnNext);
+        add(btnSubmit);
+    }
+
+    public void setFormLastStep(int formLastStep) {
+        this.formLastStep = formLastStep - 1;
     }
 
     public void addNavigationListner(Navigatable navigatable) {
@@ -75,11 +84,15 @@ public class FormNavigation extends JPanel {
         public void actionPerformed(ActionEvent e) {
             JButton btnNavigate = (JButton) e.getSource();
             if (btnNavigate == btnNext) {
+                navigateTracker++;
                 notifyNext();
             } else if (btnNavigate == btnPrevious) {
+                navigateTracker--;
                 notifyPrevious();
             }
+            btnPrevious.setEnabled(navigateTracker > 0);
+            btnNext.setEnabled(navigateTracker < formLastStep);
+            btnSubmit.setEnabled(navigateTracker == formLastStep);
         }
     }
-
 }
