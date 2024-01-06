@@ -23,10 +23,36 @@
  */
 package warehouse.db;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import warehouse.db.model.Item;
+
 /**
  *
  * @author Saleh
  */
 public class CRUDItems {
-    
+
+    private static Connection con;
+
+    public static int create(Item item) {
+        int insert = 0;
+        String sqlCreateItem = "INSERT INTO items (`name`, `specification`, `unit`, `image`) VALUES (?, ?, ?, ?)";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement createItemsStatement = con.prepareStatement(sqlCreateItem);
+            createItemsStatement.setString(1, item.getName());
+            createItemsStatement.setString(2, item.getSpecification());
+            createItemsStatement.setInt(3, item.getUnit());
+            createItemsStatement.setBytes(4, item.getImage());
+            insert = createItemsStatement.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return insert;
+    }
 }
