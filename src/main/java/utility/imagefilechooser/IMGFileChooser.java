@@ -92,7 +92,7 @@ public class IMGFileChooser implements ActionListener {
             fileChooser.setAcceptAllFileFilterUsed(false);
         }
 
-        int returnedValue = fileChooser.showDialog(parent, "Select employee image");
+        int returnedValue = fileChooser.showDialog(parent, "Select image");
 
         if (returnedValue == JFileChooser.APPROVE_OPTION) {
             try {
