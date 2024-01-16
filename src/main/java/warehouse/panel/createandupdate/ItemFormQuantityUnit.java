@@ -48,7 +48,7 @@ public class ItemFormQuantityUnit extends JPanel implements Collectable {
 
     private JTextField tfQuantityUnitSearch;
     private JLabel lbQuantityUnit;
-    private List list;
+    private ListS list;
     private DeferredDocumentListener docListener;
     private TfQuantityUnitSearchListener tFListener;
     private Set data;
@@ -56,7 +56,7 @@ public class ItemFormQuantityUnit extends JPanel implements Collectable {
     public ItemFormQuantityUnit() {
         setLayout(new MigLayout("center center"));
         data = new HashSet();
-        list = new List();
+        list = new ListS();
         list.setSize(300, 300);
 
         lbQuantityUnit = new JLabel("Search & select");

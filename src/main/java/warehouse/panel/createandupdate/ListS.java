@@ -38,13 +38,13 @@ import warehouse.db.model.QuantityUnit;
  *
  * @author Saleh
  */
-public class List implements ListSelectionListener {
+public class ListS implements ListSelectionListener {
 
     private JList list;
     private DefaultListModel listModel;
     private JScrollPane scrollPane;
 
-    public List() {
+    public ListS() {
         list = new JList();
         list.setCellRenderer(new ListCellQuantityUnitRenderer());
         listModel = new DefaultListModel();
