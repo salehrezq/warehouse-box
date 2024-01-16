@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2023 Saleh.
+ * Copyright 2024 Saleh.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,48 +23,13 @@
  */
 package warehouse.panel.createandupdate;
 
-import java.util.HashSet;
 import java.util.Set;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import net.miginfocom.swing.MigLayout;
 
 /**
  *
  * @author Saleh
  */
-public class ItemFormCodeNameSpecs extends JPanel implements Collectable {
+public interface Collectable {
 
-    private JTextField tfCode, tfName, tfSpecs;
-    private JLabel lbCode, lbName, lbSpecs;
-    private Set data;
-
-    public ItemFormCodeNameSpecs() {
-
-        setLayout(new MigLayout("center center"));
-        data = new HashSet();
-
-        lbCode = new JLabel("code");
-        lbName = new JLabel("Name");
-        lbSpecs = new JLabel("Specs");
-
-        tfCode = new JTextField(40);
-        tfName = new JTextField(40);
-        tfSpecs = new JTextField(40);
-
-        add(lbCode);
-        add(tfCode, "wrap");
-        add(lbName);
-        add(tfName, "wrap");
-        add(lbSpecs);
-        add(tfSpecs);
-    }
-
-    @Override
-    public Set collect() {
-        data.add(tfName.getText());
-        data.add(tfSpecs.getText());
-        return data;
-    }
+    public Set collect();
 }

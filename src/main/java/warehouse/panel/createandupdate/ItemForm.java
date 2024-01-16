@@ -26,6 +26,7 @@ package warehouse.panel.createandupdate;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -45,9 +46,11 @@ public class ItemForm extends JPanel implements Navigatable {
     private ItemFormQuantityUnit itemFormQuantityUnit;
     private ItemFormImage itemFormImage;
     private FormNavigation formNavigation;
+    private ArrayList<Collectable> collectables;
     private BoxLayout boxLayout;
 
     public ItemForm() {
+        collectables = new ArrayList<>();
         setLayout(new BorderLayout());
         cardLayout = new CardLayout();
         panelCards = new JPanel(cardLayout);
@@ -58,8 +61,11 @@ public class ItemForm extends JPanel implements Navigatable {
         panelCards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);
         panelCards.add(itemFormQuantityUnit, QUANTITY_UNIT);
         panelCards.add(itemFormImage.getFormContainer(), IMAGEPREVIEW);
+        collectables.add(itemFormCodeNameSpecs);
+        collectables.add(itemFormQuantityUnit);
+        collectables.add(itemFormImage);
         cardLayout.show(panelCards, FORMCODENAMESPECS);
-        formNavigation = new FormNavigation();
+        formNavigation = new FormNavigation(collectables);
         formNavigation.setFormLastStep(panelCards.getComponentCount());
         formNavigation.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         add(panelCards, BorderLayout.CENTER);

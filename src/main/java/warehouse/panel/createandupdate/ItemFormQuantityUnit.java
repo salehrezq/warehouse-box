@@ -28,6 +28,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -42,17 +44,18 @@ import warehouse.db.model.QuantityUnit;
  *
  * @author Saleh
  */
-public class ItemFormQuantityUnit extends JPanel {
+public class ItemFormQuantityUnit extends JPanel implements Collectable {
 
     private JTextField tfQuantityUnitSearch;
     private JLabel lbQuantityUnit;
     private List list;
     private DeferredDocumentListener docListener;
     private TfQuantityUnitSearchListener tFListener;
+    private Set data;
 
     public ItemFormQuantityUnit() {
         setLayout(new MigLayout("center center"));
-
+        data = new HashSet();
         list = new List();
         list.setSize(300, 300);
 
@@ -86,6 +89,12 @@ public class ItemFormQuantityUnit extends JPanel {
         quantityUnits.forEach(unit -> {
             list.addElement(unit);
         });
+    }
+
+    @Override
+    public Set collect() {
+        data.add(list.getSelectedValue());
+        return data;
     }
 
     private class TfQuantityUnitSearchListener implements ActionListener {

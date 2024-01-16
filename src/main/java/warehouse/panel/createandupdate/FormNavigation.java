@@ -40,16 +40,19 @@ public class FormNavigation extends JPanel {
     private NavigateButtonsListener navigateButtonsListener;
     private int formLastStep;
     private int navigateTracker;
+    private ArrayList<Collectable> collectables;
 
-    public FormNavigation() {
+    public FormNavigation(ArrayList<Collectable> collectables) {
 
+        this.collectables = collectables;
         navigatables = new ArrayList<>();
         btnNext = new JButton("Next>>");
         btnPrevious = new JButton("<<Previous");
+        btnSubmit = new JButton("Submit");
         navigateButtonsListener = new NavigateButtonsListener();
         btnNext.addActionListener(navigateButtonsListener);
         btnPrevious.addActionListener(navigateButtonsListener);
-        btnSubmit = new JButton("Submit");
+        btnSubmit.addActionListener(navigateButtonsListener);
         btnSubmit.setEnabled(false);
         btnPrevious.setEnabled(false);
 
@@ -89,6 +92,10 @@ public class FormNavigation extends JPanel {
             } else if (btnNavigate == btnPrevious) {
                 navigateTracker--;
                 notifyPrevious();
+            } else if (btnNavigate == btnSubmit) {
+                collectables.forEach((c) -> {
+                    System.out.println(c.collect());
+                });
             }
             btnPrevious.setEnabled(navigateTracker > 0);
             btnNext.setEnabled(navigateTracker < formLastStep);

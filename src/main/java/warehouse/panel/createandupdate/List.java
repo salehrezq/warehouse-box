@@ -71,6 +71,10 @@ public class List implements ListSelectionListener {
         list.addListSelectionListener(this);
     }
 
+    public String getSelectedValue() {
+        return list.getSelectedValue().toString();
+    }
+
     public void setSize(int width, int height) {
         scrollPane.setPreferredSize(new Dimension(width, height));
     }
