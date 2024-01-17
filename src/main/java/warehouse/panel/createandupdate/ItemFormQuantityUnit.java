@@ -28,8 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -51,11 +50,11 @@ public class ItemFormQuantityUnit extends JPanel implements Collectable {
     private ListS list;
     private DeferredDocumentListener docListener;
     private TfQuantityUnitSearchListener tFListener;
-    private Set data;
+    private List data;
 
     public ItemFormQuantityUnit() {
         setLayout(new MigLayout("center center"));
-        data = new HashSet();
+        data = new ArrayList();
         list = new ListS();
         list.setSize(300, 300);
 
@@ -92,7 +91,7 @@ public class ItemFormQuantityUnit extends JPanel implements Collectable {
     }
 
     @Override
-    public Set collect() {
+    public List collect() {
         data.add(list.getSelectedValue());
         return data;
     }

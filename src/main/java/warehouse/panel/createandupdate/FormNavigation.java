@@ -26,6 +26,7 @@ package warehouse.panel.createandupdate;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -94,7 +95,16 @@ public class FormNavigation extends JPanel {
                 notifyPrevious();
             } else if (btnNavigate == btnSubmit) {
                 collectables.forEach((c) -> {
-                    System.out.println(c.collect());
+                    if (c instanceof ItemFormCodeNameSpecs) {
+                        List formNameSpecsData = c.collect();
+                        formNameSpecsData.get(0);
+                    }
+                    if (c instanceof ItemFormQuantityUnit) {
+                        List formQuantityData = c.collect();
+                    }
+                    if (c instanceof ItemFormImage) {
+                        List formImageData = c.collect();
+                    }
                 });
             }
             btnPrevious.setEnabled(navigateTracker > 0);

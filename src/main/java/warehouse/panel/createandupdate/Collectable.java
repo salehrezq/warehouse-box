@@ -23,7 +23,7 @@
  */
 package warehouse.panel.createandupdate;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  *
@@ -31,5 +31,5 @@ import java.util.Set;
  */
 public interface Collectable {
 
-    public Set collect();
+    public List collect();
 }

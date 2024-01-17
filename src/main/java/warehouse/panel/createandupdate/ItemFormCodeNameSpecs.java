@@ -23,8 +23,8 @@
  */
 package warehouse.panel.createandupdate;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -38,12 +38,12 @@ public class ItemFormCodeNameSpecs extends JPanel implements Collectable {
 
     private JTextField tfCode, tfName, tfSpecs;
     private JLabel lbCode, lbName, lbSpecs;
-    private Set data;
+    private List data;
 
     public ItemFormCodeNameSpecs() {
 
         setLayout(new MigLayout("center center"));
-        data = new HashSet();
+        data = new ArrayList();
 
         lbCode = new JLabel("code");
         lbName = new JLabel("Name");
@@ -62,7 +62,7 @@ public class ItemFormCodeNameSpecs extends JPanel implements Collectable {
     }
 
     @Override
-    public Set collect() {
+    public List collect() {
         data.add(tfName.getText());
         data.add(tfSpecs.getText());
         return data;

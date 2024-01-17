@@ -27,8 +27,8 @@ import utility.imagefilechooser.IMGFileChooser;
 import utility.imagefilechooser.ImageSelectedListner;
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -46,10 +46,10 @@ public class ItemFormImage implements ImageSelectedListner, Collectable {
     private ScrollableScalableImageContainer scalableImageContainer;
     private IMGFileChooser iMGFileChooser;
     private BufferedImage imageSelected;
-    private Set data;
+    private List data;
 
     public ItemFormImage() {
-        data = new HashSet();
+        data = new ArrayList();
         panelContainer = new JPanel(new BorderLayout());
         scalableImageContainer = new ScrollableScalableImageContainer();
         panelContols = new JPanel();
@@ -77,7 +77,7 @@ public class ItemFormImage implements ImageSelectedListner, Collectable {
     }
 
     @Override
-    public Set collect() {
+    public List collect() {
         data.add(imageSelected);
         return data;
     }
