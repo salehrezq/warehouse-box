@@ -25,10 +25,12 @@ package warehouse.panel.createandupdate;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import warehouse.db.model.Item;
+import warehouse.db.model.QuantityUnit;
 
 /**
  *
@@ -84,6 +86,8 @@ public class FormNavigation extends JPanel {
 
     private class NavigateButtonsListener implements ActionListener {
 
+        Item item;
+
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton btnNavigate = (JButton) e.getSource();
@@ -94,16 +98,18 @@ public class FormNavigation extends JPanel {
                 navigateTracker--;
                 notifyPrevious();
             } else if (btnNavigate == btnSubmit) {
+                item = new Item();
                 collectables.forEach((c) -> {
                     if (c instanceof ItemFormCodeNameSpecs) {
-                        List formNameSpecsData = c.collect();
-                        formNameSpecsData.get(0);
-                    }
-                    if (c instanceof ItemFormQuantityUnit) {
-                        List formQuantityData = c.collect();
-                    }
-                    if (c instanceof ItemFormImage) {
-                        List formImageData = c.collect();
+                        item.setName((String) c.collect().get("name"));
+                        item.setSpecification((String) c.collect().get("specs"));
+                        System.out.println("ItemFormCodeNameSpecs");
+                    } else if (c instanceof ItemFormQuantityUnit) {
+                        QuantityUnit qty = (QuantityUnit) c.collect().get("unit");
+                        System.out.println(qty.getId());
+                    } else if (c instanceof ItemFormImage) {
+                        item.setImage((BufferedImage) c.collect().get("image"));
+                        System.out.println("ItemFormImage");
                     }
                 });
             }

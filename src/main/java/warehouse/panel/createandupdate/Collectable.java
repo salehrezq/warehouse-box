@@ -23,7 +23,7 @@
  */
 package warehouse.panel.createandupdate;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -31,5 +31,5 @@ import java.util.List;
  */
 public interface Collectable {
 
-    public List collect();
+    public Map collect();
 }

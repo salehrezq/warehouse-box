@@ -28,7 +28,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -50,11 +51,11 @@ public class ItemFormQuantityUnit extends JPanel implements Collectable {
     private ListS list;
     private DeferredDocumentListener docListener;
     private TfQuantityUnitSearchListener tFListener;
-    private List data;
+    private Map data;
 
     public ItemFormQuantityUnit() {
         setLayout(new MigLayout("center center"));
-        data = new ArrayList();
+        data = new HashMap<String, String>();
         list = new ListS();
         list.setSize(300, 300);
 
@@ -91,8 +92,8 @@ public class ItemFormQuantityUnit extends JPanel implements Collectable {
     }
 
     @Override
-    public List collect() {
-        data.add(list.getSelectedValue());
+    public Map collect() {
+        data.put("unit", list.getSelectedValue());
         return data;
     }
 

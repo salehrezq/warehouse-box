@@ -23,6 +23,13 @@
  */
 package warehouse.db.model;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+
 /**
  *
  * @author Saleh
@@ -73,5 +80,19 @@ public class Item {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public void setImage(BufferedImage image) {
+        this.image = toBytesArray(image);
+    }
+
+    public byte[] toBytesArray(BufferedImage image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(image, "jpg", baos);
+        } catch (IOException ex) {
+            Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return baos.toByteArray();
     }
 }

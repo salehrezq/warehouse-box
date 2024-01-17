@@ -71,8 +71,8 @@ public class ListS implements ListSelectionListener {
         list.addListSelectionListener(this);
     }
 
-    public String getSelectedValue() {
-        return ((QuantityUnit) list.getSelectedValue()).getUnit();
+    public Object getSelectedValue() {
+        return list.getSelectedValue();
     }
 
     public void setSize(int width, int height) {
