@@ -29,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import warehouse.db.CRUDItems;
 import warehouse.db.model.Item;
 import warehouse.db.model.QuantityUnit;
 
@@ -103,15 +104,14 @@ public class FormNavigation extends JPanel {
                     if (c instanceof ItemFormCodeNameSpecs) {
                         item.setName((String) c.collect().get("name"));
                         item.setSpecification((String) c.collect().get("specs"));
-                        System.out.println("ItemFormCodeNameSpecs");
                     } else if (c instanceof ItemFormQuantityUnit) {
                         QuantityUnit qty = (QuantityUnit) c.collect().get("unit");
-                        System.out.println(qty.getId());
+                        item.setUnit(qty.getId());
                     } else if (c instanceof ItemFormImage) {
                         item.setImage((BufferedImage) c.collect().get("image"));
-                        System.out.println("ItemFormImage");
                     }
                 });
+                CRUDItems.create(item);
             }
             btnPrevious.setEnabled(navigateTracker > 0);
             btnNext.setEnabled(navigateTracker < formLastStep);
