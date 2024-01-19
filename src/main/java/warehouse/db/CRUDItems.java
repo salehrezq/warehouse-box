@@ -25,7 +25,9 @@ package warehouse.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import warehouse.db.model.Item;
@@ -55,4 +57,29 @@ public class CRUDItems {
         }
         return insert;
     }
+
+    public static ArrayList<Item> getAll() {
+
+        ArrayList<Item> items = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM `items` ORDER BY `name` ASC";
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                Item item = new Item();
+                item.setId(result.getInt("id"));
+                item.setName(result.getString("name"));
+                item.setSpecification(result.getString("specification"));
+                item.setImage(result.getBytes("image"));
+                items.add(item);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return items;
+    }
+
 }
