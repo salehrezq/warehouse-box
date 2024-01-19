@@ -37,7 +37,7 @@ import warehouse.db.model.QuantityUnit;
  *
  * @author Saleh
  */
-public class FormNavigation extends JPanel {
+public class FormManagement extends JPanel {
 
     private JButton btnNext, btnPrevious, btnSubmit;
     private ArrayList<Navigatable> navigatables;
@@ -46,7 +46,7 @@ public class FormNavigation extends JPanel {
     private int navigateTracker;
     private ArrayList<Collectable> collectables;
 
-    public FormNavigation(ArrayList<Collectable> collectables) {
+    public FormManagement(ArrayList<Collectable> collectables) {
 
         this.collectables = collectables;
         navigatables = new ArrayList<>();

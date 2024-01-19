@@ -45,7 +45,7 @@ public class ItemForm extends JPanel implements Navigatable {
     private ItemFormCodeNameSpecs itemFormCodeNameSpecs;
     private ItemFormQuantityUnit itemFormQuantityUnit;
     private ItemFormImage itemFormImage;
-    private FormNavigation formNavigation;
+    private FormManagement formManagement;
     private ArrayList<Collectable> collectables;
     private BoxLayout boxLayout;
 
@@ -65,16 +65,16 @@ public class ItemForm extends JPanel implements Navigatable {
         collectables.add(itemFormQuantityUnit);
         collectables.add(itemFormImage);
         cardLayout.show(panelCards, FORMCODENAMESPECS);
-        formNavigation = new FormNavigation(collectables);
-        formNavigation.setFormLastStep(panelCards.getComponentCount());
-        formNavigation.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+        formManagement = new FormManagement(collectables);
+        formManagement.setFormLastStep(panelCards.getComponentCount());
+        formManagement.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         add(panelCards, BorderLayout.CENTER);
-        add(formNavigation, BorderLayout.PAGE_END);
+        add(formManagement, BorderLayout.PAGE_END);
 
     }
 
-    public FormNavigation getFormNavigation() {
-        return this.formNavigation;
+    public FormManagement getFormManagement() {
+        return this.formManagement;
     }
 
     @Override

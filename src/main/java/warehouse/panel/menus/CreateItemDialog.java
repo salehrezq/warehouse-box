@@ -25,7 +25,7 @@ package warehouse.panel.menus;
 
 import java.awt.Frame;
 import javax.swing.JDialog;
-import warehouse.panel.createandupdate.FormNavigation;
+import warehouse.panel.createandupdate.FormManagement;
 import warehouse.panel.createandupdate.ItemForm;
 
 /**
@@ -35,13 +35,13 @@ import warehouse.panel.createandupdate.ItemForm;
 public class CreateItemDialog extends JDialog {
 
     private ItemForm itemForm;
-    private FormNavigation formNavigation;
+    private FormManagement formManagement;
 
     public CreateItemDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         itemForm = new ItemForm();
-        formNavigation = itemForm.getFormNavigation();
-        formNavigation.addNavigationListner(itemForm);
+        formManagement = itemForm.getFormManagement();
+        formManagement.addNavigationListner(itemForm);
         add(itemForm);
         pack();
     }
