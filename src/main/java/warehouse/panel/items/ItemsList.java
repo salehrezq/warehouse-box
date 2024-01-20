@@ -29,12 +29,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import warehouse.db.CreateListener;
 
 /**
  *
  * @author Saleh
  */
-public class ItemsList extends JPanel {
+public class ItemsList extends JPanel implements CreateListener {
 
     private DefaultTableModel model;
     private JTable table;
@@ -61,5 +62,10 @@ public class ItemsList extends JPanel {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void created() {
+        System.out.println("Refresh items to reflect newly created item");
     }
 }
