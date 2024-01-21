@@ -25,11 +25,15 @@ package warehouse.panel.items;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import warehouse.db.CRUDItems;
 import warehouse.db.CreateListener;
+import warehouse.db.model.Item;
 
 /**
  *
@@ -67,5 +71,21 @@ public class ItemsList extends JPanel implements CreateListener {
     @Override
     public void created() {
         System.out.println("Refresh items to reflect newly created item");
+        // Clear the model every time, to append fresh results
+        // and not accumulate on previous results
+        model.setRowCount(0);
+        List<Item> itemsRecords = new ArrayList();
+        itemsRecords = CRUDItems.getAll();
+        Object[] modelRow = new Object[5];
+
+        int size = itemsRecords.size();
+        for (int i = 0; i < size; i++) {
+            Item performance = itemsRecords.get(i);
+            modelRow[0] = performance.getId(); //code
+            modelRow[1] = performance.getName();
+            modelRow[2] = performance.getSpecification();
+            modelRow[3] = performance.getUnit();
+            model.addRow(modelRow);
+        }
     }
 }
