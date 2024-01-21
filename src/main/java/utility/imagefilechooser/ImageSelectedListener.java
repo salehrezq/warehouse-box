@@ -29,7 +29,7 @@ import java.awt.image.BufferedImage;
  *
  * @author Saleh
  */
-public interface ImageSelectedListner {
+public interface ImageSelectedListener {
 
     // public void imageSelected(byte[] photoInBytes);
     public void imageSelected(BufferedImage bufferedImage);

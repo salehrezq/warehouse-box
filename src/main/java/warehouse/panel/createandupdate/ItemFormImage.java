@@ -24,7 +24,6 @@
 package warehouse.panel.createandupdate;
 
 import utility.imagefilechooser.IMGFileChooser;
-import utility.imagefilechooser.ImageSelectedListner;
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -33,13 +32,14 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import utility.imagepane.ScrollableScalableImageContainer;
+import utility.imagefilechooser.ImageSelectedListener;
 
 /**
  *
  * @author Saleh
  */
 @SuppressWarnings("LeakingThisInConstructor")
-public class ItemFormImage implements ImageSelectedListner, Collectable {
+public class ItemFormImage implements ImageSelectedListener, Collectable {
 
     private JPanel panelContainer, panelContols;
     private JButton btnBrowse;
@@ -59,7 +59,7 @@ public class ItemFormImage implements ImageSelectedListner, Collectable {
         panelContainer.add(panelContols, BorderLayout.PAGE_END);
         iMGFileChooser = new IMGFileChooser();
         btnBrowse.addActionListener(iMGFileChooser);
-        iMGFileChooser.addImageSelectedListner(this);
+        iMGFileChooser.addImageSelectedListener(this);
     }
 
     public JScrollPane getScrollableScalableImageContainer() {

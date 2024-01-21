@@ -53,7 +53,7 @@ public class MainRun {
         frame.setVisible(true);
     }
 
-    private void linkFunctionality() {
+    private void linkActionToListeners() {
         menu.getFormManagement().addCreateListener(tabs.getCreateListenerItemsList());
     }
 
@@ -63,7 +63,7 @@ public class MainRun {
         javax.swing.SwingUtilities.invokeLater(() -> {
             MainRun mainRun = new MainRun();
             mainRun.createAndShowGUI();
-            mainRun.linkFunctionality();
+            mainRun.linkActionToListeners();
         });
     }
 }

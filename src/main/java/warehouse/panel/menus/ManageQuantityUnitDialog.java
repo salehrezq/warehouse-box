@@ -57,7 +57,7 @@ public class ManageQuantityUnitDialog extends Dialog {
     private List list;
     private JList listUnits;
     private QuantityUnit quantityUnit;
-    private ActionListener btnListner;
+    private ActionListener btnListener;
     private ManageQuantityUnitDialog quantityUnitDialog;
 
     public ManageQuantityUnitDialog(Frame owner, String title, boolean modal) {
@@ -65,16 +65,16 @@ public class ManageQuantityUnitDialog extends Dialog {
         quantityUnitDialog = ManageQuantityUnitDialog.this;
         mig = new MigLayout("center center");
         panel = new JPanel(mig);
-        btnListner = new BtnListener();
+        btnListener = new BtnListener();
         lbQuantityUnit = new JLabel("Quantity unit:");
         tfQuantityUnit = new JTextField(15);
         btnSubmit = new JButton("Submit");
-        btnSubmit.addActionListener(btnListner);
+        btnSubmit.addActionListener(btnListener);
         list = new List();
         listUnits = list.getJList();
         listUnits.addMouseListener(new MouseJListHandler());
         btnClose = new JButton("Close X");
-        btnClose.addActionListener(btnListner);
+        btnClose.addActionListener(btnListener);
 
         panel.add(lbQuantityUnit);
         panel.add(tfQuantityUnit);

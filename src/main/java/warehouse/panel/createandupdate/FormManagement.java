@@ -72,7 +72,7 @@ public class FormManagement extends JPanel {
         this.formLastStep = formLastStep - 1;
     }
 
-    public void addNavigationListner(Navigatable navigatable) {
+    public void addNavigationListener(Navigatable navigatable) {
         this.navigatables.add(navigatable);
     }
 

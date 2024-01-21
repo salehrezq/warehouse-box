@@ -41,7 +41,7 @@ public class CreateItemDialog extends JDialog {
         super(owner, title, modal);
         itemForm = new ItemForm();
         formManagement = itemForm.getFormManagement();
-        formManagement.addNavigationListner(itemForm);
+        formManagement.addNavigationListener(itemForm);
         add(itemForm);
         pack();
     }

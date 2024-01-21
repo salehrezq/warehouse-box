@@ -49,10 +49,10 @@ public class IMGFileChooser implements ActionListener {
     private BufferedImage image;
     private Preferences prefs;
     private static final String LAST_USED_FOLDER = "lastusedfolder";
-    private java.util.List<ImageSelectedListner> imageSelectedListners;
+    private java.util.List<ImageSelectedListener> imageSelectedListeners;
 
     public IMGFileChooser() {
-        this.imageSelectedListners = new ArrayList<>();
+        this.imageSelectedListeners = new ArrayList<>();
 
     }
 
@@ -72,12 +72,12 @@ public class IMGFileChooser implements ActionListener {
         return image;
     }
 
-    public void addImageSelectedListner(ImageSelectedListner var) {
-        this.imageSelectedListners.add(var);
+    public void addImageSelectedListener(ImageSelectedListener var) {
+        this.imageSelectedListeners.add(var);
     }
 
     public void notifyImageSelected(BufferedImage bufferedImage) {
-        this.imageSelectedListners.forEach((implementer) -> {
+        this.imageSelectedListeners.forEach((implementer) -> {
             implementer.imageSelected(bufferedImage);
         });
     }
