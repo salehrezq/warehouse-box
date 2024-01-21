@@ -46,4 +46,8 @@ public class CreateItemDialog extends JDialog {
         pack();
     }
 
+    public FormManagement getFormManagement() {
+        return formManagement;
+    }
+
 }

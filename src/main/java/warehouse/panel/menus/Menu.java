@@ -29,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import warehouse.panel.createandupdate.FormManagement;
 
 /**
  *
@@ -72,6 +73,10 @@ public class Menu {
 
     public void setTarget(JFrame target) {
         this.target = target;
+    }
+
+    public FormManagement getFormManagement() {
+        return createItemDialog.getFormManagement();
     }
 
     private class MenuItemsListener implements ActionListener {

@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import warehouse.db.CreateListener;
 import warehouse.panel.items.ItemsTab;
 
 /**
@@ -50,4 +51,7 @@ public class Tabs extends JPanel {
 
     }
 
+    public CreateListener getCreateListenerItemsList() {
+        return itemsTab.getCreateListenerItemsList();
+    }
 }

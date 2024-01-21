@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import warehouse.db.CRUDItems;
+import warehouse.db.CreateListener;
 import warehouse.db.model.Item;
 import warehouse.db.model.QuantityUnit;
 
@@ -45,11 +46,13 @@ public class FormManagement extends JPanel {
     private int formLastStep;
     private int navigateTracker;
     private ArrayList<Collectable> collectables;
+    private ArrayList<CreateListener> createListeners;
 
     public FormManagement(ArrayList<Collectable> collectables) {
 
         this.collectables = collectables;
         navigatables = new ArrayList<>();
+        createListeners = new ArrayList<>();
         btnNext = new JButton("Next>>");
         btnPrevious = new JButton("<<Previous");
         btnSubmit = new JButton("Submit");
@@ -85,6 +88,16 @@ public class FormManagement extends JPanel {
         });
     }
 
+    public void addCreateListener(CreateListener createListener) {
+        this.createListeners.add(createListener);
+    }
+
+    public void notifyCreated() {
+        this.createListeners.forEach((createListener) -> {
+            createListener.created();
+        });
+    }
+
     private class NavigateButtonsListener implements ActionListener {
 
         Item item;
@@ -111,7 +124,9 @@ public class FormManagement extends JPanel {
                         item.setImage((BufferedImage) c.collect().get("image"));
                     }
                 });
-                CRUDItems.create(item);
+                if (CRUDItems.create(item) > 0) {
+                    notifyCreated();
+                }
             }
             btnPrevious.setEnabled(navigateTracker > 0);
             btnNext.setEnabled(navigateTracker < formLastStep);
