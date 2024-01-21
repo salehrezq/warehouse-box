@@ -74,6 +74,24 @@ public class CRUDQuantityUnit {
         return quantityUnits;
     }
 
+    public static QuantityUnit getById(int id) {
+        QuantityUnit quantityUnit = null;
+        String sql = "SELECT * FROM quantity_unit WHERE id = " + id;
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sql);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                quantityUnit = new QuantityUnit();
+                quantityUnit.setId(result.getInt("id"));
+                quantityUnit.setUnit(result.getString("unit"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDQuantityUnit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return quantityUnit;
+    }
+
     public static boolean isExist(QuantityUnit unit) {
         boolean exist = false;
         String sqlIsUnitExist = "SELECT EXISTS(SELECT * FROM quantity_unit WHERE `unit` = ?) AS is_unit_exist";

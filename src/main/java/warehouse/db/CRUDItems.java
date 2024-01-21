@@ -73,6 +73,7 @@ public class CRUDItems {
                 item.setId(result.getInt("id"));
                 item.setName(result.getString("name"));
                 item.setSpecification(result.getString("specification"));
+                item.setUnit(result.getInt("unit"));
                 item.setImage(result.getBytes("image"));
                 items.add(item);
             }

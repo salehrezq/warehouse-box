@@ -32,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDItems;
+import warehouse.db.CRUDQuantityUnit;
 import warehouse.db.CreateListener;
 import warehouse.db.model.Item;
 
@@ -80,11 +81,11 @@ public class ItemsList extends JPanel implements CreateListener {
 
         int size = itemsRecords.size();
         for (int i = 0; i < size; i++) {
-            Item performance = itemsRecords.get(i);
-            modelRow[0] = performance.getId(); //code
-            modelRow[1] = performance.getName();
-            modelRow[2] = performance.getSpecification();
-            modelRow[3] = performance.getUnit();
+            Item item = itemsRecords.get(i);
+            modelRow[0] = item.getId(); //code
+            modelRow[1] = item.getName();
+            modelRow[2] = item.getSpecification();
+            modelRow[3] = CRUDQuantityUnit.getById(item.getUnit()).getUnit();
             model.addRow(modelRow);
         }
     }
