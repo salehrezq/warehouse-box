@@ -67,6 +67,7 @@ public class ItemsList extends JPanel implements CreateListener {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
+        created();
     }
 
     @Override
