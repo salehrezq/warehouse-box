@@ -27,9 +27,12 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDItems;
 import warehouse.db.CRUDQuantityUnit;
@@ -45,6 +48,7 @@ public class ItemsList extends JPanel implements CreateListener {
     private DefaultTableModel model;
     private JTable table;
     private JScrollPane scrollTable;
+    private Integer selectedModelRow;
 
     public ItemsList() {
 
@@ -58,6 +62,7 @@ public class ItemsList extends JPanel implements CreateListener {
             }
         };
         table = new JTable(model);
+        table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
         table.setFillsViewportHeight(true);
         table.getColumnModel().getColumn(0).setPreferredWidth(1);
@@ -88,6 +93,30 @@ public class ItemsList extends JPanel implements CreateListener {
             modelRow[2] = item.getSpecification();
             modelRow[3] = CRUDQuantityUnit.getById(item.getUnit()).getUnit();
             model.addRow(modelRow);
+        }
+    }
+
+    private class RowSelectionListener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+                DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) e.getSource();
+                if (selectionModel.isSelectionEmpty()) {
+                    // Table row de-selection occurred
+                    System.out.println("row de-selected");
+                } else {
+                    System.out.println("row selected");
+                    int viewRow = table.getSelectedRow();
+                    if (viewRow > -1) {
+                        int itemIdColumnIndex = 0;
+                        selectedModelRow = table.convertRowIndexToModel(viewRow);
+                        Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
+                        Integer itemId = Integer.parseInt(itemIdObject.toString());
+                        System.out.println("Item ID " + itemId);
+                    }
+                }
+            }
         }
     }
 }
