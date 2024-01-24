@@ -32,12 +32,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import warehouse.db.CRUDItems;
 
 /**
  *
  * @author Saleh
  */
-public class ItemImage extends JPanel {
+public class ItemImage extends JPanel implements RowIdSelectionListener {
 
     ScrollableScalableImageContainer imagePlace;
     private BufferedImage image;
@@ -57,6 +58,12 @@ public class ItemImage extends JPanel {
             Logger.getLogger(ItemImage.class.getName()).log(Level.SEVERE, null, ex);
         }
         return image;
+    }
+
+    @Override
+    public void selectedRowId(int rowId) {
+        byte[] image = CRUDItems.getImage(rowId);
+        imagePlace.setBufferedImage(CRUDItems.toBufferedImage(image));
     }
 
 }

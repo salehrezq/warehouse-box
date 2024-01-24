@@ -23,6 +23,9 @@
  */
 package warehouse.db;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,6 +33,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import warehouse.db.model.Item;
 
 /**
@@ -81,6 +85,36 @@ public class CRUDItems {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
         }
         return items;
+    }
+
+    public static byte[] getImage(int id) {
+        byte[] image = null;
+        try {
+            String sql = "SELECT image FROM `items` WHERE id =" + id + " LIMIT 1";
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                image = result.getBytes("image");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return image;
+    }
+
+    public static BufferedImage toBufferedImage(byte[] photo) {
+        BufferedImage img = null;
+        if (photo != null) {
+            ByteArrayInputStream bis = new ByteArrayInputStream(photo);
+            try {
+                img = ImageIO.read(bis);
+            } catch (IOException ex) {
+                Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return img;
     }
 
 }

@@ -52,6 +52,8 @@ public class ItemsTab extends JPanel {
         itemsList = new ItemsList();
         itemsImages = new ItemImage();
 
+        itemsList.addRowIdSelectionListener(itemsImages);
+
         // Add the scroll panes to a split pane.
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitSearchAndItemsListPane.setDividerSize(5);

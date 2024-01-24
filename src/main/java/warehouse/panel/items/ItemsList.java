@@ -49,11 +49,12 @@ public class ItemsList extends JPanel implements CreateListener {
     private JTable table;
     private JScrollPane scrollTable;
     private Integer selectedModelRow;
+    private ArrayList<RowIdSelectionListener> rowIdSelectionListeners;
 
     public ItemsList() {
 
         setLayout(new BorderLayout());
-
+        rowIdSelectionListeners = new ArrayList<>();
         model = new DefaultTableModel(new String[]{"Code", "Name", "Specification", "Unit"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -96,6 +97,16 @@ public class ItemsList extends JPanel implements CreateListener {
         }
     }
 
+    public void addRowIdSelectionListener(RowIdSelectionListener var) {
+        this.rowIdSelectionListeners.add(var);
+    }
+
+    public void notifySelectedRowId(int rowId) {
+        this.rowIdSelectionListeners.forEach((item) -> {
+            item.selectedRowId(rowId);
+        });
+    }
+
     private class RowSelectionListener implements ListSelectionListener {
 
         @Override
@@ -109,11 +120,14 @@ public class ItemsList extends JPanel implements CreateListener {
                     System.out.println("row selected");
                     int viewRow = table.getSelectedRow();
                     if (viewRow > -1) {
+
                         int itemIdColumnIndex = 0;
+
                         selectedModelRow = table.convertRowIndexToModel(viewRow);
                         Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
                         Integer itemId = Integer.parseInt(itemIdObject.toString());
                         System.out.println("Item ID " + itemId);
+                        notifySelectedRowId(itemId);
                     }
                 }
             }
