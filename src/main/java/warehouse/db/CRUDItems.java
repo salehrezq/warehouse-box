@@ -46,13 +46,13 @@ public class CRUDItems {
 
     public static int create(Item item) {
         int insert = 0;
-        String sqlCreateItem = "INSERT INTO items (`name`, `specification`, `unit`, `image`) VALUES (?, ?, ?, ?)";
+        String sqlCreateItem = "INSERT INTO items (`name`, `specification`, `unit_id`, `image`) VALUES (?, ?, ?, ?)";
         con = Connect.getConnection();
         try {
             PreparedStatement createItemsStatement = con.prepareStatement(sqlCreateItem);
             createItemsStatement.setString(1, item.getName());
             createItemsStatement.setString(2, item.getSpecification());
-            createItemsStatement.setInt(3, item.getUnit());
+            createItemsStatement.setInt(3, item.getUnitId());
             createItemsStatement.setBytes(4, item.getImage());
             insert = createItemsStatement.executeUpdate();
             con.commit();
@@ -77,7 +77,7 @@ public class CRUDItems {
                 item.setId(result.getInt("id"));
                 item.setName(result.getString("name"));
                 item.setSpecification(result.getString("specification"));
-                item.setUnit(result.getInt("unit"));
+                item.setUnitId(result.getInt("unit_id"));
                 item.setImage(result.getBytes("image"));
                 items.add(item);
             }

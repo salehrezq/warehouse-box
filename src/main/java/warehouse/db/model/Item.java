@@ -39,7 +39,7 @@ public class Item {
     private int id;
     private String name;
     private String specification;
-    private int unit; // foreign key
+    private int unitId; // foreign key
     private byte[] image;
 
     public int getId() {
@@ -66,12 +66,12 @@ public class Item {
         this.specification = specification;
     }
 
-    public int getUnit() {
-        return unit;
+    public int getUnitId() {
+        return unitId;
     }
 
-    public void setUnit(int unit) {
-        this.unit = unit;
+    public void setUnitId(int unitId) {
+        this.unitId = unitId;
     }
 
     public byte[] getImage() {

@@ -119,7 +119,7 @@ public class FormManagement extends JPanel {
                         item.setSpecification((String) c.collect().get("specs"));
                     } else if (c instanceof ItemFormQuantityUnit) {
                         QuantityUnit qty = (QuantityUnit) c.collect().get("unit");
-                        item.setUnit(qty.getId());
+                        item.setUnitId(qty.getId());
                     } else if (c instanceof ItemFormImage) {
                         item.setImage((BufferedImage) c.collect().get("image"));
                     }
