@@ -23,14 +23,15 @@
  */
 package utility.imagefilechooser;
 
-import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import warehouse.db.model.Image;
 
 /**
  *
  * @author Saleh
  */
-public interface ImageSelectedListener {
+public interface ImagesSelectedListener {
 
-    // public void imageSelected(byte[] photoInBytes);
-    public void imageSelected(BufferedImage bufferedImage);
+    // public void imagesSelected(byte[] photoInBytes);
+    public void imagesSelected(ArrayList<Image> images);
 }

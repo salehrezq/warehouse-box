@@ -27,7 +27,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +35,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+import warehouse.db.model.Image;
 
 /**
  *
@@ -45,40 +45,25 @@ public class IMGFileChooser implements ActionListener {
 
     private Component parent;
     private JFileChooser fileChooser;
-    private byte[] photoInBytes;
-    private BufferedImage image;
     private Preferences prefs;
     private static final String LAST_USED_FOLDER = "lastusedfolder";
-    private java.util.List<ImageSelectedListener> imageSelectedListeners;
+    private java.util.List<ImagesSelectedListener> imagesSelectedListeners;
 
     public IMGFileChooser() {
-        this.imageSelectedListeners = new ArrayList<>();
-
+        this.imagesSelectedListeners = new ArrayList<>();
     }
 
     public void setParentComponent(Component parent) {
         this.parent = parent;
     }
 
-    public byte[] getPhotoInBytes() {
-        return photoInBytes;
+    public void addImageSelectedListener(ImagesSelectedListener imagesSelectedListener) {
+        this.imagesSelectedListeners.add(imagesSelectedListener);
     }
 
-    public void setPhotoInBytes(byte[] aPhotoInBytes) {
-        photoInBytes = aPhotoInBytes;
-    }
-
-    public BufferedImage getBufferedImage() {
-        return image;
-    }
-
-    public void addImageSelectedListener(ImageSelectedListener var) {
-        this.imageSelectedListeners.add(var);
-    }
-
-    public void notifyImageSelected(BufferedImage bufferedImage) {
-        this.imageSelectedListeners.forEach((implementer) -> {
-            implementer.imageSelected(bufferedImage);
+    public void notifyImagesSelected(ArrayList<Image> bufferedImages) {
+        this.imagesSelectedListeners.forEach((imagesSelectedListener) -> {
+            imagesSelectedListener.imagesSelected(bufferedImages);
         });
     }
 
@@ -88,6 +73,7 @@ public class IMGFileChooser implements ActionListener {
         if (fileChooser == null) {
             prefs = Preferences.userRoot().node(getClass().getName());
             fileChooser = new JFileChooser(prefs.get(LAST_USED_FOLDER, new File(".").getAbsolutePath()));
+            fileChooser.setMultiSelectionEnabled(true);
             fileChooser.addChoosableFileFilter(new ImageFilter());
             fileChooser.setAcceptAllFileFilterUsed(false);
         }
@@ -96,13 +82,21 @@ public class IMGFileChooser implements ActionListener {
 
         if (returnedValue == JFileChooser.APPROVE_OPTION) {
             try {
-                File f = fileChooser.getSelectedFile();
-                image = ImageIO.read(f);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ImageIO.write(image, "jpg", baos);
-                baos.flush();
-                photoInBytes = baos.toByteArray();
-                notifyImageSelected(image);
+                File[] files = fileChooser.getSelectedFiles();
+                ArrayList<Image> images = new ArrayList<>();
+                int length = files.length;
+                for (int i = 0; i < length; i++) {
+                    BufferedImage bufferedImage = ImageIO.read(files[i]);
+                    Image image = new Image();
+                    if (i == 0) {
+                        // Set the first selected image as the default one
+                        image.setDefaultImage(true);
+                    }
+                    image.setOrder(i + 1);
+                    image.setBufferedImage(bufferedImage);
+                    images.add(image);
+                }
+                notifyImagesSelected(images);
                 prefs.put(LAST_USED_FOLDER, fileChooser.getSelectedFile().getParent());
             } catch (IOException ex) {
                 Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);

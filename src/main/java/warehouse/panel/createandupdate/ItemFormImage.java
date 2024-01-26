@@ -26,20 +26,22 @@ package warehouse.panel.createandupdate;
 import utility.imagefilechooser.IMGFileChooser;
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import utility.imagepane.ScrollableScalableImageContainer;
-import utility.imagefilechooser.ImageSelectedListener;
+import utility.imagefilechooser.ImagesSelectedListener;
+import warehouse.db.model.Image;
 
 /**
  *
  * @author Saleh
  */
 @SuppressWarnings("LeakingThisInConstructor")
-public class ItemFormImage implements ImageSelectedListener, Collectable {
+public class ItemFormImage implements ImagesSelectedListener, Collectable {
 
     private JPanel panelContainer, panelContols;
     private JButton btnBrowse;
@@ -71,9 +73,12 @@ public class ItemFormImage implements ImageSelectedListener, Collectable {
     }
 
     @Override
-    public void imageSelected(BufferedImage bufferedImage) {
-        scalableImageContainer.setBufferedImage(bufferedImage);
-        imageSelected = bufferedImage;
+    public void imagesSelected(ArrayList<Image> images) {
+        for (Image image : images) {
+            if (image.isDefaultImage()) {
+                scalableImageContainer.setBufferedImage(image.getBufferedImage());
+            }
+        }
     }
 
     @Override

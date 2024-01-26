@@ -23,6 +23,7 @@
  */
 package warehouse.db.model;
 
+import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 
 /**
@@ -33,10 +34,14 @@ public class Image {
 
     private int id;
     private int itemId;
-    private byte[] image;
+    private byte[] imageBytes;
     private int order;
     private boolean defaultImage;
     private BigDecimal scale;
+    /**
+     * Helper to the program, not mapped in the database.
+     */
+    private BufferedImage bufferedImage;
 
     public int getId() {
         return id;
@@ -54,12 +59,12 @@ public class Image {
         this.itemId = itemId;
     }
 
-    public byte[] getImage() {
-        return image;
+    public byte[] getImageBytes() {
+        return imageBytes;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImageBytes(byte[] image) {
+        this.imageBytes = image;
     }
 
     public int getOrder() {
@@ -84,6 +89,14 @@ public class Image {
 
     public void setScale(BigDecimal scale) {
         this.scale = scale;
+    }
+
+    public BufferedImage getBufferedImage() {
+        return bufferedImage;
+    }
+
+    public void setBufferedImage(BufferedImage bufferedImage) {
+        this.bufferedImage = bufferedImage;
     }
 
 }
