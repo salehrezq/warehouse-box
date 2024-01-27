@@ -32,6 +32,7 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import utility.imagepane.ScrollableScalableImageContainer;
 import utility.imagefilechooser.ImagesSelectedListener;
 import warehouse.db.model.Image;
@@ -49,6 +50,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
     private IMGFileChooser iMGFileChooser;
     private BufferedImage imageSelected;
     private Map data;
+    private JSpinner spinner;
 
     public ItemFormImage() {
         data = new HashMap<String, BufferedImage>();
@@ -56,7 +58,9 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
         scalableImageContainer = new ScrollableScalableImageContainer();
         panelContols = new JPanel();
         btnBrowse = new JButton("Browse...");
+        spinner = new JSpinner();
         panelContols.add(btnBrowse);
+        panelContols.add(spinner);
         panelContainer.add(scalableImageContainer.getContainer(), BorderLayout.CENTER);
         panelContainer.add(panelContols, BorderLayout.PAGE_END);
         iMGFileChooser = new IMGFileChooser();
