@@ -32,7 +32,7 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
+import utility.horizontalspinner.SpinnerH;
 import utility.imagepane.ScrollableScalableImageContainer;
 import utility.imagefilechooser.ImagesSelectedListener;
 import warehouse.db.model.Image;
@@ -50,7 +50,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
     private IMGFileChooser iMGFileChooser;
     private BufferedImage imageSelected;
     private Map data;
-    private JSpinner spinner;
+    private SpinnerH spinner;
 
     public ItemFormImage() {
         data = new HashMap<String, BufferedImage>();
@@ -58,9 +58,10 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
         scalableImageContainer = new ScrollableScalableImageContainer();
         panelContols = new JPanel();
         btnBrowse = new JButton("Browse...");
-        spinner = new JSpinner();
+        spinner = new SpinnerH();
+        spinner.setModel(0, 0, 0, 1);
         panelContols.add(btnBrowse);
-        panelContols.add(spinner);
+        panelContols.add(spinner.getSpinner());
         panelContainer.add(scalableImageContainer.getContainer(), BorderLayout.CENTER);
         panelContainer.add(panelContols, BorderLayout.PAGE_END);
         iMGFileChooser = new IMGFileChooser();
@@ -78,11 +79,15 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
 
     @Override
     public void imagesSelected(ArrayList<Image> images) {
+        int spinnerSize = images.size();
+        int spinnerValue = 0;
         for (Image image : images) {
             if (image.isDefaultImage()) {
                 scalableImageContainer.setBufferedImage(image.getBufferedImage());
+                spinnerValue = image.getOrder();
             }
         }
+        spinner.setModel(spinnerValue, 1, spinnerSize, 1);
     }
 
     @Override
