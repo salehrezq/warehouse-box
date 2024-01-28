@@ -32,6 +32,10 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import utility.horizontalspinner.Renderer;
 import utility.horizontalspinner.SpinnerH;
 import utility.imagepane.ScrollableScalableImageContainer;
 import utility.imagefilechooser.ImagesSelectedListener;
@@ -51,6 +55,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
     private BufferedImage imageSelected;
     private Map data;
     private SpinnerH spinnerH;
+    private HashMap<Integer, Image> imagesMap;
 
     public ItemFormImage() {
         data = new HashMap<String, BufferedImage>();
@@ -60,6 +65,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
         btnBrowse = new JButton("Browse...");
         spinnerH = new SpinnerH();
         spinnerH.setModel(0, 0, 0, 1);
+        spinnerH.getSpinner().addChangeListener(new JSpinnerHandler());
         panelContols.add(btnBrowse);
         panelContols.add(spinnerH.getSpinner());
         panelContainer.add(scalableImageContainer.getContainer(), BorderLayout.CENTER);
@@ -79,9 +85,11 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
 
     @Override
     public void imagesSelected(ArrayList<Image> images) {
+        imagesMap = new HashMap<>();
         int spinnerSize = images.size();
         int spinnerValue = 0;
         for (Image image : images) {
+            imagesMap.put(image.getOrder(), image);
             if (image.isDefaultImage()) {
                 scalableImageContainer.setBufferedImage(image.getBufferedImage());
                 spinnerValue = image.getOrder();
@@ -96,4 +104,15 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
         return data;
     }
 
+    private class JSpinnerHandler implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            JSpinner spinner = (JSpinner) e.getSource();
+            Renderer renderer = (Renderer) spinner.getValue();
+            int spinnerValue = renderer.getValue();
+            Image image = imagesMap.get(spinnerValue);
+            scalableImageContainer.setBufferedImage(image.getBufferedImage());
+        }
+    }
 }
