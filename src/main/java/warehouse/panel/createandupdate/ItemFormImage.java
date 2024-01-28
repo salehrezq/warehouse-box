@@ -50,7 +50,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
     private IMGFileChooser iMGFileChooser;
     private BufferedImage imageSelected;
     private Map data;
-    private SpinnerH spinner;
+    private SpinnerH spinnerH;
 
     public ItemFormImage() {
         data = new HashMap<String, BufferedImage>();
@@ -58,10 +58,10 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
         scalableImageContainer = new ScrollableScalableImageContainer();
         panelContols = new JPanel();
         btnBrowse = new JButton("Browse...");
-        spinner = new SpinnerH();
-        spinner.setModel(0, 0, 0, 1);
+        spinnerH = new SpinnerH();
+        spinnerH.setModel(0, 0, 0, 1);
         panelContols.add(btnBrowse);
-        panelContols.add(spinner.getSpinner());
+        panelContols.add(spinnerH.getSpinner());
         panelContainer.add(scalableImageContainer.getContainer(), BorderLayout.CENTER);
         panelContainer.add(panelContols, BorderLayout.PAGE_END);
         iMGFileChooser = new IMGFileChooser();
@@ -87,7 +87,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
                 spinnerValue = image.getOrder();
             }
         }
-        spinner.setModel(spinnerValue, 1, spinnerSize, 1);
+        spinnerH.setModel(spinnerValue, 1, spinnerSize, 1);
     }
 
     @Override
