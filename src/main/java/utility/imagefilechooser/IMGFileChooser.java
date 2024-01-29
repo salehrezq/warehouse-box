@@ -102,5 +102,13 @@ public class IMGFileChooser implements ActionListener {
                 Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        clearFileChooserCurrentSelection();
+    }
+
+    private void clearFileChooserCurrentSelection() {
+        File f = new File("");
+        File[] filesf = {f};
+        fileChooser.setSelectedFile(f);
+        fileChooser.setSelectedFiles(filesf);
     }
 }
