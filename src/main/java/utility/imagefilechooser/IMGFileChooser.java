@@ -27,6 +27,8 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import warehouse.db.model.Image;
 
 /**
@@ -48,9 +51,12 @@ public class IMGFileChooser implements ActionListener {
     private Preferences prefs;
     private static final String LAST_USED_FOLDER = "lastusedfolder";
     private java.util.List<ImagesSelectedListener> imagesSelectedListeners;
+    private static int maxSelectedFiles = 5;
+    private File[] limitedFilesSelection;
 
     public IMGFileChooser() {
         this.imagesSelectedListeners = new ArrayList<>();
+        limitedFilesSelection = new File[maxSelectedFiles];
     }
 
     public void setParentComponent(Component parent) {
@@ -76,10 +82,9 @@ public class IMGFileChooser implements ActionListener {
             fileChooser.setMultiSelectionEnabled(true);
             fileChooser.addChoosableFileFilter(new ImageFilter());
             fileChooser.setAcceptAllFileFilterUsed(false);
+            fileChooser.addPropertyChangeListener(new FileChooserHandler());
         }
-
         int returnedValue = fileChooser.showDialog(parent, "Select image");
-
         if (returnedValue == JFileChooser.APPROVE_OPTION) {
             try {
                 File[] files = fileChooser.getSelectedFiles();
@@ -110,5 +115,23 @@ public class IMGFileChooser implements ActionListener {
         File[] filesf = {f};
         fileChooser.setSelectedFile(f);
         fileChooser.setSelectedFiles(filesf);
+    }
+
+    private class FileChooserHandler implements PropertyChangeListener {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            File[] selectedFiles = fileChooser.getSelectedFiles();
+            int currentSelectionLength = selectedFiles.length;
+            if (currentSelectionLength == maxSelectedFiles) {
+                for (int i = 0; i < maxSelectedFiles; i++) {
+                    limitedFilesSelection[i] = selectedFiles[i];
+                }
+            } else if (currentSelectionLength > maxSelectedFiles) {
+                fileChooser.setSelectedFiles(limitedFilesSelection);
+                JOptionPane.showMessageDialog(fileChooser, "Only 5 selected files allowed.", "File chooser",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }
