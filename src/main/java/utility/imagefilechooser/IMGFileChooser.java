@@ -82,7 +82,7 @@ public class IMGFileChooser implements ActionListener {
             fileChooser.setMultiSelectionEnabled(true);
             fileChooser.addChoosableFileFilter(new ImageFilter());
             fileChooser.setAcceptAllFileFilterUsed(false);
-            fileChooser.addPropertyChangeListener(new FileChooserHandler());
+            fileChooser.addPropertyChangeListener(new FileChooserSelectionLimitHandler());
         }
         int returnedValue = fileChooser.showDialog(parent, "Select image");
         if (returnedValue == JFileChooser.APPROVE_OPTION) {
@@ -117,7 +117,7 @@ public class IMGFileChooser implements ActionListener {
         fileChooser.setSelectedFiles(filesf);
     }
 
-    private class FileChooserHandler implements PropertyChangeListener {
+    private class FileChooserSelectionLimitHandler implements PropertyChangeListener {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
