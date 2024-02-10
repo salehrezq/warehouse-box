@@ -97,6 +97,10 @@ public class ItemFormQuantityUnit extends JPanel implements Collectable {
         return data;
     }
 
+    public void clearFields() {
+        tfQuantityUnitSearch.setText("");
+    }
+
     private class TfQuantityUnitSearchListener implements ActionListener {
 
         @Override

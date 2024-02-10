@@ -62,6 +62,10 @@ public class ScrollableScalableImageContainer {
     }
 
     private void setImage(BufferedImage image) {
+        if (image == null) {
+            lbImage.setIcon(null);
+            return;
+        }
         lbImage.setIcon(new ImageIcon(image));
     }
 
@@ -70,6 +74,10 @@ public class ScrollableScalableImageContainer {
     }
 
     public void paintImage() {
+        if (image == null) {
+            setImage(null);
+            return;
+        }
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
         BufferedImage bi = new BufferedImage(

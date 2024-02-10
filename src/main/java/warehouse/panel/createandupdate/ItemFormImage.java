@@ -116,6 +116,11 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
         btnBrowse.setEnabled(true);
     }
 
+    public void clearFields() {
+        scalableImageContainer.setBufferedImage(null);
+        spinnerH.setModel(0, 0, 0, 1);
+    }
+
     private class JSpinnerHandler implements ChangeListener {
 
         @Override

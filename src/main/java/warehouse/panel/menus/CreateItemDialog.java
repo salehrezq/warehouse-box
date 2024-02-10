@@ -24,6 +24,8 @@
 package warehouse.panel.menus;
 
 import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
 import warehouse.panel.createandupdate.FormManagement;
 import warehouse.panel.createandupdate.ItemForm;
@@ -44,10 +46,19 @@ public class CreateItemDialog extends JDialog {
         formManagement.addNavigationListener(itemForm);
         add(itemForm);
         pack();
+        this.addWindowListener(new ClosingWindowHandler());
     }
 
     public FormManagement getFormManagement() {
         return formManagement;
+    }
+
+    private class ClosingWindowHandler extends WindowAdapter {
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+            itemForm.clearFields();
+        }
     }
 
 }

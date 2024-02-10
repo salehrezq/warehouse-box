@@ -70,7 +70,6 @@ public class ItemForm extends JPanel implements Navigatable {
         formManagement.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         add(panelCards, BorderLayout.CENTER);
         add(formManagement, BorderLayout.PAGE_END);
-
     }
 
     public FormManagement getFormManagement() {
@@ -85,6 +84,12 @@ public class ItemForm extends JPanel implements Navigatable {
     @Override
     public void previous() {
         cardLayout.previous(panelCards);
+    }
+
+    public void clearFields() {
+        itemFormCodeNameSpecs.clearFields();
+        itemFormQuantityUnit.clearFields();
+        itemFormImage.clearFields();
     }
 
 }

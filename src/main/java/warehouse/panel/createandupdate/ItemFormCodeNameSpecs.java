@@ -67,4 +67,10 @@ public class ItemFormCodeNameSpecs extends JPanel implements Collectable {
         data.put("specs", tfSpecs.getText());
         return data;
     }
+
+    public void clearFields() {
+        tfCode.setText("");
+        tfName.setText("");
+        tfSpecs.setText("");
+    }
 }
