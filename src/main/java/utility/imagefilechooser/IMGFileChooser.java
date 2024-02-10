@@ -150,9 +150,7 @@ public class IMGFileChooser implements ActionListener {
                 int currentAndIncrementedSelectionLengths = currentSelectionLength + incrementedFilesSelecionLength;
                 if (currentAndIncrementedSelectionLengths == maxSelectedFiles) {
                     limitedFilesSelection = new File[currentSelectionLength];
-                    for (int i = 0; i < currentSelectionLength; i++) {
-                        limitedFilesSelection[i] = selectedFiles[i];
-                    }
+                    System.arraycopy(selectedFiles, 0, limitedFilesSelection, 0, currentSelectionLength);
                 } else if (currentAndIncrementedSelectionLengths > maxSelectedFiles) {
                     fileChooser.setSelectedFiles(limitedFilesSelection);
                     JOptionPane.showMessageDialog(fileChooser, "Only 5 selected files allowed.", "File chooser",
