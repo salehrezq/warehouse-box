@@ -37,6 +37,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import utility.horizontalspinner.Renderer;
 import utility.horizontalspinner.SpinnerH;
+import utility.imagefilechooser.FilesSelectionLimitListener;
 import utility.imagepane.ScrollableScalableImageContainer;
 import utility.imagefilechooser.ImagesSelectedListener;
 import warehouse.db.model.Image;
@@ -46,7 +47,7 @@ import warehouse.db.model.Image;
  * @author Saleh
  */
 @SuppressWarnings("LeakingThisInConstructor")
-public class ItemFormImage implements ImagesSelectedListener, Collectable {
+public class ItemFormImage implements ImagesSelectedListener, Collectable, FilesSelectionLimitListener {
 
     private JPanel panelContainer, panelContols;
     private JButton btnBrowse;
@@ -73,6 +74,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
         iMGFileChooser = new IMGFileChooser();
         btnBrowse.addActionListener(iMGFileChooser);
         iMGFileChooser.addImageSelectedListener(this);
+        iMGFileChooser.addFilesSelectionLimitListener(this);
     }
 
     public JScrollPane getScrollableScalableImageContainer() {
@@ -102,6 +104,16 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable {
     public Map collect() {
         data.put("image", imageSelected);
         return data;
+    }
+
+    @Override
+    public void limitReached() {
+        btnBrowse.setEnabled(false);
+    }
+
+    @Override
+    public void limitReset() {
+        btnBrowse.setEnabled(true);
     }
 
     private class JSpinnerHandler implements ChangeListener {
