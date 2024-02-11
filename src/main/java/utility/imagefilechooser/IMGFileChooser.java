@@ -107,31 +107,37 @@ public class IMGFileChooser implements ActionListener {
         }
         int returnedValue = fileChooser.showDialog(parent, "Select image");
         if (returnedValue == JFileChooser.APPROVE_OPTION) {
+            File[] files = fileChooser.getSelectedFiles();
+            int length = files.length;
+            incrementedFilesSelecionLength += length;
+            if (incrementedFilesSelecionLength >= maxSelectedFiles) {
+                notifyFilesSelectionLimitReached();
+            }
+            imagesSelectedByUser = processSelectedImages(imagesSelectedByUser, length, files);
+            System.out.println("selected images from file chooser " + imagesSelectedByUser.size());
+            notifyImagesSelected(imagesSelectedByUser);
+            prefs.put(LAST_USED_FOLDER, fileChooser.getSelectedFile().getParent());
+        }
+        clearFileChooserCurrentSelection();
+    }
+
+    private ArrayList<Image> processSelectedImages(ArrayList<Image> images, int length, File[] files) {
+        for (int i = 0; i < length; i++) {
             try {
-                File[] files = fileChooser.getSelectedFiles();
-                int length = files.length;
-                incrementedFilesSelecionLength += length;
-                if (incrementedFilesSelecionLength >= maxSelectedFiles) {
-                    notifyFilesSelectionLimitReached();
+                BufferedImage bufferedImage = ImageIO.read(files[i]);
+                Image image = new Image();
+                if (i == 0) {
+                    // Set the first selected image as the default one
+                    image.setDefaultImage(true);
                 }
-                for (int i = 0; i < length; i++) {
-                    BufferedImage bufferedImage = ImageIO.read(files[i]);
-                    Image image = new Image();
-                    if (i == 0) {
-                        // Set the first selected image as the default one
-                        image.setDefaultImage(true);
-                    }
-                    image.setOrder(i + 1);
-                    image.setBufferedImage(bufferedImage);
-                    imagesSelectedByUser.add(image);
-                }
-                notifyImagesSelected(imagesSelectedByUser);
-                prefs.put(LAST_USED_FOLDER, fileChooser.getSelectedFile().getParent());
+                image.setOrder(i + 1);
+                image.setBufferedImage(bufferedImage);
+                images.add(image);
             } catch (IOException ex) {
                 Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        clearFileChooserCurrentSelection();
+        return images;
     }
 
     private void clearFileChooserCurrentSelection() {
