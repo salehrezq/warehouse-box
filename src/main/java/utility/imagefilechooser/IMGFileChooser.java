@@ -56,8 +56,10 @@ public class IMGFileChooser implements ActionListener {
     private static int maxSelectedFiles = 5;
     private File[] limitedFilesSelection;
     private int incrementedFilesSelecionLength;
+    private ArrayList<Image> imagesSelectedByUser;
 
     public IMGFileChooser() {
+        imagesSelectedByUser = new ArrayList<>();
         this.imagesSelectedListeners = new ArrayList<>();
         filesSelectionLimitListeners = new ArrayList<>();
     }
@@ -107,7 +109,6 @@ public class IMGFileChooser implements ActionListener {
         if (returnedValue == JFileChooser.APPROVE_OPTION) {
             try {
                 File[] files = fileChooser.getSelectedFiles();
-                ArrayList<Image> images = new ArrayList<>();
                 int length = files.length;
                 incrementedFilesSelecionLength += length;
                 if (incrementedFilesSelecionLength >= maxSelectedFiles) {
@@ -122,9 +123,9 @@ public class IMGFileChooser implements ActionListener {
                     }
                     image.setOrder(i + 1);
                     image.setBufferedImage(bufferedImage);
-                    images.add(image);
+                    imagesSelectedByUser.add(image);
                 }
-                notifyImagesSelected(images);
+                notifyImagesSelected(imagesSelectedByUser);
                 prefs.put(LAST_USED_FOLDER, fileChooser.getSelectedFile().getParent());
             } catch (IOException ex) {
                 Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);

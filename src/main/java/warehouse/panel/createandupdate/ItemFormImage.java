@@ -60,6 +60,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
 
     public ItemFormImage() {
         data = new HashMap<String, BufferedImage>();
+        imagesMap = new HashMap<>();
         panelContainer = new JPanel(new BorderLayout());
         scalableImageContainer = new ScrollableScalableImageContainer();
         panelContols = new JPanel();
@@ -87,7 +88,6 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
 
     @Override
     public void imagesSelected(ArrayList<Image> images) {
-        imagesMap = new HashMap<>();
         int spinnerSize = images.size();
         int spinnerValue = 0;
         for (Image image : images) {
