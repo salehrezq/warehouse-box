@@ -55,7 +55,7 @@ public class IMGFileChooser implements ActionListener {
     private List<FilesSelectionLimitListener> filesSelectionLimitListeners;
     private static int maxSelectedFiles = 5;
     private File[] limitedFilesSelection;
-    private int incrementedFilesSelecionLength;
+    private int incrementedFilesSelecionLength, previouseincrementedFilesSelecionLength;
     private ArrayList<Image> imagesSelectedByUser;
 
     public IMGFileChooser() {
@@ -113,15 +113,26 @@ public class IMGFileChooser implements ActionListener {
             if (incrementedFilesSelecionLength >= maxSelectedFiles) {
                 notifyFilesSelectionLimitReached();
             }
-            imagesSelectedByUser = processSelectedImages(imagesSelectedByUser, length, files);
-            System.out.println("selected images from file chooser " + imagesSelectedByUser.size());
+            imagesSelectedByUser = processSelectedImages(imagesSelectedByUser, files);
+//            System.out.println("selected images from file chooser " + imagesSelectedByUser.size());
             notifyImagesSelected(imagesSelectedByUser);
             prefs.put(LAST_USED_FOLDER, fileChooser.getSelectedFile().getParent());
         }
         clearFileChooserCurrentSelection();
     }
 
-    private ArrayList<Image> processSelectedImages(ArrayList<Image> images, int length, File[] files) {
+    private ArrayList<Image> processSelectedImages(ArrayList<Image> images, File[] files) {
+        /**
+         * You have to make account for set order to adjust more order number
+         * keep note of length increment.
+         *
+         * Later you will account for image remove
+         */
+        int preserveLoop = 0;
+        int length = files.length;
+        System.out.println("files length " + length);
+        System.out.println("lastValue " + previouseincrementedFilesSelecionLength);
+        //
         for (int i = 0; i < length; i++) {
             try {
                 BufferedImage bufferedImage = ImageIO.read(files[i]);
@@ -130,13 +141,21 @@ public class IMGFileChooser implements ActionListener {
                     // Set the first selected image as the default one
                     image.setDefaultImage(true);
                 }
-                image.setOrder(i + 1);
+                preserveLoop = i;
+                i += previouseincrementedFilesSelecionLength;
+                int imageorder = i + 1;
+                System.out.println("imageorder " + imageorder);
+                image.setOrder(imageorder);
+                i = preserveLoop;
                 image.setBufferedImage(bufferedImage);
                 images.add(image);
             } catch (IOException ex) {
                 Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        previouseincrementedFilesSelecionLength = incrementedFilesSelecionLength;
+        System.out.println("next order " + previouseincrementedFilesSelecionLength + 1);
+        System.out.println("--------------------------");
         return images;
     }
 

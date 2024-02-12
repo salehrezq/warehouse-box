@@ -89,6 +89,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
     @Override
     public void imagesSelected(ArrayList<Image> images) {
         int spinnerSize = images.size();
+        //  System.out.println("spinnerSize " + spinnerSize);
         int spinnerValue = 0;
         for (Image image : images) {
             imagesMap.put(image.getOrder(), image);
@@ -97,6 +98,9 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
                 spinnerValue = image.getOrder();
             }
         }
+        // System.out.println("selected images size " + imagesMap.size());
+        // System.out.println("spinnerValue " + spinnerValue);
+        // System.out.println("---------------------");
         spinnerH.setModel(spinnerValue, 1, spinnerSize, 1);
     }
 
