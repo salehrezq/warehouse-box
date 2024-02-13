@@ -103,7 +103,9 @@ public class IMGFileChooser implements ActionListener {
             fileChooser.setMultiSelectionEnabled(true);
             fileChooser.addChoosableFileFilter(new ImageFilter());
             fileChooser.setAcceptAllFileFilterUsed(false);
-            fileChooser.addPropertyChangeListener(new FileChooserSelectionLimitHandler());
+            fileChooser.addPropertyChangeListener(
+                    JFileChooser.SELECTED_FILES_CHANGED_PROPERTY,
+                    new FileChooserSelectionLimitHandler());
         }
         int returnedValue = fileChooser.showDialog(parent, "Select image");
         if (returnedValue == JFileChooser.APPROVE_OPTION) {
@@ -178,18 +180,16 @@ public class IMGFileChooser implements ActionListener {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-            if (evt.getPropertyName().contentEquals("SelectedFilesChangedProperty")) {
-                File[] selectedFiles = fileChooser.getSelectedFiles();
-                int currentSelectionLength = selectedFiles.length;
-                int currentAndIncrementedSelectionLengths = currentSelectionLength + incrementedFilesSelecionLength;
-                if (currentAndIncrementedSelectionLengths == maxSelectedFiles) {
-                    limitedFilesSelection = new File[currentSelectionLength];
-                    System.arraycopy(selectedFiles, 0, limitedFilesSelection, 0, currentSelectionLength);
-                } else if (currentAndIncrementedSelectionLengths > maxSelectedFiles) {
-                    fileChooser.setSelectedFiles(limitedFilesSelection);
-                    JOptionPane.showMessageDialog(fileChooser, "Only 5 selected files allowed.", "File chooser",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+            File[] selectedFiles = fileChooser.getSelectedFiles();
+            int currentSelectionLength = selectedFiles.length;
+            int currentAndIncrementedSelectionLengths = currentSelectionLength + incrementedFilesSelecionLength;
+            if (currentAndIncrementedSelectionLengths == maxSelectedFiles) {
+                limitedFilesSelection = new File[currentSelectionLength];
+                System.arraycopy(selectedFiles, 0, limitedFilesSelection, 0, currentSelectionLength);
+            } else if (currentAndIncrementedSelectionLengths > maxSelectedFiles) {
+                fileChooser.setSelectedFiles(limitedFilesSelection);
+                JOptionPane.showMessageDialog(fileChooser, "Only 5 selected files allowed.", "File chooser",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
