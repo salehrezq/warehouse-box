@@ -137,10 +137,6 @@ public class IMGFileChooser implements ActionListener {
             try {
                 BufferedImage bufferedImage = ImageIO.read(files[i]);
                 Image image = new Image();
-                if (i == 0) {
-                    // Set the first selected image as the default one
-                    image.setDefaultImage(true);
-                }
                 preserveLoop = i;
                 i += previouseincrementedFilesSelecionLength;
                 int imageorder = i + 1;
@@ -149,6 +145,7 @@ public class IMGFileChooser implements ActionListener {
                 i = preserveLoop;
                 image.setBufferedImage(bufferedImage);
                 images.add(image);
+                images = swapDefaultImage(images, imageorder);
             } catch (IOException ex) {
                 Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -156,6 +153,17 @@ public class IMGFileChooser implements ActionListener {
         previouseincrementedFilesSelecionLength = incrementedFilesSelecionLength;
         System.out.println("next order " + previouseincrementedFilesSelecionLength + 1);
         System.out.println("--------------------------");
+        return images;
+    }
+
+    private ArrayList<Image> swapDefaultImage(ArrayList<Image> images, int imageOrder) {
+        for (Image image : images) {
+            if (image.getOrder() != imageOrder) {
+                image.setDefaultImage(false);
+            } else {
+                image.setDefaultImage(true);
+            }
+        }
         return images;
     }
 
