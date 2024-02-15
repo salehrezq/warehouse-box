@@ -115,6 +115,8 @@ public class IMGFileChooser implements ActionListener {
         if (returnedValue == JFileChooser.APPROVE_OPTION) {
             // Selection process already happened in PropertyChangeListener
             int length = filesChosenByUser.size();
+            // Keep track of count of files selection
+            // through multiple files chooser opens
             incrementedFilesSelecionLength += length;
             if (incrementedFilesSelecionLength >= maxSelectedFiles) {
                 notifyFilesSelectionLimitReached();
@@ -133,7 +135,6 @@ public class IMGFileChooser implements ActionListener {
          *
          * Later you will account for image remove
          */
-        int preserveLoop = 0;
         int length = files.length;
         System.out.println("files length " + length);
         System.out.println("lastValue " + previouseincrementedFilesSelecionLength);
@@ -142,16 +143,13 @@ public class IMGFileChooser implements ActionListener {
             try {
                 BufferedImage bufferedImage = ImageIO.read(files[i]);
                 Image image = new Image();
-                preserveLoop = i;
-                i += previouseincrementedFilesSelecionLength;
-                int imageorder = i + 1;
-                System.out.println("imageorder " + imageorder);
-                image.setOrder(imageorder);
-                i = preserveLoop;
+                int imageOrder = i + previouseincrementedFilesSelecionLength + 1;
+                System.out.println("imageorder " + imageOrder);
+                image.setOrder(imageOrder);
                 image.setBufferedImage(bufferedImage);
                 images.add(image);
                 // Swap default image; maintain last selected image to be default image
-                images.forEach(item -> item.setDefaultImage((item.getOrder() == imageorder)));
+                images.forEach(item -> item.setDefaultImage((item.getOrder() == imageOrder)));
             } catch (IOException ex) {
                 Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);
             }
