@@ -57,7 +57,7 @@ public class IMGFileChooser implements ActionListener {
     private List<FilesSelectionLimitListener> filesSelectionLimitListeners;
     private static int maxSelectedFiles = 5;
     private File[] limitedFilesSelection;
-    private int incrementedFilesSelecionLength, previouseincrementedFilesSelecionLength;
+    private int incrementedFilesSelecionLength, previousIncrementedFilesSelecionLength;
     private ArrayList<Image> imagesSelectedByUser;
     private List<File> filesChosenByUser;
 
@@ -137,13 +137,14 @@ public class IMGFileChooser implements ActionListener {
          */
         int length = files.length;
         System.out.println("files length " + length);
-        System.out.println("lastValue " + previouseincrementedFilesSelecionLength);
+        System.out.println("lastValue " + previousIncrementedFilesSelecionLength);
         //
         for (int i = 0; i < length; i++) {
             try {
                 BufferedImage bufferedImage = ImageIO.read(files[i]);
                 Image image = new Image();
-                int imageOrder = i + previouseincrementedFilesSelecionLength + 1;
+                // Maintain image order throgh different file chooser opens
+                int imageOrder = i + previousIncrementedFilesSelecionLength + 1;
                 System.out.println("imageorder " + imageOrder);
                 image.setOrder(imageOrder);
                 image.setBufferedImage(bufferedImage);
@@ -154,8 +155,9 @@ public class IMGFileChooser implements ActionListener {
                 Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        previouseincrementedFilesSelecionLength = incrementedFilesSelecionLength;
-        System.out.println("next order " + previouseincrementedFilesSelecionLength + 1);
+        // Here to record the files selection length of the previous file chooser open
+        previousIncrementedFilesSelecionLength = incrementedFilesSelecionLength;
+        System.out.println("next order " + previousIncrementedFilesSelecionLength + 1);
         System.out.println("--------------------------");
         return images;
     }
