@@ -32,6 +32,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,9 +59,11 @@ public class IMGFileChooser implements ActionListener {
     private File[] limitedFilesSelection;
     private int incrementedFilesSelecionLength, previouseincrementedFilesSelecionLength;
     private ArrayList<Image> imagesSelectedByUser;
+    private List<File> filesChosenByUser;
 
     public IMGFileChooser() {
         imagesSelectedByUser = new ArrayList<>();
+        filesChosenByUser = new ArrayList<>();
         this.imagesSelectedListeners = new ArrayList<>();
         filesSelectionLimitListeners = new ArrayList<>();
     }
@@ -109,14 +113,13 @@ public class IMGFileChooser implements ActionListener {
         }
         int returnedValue = fileChooser.showDialog(parent, "Select image");
         if (returnedValue == JFileChooser.APPROVE_OPTION) {
-            File[] files = fileChooser.getSelectedFiles();
-            int length = files.length;
+            // Selection process already happened in PropertyChangeListener
+            int length = filesChosenByUser.size();
             incrementedFilesSelecionLength += length;
             if (incrementedFilesSelecionLength >= maxSelectedFiles) {
                 notifyFilesSelectionLimitReached();
             }
-            imagesSelectedByUser = processSelectedImages(imagesSelectedByUser, files);
-//            System.out.println("selected images from file chooser " + imagesSelectedByUser.size());
+            imagesSelectedByUser = processSelectedImages(imagesSelectedByUser, filesChosenByUser.toArray(File[]::new));
             notifyImagesSelected(imagesSelectedByUser);
             prefs.put(LAST_USED_FOLDER, fileChooser.getSelectedFile().getParent());
         }
@@ -181,6 +184,31 @@ public class IMGFileChooser implements ActionListener {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             File[] selectedFiles = fileChooser.getSelectedFiles();
+            /**
+             * Ensure order of selection. Ensure that files added in the order
+             * they were selected
+             */
+            List<File> selected = Arrays.asList(selectedFiles);
+            Iterator<File> chosenIterator = filesChosenByUser.iterator();
+            while (chosenIterator.hasNext()) {
+                if (!selected.contains(chosenIterator.next())) {
+                    chosenIterator.remove();
+                }
+            }
+            for (File file : selected) {
+                if (!filesChosenByUser.contains(file)) {
+                    filesChosenByUser.add(file);
+                }
+            }
+            /**
+             * Maintains the file selection length limit. If the new selection
+             * exceeds the limit, it prevents that by excluding that file, while
+             * keeping the already selected files selected. Also it notifies the
+             * user with a pop up message telling the limit.
+             *
+             * Note: the limit is cumulative such that multiple file chooser
+             * opens are accounted.
+             */
             int currentSelectionLength = selectedFiles.length;
             int currentAndIncrementedSelectionLengths = currentSelectionLength + incrementedFilesSelecionLength;
             if (currentAndIncrementedSelectionLengths == maxSelectedFiles) {
