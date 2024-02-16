@@ -129,11 +129,13 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
 
         @Override
         public void stateChanged(ChangeEvent e) {
-            JSpinner spinner = (JSpinner) e.getSource();
-            Renderer renderer = (Renderer) spinner.getValue();
-            int spinnerValue = renderer.getValue();
-            Image image = imagesMap.get(spinnerValue);
-            scalableImageContainer.setBufferedImage(image.getBufferedImage());
+            if (!imagesMap.isEmpty()) {
+                JSpinner spinner = (JSpinner) e.getSource();
+                Renderer renderer = (Renderer) spinner.getValue();
+                int spinnerValue = renderer.getValue();
+                Image image = imagesMap.get(spinnerValue);
+                scalableImageContainer.setBufferedImage(image.getBufferedImage());
+            }
         }
     }
 }
