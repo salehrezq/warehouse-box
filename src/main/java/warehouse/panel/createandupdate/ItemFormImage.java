@@ -137,6 +137,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
     }
 
     public void clearFields() {
+        imagesMap.clear();
         scalableImageContainer.setBufferedImage(null);
         spinnerH.setModel(0, 0, 0, 1);
     }
