@@ -25,11 +25,16 @@ package warehouse.panel.createandupdate;
 
 import utility.imagefilechooser.IMGFileChooser;
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -51,6 +56,8 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
 
     private JPanel panelContainer, panelContols;
     private JButton btnBrowse;
+    private JLabel btnRemove;
+    private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
     private ScrollableScalableImageContainer scalableImageContainer;
     private IMGFileChooser iMGFileChooser;
     private BufferedImage imageSelected;
@@ -68,8 +75,17 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
         spinnerH = new SpinnerH();
         spinnerH.setModel(0, 0, 0, 1);
         spinnerH.getSpinner().addChangeListener(new JSpinnerHandler());
+        imageIconRemoveNormal = new ImageIcon(getClass().getResource("/images/remove-icon/remove-normal.png"));
+        imageIconRemoveHover = new ImageIcon(getClass().getResource("/images/remove-icon/remove-hover.png"));
+        imageIconRemovePress = new ImageIcon(getClass().getResource("/images/remove-icon/remove-press.png"));
+        btnRemove = new JLabel();
+        btnRemove.addMouseListener(new MouseEventsHandler());
+        btnRemove.setOpaque(false);
+        btnRemove.setIcon(imageIconRemoveNormal);
         panelContols.add(btnBrowse);
         panelContols.add(spinnerH.getSpinner());
+        panelContols.add(Box.createHorizontalStrut(4));
+        panelContols.add(btnRemove);
         panelContainer.add(scalableImageContainer.getContainer(), BorderLayout.CENTER);
         panelContainer.add(panelContols, BorderLayout.PAGE_END);
         iMGFileChooser = new IMGFileChooser();
@@ -138,4 +154,33 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
             }
         }
     }
+
+    private class MouseEventsHandler extends MouseAdapter {
+
+        private boolean hovered = false;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            btnRemove.setIcon(imageIconRemovePress);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            btnRemove.setIcon((hovered) ? imageIconRemoveHover : imageIconRemoveNormal);
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            hovered = true;
+            btnRemove.setIcon(imageIconRemoveHover);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            hovered = false;
+            btnRemove.setIcon(imageIconRemoveNormal);
+        }
+
+    }
+
 }
