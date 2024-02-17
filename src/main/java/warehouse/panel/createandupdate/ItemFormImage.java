@@ -64,6 +64,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
     private Map data;
     private SpinnerH spinnerH;
     private HashMap<Integer, Image> imagesMap;
+    private int spinnerValueOnSpinning;
 
     public ItemFormImage() {
         data = new HashMap<String, BufferedImage>();
@@ -112,6 +113,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
             if (image.isDefaultImage()) {
                 scalableImageContainer.setBufferedImage(image.getBufferedImage());
                 spinnerValue = image.getOrder();
+                spinnerValueOnSpinning = spinnerValue;
             }
         }
         // System.out.println("selected images size " + imagesMap.size());
@@ -137,6 +139,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
     }
 
     public void clearFields() {
+        spinnerValueOnSpinning = 0;
         imagesMap.clear();
         scalableImageContainer.setBufferedImage(null);
         spinnerH.setModel(0, 0, 0, 1);
@@ -149,8 +152,8 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
             if (!imagesMap.isEmpty()) {
                 JSpinner spinner = (JSpinner) e.getSource();
                 Renderer renderer = (Renderer) spinner.getValue();
-                int spinnerValue = renderer.getValue();
-                Image image = imagesMap.get(spinnerValue);
+                spinnerValueOnSpinning = renderer.getValue();
+                Image image = imagesMap.get(spinnerValueOnSpinning);
                 scalableImageContainer.setBufferedImage(image.getBufferedImage());
             }
         }
@@ -159,6 +162,11 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
     private class MouseEventsHandler extends MouseAdapter {
 
         private boolean hovered = false;
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            System.out.println("Photo in spinner selection " + spinnerValueOnSpinning);
+        }
 
         @Override
         public void mousePressed(MouseEvent e) {
