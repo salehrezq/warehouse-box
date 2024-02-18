@@ -165,7 +165,49 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            System.out.println("Photo in spinner selection " + spinnerValueOnSpinning);
+            int sizeBeforRemoval = imagesMap.size();
+
+            if (sizeBeforRemoval > 1) {
+                Image removedImage = imagesMap.remove(spinnerValueOnSpinning);
+                int removedImageOrder = removedImage.getOrder();
+                // Case where removing
+                if (removedImageOrder < sizeBeforRemoval) {
+                    for (int i = removedImageOrder + 1; i <= sizeBeforRemoval; i++) {
+                        Image image = imagesMap.remove(i);
+                        int shiftedImageOrder = image.getOrder() - 1;
+                        image.setOrder(shiftedImageOrder);
+                        imagesMap.put(shiftedImageOrder, image);
+                    }
+                    if (removedImage.isDefaultImage()) {
+                        Image image = imagesMap.get(1);
+                        image.setDefaultImage(true);
+                    }
+                    int sizeAfterRemoval = imagesMap.size();
+                    Image replacingImage = imagesMap.get(removedImageOrder);
+                    spinnerValueOnSpinning = replacingImage.getOrder();
+                    spinnerH.setModel(spinnerValueOnSpinning, 1, sizeAfterRemoval, 1);
+                    scalableImageContainer.setBufferedImage(replacingImage.getBufferedImage());
+                    // Removing from the end of the hashmap
+                } else if (removedImageOrder == sizeBeforRemoval) {
+                    if (sizeBeforRemoval > 1) {
+                        if (removedImage.isDefaultImage()) {
+                            Image image = imagesMap.get(1);
+                            image.setDefaultImage(true);
+                        }
+                        int sizeAfterRemoval = imagesMap.size();
+                        Image replacingImage = imagesMap.get(sizeAfterRemoval);
+                        spinnerValueOnSpinning = replacingImage.getOrder();
+                        spinnerH.setModel(spinnerValueOnSpinning, 1, sizeAfterRemoval, 1);
+                        scalableImageContainer.setBufferedImage(replacingImage.getBufferedImage());
+                    }
+                }
+            } else if (sizeBeforRemoval == 1) {
+                imagesMap.remove(spinnerValueOnSpinning);
+                spinnerValueOnSpinning = 0;
+                spinnerH.setModel(spinnerValueOnSpinning, 0, 0, 1);
+                scalableImageContainer.setBufferedImage(null);
+            }
+            System.out.println("HashMap size " + imagesMap.size());
         }
 
         @Override
