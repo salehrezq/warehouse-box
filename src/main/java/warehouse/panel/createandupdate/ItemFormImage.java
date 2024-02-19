@@ -179,14 +179,18 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
         @Override
         public void mouseClicked(MouseEvent e) {
             int sizeBeforRemoval = imagesMap.size();
-
+            int sizeAfterRemoval = sizeBeforRemoval - 1;
+            // Check that there are more than one image in the HashMap collection.
             if (sizeBeforRemoval > 1) {
                 Image removedImage = imagesMap.remove(spinnerValueOnSpinning);
                 int removedImageOrder = removedImage.getOrder();
                 /**
-                 * Removing an image which has any position other than the end
-                 * of the HashMap. So that we need to shift all the items that
-                 * come after that position to fill the gab.
+                 * Check that the removed image has any position other than the
+                 * end of the HashMap collection. Removing an image which has
+                 * any position other than the end of the HashMap collection. So
+                 * that we need to recalculate the positions (images orders) to
+                 * shift all the images that come in terms of their positions
+                 * after the removed image to fill the gab.
                  */
                 if (removedImageOrder < sizeBeforRemoval) {
                     for (int i = removedImageOrder + 1; i <= sizeBeforRemoval; i++) {
@@ -199,27 +203,30 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
                         Image image = imagesMap.get(1);
                         image.setDefaultImage(true);
                     }
-                    int sizeAfterRemoval = imagesMap.size();
+                    /**
+                     * Display the image that comes after the removed image in
+                     * terms of its position. After shifting the images to fill
+                     * the gab of the removed image, now use the position of the
+                     * removed image to position for display the image replacing
+                     * the removed image.
+                     */
                     Image replacingImage = imagesMap.get(removedImageOrder);
                     spinnerValueOnSpinning = replacingImage.getOrder();
                     spinnerH.setModel(spinnerValueOnSpinning, 1, sizeAfterRemoval, 1);
                     scalableImageContainer.setBufferedImage(replacingImage.getBufferedImage());
                     /**
-                     * Removing from the end of the HashMap. So that no need to
-                     * shift the images because there will be no gab.
+                     * Removing from the end of the HashMap collection. So that
+                     * no need to shift the images because there will be no gab.
                      */
                 } else if (removedImageOrder == sizeBeforRemoval) {
-                    if (sizeBeforRemoval > 1) {
-                        if (removedImage.isDefaultImage()) {
-                            Image image = imagesMap.get(1);
-                            image.setDefaultImage(true);
-                        }
-                        int sizeAfterRemoval = imagesMap.size();
-                        Image replacingImage = imagesMap.get(sizeAfterRemoval);
-                        spinnerValueOnSpinning = replacingImage.getOrder();
-                        spinnerH.setModel(spinnerValueOnSpinning, 1, sizeAfterRemoval, 1);
-                        scalableImageContainer.setBufferedImage(replacingImage.getBufferedImage());
+                    if (removedImage.isDefaultImage()) {
+                        Image image = imagesMap.get(1);
+                        image.setDefaultImage(true);
                     }
+                    Image replacingImage = imagesMap.get(sizeAfterRemoval);
+                    spinnerValueOnSpinning = replacingImage.getOrder();
+                    spinnerH.setModel(spinnerValueOnSpinning, 1, sizeAfterRemoval, 1);
+                    scalableImageContainer.setBufferedImage(replacingImage.getBufferedImage());
                 }
                 /**
                  * Remove the last available image. No gab, and so no shifting
