@@ -42,12 +42,15 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import warehouse.db.model.Image;
+import warehouse.panel.createandupdate.ImageRemovedListener;
 
 /**
  *
  * @author Saleh
  */
-public class IMGFileChooser implements ActionListener {
+public class IMGFileChooser implements
+        ActionListener,
+        ImageRemovedListener {
 
     private Component parent;
     private JFileChooser fileChooser;
@@ -167,6 +170,11 @@ public class IMGFileChooser implements ActionListener {
         File[] filesf = {f};
         fileChooser.setSelectedFile(f);
         fileChooser.setSelectedFiles(filesf);
+    }
+
+    @Override
+    public void imageRemoved(Image removedImage) {
+        System.out.println("Removed image has order value of: " + removedImage.getOrder());
     }
 
     private class FileChooserSelectionLimitHandler implements PropertyChangeListener {

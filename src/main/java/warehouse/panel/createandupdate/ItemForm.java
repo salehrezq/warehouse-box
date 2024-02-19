@@ -59,7 +59,7 @@ public class ItemForm extends JPanel implements Navigatable {
         itemFormCodeNameSpecs = new ItemFormCodeNameSpecs();
         itemFormQuantityUnit = new ItemFormQuantityUnit();
         itemFormImage = new ItemFormImage();
-        addItemFormImagetoIMGFileChooserListeners(itemFormImage);
+        linkListenersToChangeProviders(itemFormImage);
         panelCards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);
         panelCards.add(itemFormQuantityUnit, QUANTITY_UNIT);
         panelCards.add(itemFormImage.getFormContainer(), IMAGEPREVIEW);
@@ -74,10 +74,11 @@ public class ItemForm extends JPanel implements Navigatable {
         add(formManagement, BorderLayout.PAGE_END);
     }
 
-    private void addItemFormImagetoIMGFileChooserListeners(ItemFormImage itemFormImage) {
+    private void linkListenersToChangeProviders(ItemFormImage itemFormImage) {
         IMGFileChooser iMGFileChooser = itemFormImage.getIMGFileChooser();
         iMGFileChooser.addImageSelectedListener(itemFormImage);
         iMGFileChooser.addFilesSelectionLimitListener(itemFormImage);
+        itemFormImage.addImageRemovedListener(iMGFileChooser);
     }
 
     public FormManagement getFormManagement() {

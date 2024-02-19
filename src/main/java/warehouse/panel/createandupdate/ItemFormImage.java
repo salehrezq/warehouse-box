@@ -52,7 +52,10 @@ import warehouse.db.model.Image;
  * @author Saleh
  */
 @SuppressWarnings("LeakingThisInConstructor")
-public class ItemFormImage implements ImagesSelectedListener, Collectable, FilesSelectionLimitListener {
+public class ItemFormImage implements
+        ImagesSelectedListener,
+        Collectable,
+        FilesSelectionLimitListener {
 
     private JPanel panelContainer, panelContols;
     private JButton btnBrowse;
@@ -68,6 +71,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
     private ArrayList<ImageRemovedListener> imageRemovedListeners;
 
     public ItemFormImage() {
+        imageRemovedListeners = new ArrayList<>();
         data = new HashMap<String, BufferedImage>();
         imagesMap = new HashMap<>();
         panelContainer = new JPanel(new BorderLayout());
@@ -148,8 +152,8 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
         return iMGFileChooser;
     }
 
-    public void addImageRemovedListener(ImageRemovedListener var) {
-        this.imageRemovedListeners.add(var);
+    public void addImageRemovedListener(ImageRemovedListener imageRemovedListener) {
+        this.imageRemovedListeners.add(imageRemovedListener);
     }
 
     public void notifyImageRemoved(Image removedImage) {
@@ -182,6 +186,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
 
             if (sizeBeforRemoval > 0) {
                 Image removedImage = imagesMap.remove(spinnerValueOnSpinning);
+                notifyImageRemoved(removedImage);
                 int sizeAfterRemoval = imagesMap.size();
                 int removedImageOrder = removedImage.getOrder();
 
