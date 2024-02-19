@@ -65,6 +65,7 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
     private SpinnerH spinnerH;
     private HashMap<Integer, Image> imagesMap;
     private int spinnerValueOnSpinning;
+    private ArrayList<ImageRemovedListener> imageRemovedListeners;
 
     public ItemFormImage() {
         data = new HashMap<String, BufferedImage>();
@@ -145,6 +146,16 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
 
     public IMGFileChooser getIMGFileChooser() {
         return iMGFileChooser;
+    }
+
+    public void addImageRemovedListener(ImageRemovedListener var) {
+        this.imageRemovedListeners.add(var);
+    }
+
+    public void notifyImageRemoved(Image removedImage) {
+        this.imageRemovedListeners.forEach((imageRemovedListener) -> {
+            imageRemovedListener.imageRemoved(removedImage);
+        });
     }
 
     private class JSpinnerHandler implements ChangeListener {
