@@ -183,7 +183,11 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
             if (sizeBeforRemoval > 1) {
                 Image removedImage = imagesMap.remove(spinnerValueOnSpinning);
                 int removedImageOrder = removedImage.getOrder();
-                // Case where removing
+                /**
+                 * Removing an image which has any position other than the end
+                 * of the HashMap. So that we need to shift all the items that
+                 * come after that position to fill the gab.
+                 */
                 if (removedImageOrder < sizeBeforRemoval) {
                     for (int i = removedImageOrder + 1; i <= sizeBeforRemoval; i++) {
                         Image image = imagesMap.remove(i);
@@ -200,7 +204,10 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
                     spinnerValueOnSpinning = replacingImage.getOrder();
                     spinnerH.setModel(spinnerValueOnSpinning, 1, sizeAfterRemoval, 1);
                     scalableImageContainer.setBufferedImage(replacingImage.getBufferedImage());
-                    // Removing from the end of the hashmap
+                    /**
+                     * Removing from the end of the HashMap. So that no need to
+                     * shift the images because there will be no gab.
+                     */
                 } else if (removedImageOrder == sizeBeforRemoval) {
                     if (sizeBeforRemoval > 1) {
                         if (removedImage.isDefaultImage()) {
@@ -214,6 +221,10 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
                         scalableImageContainer.setBufferedImage(replacingImage.getBufferedImage());
                     }
                 }
+                /**
+                 * Remove the last available image. No gab, and so no shifting
+                 * required
+                 */
             } else if (sizeBeforRemoval == 1) {
                 imagesMap.remove(spinnerValueOnSpinning);
                 spinnerValueOnSpinning = 0;
