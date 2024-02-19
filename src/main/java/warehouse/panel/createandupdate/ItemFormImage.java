@@ -179,64 +179,69 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
         @Override
         public void mouseClicked(MouseEvent e) {
             int sizeBeforRemoval = imagesMap.size();
-            int sizeAfterRemoval = sizeBeforRemoval - 1;
-            // Check that there are more than one image in the HashMap collection.
-            if (sizeBeforRemoval > 1) {
+
+            if (sizeBeforRemoval > 0) {
                 Image removedImage = imagesMap.remove(spinnerValueOnSpinning);
+                int sizeAfterRemoval = imagesMap.size();
                 int removedImageOrder = removedImage.getOrder();
-                /**
-                 * Check that the removed image has any position other than the
-                 * end of the HashMap collection. Removing an image which has
-                 * any position other than the end of the HashMap collection. So
-                 * that we need to recalculate the positions (images orders) to
-                 * shift all the images that come in terms of their positions
-                 * after the removed image to fill the gab.
-                 */
-                if (removedImageOrder < sizeBeforRemoval) {
-                    for (int i = removedImageOrder + 1; i <= sizeBeforRemoval; i++) {
-                        Image image = imagesMap.remove(i);
-                        int shiftedImageOrder = image.getOrder() - 1;
-                        image.setOrder(shiftedImageOrder);
-                        imagesMap.put(shiftedImageOrder, image);
-                    }
-                    if (removedImage.isDefaultImage()) {
-                        Image image = imagesMap.get(1);
-                        image.setDefaultImage(true);
+
+                // Check that there are more than one image in the HashMap collection.
+                if (sizeBeforRemoval > 1) {
+                    /**
+                     * Check that the removed image has any position other than
+                     * the end of the HashMap collection. Removing an image
+                     * which has any position other than the end of the HashMap
+                     * collection. So that we need to recalculate the positions
+                     * (images orders) to shift all the images that come in
+                     * terms of their positions after the removed image to fill
+                     * the gab.
+                     */
+                    if (removedImageOrder < sizeBeforRemoval) {
+                        for (int i = removedImageOrder + 1; i <= sizeBeforRemoval; i++) {
+                            Image image = imagesMap.remove(i);
+                            int shiftedImageOrder = image.getOrder() - 1;
+                            image.setOrder(shiftedImageOrder);
+                            imagesMap.put(shiftedImageOrder, image);
+                        }
+                        if (removedImage.isDefaultImage()) {
+                            Image image = imagesMap.get(1);
+                            image.setDefaultImage(true);
+                        }
+                        /**
+                         * Display the image that comes after the removed image
+                         * in terms of its position. After shifting the images
+                         * to fill the gab of the removed image, now use the
+                         * position of the removed image to position for display
+                         * the image replacing the removed image.
+                         */
+                        Image replacingImage = imagesMap.get(removedImageOrder);
+                        spinnerValueOnSpinning = replacingImage.getOrder();
+                        spinnerH.setModel(spinnerValueOnSpinning, 1, sizeAfterRemoval, 1);
+                        scalableImageContainer.setBufferedImage(replacingImage.getBufferedImage());
+                        /**
+                         * Removing from the end of the HashMap collection. So
+                         * that no need to shift the images because there will
+                         * be no gab.
+                         */
+                    } else if (removedImageOrder == sizeBeforRemoval) {
+                        if (removedImage.isDefaultImage()) {
+                            Image image = imagesMap.get(1);
+                            image.setDefaultImage(true);
+                        }
+                        Image replacingImage = imagesMap.get(sizeAfterRemoval);
+                        spinnerValueOnSpinning = replacingImage.getOrder();
+                        spinnerH.setModel(spinnerValueOnSpinning, 1, sizeAfterRemoval, 1);
+                        scalableImageContainer.setBufferedImage(replacingImage.getBufferedImage());
                     }
                     /**
-                     * Display the image that comes after the removed image in
-                     * terms of its position. After shifting the images to fill
-                     * the gab of the removed image, now use the position of the
-                     * removed image to position for display the image replacing
-                     * the removed image.
+                     * Remove the last available image. No gab, and so no
+                     * shifting required
                      */
-                    Image replacingImage = imagesMap.get(removedImageOrder);
-                    spinnerValueOnSpinning = replacingImage.getOrder();
-                    spinnerH.setModel(spinnerValueOnSpinning, 1, sizeAfterRemoval, 1);
-                    scalableImageContainer.setBufferedImage(replacingImage.getBufferedImage());
-                    /**
-                     * Removing from the end of the HashMap collection. So that
-                     * no need to shift the images because there will be no gab.
-                     */
-                } else if (removedImageOrder == sizeBeforRemoval) {
-                    if (removedImage.isDefaultImage()) {
-                        Image image = imagesMap.get(1);
-                        image.setDefaultImage(true);
-                    }
-                    Image replacingImage = imagesMap.get(sizeAfterRemoval);
-                    spinnerValueOnSpinning = replacingImage.getOrder();
-                    spinnerH.setModel(spinnerValueOnSpinning, 1, sizeAfterRemoval, 1);
-                    scalableImageContainer.setBufferedImage(replacingImage.getBufferedImage());
+                } else if (sizeBeforRemoval == 1) {
+                    spinnerValueOnSpinning = 0;
+                    spinnerH.setModel(spinnerValueOnSpinning, 0, 0, 1);
+                    scalableImageContainer.setBufferedImage(null);
                 }
-                /**
-                 * Remove the last available image. No gab, and so no shifting
-                 * required
-                 */
-            } else if (sizeBeforRemoval == 1) {
-                imagesMap.remove(spinnerValueOnSpinning);
-                spinnerValueOnSpinning = 0;
-                spinnerH.setModel(spinnerValueOnSpinning, 0, 0, 1);
-                scalableImageContainer.setBufferedImage(null);
             }
             System.out.println("HashMap size " + imagesMap.size());
         }
