@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import utility.imagefilechooser.IMGFileChooser;
 
 /**
  *
@@ -58,6 +59,7 @@ public class ItemForm extends JPanel implements Navigatable {
         itemFormCodeNameSpecs = new ItemFormCodeNameSpecs();
         itemFormQuantityUnit = new ItemFormQuantityUnit();
         itemFormImage = new ItemFormImage();
+        addItemFormImagetoIMGFileChooserListeners(itemFormImage);
         panelCards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);
         panelCards.add(itemFormQuantityUnit, QUANTITY_UNIT);
         panelCards.add(itemFormImage.getFormContainer(), IMAGEPREVIEW);
@@ -70,6 +72,12 @@ public class ItemForm extends JPanel implements Navigatable {
         formManagement.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         add(panelCards, BorderLayout.CENTER);
         add(formManagement, BorderLayout.PAGE_END);
+    }
+
+    private void addItemFormImagetoIMGFileChooserListeners(ItemFormImage itemFormImage) {
+        IMGFileChooser iMGFileChooser = itemFormImage.getIMGFileChooser();
+        iMGFileChooser.addImageSelectedListener(itemFormImage);
+        iMGFileChooser.addFilesSelectionLimitListener(itemFormImage);
     }
 
     public FormManagement getFormManagement() {

@@ -91,8 +91,6 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
         panelContainer.add(panelContols, BorderLayout.PAGE_END);
         iMGFileChooser = new IMGFileChooser();
         btnBrowse.addActionListener(iMGFileChooser);
-        iMGFileChooser.addImageSelectedListener(this);
-        iMGFileChooser.addFilesSelectionLimitListener(this);
     }
 
     public JScrollPane getScrollableScalableImageContainer() {
@@ -143,6 +141,10 @@ public class ItemFormImage implements ImagesSelectedListener, Collectable, Files
         imagesMap.clear();
         scalableImageContainer.setBufferedImage(null);
         spinnerH.setModel(0, 0, 0, 1);
+    }
+
+    public IMGFileChooser getIMGFileChooser() {
+        return iMGFileChooser;
     }
 
     private class JSpinnerHandler implements ChangeListener {
