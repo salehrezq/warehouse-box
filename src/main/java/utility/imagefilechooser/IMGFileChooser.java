@@ -152,8 +152,10 @@ public class IMGFileChooser implements
                 image.setOrder(imageOrder);
                 image.setBufferedImage(bufferedImage);
                 images.add(image);
-                // Swap default image; maintain last selected image to be default image
-                images.forEach(item -> item.setDefaultImage((item.getOrder() == imageOrder)));
+                // Set the first image, image of order one to be the default image.
+                if (image.getOrder() == 1) {
+                    image.setDefaultImage(true);
+                }
             } catch (IOException ex) {
                 Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -174,7 +176,43 @@ public class IMGFileChooser implements
 
     @Override
     public void imageRemoved(Image removedImage) {
-        System.out.println("Removed image has order value of: " + removedImage.getOrder());
+
+        int sizeBeforRemoval = imagesSelectedByUser.size();
+        if (sizeBeforRemoval > 0) {
+            int removedImageOrder = removedImage.getOrder();
+            boolean removed = imagesSelectedByUser.removeIf(image -> image.getOrder() == removedImage.getOrder());
+            if (removed) {
+                incrementedFilesSelecionLength -= 1;
+            }
+            // Check that there are more than one image in the ArrayList collection.
+            if (sizeBeforRemoval > 1) {
+                /**
+                 * Check that the removed image has any position other than the
+                 * end of the ArrayList collection. If the removed image has any
+                 * position other than the end of the ArrayList collection, it
+                 * is required to recalculate the positions (images orders) to
+                 * adjust all the images positions that come after the removed
+                 * image in terms of their positions after the removed image, to
+                 * fill the gab.
+                 */
+                int sizeAfterRemoval = imagesSelectedByUser.size();
+                if (removedImageOrder < sizeBeforRemoval) {
+                    for (int i = 0; i < sizeAfterRemoval; i++) {
+                        Image image = imagesSelectedByUser.get(i);
+                        imagesSelectedByUser.get(i).setOrder(
+                                (image.getOrder() > removedImageOrder)
+                                ? image.getOrder() - 1
+                                : image.getOrder());
+                    }
+                }
+            }
+
+            if (removedImage.isDefaultImage()) {
+                Image image = imagesSelectedByUser.get(0);
+                image.setDefaultImage(true);
+            }
+        }
+        notifyImagesSelected(imagesSelectedByUser);
     }
 
     private class FileChooserSelectionLimitHandler implements PropertyChangeListener {
