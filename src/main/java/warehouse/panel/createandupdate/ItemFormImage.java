@@ -124,7 +124,7 @@ public class ItemFormImage implements
         // System.out.println("selected images size " + imagesMap.size());
         // System.out.println("spinnerValue " + spinnerValue);
         // System.out.println("---------------------");
-        spinnerH.setModel(spinnerValue, 1, spinnerSize, 1);
+        spinnerH.setModel(spinnerValue, (spinnerSize > 0) ? 1 : 0, spinnerSize, 1);
         System.out.println("------------------");
     }
 

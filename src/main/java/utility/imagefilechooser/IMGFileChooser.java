@@ -181,6 +181,7 @@ public class IMGFileChooser implements
         if (sizeBeforRemoval > 0) {
             int removedImageOrder = removedImage.getOrder();
             boolean removed = imagesSelectedByUser.removeIf(image -> image.getOrder() == removedImage.getOrder());
+            int sizeAfterRemoval = imagesSelectedByUser.size();
             if (removed) {
                 incrementedFilesSelecionLength -= 1;
             }
@@ -195,7 +196,7 @@ public class IMGFileChooser implements
                  * image in terms of their positions after the removed image, to
                  * fill the gab.
                  */
-                int sizeAfterRemoval = imagesSelectedByUser.size();
+
                 if (removedImageOrder < sizeBeforRemoval) {
                     for (int i = 0; i < sizeAfterRemoval; i++) {
                         Image image = imagesSelectedByUser.get(i);
@@ -206,8 +207,7 @@ public class IMGFileChooser implements
                     }
                 }
             }
-
-            if (removedImage.isDefaultImage()) {
+            if (sizeAfterRemoval > 0 && removedImage.isDefaultImage()) {
                 Image image = imagesSelectedByUser.get(0);
                 image.setDefaultImage(true);
             }
