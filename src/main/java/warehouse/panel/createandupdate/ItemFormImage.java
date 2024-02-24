@@ -108,24 +108,23 @@ public class ItemFormImage implements
 
     @Override
     public void imagesSelected(ArrayList<Image> images) {
-        int spinnerSize = images.size();
-        //  System.out.println("spinnerSize " + spinnerSize);
+        int imagesCount = images.size();
         int spinnerValue = 0;
-        for (Image image : images) {
-            System.out.println("feeded image order " + image.getOrder());
-            imagesMap.put(image.getOrder(), image);
-            if (image.isDefaultImage()) {
-                System.out.println("default image order " + image.getOrder());
-                scalableImageContainer.setBufferedImage(image.getBufferedImage());
-                spinnerValue = image.getOrder();
-                spinnerValueOnSpinning = spinnerValue;
+        if (imagesCount > 0) {
+            for (Image image : images) {
+                imagesMap.put(image.getOrder(), image);
+                if (image.isDefaultImage()) {
+                    scalableImageContainer.setBufferedImage(image.getBufferedImage());
+                    spinnerValue = image.getOrder();
+                    spinnerValueOnSpinning = spinnerValue;
+                }
             }
+        } else {
+            spinnerValueOnSpinning = 0;
+            imagesMap.clear();
+            scalableImageContainer.setBufferedImage(null);
         }
-        // System.out.println("selected images size " + imagesMap.size());
-        // System.out.println("spinnerValue " + spinnerValue);
-        // System.out.println("---------------------");
-        spinnerH.setModel(spinnerValue, (spinnerSize > 0) ? 1 : 0, spinnerSize, 1);
-        System.out.println("------------------");
+        spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
     }
 
     @Override

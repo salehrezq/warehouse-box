@@ -139,8 +139,6 @@ public class IMGFileChooser implements
          * Later you will account for image remove
          */
         int length = files.length;
-        System.out.println("files length " + length);
-        System.out.println("lastValue " + previousIncrementedFilesSelecionLength);
         //
         for (int i = 0; i < length; i++) {
             try {
@@ -148,7 +146,6 @@ public class IMGFileChooser implements
                 Image image = new Image();
                 // Maintain image order throgh different file chooser opens
                 int imageOrder = i + previousIncrementedFilesSelecionLength + 1;
-                System.out.println("imageorder " + imageOrder);
                 image.setOrder(imageOrder);
                 image.setBufferedImage(bufferedImage);
                 images.add(image);
@@ -162,8 +159,6 @@ public class IMGFileChooser implements
         }
         // Here to record the files selection length of the previous file chooser open
         previousIncrementedFilesSelecionLength = incrementedFilesSelecionLength;
-        System.out.println("next order " + previousIncrementedFilesSelecionLength + 1);
-        System.out.println("--------------------------");
         return images;
     }
 
@@ -184,6 +179,8 @@ public class IMGFileChooser implements
             int sizeAfterRemoval = imagesSelectedByUser.size();
             if (removed) {
                 incrementedFilesSelecionLength -= 1;
+                previousIncrementedFilesSelecionLength = incrementedFilesSelecionLength;
+                notifyFilesSelectionLimitReset();
             }
             // Check that there are more than one image in the ArrayList collection.
             if (sizeBeforRemoval > 1) {
