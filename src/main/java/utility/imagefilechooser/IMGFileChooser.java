@@ -103,7 +103,6 @@ public class IMGFileChooser implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         if (fileChooser == null) {
             prefs = Preferences.userRoot().node(getClass().getName());
             fileChooser = new JFileChooser(prefs.get(LAST_USED_FOLDER, new File(".").getAbsolutePath()));
@@ -119,7 +118,7 @@ public class IMGFileChooser implements
             // Selection process already happened in PropertyChangeListener
             int length = filesChosenByUser.size();
             // Keep track of count of files selection
-            // through multiple files chooser opens
+            // across multiple files chooser opens
             incrementedFilesSelecionLength += length;
             if (incrementedFilesSelecionLength >= maxSelectedFiles) {
                 notifyFilesSelectionLimitReached();
@@ -157,7 +156,11 @@ public class IMGFileChooser implements
                 Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        // Here to record the files selection length of the previous file chooser open
+        /**
+         * Keep track of files count from the previous file chooser open, to
+         * know which position to continue counting from, for the purpose of
+         * ordering the files.
+         */
         previousIncrementedFilesSelecionLength = incrementedFilesSelecionLength;
         return images;
     }
@@ -181,35 +184,38 @@ public class IMGFileChooser implements
                 incrementedFilesSelecionLength -= 1;
                 previousIncrementedFilesSelecionLength = incrementedFilesSelecionLength;
                 notifyFilesSelectionLimitReset();
-            }
-            // Check that there are more than one image in the ArrayList collection.
-            if (sizeBeforRemoval > 1) {
-                /**
-                 * Check that the removed image has any position other than the
-                 * end of the ArrayList collection. If the removed image has any
-                 * position other than the end of the ArrayList collection, it
-                 * is required to recalculate the positions (images orders) to
-                 * adjust all the images positions that come after the removed
-                 * image in terms of their positions after the removed image, to
-                 * fill the gab.
-                 */
-
-                if (removedImageOrder < sizeBeforRemoval) {
-                    for (int i = 0; i < sizeAfterRemoval; i++) {
-                        Image image = imagesSelectedByUser.get(i);
-                        imagesSelectedByUser.get(i).setOrder(
-                                (image.getOrder() > removedImageOrder)
-                                ? image.getOrder() - 1
-                                : image.getOrder());
+                // Check that there are more than one image in the ArrayList collection.
+                if (sizeBeforRemoval > 1) {
+                    /**
+                     * Check that the removed image has any position other than
+                     * the end of the ArrayList collection. If the removed image
+                     * has any position other than the end of the ArrayList
+                     * collection, it is required to recalculate the positions
+                     * (images orders) to adjust all the images positions that
+                     * come after the removed image in terms of their positions
+                     * after the removed image, to fill the gab.
+                     */
+                    if (removedImageOrder < sizeBeforRemoval) {
+                        for (int i = 0; i < sizeAfterRemoval; i++) {
+                            Image image = imagesSelectedByUser.get(i);
+                            imagesSelectedByUser.get(i).setOrder(
+                                    (image.getOrder() > removedImageOrder)
+                                    ? image.getOrder() - 1
+                                    : image.getOrder());
+                        }
                     }
                 }
+                /**
+                 * If the removed image was a default image, then set the image
+                 * of order 1 to be the default.
+                 */
+                if (sizeAfterRemoval > 0 && removedImage.isDefaultImage()) {
+                    Image image = imagesSelectedByUser.get(0);
+                    image.setDefaultImage(true);
+                }
             }
-            if (sizeAfterRemoval > 0 && removedImage.isDefaultImage()) {
-                Image image = imagesSelectedByUser.get(0);
-                image.setDefaultImage(true);
-            }
+            notifyImagesSelected(imagesSelectedByUser);
         }
-        notifyImagesSelected(imagesSelectedByUser);
     }
 
     private class FileChooserSelectionLimitHandler implements PropertyChangeListener {
