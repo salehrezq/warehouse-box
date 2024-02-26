@@ -53,7 +53,6 @@ public class CRUDItems {
             createItemsStatement.setString(1, item.getName());
             createItemsStatement.setString(2, item.getSpecification());
             createItemsStatement.setInt(3, item.getUnitId());
-            createItemsStatement.setBytes(4, item.getImage());
             insert = createItemsStatement.executeUpdate();
             con.commit();
         } catch (SQLException ex) {
@@ -80,7 +79,6 @@ public class CRUDItems {
                 item.setName(result.getString("name"));
                 item.setSpecification(result.getString("specification"));
                 item.setUnitId(result.getInt("unit_id"));
-                item.setImage(result.getBytes("image"));
                 items.add(item);
             }
         } catch (SQLException ex) {

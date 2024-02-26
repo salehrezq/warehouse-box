@@ -40,7 +40,6 @@ public class Item {
     private String name;
     private String specification;
     private int unitId; // foreign key
-    private byte[] image;
 
     public int getId() {
         return id;
@@ -72,18 +71,6 @@ public class Item {
 
     public void setUnitId(int unitId) {
         this.unitId = unitId;
-    }
-
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-    public void setImage(BufferedImage image) {
-        this.image = toBytesArray(image);
     }
 
     public byte[] toBytesArray(BufferedImage image) {

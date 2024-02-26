@@ -25,7 +25,6 @@ package warehouse.panel.createandupdate;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -121,7 +120,7 @@ public class FormManagement extends JPanel {
                         QuantityUnit qty = (QuantityUnit) c.collect().get("unit");
                         item.setUnitId(qty.getId());
                     } else if (c instanceof ItemFormImage) {
-                        item.setImage((BufferedImage) c.collect().get("image"));
+                        //  item.setImage((BufferedImage) c.collect().get("image"));
                     }
                 });
                 if (CRUDItems.create(item) > 0) {
