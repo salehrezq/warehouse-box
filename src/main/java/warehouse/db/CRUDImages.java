@@ -23,10 +23,44 @@
  */
 package warehouse.db;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import warehouse.db.model.Image;
+
 /**
  *
  * @author Saleh
  */
 public class CRUDImages {
 
+    private static Connection con;
+
+    public static int create(ArrayList<Image> images, int itemId) {
+        int insert = 0;
+        String sql = "INSERT INTO images (`item_id`, `image`, `order`, `default_image`, `scale`) VALUES (?, ?, ?, ?, ?)";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            for (int i = 0; i < images.size(); i++) {
+                Image image = images.get(i);
+                pstmt.setInt(1, image.getItemId());
+                pstmt.setBytes(2, image.getImageBytes());
+                pstmt.setInt(3, image.getOrder());
+                pstmt.setBoolean(4, image.isDefaultImage());
+                pstmt.setBigDecimal(5, image.getScale());
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDImages.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return insert;
+    }
 }

@@ -24,7 +24,12 @@
 package warehouse.db.model;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -60,6 +65,9 @@ public class Image {
     }
 
     public byte[] getImageBytes() {
+        if (imageBytes == null && bufferedImage != null) {
+            return toBytesArray(bufferedImage);
+        }
         return imageBytes;
     }
 
@@ -99,4 +107,13 @@ public class Image {
         this.bufferedImage = bufferedImage;
     }
 
+    public byte[] toBytesArray(BufferedImage image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(image, "jpg", baos);
+        } catch (IOException ex) {
+            Logger.getLogger(Image.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return baos.toByteArray();
+    }
 }
