@@ -58,6 +58,8 @@ public class CRUDItems {
             con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
         }
         return insert;
     }
