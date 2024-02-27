@@ -30,6 +30,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,23 +45,30 @@ public class CRUDItems {
 
     private static Connection con;
 
-    public static int create(Item item) {
-        int insert = 0;
-        String sqlCreateItem = "INSERT INTO items (`name`, `specification`, `unit_id`, `image`) VALUES (?, ?, ?, ?)";
+    public static Item create(Item item) {
+        String sqlCreateItem = "INSERT INTO items (`name`, `specification`, `unit_id`) VALUES (?, ?, ?)";
         con = Connect.getConnection();
         try {
-            PreparedStatement createItemsStatement = con.prepareStatement(sqlCreateItem);
+            PreparedStatement createItemsStatement = con.prepareStatement(sqlCreateItem, Statement.RETURN_GENERATED_KEYS);
             createItemsStatement.setString(1, item.getName());
             createItemsStatement.setString(2, item.getSpecification());
             createItemsStatement.setInt(3, item.getUnitId());
-            insert = createItemsStatement.executeUpdate();
+            createItemsStatement.executeUpdate();
+
+            try (ResultSet generatedKeys = createItemsStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    item.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
             con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             Connect.cleanUp();
         }
-        return insert;
+        return item;
     }
 
     public static ArrayList<Item> getAll() {

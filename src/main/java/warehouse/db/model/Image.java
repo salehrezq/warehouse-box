@@ -92,6 +92,9 @@ public class Image {
     }
 
     public BigDecimal getScale() {
+        if (scale == null) {
+            scale = new BigDecimal("0.6");
+        }
         return scale;
     }
 

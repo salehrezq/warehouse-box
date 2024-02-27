@@ -28,8 +28,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import warehouse.db.CRUDImages;
 import warehouse.db.CRUDItems;
 import warehouse.db.CreateListener;
+import warehouse.db.model.Image;
 import warehouse.db.model.Item;
 import warehouse.db.model.QuantityUnit;
 
@@ -100,6 +102,7 @@ public class FormManagement extends JPanel {
     private class NavigateButtonsListener implements ActionListener {
 
         Item item;
+        ArrayList<Image> images;
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -112,6 +115,7 @@ public class FormManagement extends JPanel {
                 notifyPrevious();
             } else if (btnNavigate == btnSubmit) {
                 item = new Item();
+                images = new ArrayList<>();
                 collectables.forEach((c) -> {
                     if (c instanceof ItemFormCodeNameSpecs) {
                         item.setName((String) c.collect().get("name"));
@@ -120,11 +124,16 @@ public class FormManagement extends JPanel {
                         QuantityUnit qty = (QuantityUnit) c.collect().get("unit");
                         item.setUnitId(qty.getId());
                     } else if (c instanceof ItemFormImage) {
-                        //  item.setImage((BufferedImage) c.collect().get("image"));
+                        images = (ArrayList<Image>) c.collect().get("images");
                     }
                 });
-                if (CRUDItems.create(item) > 0) {
+                item = CRUDItems.create(item);
+                System.out.println("Newly created Item id " + item.getId());
+                int idOfCreatedItem = item.getId();
+                if (idOfCreatedItem > 0) {
                     notifyCreated();
+                    // Create images
+                    CRUDImages.create(images, idOfCreatedItem);
                 }
             }
             btnPrevious.setEnabled(navigateTracker > 0);

@@ -67,6 +67,7 @@ public class ItemFormImage implements
     private Map data;
     private SpinnerH spinnerH;
     private HashMap<Integer, Image> imagesMap;
+    private ArrayList<Image> imagesSelected;
     private int spinnerValueOnSpinning;
     private ArrayList<ImageRemovedListener> imageRemovedListeners;
 
@@ -108,6 +109,7 @@ public class ItemFormImage implements
 
     @Override
     public void imagesSelected(ArrayList<Image> images) {
+        imagesSelected = images;
         int imagesCount = images.size();
         int spinnerValue = 0;
         if (imagesCount > 0) {
@@ -129,7 +131,7 @@ public class ItemFormImage implements
 
     @Override
     public Map collect() {
-        data.put("image", imageSelected);
+        data.put("images", imagesSelected);
         return data;
     }
 

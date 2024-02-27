@@ -47,7 +47,7 @@ public class CRUDImages {
             PreparedStatement pstmt = con.prepareStatement(sql);
             for (int i = 0; i < images.size(); i++) {
                 Image image = images.get(i);
-                pstmt.setInt(1, image.getItemId());
+                pstmt.setInt(1, itemId);
                 pstmt.setBytes(2, image.getImageBytes());
                 pstmt.setInt(3, image.getOrder());
                 pstmt.setBoolean(4, image.isDefaultImage());
