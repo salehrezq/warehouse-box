@@ -29,7 +29,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import utility.uuid.ImageFileManager;
+import utility.filemanage.ImageFileManager;
 import warehouse.db.model.Image;
 
 /**
