@@ -41,7 +41,6 @@ public class Image {
     private int id;
     private int itemId;
     private File imageFile;
-    private byte[] imageBytes;
     private int order;
     private boolean defaultImage;
     private BigDecimal scale;
@@ -72,17 +71,6 @@ public class Image {
 
     public void setImageFile(File imageFile) {
         this.imageFile = imageFile;
-    }
-
-    public byte[] getImageBytes() {
-        if (imageBytes == null && bufferedImage != null) {
-            return toBytesArray(bufferedImage);
-        }
-        return imageBytes;
-    }
-
-    public void setImageBytes(byte[] image) {
-        this.imageBytes = image;
     }
 
     public int getOrder() {
