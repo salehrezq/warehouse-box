@@ -141,8 +141,9 @@ public class IMGFileChooser implements
         //
         for (int i = 0; i < length; i++) {
             try {
-                BufferedImage bufferedImage = ImageIO.read(files[i]);
                 Image image = new Image();
+                image.setImageFile(files[i]);
+                BufferedImage bufferedImage = ImageIO.read(files[i]);
                 // Maintain image order throgh different file chooser opens
                 int imageOrder = i + previousIncrementedFilesSelecionLength + 1;
                 image.setOrder(imageOrder);

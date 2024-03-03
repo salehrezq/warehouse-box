@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utility.uuid.ImageFileManager;
 import warehouse.db.model.Image;
 
 /**
@@ -41,18 +42,22 @@ public class CRUDImages {
 
     public static int create(ArrayList<Image> images, int itemId) {
         int insert = 0;
-        String sql = "INSERT INTO images (`item_id`, `image`, `order`, `default_image`, `scale`) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO images (`item_id`, `order`, `name`, `default_image`, `scale`) VALUES (?, ?, ?, ?, ?)";
         con = Connect.getConnection();
+        String newImageName = "";
         try {
             PreparedStatement pstmt = con.prepareStatement(sql);
             for (int i = 0; i < images.size(); i++) {
                 Image image = images.get(i);
+                newImageName = ImageFileManager.generateImageName(image.getImageFile());
                 pstmt.setInt(1, itemId);
-                pstmt.setBytes(2, image.getImageBytes());
-                pstmt.setInt(3, image.getOrder());
+                pstmt.setInt(2, image.getOrder());
+                pstmt.setString(3, newImageName);
                 pstmt.setBoolean(4, image.isDefaultImage());
                 pstmt.setBigDecimal(5, image.getScale());
                 pstmt.addBatch();
+                // Copy image to app directory
+                ImageFileManager.copyFileUsingJava7Files(image.getImageFile(), newImageName);
             }
             pstmt.executeBatch();
             con.commit();

@@ -25,6 +25,7 @@ package warehouse.db.model;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.logging.Level;
@@ -39,6 +40,7 @@ public class Image {
 
     private int id;
     private int itemId;
+    private File imageFile;
     private byte[] imageBytes;
     private int order;
     private boolean defaultImage;
@@ -62,6 +64,14 @@ public class Image {
 
     public void setItemId(int itemId) {
         this.itemId = itemId;
+    }
+
+    public File getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(File imageFile) {
+        this.imageFile = imageFile;
     }
 
     public byte[] getImageBytes() {
