@@ -60,7 +60,7 @@ public class ItemsTab extends JPanel {
         splitSearchAndItemsListPane.setTopComponent(itemsSearch);
         splitSearchAndItemsListPane.setBottomComponent(itemsList);
         panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
-        panelGatherRight.add(itemsImages, BorderLayout.CENTER);
+        panelGatherRight.add(itemsImages.getFormContainer(), BorderLayout.CENTER);
 
         splitRightAndLeftPanes = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitRightAndLeftPanes.setDividerSize(5);

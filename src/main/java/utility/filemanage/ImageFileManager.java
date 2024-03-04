@@ -93,7 +93,7 @@ public class ImageFileManager {
         return new UUID(most64SigBits, least64SigBits);
     }
 
-    private BufferedImage loadImage(String imageName) {
+    public static BufferedImage loadImage(String imageName) {
         BufferedImage image = null;
         try {
             image = ImageIO.read(new File(appImagesPath + slash + imageName));

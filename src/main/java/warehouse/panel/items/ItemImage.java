@@ -26,47 +26,100 @@ package warehouse.panel.items;
 import utility.imagepane.ScrollableScalableImageContainer;
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.Box;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import utility.horizontalspinner.Renderer;
+import utility.horizontalspinner.SpinnerH;
 import warehouse.db.CRUDImages;
+import warehouse.db.model.Image;
 
 /**
  *
  * @author Saleh
  */
-public class ItemImage extends JPanel implements RowIdSelectionListener {
+public class ItemImage implements RowIdSelectionListener {
 
-    ScrollableScalableImageContainer imagePlace;
-    private BufferedImage image;
-    private ArrayList<BufferedImage> images;
+    private JPanel panelContainer, panelContols;
+    private ScrollableScalableImageContainer scalableImageContainer;
+    private BufferedImage imageSelected;
+    private Map data;
+    private SpinnerH spinnerH;
+    private HashMap<Integer, Image> imagesMap;
+    private ArrayList<Image> imagesSelected;
+    private int spinnerValueOnSpinning;
 
     public ItemImage() {
-        imagePlace = new ScrollableScalableImageContainer();
-        this.setLayout(new BorderLayout());
-        loadImage();
-        imagePlace.setBufferedImage(image);
-        images = new ArrayList<>();
-        this.add(imagePlace.getContainer(), BorderLayout.CENTER);
+        data = new HashMap<String, BufferedImage>();
+        imagesMap = new HashMap<>();
+        panelContainer = new JPanel(new BorderLayout());
+        scalableImageContainer = new ScrollableScalableImageContainer();
+        panelContols = new JPanel();
+        spinnerH = new SpinnerH();
+        spinnerH.setModel(0, 0, 0, 1);
+        spinnerH.getSpinner().addChangeListener(new JSpinnerHandler());
+        panelContols.add(spinnerH.getSpinner());
+        panelContols.add(Box.createHorizontalStrut(4));
+        panelContainer.add(scalableImageContainer.getContainer(), BorderLayout.CENTER);
+        panelContainer.add(panelContols, BorderLayout.PAGE_END);
     }
 
-    private BufferedImage loadImage() {
-        try {
-            image = ImageIO.read(new File("C:/ImageTest/pp.jpg"));
-        } catch (IOException ex) {
-            Logger.getLogger(ItemImage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return image;
+    public JScrollPane getScrollableScalableImageContainer() {
+        return scalableImageContainer.getContainer();
+    }
+
+    public JPanel getFormContainer() {
+        return panelContainer;
+    }
+
+    public void clearFields() {
+        spinnerValueOnSpinning = 0;
+        imagesMap.clear();
+        scalableImageContainer.setBufferedImage(null);
+        spinnerH.setModel(0, 0, 0, 1);
     }
 
     @Override
     public void selectedRowId(int rowId) {
-        CRUDImages.getImagesByItemId(rowId);
-        // imagePlace.setBufferedImage(CRUDItems.toBufferedImage(image));
+        ArrayList<Image> images = CRUDImages.getImagesByItemId(rowId);
+        int imagesCount = images.size();
+        System.out.println("imagesCount " + imagesCount);
+        int spinnerValue = 0;
+        if (imagesCount > 0) {
+            for (Image image : images) {
+                imagesMap.put(image.getOrder(), image);
+                if (image.isDefaultImage()) {
+                    scalableImageContainer.setBufferedImage(image.getBufferedImage());
+                    spinnerValue = image.getOrder();
+                    spinnerValueOnSpinning = spinnerValue;
+                }
+            }
+        } else {
+            spinnerValueOnSpinning = 0;
+            imagesMap.clear();
+            scalableImageContainer.setBufferedImage(null);
+        }
+        spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
+    }
+
+    private class JSpinnerHandler implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            if (!imagesMap.isEmpty()) {
+                JSpinner spinner = (JSpinner) e.getSource();
+                Renderer renderer = (Renderer) spinner.getValue();
+                spinnerValueOnSpinning = renderer.getValue();
+                Image image = imagesMap.get(spinnerValueOnSpinning);
+                scalableImageContainer.setBufferedImage(image.getBufferedImage());
+            }
+        }
     }
 
 }

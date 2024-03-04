@@ -74,7 +74,7 @@ public class CRUDImages {
     public static ArrayList<Image> getImagesByItemId(int itemId) {
         ArrayList<Image> images = new ArrayList<>();
         try {
-            String sql = "SELECT image FROM `images` WHERE item_id =" + itemId + " ORDER BY `order` ASC";
+            String sql = "SELECT * FROM `images` WHERE item_id =" + itemId + " ORDER BY `order` ASC";
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
