@@ -23,6 +23,7 @@
  */
 package utility.filemanage;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,6 +35,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -91,4 +93,13 @@ public class ImageFileManager {
         return new UUID(most64SigBits, least64SigBits);
     }
 
+    private BufferedImage loadImage(String imageName) {
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new File(appImagesPath + slash + imageName));
+        } catch (IOException ex) {
+            Logger.getLogger(ImageFileManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return image;
+    }
 }

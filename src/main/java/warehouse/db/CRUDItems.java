@@ -95,23 +95,6 @@ public class CRUDItems {
         return items;
     }
 
-    public static byte[] getImage(int id) {
-        byte[] image = null;
-        try {
-            String sql = "SELECT image FROM `items` WHERE id =" + id + " LIMIT 1";
-            con = Connect.getConnection();
-            PreparedStatement p;
-            p = con.prepareStatement(sql);
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                image = result.getBytes("image");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return image;
-    }
-
     public static BufferedImage toBufferedImage(byte[] photo) {
         BufferedImage img = null;
         if (photo != null) {

@@ -28,11 +28,12 @@ import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import warehouse.db.CRUDItems;
+import warehouse.db.CRUDImages;
 
 /**
  *
@@ -42,12 +43,14 @@ public class ItemImage extends JPanel implements RowIdSelectionListener {
 
     ScrollableScalableImageContainer imagePlace;
     private BufferedImage image;
+    private ArrayList<BufferedImage> images;
 
     public ItemImage() {
         imagePlace = new ScrollableScalableImageContainer();
         this.setLayout(new BorderLayout());
         loadImage();
         imagePlace.setBufferedImage(image);
+        images = new ArrayList<>();
         this.add(imagePlace.getContainer(), BorderLayout.CENTER);
     }
 
@@ -62,8 +65,8 @@ public class ItemImage extends JPanel implements RowIdSelectionListener {
 
     @Override
     public void selectedRowId(int rowId) {
-        byte[] image = CRUDItems.getImage(rowId);
-        imagePlace.setBufferedImage(CRUDItems.toBufferedImage(image));
+        CRUDImages.getImagesByItemId(rowId);
+        // imagePlace.setBufferedImage(CRUDItems.toBufferedImage(image));
     }
 
 }

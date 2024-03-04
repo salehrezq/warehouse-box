@@ -23,8 +23,10 @@
  */
 package warehouse.db;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -67,5 +69,29 @@ public class CRUDImages {
             Connect.cleanUp();
         }
         return insert;
+    }
+
+    public static ArrayList<Image> getImagesByItemId(int itemId) {
+        ArrayList<Image> images = new ArrayList<>();
+        try {
+            String sql = "SELECT image FROM `images` WHERE item_id =" + itemId + " ORDER BY `order` ASC";
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                Image image = new Image();
+                image.setId(result.getInt("id"));
+                image.setItemId(result.getInt("item_id"));
+                image.setImageName(result.getString("name"));
+                image.setOrder(result.getInt("order"));
+                image.setDefaultImage(result.getBoolean("default_image"));
+                image.setScale(result.getObject("scale", BigDecimal.class));
+                images.add(image);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDImages.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return images;
     }
 }

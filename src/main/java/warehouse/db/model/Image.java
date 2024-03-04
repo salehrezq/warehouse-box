@@ -40,14 +40,15 @@ public class Image {
 
     private int id;
     private int itemId;
-    private File imageFile;
+    private String imageName;
     private int order;
     private boolean defaultImage;
     private BigDecimal scale;
     /**
-     * Helper to the program, not mapped in the database.
+     * Following members are helper to the program, not mapped in the database.
      */
     private BufferedImage bufferedImage;
+    private File imageFile;
 
     public int getId() {
         return id;
@@ -65,12 +66,12 @@ public class Image {
         this.itemId = itemId;
     }
 
-    public File getImageFile() {
-        return imageFile;
+    public String getImageName() {
+        return imageName;
     }
 
-    public void setImageFile(File imageFile) {
-        this.imageFile = imageFile;
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
     public int getOrder() {
@@ -98,6 +99,14 @@ public class Image {
 
     public void setScale(BigDecimal scale) {
         this.scale = scale;
+    }
+
+    public File getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(File imageFile) {
+        this.imageFile = imageFile;
     }
 
     public BufferedImage getBufferedImage() {
