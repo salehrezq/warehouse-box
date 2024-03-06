@@ -91,6 +91,8 @@ public class CRUDImages {
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDImages.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
         }
         return images;
     }
