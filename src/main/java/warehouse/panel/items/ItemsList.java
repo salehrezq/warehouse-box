@@ -25,6 +25,8 @@ package warehouse.panel.items;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListSelectionModel;
@@ -63,7 +65,8 @@ public class ItemsList extends JPanel implements CreateListener {
             }
         };
         table = new JTable(model);
-        table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
+        table.addMouseListener(new ItemRowDoubleClickHandler());
+        //    table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
         table.setFillsViewportHeight(true);
         table.getColumnModel().getColumn(0).setPreferredWidth(1);
@@ -133,4 +136,22 @@ public class ItemsList extends JPanel implements CreateListener {
             }
         }
     }
+
+    private class ItemRowDoubleClickHandler extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent mouseEvent) {
+            JTable table = (JTable) mouseEvent.getSource();
+            int viewRow = table.getSelectedRow();
+            if (mouseEvent.getClickCount() == 2 && viewRow != -1) {
+                int itemIdColumnIndex = 0;
+                selectedModelRow = table.convertRowIndexToModel(viewRow);
+                Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
+                Integer itemId = Integer.parseInt(itemIdObject.toString());
+                System.out.println("Item ID " + itemId);
+                notifySelectedRowId(itemId);
+            }
+        }
+    }
+
 }
