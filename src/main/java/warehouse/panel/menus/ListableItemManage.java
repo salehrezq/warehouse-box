@@ -65,7 +65,7 @@ public class ListableItemManage extends Dialog {
         mig = new MigLayout("center center");
         panel = new JPanel(mig);
         btnListener = new BtnListener();
-        label = new JLabel("Quantity unit:");
+        label = new JLabel();
         textField = new JTextField(15);
         btnSubmit = new JButton("Submit");
         btnSubmit.addActionListener(btnListener);
@@ -86,6 +86,7 @@ public class ListableItemManage extends Dialog {
 
     public void setListableImpl(Listable listable) {
         this.listable = listable;
+        label.setText(listable.getLabel());
     }
 
     public void rePopulateUnitsList() {
@@ -105,21 +106,21 @@ public class ListableItemManage extends Dialog {
                 listable.setName(textField.getText());
                 if (CRUDQuantityUnit.isExist(listable)) {
                     JOptionPane.showMessageDialog(thisListableItemManageClass,
-                            "Unit " + textField.getText() + " is already exist!.",
-                            "Duplicate unit",
+                            listable.getLabel() + " " + textField.getText() + " is already exist!.",
+                            "Duplicate entry",
                             JOptionPane.ERROR_MESSAGE);
                     //ManageSourceLocationDialog.this.dispose();
                 } else {
                     if (CRUDQuantityUnit.create(listable) == 1) {
                         rePopulateUnitsList();
                         JOptionPane.showMessageDialog(thisListableItemManageClass,
-                                "Unit " + textField.getText() + " was added successfully.",
+                                listable.getLabel() + " " + textField.getText() + " was added successfully.",
                                 "Success",
                                 JOptionPane.INFORMATION_MESSAGE);
                         textField.setText(null);
                     } else {
                         JOptionPane.showMessageDialog(thisListableItemManageClass,
-                                "Some problem happened, unit CANNOT be added!.",
+                                "Some problem happened; " + listable.getLabel() + " CANNOT be added!.",
                                 "Failure",
                                 JOptionPane.ERROR_MESSAGE);
                     }

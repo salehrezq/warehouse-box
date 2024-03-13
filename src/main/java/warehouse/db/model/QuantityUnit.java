@@ -33,6 +33,7 @@ public class QuantityUnit implements Listable {
 
     private int id;
     private String name;
+    private final String strLabel = "Quantity_unit";
 
     public int getId() {
         return id;
@@ -42,11 +43,18 @@ public class QuantityUnit implements Listable {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getLabel() {
+        return this.strLabel;
     }
 }
