@@ -29,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import warehouse.db.model.QuantityUnit;
 import warehouse.panel.createandupdate.FormManagement;
 
 /**
@@ -43,7 +44,7 @@ public class Menu {
             menuItemMangeStores,
             menuItemMangeUnits;
     private JFrame target;
-    private ManageQuantityUnitDialog manageQuantityUnitDialog;
+    private ListableItemManage manageQuantityUnitDialog;
     private CreateItemDialog createItemDialog;
     private MenuItemsListener menuItemsListener;
 
@@ -62,7 +63,8 @@ public class Menu {
 
         menuItemsListener = new MenuItemsListener();
         createItemDialog = new CreateItemDialog(target, "Create Item", true);
-        manageQuantityUnitDialog = new ManageQuantityUnitDialog(target, "Manage units", true);
+        manageQuantityUnitDialog = new ListableItemManage(target, "Manage units", true);
+        manageQuantityUnitDialog.setListableImpl(new QuantityUnit());
         menuItemMangeQuantityUnit.addActionListener(menuItemsListener);
         menuCreateItem.addActionListener(menuItemsListener);
     }

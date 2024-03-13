@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import warehouse.db.model.QuantityUnit;
+import warehouse.panel.menus.Listable;
 
 /**
  *
@@ -40,7 +41,7 @@ public class CRUDQuantityUnit {
 
     private static Connection con;
 
-    public static int create(QuantityUnit unit) {
+    public static int create(Listable unit) {
         int insert = 0;
         String sqlCreateQuantityUnit = "INSERT INTO quantity_unit (`name`) VALUES (?)";
         con = Connect.getConnection();
@@ -55,8 +56,8 @@ public class CRUDQuantityUnit {
         return insert;
     }
 
-    public static ArrayList<QuantityUnit> getAll() {
-        ArrayList<QuantityUnit> quantityUnits = new ArrayList<>();
+    public static ArrayList<Listable> getAll() {
+        ArrayList<Listable> quantityUnits = new ArrayList<>();
         String sqlSelectStatement = "SELECT * FROM quantity_unit ORDER BY `name` ASC";
         con = Connect.getConnection();
         try {
@@ -65,7 +66,7 @@ public class CRUDQuantityUnit {
             while (result.next()) {
                 QuantityUnit quantityUnit = new QuantityUnit();
                 quantityUnit.setId(result.getInt("id"));
-                quantityUnit.setName(result.getString("unit"));
+                quantityUnit.setName(result.getString("name"));
                 quantityUnits.add(quantityUnit);
             }
         } catch (SQLException ex) {
@@ -92,7 +93,7 @@ public class CRUDQuantityUnit {
         return quantityUnit;
     }
 
-    public static boolean isExist(QuantityUnit unit) {
+    public static boolean isExist(Listable unit) {
         boolean exist = false;
         String sqlIsUnitExist = "SELECT EXISTS(SELECT * FROM quantity_unit WHERE `name` = ?) AS is_unitname_exist";
         con = Connect.getConnection();

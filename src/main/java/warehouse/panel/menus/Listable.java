@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2023 Saleh.
+ * Copyright 2024 Saleh.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,32 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.db.model;
-
-import warehouse.panel.menus.Listable;
+package warehouse.panel.menus;
 
 /**
  *
  * @author Saleh
  */
-public class QuantityUnit implements Listable {
+public interface Listable {
 
-    private int id;
-    private String name;
+    public void setName(String name);
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getName();
 }

@@ -29,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -40,43 +41,42 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 import warehouse.db.CRUDQuantityUnit;
-import warehouse.db.model.QuantityUnit;
 
 /**
  *
  * @author Saleh
  */
-public class ManageQuantityUnitDialog extends Dialog {
+public class ListableItemManage extends Dialog {
 
     private JPanel panel;
     private MigLayout mig;
-    private JLabel lbQuantityUnit;
-    private JTextField tfQuantityUnit;
+    private JLabel label;
+    private JTextField textField;
     private JButton btnSubmit, btnClose;
     private List list;
-    private JList listUnits;
-    private QuantityUnit quantityUnit;
+    private JList listing;
+    private Listable listable;
     private ActionListener btnListener;
-    private ManageQuantityUnitDialog quantityUnitDialog;
+    private ListableItemManage thisListableItemManageClass;
 
-    public ManageQuantityUnitDialog(Frame owner, String title, boolean modal) {
+    public ListableItemManage(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
-        quantityUnitDialog = ManageQuantityUnitDialog.this;
+        thisListableItemManageClass = ListableItemManage.this;
         mig = new MigLayout("center center");
         panel = new JPanel(mig);
         btnListener = new BtnListener();
-        lbQuantityUnit = new JLabel("Quantity unit:");
-        tfQuantityUnit = new JTextField(15);
+        label = new JLabel("Quantity unit:");
+        textField = new JTextField(15);
         btnSubmit = new JButton("Submit");
         btnSubmit.addActionListener(btnListener);
         list = new List();
-        listUnits = list.getJList();
-        listUnits.addMouseListener(new MouseJListHandler());
+        listing = list.getJList();
+        listing.addMouseListener(new MouseJListHandler());
         btnClose = new JButton("Close X");
         btnClose.addActionListener(btnListener);
 
-        panel.add(lbQuantityUnit);
-        panel.add(tfQuantityUnit);
+        panel.add(label);
+        panel.add(textField);
         panel.add(btnSubmit, "wrap");
         panel.add(list.getListScrolledPane(), "span");
         panel.add(btnClose);
@@ -84,44 +84,48 @@ public class ManageQuantityUnitDialog extends Dialog {
         pack();
     }
 
-//    public void rePopulateUnitsList() {
-//        list.removeAllElements();
-//        ArrayList<QuantityUnit> quantityUnits = CRUDQuantityUnit.getAll();
-//        quantityUnits.forEach(unit -> {
-//            list.addElement(unit);
-//        });
-//    }
+    public void setListableImpl(Listable listable) {
+        this.listable = listable;
+    }
+
+    public void rePopulateUnitsList() {
+        list.removeAllElements();
+        ArrayList<Listable> listables = CRUDQuantityUnit.getAll();
+        listables.forEach(listableItem -> {
+            list.addElement(listableItem);
+        });
+    }
+
     private class BtnListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
             if (source == btnSubmit) {
-                quantityUnit = new QuantityUnit();
-                quantityUnit.setName(tfQuantityUnit.getText());
-                if (CRUDQuantityUnit.isExist(quantityUnit)) {
-                    JOptionPane.showMessageDialog(quantityUnitDialog,
-                            "Unit " + tfQuantityUnit.getText() + " is already exist!.",
+                listable.setName(textField.getText());
+                if (CRUDQuantityUnit.isExist(listable)) {
+                    JOptionPane.showMessageDialog(thisListableItemManageClass,
+                            "Unit " + textField.getText() + " is already exist!.",
                             "Duplicate unit",
                             JOptionPane.ERROR_MESSAGE);
                     //ManageSourceLocationDialog.this.dispose();
                 } else {
-                    if (CRUDQuantityUnit.create(quantityUnit) == 1) {
-                        //   rePopulateUnitsList();
-                        JOptionPane.showMessageDialog(quantityUnitDialog,
-                                "Unit " + tfQuantityUnit.getText() + " was added successfully.",
+                    if (CRUDQuantityUnit.create(listable) == 1) {
+                        rePopulateUnitsList();
+                        JOptionPane.showMessageDialog(thisListableItemManageClass,
+                                "Unit " + textField.getText() + " was added successfully.",
                                 "Success",
                                 JOptionPane.INFORMATION_MESSAGE);
-                        tfQuantityUnit.setText(null);
+                        textField.setText(null);
                     } else {
-                        JOptionPane.showMessageDialog(quantityUnitDialog,
+                        JOptionPane.showMessageDialog(thisListableItemManageClass,
                                 "Some problem happened, unit CANNOT be added!.",
                                 "Failure",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } else if (source == btnClose) {
-                quantityUnitDialog.dispose();
+                thisListableItemManageClass.dispose();
             }
         }
     }
@@ -131,7 +135,7 @@ public class ManageQuantityUnitDialog extends Dialog {
         @Override
         public void mousePressed(MouseEvent e) {
             if (SwingUtilities.isRightMouseButton(e)) {
-                listUnits.setSelectedIndex(listUnits.locationToIndex(e.getPoint()));
+                listing.setSelectedIndex(listing.locationToIndex(e.getPoint()));
 
                 JPopupMenu menu = new JPopupMenu();
                 JMenuItem itemRemove = new JMenuItem("Remove");
@@ -142,11 +146,11 @@ public class ManageQuantityUnitDialog extends Dialog {
                         // remove the element with this:
                         //array_list.remove(listbox.getSelectedValue());
                         //listbox.setListData((String[]) array_list.toArray(new String[array_list.size()]));
-                        System.out.println("Remove the element in position " + listUnits.getSelectedValue());
+                        System.out.println("Remove the element in position " + listing.getSelectedValue());
                     }
                 });
                 menu.add(itemRemove);
-                menu.show(listUnits, e.getPoint().x, e.getPoint().y);
+                menu.show(listing, e.getPoint().x, e.getPoint().y);
             }
         }
 
