@@ -100,7 +100,7 @@ public class ManageQuantityUnitDialog extends Dialog {
             Object source = e.getSource();
             if (source == btnSubmit) {
                 quantityUnit = new QuantityUnit();
-                quantityUnit.setUnit(tfQuantityUnit.getText());
+                quantityUnit.setName(tfQuantityUnit.getText());
                 if (CRUDQuantityUnit.isExist(quantityUnit)) {
                     JOptionPane.showMessageDialog(quantityUnitDialog,
                             "Unit " + tfQuantityUnit.getText() + " is already exist!.",

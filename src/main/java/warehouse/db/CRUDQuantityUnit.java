@@ -42,11 +42,11 @@ public class CRUDQuantityUnit {
 
     public static int create(QuantityUnit unit) {
         int insert = 0;
-        String sqlCreateQuantityUnit = "INSERT INTO quantity_unit (`unit`) VALUES (?)";
+        String sqlCreateQuantityUnit = "INSERT INTO quantity_unit (`name`) VALUES (?)";
         con = Connect.getConnection();
         try {
             PreparedStatement createQuantityUnitStatement = con.prepareStatement(sqlCreateQuantityUnit);
-            createQuantityUnitStatement.setString(1, unit.getUnit());
+            createQuantityUnitStatement.setString(1, unit.getName());
             insert = createQuantityUnitStatement.executeUpdate();
             con.commit();
         } catch (SQLException ex) {
@@ -57,7 +57,7 @@ public class CRUDQuantityUnit {
 
     public static ArrayList<QuantityUnit> getAll() {
         ArrayList<QuantityUnit> quantityUnits = new ArrayList<>();
-        String sqlSelectStatement = "SELECT * FROM quantity_unit ORDER BY `unit` ASC";
+        String sqlSelectStatement = "SELECT * FROM quantity_unit ORDER BY `name` ASC";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sqlSelectStatement);
@@ -65,7 +65,7 @@ public class CRUDQuantityUnit {
             while (result.next()) {
                 QuantityUnit quantityUnit = new QuantityUnit();
                 quantityUnit.setId(result.getInt("id"));
-                quantityUnit.setUnit(result.getString("unit"));
+                quantityUnit.setName(result.getString("unit"));
                 quantityUnits.add(quantityUnit);
             }
         } catch (SQLException ex) {
@@ -84,7 +84,7 @@ public class CRUDQuantityUnit {
             while (result.next()) {
                 quantityUnit = new QuantityUnit();
                 quantityUnit.setId(result.getInt("id"));
-                quantityUnit.setUnit(result.getString("unit"));
+                quantityUnit.setName(result.getString("name"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDQuantityUnit.class.getName()).log(Level.SEVERE, null, ex);
@@ -94,14 +94,14 @@ public class CRUDQuantityUnit {
 
     public static boolean isExist(QuantityUnit unit) {
         boolean exist = false;
-        String sqlIsUnitExist = "SELECT EXISTS(SELECT * FROM quantity_unit WHERE `unit` = ?) AS is_unit_exist";
+        String sqlIsUnitExist = "SELECT EXISTS(SELECT * FROM quantity_unit WHERE `name` = ?) AS is_unitname_exist";
         con = Connect.getConnection();
         try {
             PreparedStatement isExistStatement = con.prepareStatement(sqlIsUnitExist);
-            isExistStatement.setString(1, unit.getUnit());
+            isExistStatement.setString(1, unit.getName());
             ResultSet result = isExistStatement.executeQuery();
             if (result.next()) {
-                exist = result.getInt("is_unit_exist") == 1;
+                exist = result.getInt("is_unitname_exist") == 1;
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDQuantityUnit.class.getName()).log(Level.SEVERE, null, ex);
@@ -111,7 +111,7 @@ public class CRUDQuantityUnit {
 
     public static ArrayList<QuantityUnit> getSearch(String str) {
         ArrayList<QuantityUnit> quantityUnits = new ArrayList<>();
-        String sqlSelectStatement = "SELECT * FROM quantity_unit WHERE unit LIKE '%" + str + "%'";
+        String sqlSelectStatement = "SELECT * FROM quantity_unit WHERE name LIKE '%" + str + "%'";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sqlSelectStatement);
@@ -119,7 +119,7 @@ public class CRUDQuantityUnit {
             while (result.next()) {
                 QuantityUnit quantityUnit = new QuantityUnit();
                 quantityUnit.setId(result.getInt("id"));
-                quantityUnit.setUnit(result.getString("unit"));
+                quantityUnit.setName(result.getString("unit"));
                 quantityUnits.add(quantityUnit);
             }
         } catch (SQLException ex) {

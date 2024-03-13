@@ -97,7 +97,7 @@ public class List implements ListSelectionListener {
                     cellHasFocus);
             if (item != null && (item instanceof QuantityUnit)) {
                 QuantityUnit quantityUnit = (QuantityUnit) item;
-                setText(quantityUnit.getUnit());
+                setText(quantityUnit.getName());
             }
             return this;
         }

@@ -30,7 +30,7 @@ package warehouse.db.model;
 public class QuantityUnit {
 
     private int id;
-    private String unit;
+    private String name;
 
     public int getId() {
         return id;
@@ -40,11 +40,11 @@ public class QuantityUnit {
         this.id = id;
     }
 
-    public String getUnit() {
-        return unit;
+    public String getName() {
+        return name;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setName(String name) {
+        this.name = name;
     }
 }

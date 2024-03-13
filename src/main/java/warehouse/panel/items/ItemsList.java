@@ -95,7 +95,7 @@ public class ItemsList extends JPanel implements CreateListener {
             modelRow[0] = item.getId(); //code
             modelRow[1] = item.getName();
             modelRow[2] = item.getSpecification();
-            modelRow[3] = CRUDQuantityUnit.getById(item.getUnitId()).getUnit();
+            modelRow[3] = CRUDQuantityUnit.getById(item.getUnitId()).getName();
             model.addRow(modelRow);
         }
     }
