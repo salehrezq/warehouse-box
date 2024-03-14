@@ -30,6 +30,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import warehouse.db.model.QuantityUnit;
+import warehouse.db.model.Source;
 import warehouse.panel.createandupdate.FormManagement;
 
 /**
@@ -41,10 +42,10 @@ public class Menu {
     private JMenuBar menubar;
     private JMenu menuFile;
     private JMenuItem menuCreateItem, menuItemMangeQuantityUnit,
-            menuItemMangeStores,
+            menuItemMangeSources,
             menuItemMangeUnits;
     private JFrame target;
-    private ListableItemManage manageQuantityUnitDialog;
+    private ListableItemManage manageQuantityUnitDialog, manageSourceDialoge;
     private CreateItemDialog createItemDialog;
     private MenuItemsListener menuItemsListener;
 
@@ -53,11 +54,11 @@ public class Menu {
         menuFile = new JMenu("Manage");
         menuCreateItem = new JMenuItem("Create new item...");
         menuItemMangeQuantityUnit = new JMenuItem("Manage units...");
-        menuItemMangeStores = new JMenuItem("Manage stores...");
+        menuItemMangeSources = new JMenuItem("Manage sources...");
         menuItemMangeUnits = new JMenuItem("Manage units...");
         menuFile.add(menuCreateItem);
         menuFile.add(menuItemMangeQuantityUnit);
-        menuFile.add(menuItemMangeStores);
+        menuFile.add(menuItemMangeSources);
         menuFile.add(menuItemMangeUnits);
         menubar.add(menuFile);
 
@@ -65,7 +66,10 @@ public class Menu {
         createItemDialog = new CreateItemDialog(target, "Create Item", true);
         manageQuantityUnitDialog = new ListableItemManage(target, "Manage units", true);
         manageQuantityUnitDialog.setListableImpl(new QuantityUnit());
+        manageSourceDialoge = new ListableItemManage(target, "Manage Sources", true);
+        manageSourceDialoge.setListableImpl(new Source());
         menuItemMangeQuantityUnit.addActionListener(menuItemsListener);
+        menuItemMangeSources.addActionListener(menuItemsListener);
         menuCreateItem.addActionListener(menuItemsListener);
     }
 
@@ -91,6 +95,9 @@ public class Menu {
                 manageQuantityUnitDialog.setVisible(true);
             } else if (source == menuCreateItem) {
                 createItemDialog.setVisible(true);
+            } else if (source == menuItemMangeSources) {
+                manageSourceDialoge.rePopulateUnitsList();
+                manageSourceDialoge.setVisible(true);
             }
         }
     }

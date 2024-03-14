@@ -62,7 +62,7 @@ public class CRUDListable {
         Listable listableInstance = null;
         String sqlSelectStatement = "SELECT * FROM "
                 + listableImplementation.getDBEntityName()
-                + " ORDER BY `name` ASC";
+                + " ORDER BY `" + listableImplementation.getDBAttributeName() + "` ASC";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sqlSelectStatement);
