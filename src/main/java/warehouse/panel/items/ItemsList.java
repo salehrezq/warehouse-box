@@ -25,16 +25,24 @@ package warehouse.panel.items;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDItems;
 import warehouse.db.CRUDListable;
@@ -55,6 +63,8 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
     private Integer selectedModelRow;
     private ArrayList<RowIdSelectionListener> rowIdSelectionListeners;
     private Listable listableImplementation;
+    private final JPopupMenu popupMenu;
+    private final JMenuItem menuItemAddOfSelectedItem;
 
     public ItemsList() {
 
@@ -67,6 +77,13 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
                 return false;
             }
         };
+
+        popupMenu = new JPopupMenu();
+        popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
+        menuItemAddOfSelectedItem = new JMenuItem("Add items");
+        menuItemAddOfSelectedItem.addActionListener(new PopupMenuItemActionHandler());
+        popupMenu.add(menuItemAddOfSelectedItem);
+
         table = new JTable(model);
         table.addMouseListener(new ItemRowDoubleClickHandler());
         //    table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
@@ -77,6 +94,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         table.getColumnModel().getColumn(2).setPreferredWidth(1);
         table.getColumnModel().getColumn(3).setPreferredWidth(1);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        table.setComponentPopupMenu(popupMenu);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
     }
@@ -160,6 +178,42 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
                 notifySelectedRowId(itemId);
             }
         }
+    }
+
+    private class RowMouseRightClickHandler implements PopupMenuListener {
+
+        @Override
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+            SwingUtilities.invokeLater(() -> {
+                int rowAtPoint = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
+                if (rowAtPoint > -1) {
+                    table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
+                }
+            });
+        }
+
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            // throw new UnsupportedOperationException
+        }
+
+        @Override
+        public void popupMenuCanceled(PopupMenuEvent e) {
+            //throw new UnsupportedOperationException
+        }
+    }
+
+    private class PopupMenuItemActionHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int itemIdColumn = 0;
+            selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
+            Object itemIdObj = table.getModel().getValueAt(selectedModelRow, itemIdColumn);
+            int itemId = Integer.parseInt(itemIdObj.toString());
+            System.out.println(itemId);
+        }
+
     }
 
 }
