@@ -29,9 +29,17 @@ package warehouse.panel.menus;
  */
 public interface Listable {
 
+    public void setId(int id);
+
     public void setName(String name);
 
     public String getName();
 
     public String getLabel();
+
+    public String getDBEntityName();
+
+    public String getDBAttributeName();
+
+    public Listable getNewInstance();
 }

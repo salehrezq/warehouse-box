@@ -31,6 +31,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import utility.imagefilechooser.IMGFileChooser;
+import warehouse.db.model.QuantityUnit;
 
 /**
  *
@@ -58,6 +59,7 @@ public class ItemForm extends JPanel implements Navigatable {
         panelCards.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         itemFormCodeNameSpecs = new ItemFormCodeNameSpecs();
         itemFormQuantityUnit = new ItemFormQuantityUnit();
+        itemFormQuantityUnit.setListableImpl(new QuantityUnit());
         itemFormImage = new ItemFormImage();
         linkListenersToChangeProviders(itemFormImage);
         panelCards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);

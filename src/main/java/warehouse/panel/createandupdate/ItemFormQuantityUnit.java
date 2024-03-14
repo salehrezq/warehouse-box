@@ -37,14 +37,15 @@ import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.miginfocom.swing.MigLayout;
-import warehouse.db.CRUDQuantityUnit;
-import warehouse.db.model.QuantityUnit;
+import warehouse.db.CRUDListable;
+import warehouse.panel.menus.Listable;
+import warehouse.panel.menus.ListableConsumer;
 
 /**
  *
  * @author Saleh
  */
-public class ItemFormQuantityUnit extends JPanel implements Collectable {
+public class ItemFormQuantityUnit extends JPanel implements Collectable, ListableConsumer {
 
     private JTextField tfQuantityUnitSearch;
     private JLabel lbQuantityUnit;
@@ -52,6 +53,7 @@ public class ItemFormQuantityUnit extends JPanel implements Collectable {
     private DeferredDocumentListener docListener;
     private TfQuantityUnitSearchListener tFListener;
     private Map data;
+    private Listable listableImplementation;
 
     public ItemFormQuantityUnit() {
         setLayout(new MigLayout("center center"));
@@ -83,11 +85,16 @@ public class ItemFormQuantityUnit extends JPanel implements Collectable {
         add(list.getList(), "span 2");
     }
 
+    @Override
+    public void setListableImpl(Listable listableImplementation) {
+        this.listableImplementation = listableImplementation;
+    }
+
     public void rePopulateUnitsListSearch() {
         list.removeAllElements();
-        ArrayList<QuantityUnit> quantityUnits = CRUDQuantityUnit.getSearch(tfQuantityUnitSearch.getText());
-        quantityUnits.forEach(unit -> {
-            list.addElement(unit);
+        ArrayList<Listable> listables = CRUDListable.getSearch(listableImplementation, tfQuantityUnitSearch.getText());
+        listables.forEach(listable -> {
+            list.addElement(listable);
         });
     }
 

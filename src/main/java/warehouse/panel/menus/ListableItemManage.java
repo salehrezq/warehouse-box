@@ -40,13 +40,13 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
-import warehouse.db.CRUDQuantityUnit;
+import warehouse.db.CRUDListable;
 
 /**
  *
  * @author Saleh
  */
-public class ListableItemManage extends Dialog {
+public class ListableItemManage extends Dialog implements ListableConsumer {
 
     private JPanel panel;
     private MigLayout mig;
@@ -55,7 +55,7 @@ public class ListableItemManage extends Dialog {
     private JButton btnSubmit, btnClose;
     private List list;
     private JList listing;
-    private Listable listable;
+    private Listable listableImplementation;
     private ActionListener btnListener;
     private ListableItemManage thisListableItemManageClass;
 
@@ -84,14 +84,15 @@ public class ListableItemManage extends Dialog {
         pack();
     }
 
+    @Override
     public void setListableImpl(Listable listable) {
-        this.listable = listable;
+        this.listableImplementation = listable;
         label.setText(listable.getLabel());
     }
 
     public void rePopulateUnitsList() {
         list.removeAllElements();
-        ArrayList<Listable> listables = CRUDQuantityUnit.getAll();
+        ArrayList<Listable> listables = CRUDListable.getAll(listableImplementation);
         listables.forEach(listableItem -> {
             list.addElement(listableItem);
         });
@@ -103,24 +104,24 @@ public class ListableItemManage extends Dialog {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
             if (source == btnSubmit) {
-                listable.setName(textField.getText());
-                if (CRUDQuantityUnit.isExist(listable)) {
+                listableImplementation.setName(textField.getText());
+                if (CRUDListable.isExist(listableImplementation)) {
                     JOptionPane.showMessageDialog(thisListableItemManageClass,
-                            listable.getLabel() + " " + textField.getText() + " is already exist!.",
+                            listableImplementation.getLabel() + " " + textField.getText() + " is already exist!.",
                             "Duplicate entry",
                             JOptionPane.ERROR_MESSAGE);
                     //ManageSourceLocationDialog.this.dispose();
                 } else {
-                    if (CRUDQuantityUnit.create(listable) == 1) {
+                    if (CRUDListable.create(listableImplementation) == 1) {
                         rePopulateUnitsList();
                         JOptionPane.showMessageDialog(thisListableItemManageClass,
-                                listable.getLabel() + " " + textField.getText() + " was added successfully.",
+                                listableImplementation.getLabel() + " " + textField.getText() + " was added successfully.",
                                 "Success",
                                 JOptionPane.INFORMATION_MESSAGE);
                         textField.setText(null);
                     } else {
                         JOptionPane.showMessageDialog(thisListableItemManageClass,
-                                "Some problem happened; " + listable.getLabel() + " CANNOT be added!.",
+                                "Some problem happened; " + listableImplementation.getLabel() + " CANNOT be added!.",
                                 "Failure",
                                 JOptionPane.ERROR_MESSAGE);
                     }

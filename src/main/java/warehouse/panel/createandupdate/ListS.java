@@ -32,7 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import warehouse.db.model.QuantityUnit;
+import warehouse.panel.menus.Listable;
 
 /**
  *
@@ -59,8 +59,8 @@ public class ListS implements ListSelectionListener {
         return scrollPane;
     }
 
-    public void addElement(QuantityUnit quantityUnit) {
-        listModel.addElement(quantityUnit);
+    public void addElement(Listable listable) {
+        listModel.addElement(listable);
     }
 
     public void removeAllElements() {
@@ -98,9 +98,9 @@ public class ListS implements ListSelectionListener {
                     index,
                     isSelected,
                     cellHasFocus);
-            if (item != null && (item instanceof QuantityUnit)) {
-                QuantityUnit quantityUnit = (QuantityUnit) item;
-                setText(quantityUnit.getName());
+            if (item != null && (item instanceof Listable)) {
+                Listable listable = (Listable) item;
+                setText(listable.getName());
             }
             return this;
         }

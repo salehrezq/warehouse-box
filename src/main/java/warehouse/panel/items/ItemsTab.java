@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import warehouse.db.CreateListener;
+import warehouse.db.model.QuantityUnit;
 
 /**
  *
@@ -50,6 +51,7 @@ public class ItemsTab extends JPanel {
 
         itemsSearch = new ItemsSearch();
         itemsList = new ItemsList();
+        itemsList.setListableImpl(new QuantityUnit());
         itemsImages = new ItemImage();
 
         itemsList.addRowIdSelectionListener(itemsImages);

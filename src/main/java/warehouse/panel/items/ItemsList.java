@@ -37,21 +37,24 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDItems;
-import warehouse.db.CRUDQuantityUnit;
+import warehouse.db.CRUDListable;
 import warehouse.db.CreateListener;
 import warehouse.db.model.Item;
+import warehouse.panel.menus.Listable;
+import warehouse.panel.menus.ListableConsumer;
 
 /**
  *
  * @author Saleh
  */
-public class ItemsList extends JPanel implements CreateListener {
+public class ItemsList extends JPanel implements CreateListener, ListableConsumer {
 
     private DefaultTableModel model;
     private JTable table;
     private JScrollPane scrollTable;
     private Integer selectedModelRow;
     private ArrayList<RowIdSelectionListener> rowIdSelectionListeners;
+    private Listable listableImplementation;
 
     public ItemsList() {
 
@@ -76,6 +79,11 @@ public class ItemsList extends JPanel implements CreateListener {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void setListableImpl(Listable listable) {
+        this.listableImplementation = listable;
         created();
     }
 
@@ -95,7 +103,7 @@ public class ItemsList extends JPanel implements CreateListener {
             modelRow[0] = item.getId(); //code
             modelRow[1] = item.getName();
             modelRow[2] = item.getSpecification();
-            modelRow[3] = CRUDQuantityUnit.getById(item.getUnitId()).getName();
+            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();
             model.addRow(modelRow);
         }
     }
