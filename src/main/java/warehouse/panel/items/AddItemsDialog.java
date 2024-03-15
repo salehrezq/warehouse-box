@@ -24,6 +24,7 @@
 package warehouse.panel.items;
 
 import java.awt.Frame;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,6 +45,7 @@ public class AddItemsDialog extends JDialog {
     private DateField dateField;
     private String itemUnit;
     private int itemId;
+    private JButton btnSubmit;
 
     public AddItemsDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -60,12 +62,15 @@ public class AddItemsDialog extends JDialog {
         lbDate = new JLabel("Date");
         dateField = new DateField();
 
+        btnSubmit = new JButton("Submit addition");
+
         container.add(lbQuantity);
         container.add(tfQuantity, "grow");
         container.add(lbQuantityUnit, "wrap");
         container.add(formFieldSource, "span 3,wrap");
         container.add(lbDate);
-        container.add(dateField.getDatePicker(), "span 2");
+        container.add(dateField.getDatePicker(), "span 2, wrap");
+        container.add(btnSubmit, "span 3, center, gapy 10");
         add(container);
         pack();
     }
