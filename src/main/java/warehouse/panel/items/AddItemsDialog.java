@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
+import warehouse.db.model.Source;
 
 /**
  *
@@ -38,26 +39,44 @@ public class AddItemsDialog extends JDialog {
 
     private JPanel container;
     private JTextField tfQuantity;
-    private JLabel lbQuantity, lbSource, lbDate;
+    private FormFieldSource formFieldSource;
+    private JLabel lbQuantity, lbQuantityUnit, lbSource, lbDate;
     private DateField dateField;
+    private String itemUnit;
+    private int itemId;
 
     public AddItemsDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         container = new JPanel();
         container.setLayout(new MigLayout("center center"));
 
+        lbQuantityUnit = new JLabel();
         lbQuantity = new JLabel("Quantity");
-        tfQuantity = new JTextField(10);
+        tfQuantity = new JTextField(5);
+
+        formFieldSource = new FormFieldSource();
+        formFieldSource.setListableImpl(new Source());
 
         lbDate = new JLabel("Date");
         dateField = new DateField();
 
         container.add(lbQuantity);
-        container.add(tfQuantity, "wrap");
+        container.add(tfQuantity, "grow");
+        container.add(lbQuantityUnit, "wrap");
+        container.add(formFieldSource, "span 3,wrap");
         container.add(lbDate);
-        container.add(dateField.getDatePicker(), "wrap");
+        container.add(dateField.getDatePicker(), "span 2");
         add(container);
         pack();
+    }
+
+    public void setItemUnit(String itemUnit) {
+        this.itemUnit = itemUnit;
+        lbQuantityUnit.setText(itemUnit);
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 
 }

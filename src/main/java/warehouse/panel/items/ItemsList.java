@@ -208,10 +208,16 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         @Override
         public void actionPerformed(ActionEvent e) {
             int itemIdColumn = 0;
+            int itemUnitColumn = 3;
+            String itemUnit;
             selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
             Object itemIdObj = table.getModel().getValueAt(selectedModelRow, itemIdColumn);
+            itemUnit = (String) table.getModel().getValueAt(selectedModelRow, itemUnitColumn);
+            System.out.println("unit " + itemUnit);
             int itemId = Integer.parseInt(itemIdObj.toString());
             AddItemsDialog addItemsDialog = new AddItemsDialog(null, "Add items", true);
+            addItemsDialog.setItemId(itemId);
+            addItemsDialog.setItemUnit(itemUnit);
             addItemsDialog.setVisible(true);
             System.out.println(itemId);
         }
