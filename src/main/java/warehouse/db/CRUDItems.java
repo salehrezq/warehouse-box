@@ -64,7 +64,7 @@ public class CRUDItems {
             }
             con.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             Connect.cleanUp();
         }
@@ -102,7 +102,7 @@ public class CRUDItems {
             try {
                 img = ImageIO.read(bis);
             } catch (IOException ex) {
-                Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return img;
