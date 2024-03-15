@@ -24,28 +24,40 @@
 package warehouse.panel.items;
 
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
+import utility.date.DateDeselectedListener;
+import utility.date.DateListener;
+import utility.date.DatePicker;
+import warehouse.db.CRUDItemsAdd;
+import warehouse.db.model.ItemsAdd;
 import warehouse.db.model.Source;
 
 /**
  *
  * @author Saleh
  */
-public class AddItemsDialog extends JDialog {
+public class AddItemsDialog extends JDialog implements
+        DateListener,
+        DateDeselectedListener {
 
     private JPanel container;
     private JTextField tfQuantity;
     private FormFieldSource formFieldSource;
     private JLabel lbQuantity, lbQuantityUnit, lbSource, lbDate;
-    private DateField dateField;
     private String itemUnit;
     private int itemId;
     private JButton btnSubmit;
+    private DatePicker datePicker;
+    private LocalDate selectedDate;
 
     public AddItemsDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -60,19 +72,28 @@ public class AddItemsDialog extends JDialog {
         formFieldSource.setListableImpl(new Source());
 
         lbDate = new JLabel("Date");
-        dateField = new DateField();
+        datePicker = new DatePicker();
+        this.setupDateField(datePicker);
 
         btnSubmit = new JButton("Submit addition");
+        btnSubmit.addActionListener(new BtnSubmitHandler());
 
         container.add(lbQuantity);
         container.add(tfQuantity, "grow");
         container.add(lbQuantityUnit, "wrap");
         container.add(formFieldSource, "span 3,wrap");
         container.add(lbDate);
-        container.add(dateField.getDatePicker(), "span 2, wrap");
+        container.add(datePicker.getDatePicker(), "span 2, wrap");
         container.add(btnSubmit, "span 3, center, gapy 10");
         add(container);
         pack();
+    }
+
+    private void setupDateField(DatePicker datePicker) {
+        datePicker.setTodayAsDefault();
+        datePicker.addDateListener(this);
+        datePicker.addDateDeselectedListener(this);
+        selectedDate = datePicker.getDate();
     }
 
     public void setItemUnit(String itemUnit) {
@@ -84,4 +105,28 @@ public class AddItemsDialog extends JDialog {
         this.itemId = itemId;
     }
 
+    @Override
+    public void dateChanged(LocalDate date) {
+        selectedDate = date;
+    }
+
+    @Override
+    public void dateDeselected() {
+        System.out.println("dateDeselected");
+    }
+
+    private class BtnSubmitHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
+            ItemsAdd itemsAdd = new ItemsAdd();
+            itemsAdd.setItemId(itemId);
+            itemsAdd.setQuantity(bigDecimal);
+            itemsAdd.setDate(selectedDate);
+            Source source = (Source) formFieldSource.getSelectedValue();
+            itemsAdd.setSourceId(source.getId());
+            CRUDItemsAdd.create(itemsAdd);
+        }
+    }
 }

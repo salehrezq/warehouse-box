@@ -71,8 +71,8 @@ public class ListS implements ListSelectionListener {
         list.addListSelectionListener(this);
     }
 
-    public Object getSelectedValue() {
-        return list.getSelectedValue();
+    public Listable getSelectedValue() {
+        return (Listable) list.getSelectedValue();
     }
 
     public void setSize(int width, int height) {
@@ -98,6 +98,7 @@ public class ListS implements ListSelectionListener {
                     index,
                     isSelected,
                     cellHasFocus);
+
             if (item != null && (item instanceof Listable)) {
                 Listable listable = (Listable) item;
                 setText(listable.getName());

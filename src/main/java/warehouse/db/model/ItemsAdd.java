@@ -21,58 +21,61 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.items;
+package warehouse.db.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import org.jdatepicker.impl.JDatePickerImpl;
-import utility.date.DateDeselectedListener;
-import utility.date.DateListener;
-import utility.date.DatePicker;
 
 /**
  *
  * @author Saleh
  */
-public class DateField implements
-        DateListener,
-        DateDeselectedListener {
+public class ItemsAdd {
 
-    private DatePicker datePicker;
-    private LocalDate selectedDate;
+    private int id;
+    private int itemId;
+    private BigDecimal quantity;
+    private LocalDate date;
+    private int sourceId;
 
-    public DateField() {
-        setupfield();
-        // initial setting
-
+    public int getId() {
+        return id;
     }
 
-    private void setupfield() {
-        datePicker = new DatePicker();
-        datePicker.setTodayAsDefault();
-        datePicker.addDateListener(this);
-        datePicker.addDateDeselectedListener(this);
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public JDatePickerImpl getDatePicker() {
-        return datePicker.getDatePicker();
+    public int getItemId() {
+        return itemId;
     }
 
-    private void setDate(LocalDate date) {
-        this.selectedDate = date;
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
+    }
+
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
     }
 
     public LocalDate getDate() {
-        return this.selectedDate;
+        return date;
     }
 
-    @Override
-    public void dateChanged(LocalDate date) {
-        setDate(date);
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
-    @Override
-    public void dateDeselected() {
-        System.out.println("date dateDeselected");
+    public int getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(int sourceId) {
+        this.sourceId = sourceId;
     }
 
 }

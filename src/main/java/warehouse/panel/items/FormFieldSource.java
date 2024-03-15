@@ -103,6 +103,10 @@ public class FormFieldSource extends JPanel implements ListableConsumer {
         });
     }
 
+    public Listable getSelectedValue() {
+        return list.getSelectedValue();
+    }
+
     public void clearFields() {
         tfQuantityUnitSearch.setText("");
     }
