@@ -211,9 +211,10 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
             selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
             Object itemIdObj = table.getModel().getValueAt(selectedModelRow, itemIdColumn);
             int itemId = Integer.parseInt(itemIdObj.toString());
+            AddItemsDialog addItemsDialog = new AddItemsDialog(null, "Add items", true);
+            addItemsDialog.setVisible(true);
             System.out.println(itemId);
         }
-
     }
 
 }
