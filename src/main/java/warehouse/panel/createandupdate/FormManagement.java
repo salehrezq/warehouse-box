@@ -117,10 +117,9 @@ public class FormManagement extends JPanel {
                 item = new Item();
                 images = new ArrayList<>();
                 collectables.forEach((c) -> {
-                    if (c instanceof ItemFormCodeNameSpecs) {
+                    if (c instanceof ItemFormTextFields) {
                         item.setName((String) c.collect().get("name"));
                         item.setSpecification((String) c.collect().get("specs"));
-                    } else if (c instanceof ItemFormQuantityUnit) {
                         QuantityUnit qty = (QuantityUnit) c.collect().get("unit");
                         item.setUnitId(qty.getId());
                     } else if (c instanceof ItemFormImage) {

@@ -29,48 +29,51 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
+import warehouse.db.model.QuantityUnit;
 
 /**
  *
  * @author Saleh
  */
-public class ItemFormCodeNameSpecs extends JPanel implements Collectable {
+public class ItemFormTextFields extends JPanel implements Collectable {
 
-    private JTextField tfCode, tfName, tfSpecs;
-    private JLabel lbCode, lbName, lbSpecs;
+    private JTextField tfName, tfSpecs;
+    private JLabel lbName, lbSpecs;
+    private ItemFormQuantityUnit itemFormQuantityUnit;
     private Map data;
 
-    public ItemFormCodeNameSpecs() {
+    public ItemFormTextFields() {
 
         setLayout(new MigLayout("center center"));
         data = new HashMap<String, String>();
 
-        lbCode = new JLabel("code");
         lbName = new JLabel("Name");
         lbSpecs = new JLabel("Specs");
 
-        tfCode = new JTextField(40);
         tfName = new JTextField(40);
         tfSpecs = new JTextField(40);
 
-        add(lbCode);
-        add(tfCode, "wrap");
+        itemFormQuantityUnit = new ItemFormQuantityUnit();
+        itemFormQuantityUnit.setListableImpl(new QuantityUnit());
+
         add(lbName);
         add(tfName, "wrap");
         add(lbSpecs);
-        add(tfSpecs);
+        add(tfSpecs, "wrap");
+        add(itemFormQuantityUnit, "center, span 2");
     }
 
     @Override
     public Map collect() {
         data.put("name", tfName.getText());
         data.put("specs", tfSpecs.getText());
+        data.put("unit", itemFormQuantityUnit.getSelectedValue());
         return data;
     }
 
     public void clearFields() {
-        tfCode.setText("");
         tfName.setText("");
         tfSpecs.setText("");
+        itemFormQuantityUnit.clearFields();
     }
 }

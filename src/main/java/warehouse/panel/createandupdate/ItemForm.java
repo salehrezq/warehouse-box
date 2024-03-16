@@ -31,7 +31,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import utility.imagefilechooser.IMGFileChooser;
-import warehouse.db.model.QuantityUnit;
 
 /**
  *
@@ -41,11 +40,9 @@ public class ItemForm extends JPanel implements Navigatable {
 
     private JPanel panelCards;
     private CardLayout cardLayout;
-    private final static String FORMCODENAMESPECS = "Card code name specs";
-    private final static String QUANTITY_UNIT = "Card quantity unit";
+    private final static String FORMTEXTFIELDS = "Form text fields";
     private final static String IMAGEPREVIEW = "Card image";
-    private ItemFormCodeNameSpecs itemFormCodeNameSpecs;
-    private ItemFormQuantityUnit itemFormQuantityUnit;
+    private ItemFormTextFields itemFormTextFields;
     private ItemFormImage itemFormImage;
     private FormManagement formManagement;
     private ArrayList<Collectable> collectables;
@@ -57,18 +54,14 @@ public class ItemForm extends JPanel implements Navigatable {
         cardLayout = new CardLayout();
         panelCards = new JPanel(cardLayout);
         panelCards.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
-        itemFormCodeNameSpecs = new ItemFormCodeNameSpecs();
-        itemFormQuantityUnit = new ItemFormQuantityUnit();
-        itemFormQuantityUnit.setListableImpl(new QuantityUnit());
+        itemFormTextFields = new ItemFormTextFields();
         itemFormImage = new ItemFormImage();
         linkListenersToChangeProviders(itemFormImage);
-        panelCards.add(itemFormCodeNameSpecs, FORMCODENAMESPECS);
-        panelCards.add(itemFormQuantityUnit, QUANTITY_UNIT);
+        panelCards.add(itemFormTextFields, FORMTEXTFIELDS);
         panelCards.add(itemFormImage.getFormContainer(), IMAGEPREVIEW);
-        collectables.add(itemFormCodeNameSpecs);
-        collectables.add(itemFormQuantityUnit);
+        collectables.add(itemFormTextFields);
         collectables.add(itemFormImage);
-        cardLayout.show(panelCards, FORMCODENAMESPECS);
+        cardLayout.show(panelCards, FORMTEXTFIELDS);
         formManagement = new FormManagement(collectables);
         formManagement.setFormLastStep(panelCards.getComponentCount());
         formManagement.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
@@ -98,8 +91,7 @@ public class ItemForm extends JPanel implements Navigatable {
     }
 
     public void clearFields() {
-        itemFormCodeNameSpecs.clearFields();
-        itemFormQuantityUnit.clearFields();
+        itemFormTextFields.clearFields();
         itemFormImage.clearFields();
     }
 

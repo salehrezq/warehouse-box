@@ -45,7 +45,7 @@ import warehouse.panel.menus.ListableConsumer;
  *
  * @author Saleh
  */
-public class ItemFormQuantityUnit extends JPanel implements Collectable, ListableConsumer {
+public class ItemFormQuantityUnit extends JPanel implements ListableConsumer {
 
     private JTextField tfQuantityUnitSearch;
     private JLabel lbQuantityUnit;
@@ -59,10 +59,10 @@ public class ItemFormQuantityUnit extends JPanel implements Collectable, Listabl
         setLayout(new MigLayout("center center"));
         data = new HashMap<String, String>();
         list = new ListS();
-        list.setSize(300, 300);
+        list.setSize(250, 250);
 
         lbQuantityUnit = new JLabel("Search & select");
-        tfQuantityUnitSearch = new JTextField(17);
+        tfQuantityUnitSearch = new JTextField(12);
         tFListener = new TfQuantityUnitSearchListener();
         docListener = new DeferredDocumentListener(700, tFListener, false);
         tfQuantityUnitSearch.getDocument().addDocumentListener(docListener);
@@ -98,10 +98,8 @@ public class ItemFormQuantityUnit extends JPanel implements Collectable, Listabl
         });
     }
 
-    @Override
-    public Map collect() {
-        data.put("unit", list.getSelectedValue());
-        return data;
+    public Listable getSelectedValue() {
+        return this.list.getSelectedValue();
     }
 
     public void clearFields() {
