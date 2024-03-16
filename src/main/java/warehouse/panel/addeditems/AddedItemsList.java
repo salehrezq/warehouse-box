@@ -45,10 +45,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
-import warehouse.db.CRUDItems;
-import warehouse.db.CRUDListable;
+import warehouse.db.CRUDAddedItems;
 import warehouse.db.CreateListener;
-import warehouse.db.model.Item;
+import warehouse.db.model.AddedItemsExtra;
 import warehouse.panel.menus.Listable;
 import warehouse.panel.menus.ListableConsumer;
 
@@ -71,7 +70,7 @@ public class AddedItemsList extends JPanel implements CreateListener, ListableCo
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
-        model = new DefaultTableModel(new String[]{"Code", "Name", "Specification", "Unit"}, 0) {
+        model = new DefaultTableModel(new String[]{"Item code", "Addition code", "Qty.", "Unit", "Source", "Date"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Disable cells editing.
@@ -90,10 +89,12 @@ public class AddedItemsList extends JPanel implements CreateListener, ListableCo
         //    table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
         table.setFillsViewportHeight(true);
-        table.getColumnModel().getColumn(0).setPreferredWidth(1);
-        table.getColumnModel().getColumn(1).setPreferredWidth(1);
-        table.getColumnModel().getColumn(2).setPreferredWidth(1);
+        table.getColumnModel().getColumn(0).setPreferredWidth(2);
+        table.getColumnModel().getColumn(1).setPreferredWidth(2);
+        table.getColumnModel().getColumn(2).setPreferredWidth(2);
         table.getColumnModel().getColumn(3).setPreferredWidth(1);
+        table.getColumnModel().getColumn(4).setPreferredWidth(2);
+        table.getColumnModel().getColumn(5).setPreferredWidth(2);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setComponentPopupMenu(popupMenu);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -108,21 +109,26 @@ public class AddedItemsList extends JPanel implements CreateListener, ListableCo
 
     @Override
     public void created() {
-        System.out.println("Refresh items to reflect newly created item");
+        System.out.println("Refresh items to reflect newly added item");
         // Clear the model every time, to append fresh results
         // and not accumulate on previous results
         model.setRowCount(0);
-        List<Item> itemsRecords = new ArrayList();
-        itemsRecords = CRUDItems.getAll();
-        Object[] modelRow = new Object[5];
-
-        int size = itemsRecords.size();
+        List<AddedItemsExtra> addedItemsExtras = new ArrayList();
+        addedItemsExtras = CRUDAddedItems.getAll();
+        Object[] modelRow = new Object[6];
+// {"Item code", "Addition code", "Qty.", "Unit", "Source", "Date"}, 0) {
+        int size = addedItemsExtras.size();
         for (int i = 0; i < size; i++) {
-            Item item = itemsRecords.get(i);
-            modelRow[0] = item.getId(); //code
-            modelRow[1] = item.getName();
-            modelRow[2] = item.getSpecification();
-            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();
+            AddedItemsExtra addedItemsExtra = addedItemsExtras.get(i);
+            modelRow[0] = addedItemsExtra.getItemIdd(); //code
+            modelRow[1] = addedItemsExtra.getAdditionId();
+            modelRow[2] = addedItemsExtra.getQuantity();
+            modelRow[3] = addedItemsExtra.getUnitName();
+            modelRow[4] = addedItemsExtra.getSource();
+            modelRow[5] = addedItemsExtra.getDate();
+//            modelRow[1] = item.getName();
+//            modelRow[2] = item.getSpecification();
+//            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();
             model.addRow(modelRow);
         }
     }
@@ -208,19 +214,19 @@ public class AddedItemsList extends JPanel implements CreateListener, ListableCo
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int itemIdColumn = 0;
-            int itemUnitColumn = 3;
-            String itemUnit;
-            selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
-            Object itemIdObj = table.getModel().getValueAt(selectedModelRow, itemIdColumn);
-            itemUnit = (String) table.getModel().getValueAt(selectedModelRow, itemUnitColumn);
-            System.out.println("unit " + itemUnit);
-            int itemId = Integer.parseInt(itemIdObj.toString());
-            AddItemsDialog addItemsDialog = new AddItemsDialog(null, "Add items", true);
-            addItemsDialog.setItemId(itemId);
-            addItemsDialog.setItemUnit(itemUnit);
-            addItemsDialog.setVisible(true);
-            System.out.println(itemId);
+//            int itemIdColumn = 0;
+//            int itemUnitColumn = 3;
+//            String itemUnit;
+//            selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
+//            Object itemIdObj = table.getModel().getValueAt(selectedModelRow, itemIdColumn);
+//            itemUnit = (String) table.getModel().getValueAt(selectedModelRow, itemUnitColumn);
+//            System.out.println("unit " + itemUnit);
+//            int itemId = Integer.parseInt(itemIdObj.toString());
+//            AddItemsDialog addItemsDialog = new AddItemsDialog(null, "Add items", true);
+//            addItemsDialog.setItemId(itemId);
+//            addItemsDialog.setItemUnit(itemUnit);
+//            addItemsDialog.setVisible(true);
+            System.out.println("Placeholder to implement");
         }
     }
 

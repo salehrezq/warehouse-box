@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import warehouse.db.model.AddedItems;
+import warehouse.db.model.AddedItemsExtra;
 
 /**
  *
@@ -68,29 +69,38 @@ public class CRUDAddedItems {
         return addedItems;
     }
 
-    public static ArrayList<AddedItems> getAll() {
+    public static ArrayList<AddedItemsExtra> getAll() {
 
-        ArrayList<AddedItems> addedItemses = new ArrayList<>();
+        ArrayList<AddedItemsExtra> addedItemsExtras = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM `added_items` ORDER BY `date` ASC";
+            String sql = "SELECT ad.item_id AS item_id, ad.id AS addition_id,"
+                    + " ad.quantity, u.name AS unit_name, s.information AS source,"
+                    + " ad.date, i.name AS item_name, i.specification AS item_specs"
+                    + " FROM added_items as ad JOIN items AS i JOIN quantity_unit AS u JOIN source AS s"
+                    + " ON (ad.item_id = i.id) AND (i.unit_id = u.id) AND (s.id = ad.source_id)"
+                    + " ORDER BY ad.date ASC;";
+
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
             ResultSet result = p.executeQuery();
             while (result.next()) {
-                AddedItems addedItems = new AddedItems();
-                addedItems.setId(result.getInt("id"));
-                addedItems.setItemId(result.getInt("item_id"));
-                addedItems.setQuantity(result.getBigDecimal("quantity"));
-                addedItems.setDate(result.getDate("date").toLocalDate());
-                addedItems.setSourceId(result.getInt("source_id"));
-                addedItemses.add(addedItems);
+                AddedItemsExtra addedItemsExtra = new AddedItemsExtra();
+                addedItemsExtra.setItemIdd(result.getInt("item_id"));
+                addedItemsExtra.setAdditionId(result.getInt("addition_id"));
+                addedItemsExtra.setQuantity(result.getBigDecimal("quantity"));
+                addedItemsExtra.setUnitName(result.getString("unit_name"));
+                addedItemsExtra.setSource(result.getString("source"));
+                addedItemsExtra.setDate(result.getDate("date").toLocalDate());
+                addedItemsExtra.setItemName(result.getString("item_name"));
+                addedItemsExtra.setItemSpecs(result.getString("item_specs"));
+                addedItemsExtras.add(addedItemsExtra);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDAddedItems.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return addedItemses;
+        return addedItemsExtras;
     }
 
 }

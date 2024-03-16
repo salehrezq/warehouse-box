@@ -28,6 +28,7 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import warehouse.db.CreateListener;
+import warehouse.panel.addeditems.AddedItemsTab;
 import warehouse.panel.items.ItemsTab;
 
 /**
@@ -38,14 +39,17 @@ public class Tabs extends JPanel {
 
     private JTabbedPane tabs;
     private ItemsTab itemsTab;
+    private AddedItemsTab addedItemsTab;
 
     public Tabs() {
 
         this.setLayout(new BorderLayout());
         tabs = new JTabbedPane();
         itemsTab = new ItemsTab();
+        addedItemsTab = new AddedItemsTab();
 
         tabs.add(itemsTab, "Items");
+        tabs.add(addedItemsTab, "Added items");
         this.add(tabs, BorderLayout.CENTER);
         this.setPreferredSize(new Dimension(1000, 500));
 
