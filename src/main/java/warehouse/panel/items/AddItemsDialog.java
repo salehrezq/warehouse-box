@@ -37,8 +37,8 @@ import net.miginfocom.swing.MigLayout;
 import utility.date.DateDeselectedListener;
 import utility.date.DateListener;
 import utility.date.DatePicker;
-import warehouse.db.CRUDItemsAdd;
-import warehouse.db.model.ItemsAdd;
+import warehouse.db.CRUDAddedItems;
+import warehouse.db.model.AddedItems;
 import warehouse.db.model.Source;
 
 /**
@@ -120,13 +120,13 @@ public class AddItemsDialog extends JDialog implements
         @Override
         public void actionPerformed(ActionEvent e) {
             BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
-            ItemsAdd itemsAdd = new ItemsAdd();
+            AddedItems itemsAdd = new AddedItems();
             itemsAdd.setItemId(itemId);
             itemsAdd.setQuantity(bigDecimal);
             itemsAdd.setDate(selectedDate);
             Source source = (Source) formFieldSource.getSelectedValue();
             itemsAdd.setSourceId(source.getId());
-            CRUDItemsAdd.create(itemsAdd);
+            CRUDAddedItems.create(itemsAdd);
         }
     }
 }

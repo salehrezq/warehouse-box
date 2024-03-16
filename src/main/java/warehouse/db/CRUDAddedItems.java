@@ -31,66 +31,66 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import warehouse.db.model.ItemsAdd;
+import warehouse.db.model.AddedItems;
 
 /**
  *
  * @author Saleh
  */
-public class CRUDItemsAdd {
+public class CRUDAddedItems {
 
     private static Connection con;
 
-    public static ItemsAdd create(ItemsAdd itemAdd) {
-        String sql = "INSERT INTO items_add (`item_id`, `quantity`, `date`, `source_id`) VALUES (?, ?, ?, ?)";
+    public static AddedItems create(AddedItems addedItems) {
+        String sql = "INSERT INTO added_items (`item_id`, `quantity`, `date`, `source_id`) VALUES (?, ?, ?, ?)";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            p.setInt(1, itemAdd.getItemId());
-            p.setBigDecimal(2, itemAdd.getQuantity());
-            p.setObject(3, itemAdd.getDate());
-            p.setInt(4, itemAdd.getSourceId());
+            p.setInt(1, addedItems.getItemId());
+            p.setBigDecimal(2, addedItems.getQuantity());
+            p.setObject(3, addedItems.getDate());
+            p.setInt(4, addedItems.getSourceId());
             p.executeUpdate();
 
             try (ResultSet generatedKeys = p.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    itemAdd.setId(generatedKeys.getInt(1));
+                    addedItems.setId(generatedKeys.getInt(1));
                 } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
             }
             con.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(CRUDItemsAdd.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDAddedItems.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             Connect.cleanUp();
         }
-        return itemAdd;
+        return addedItems;
     }
 
-    public static ArrayList<ItemsAdd> getAll() {
+    public static ArrayList<AddedItems> getAll() {
 
-        ArrayList<ItemsAdd> itemsAdds = new ArrayList<>();
+        ArrayList<AddedItems> addedItemses = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM `items_add` ORDER BY `date` ASC";
+            String sql = "SELECT * FROM `added_items` ORDER BY `date` ASC";
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
             ResultSet result = p.executeQuery();
             while (result.next()) {
-                ItemsAdd itemAdd = new ItemsAdd();
-                itemAdd.setId(result.getInt("id"));
-                itemAdd.setItemId(result.getInt("item_id"));
-                itemAdd.setQuantity(result.getBigDecimal("quantity"));
-                itemAdd.setDate(result.getDate("date").toLocalDate());
-                itemAdd.setSourceId(result.getInt("source_id"));
-                itemsAdds.add(itemAdd);
+                AddedItems addedItems = new AddedItems();
+                addedItems.setId(result.getInt("id"));
+                addedItems.setItemId(result.getInt("item_id"));
+                addedItems.setQuantity(result.getBigDecimal("quantity"));
+                addedItems.setDate(result.getDate("date").toLocalDate());
+                addedItems.setSourceId(result.getInt("source_id"));
+                addedItemses.add(addedItems);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CRUDItemsAdd.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDAddedItems.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return itemsAdds;
+        return addedItemses;
     }
 
 }
