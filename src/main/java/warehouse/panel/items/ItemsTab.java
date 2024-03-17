@@ -72,7 +72,7 @@ public class ItemsTab extends JPanel {
         add(splitRightAndLeftPanes);
     }
 
-    public CreateListener getCreateListenerItemsList() {
+    public CreateListener getItemsListCreateListener() {
         return itemsList;
     }
 }

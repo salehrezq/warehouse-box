@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import warehouse.db.CreateListener;
 import warehouse.panel.addeditems.AddedItemsTab;
+import warehouse.panel.items.ItemsList;
 import warehouse.panel.items.ItemsTab;
 
 /**
@@ -48,14 +49,17 @@ public class Tabs extends JPanel {
         itemsTab = new ItemsTab();
         addedItemsTab = new AddedItemsTab();
 
+        ((ItemsList) itemsTab.getItemsListCreateListener())
+                .getAddedItemsDialog()
+                .addCreateListener(addedItemsTab.getAddedItemsListCreateListener());
+
         tabs.add(itemsTab, "Items");
         tabs.add(addedItemsTab, "Added items");
         this.add(tabs, BorderLayout.CENTER);
         this.setPreferredSize(new Dimension(1000, 500));
-
     }
 
     public CreateListener getCreateListenerItemsList() {
-        return itemsTab.getCreateListenerItemsList();
+        return itemsTab.getItemsListCreateListener();
     }
 }

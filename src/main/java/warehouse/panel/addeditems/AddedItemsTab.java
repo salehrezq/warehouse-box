@@ -41,7 +41,7 @@ public class AddedItemsTab extends JPanel {
     private JPanel panelGatherLeft;
     private JPanel panelGatherRight;
     private ItemsSearch itemsSearch;
-    private AddedItemsList itemsList;
+    private AddedItemsList addedItemsList;
     private ItemImage itemsImages;
 
     public AddedItemsTab() {
@@ -51,17 +51,17 @@ public class AddedItemsTab extends JPanel {
         panelGatherRight = new JPanel(new BorderLayout());
 
         itemsSearch = new ItemsSearch();
-        itemsList = new AddedItemsList();
-        itemsList.setListableImpl(new QuantityUnit());
+        addedItemsList = new AddedItemsList();
+        addedItemsList.setListableImpl(new QuantityUnit());
         itemsImages = new ItemImage();
 
-        itemsList.addRowIdSelectionListener(itemsImages);
+        addedItemsList.addRowIdSelectionListener(itemsImages);
 
         // Add the scroll panes to a split pane.
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitSearchAndItemsListPane.setDividerSize(5);
         splitSearchAndItemsListPane.setTopComponent(itemsSearch);
-        splitSearchAndItemsListPane.setBottomComponent(itemsList);
+        splitSearchAndItemsListPane.setBottomComponent(addedItemsList);
         panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
         panelGatherRight.add(itemsImages.getFormContainer(), BorderLayout.CENTER);
 
@@ -73,7 +73,7 @@ public class AddedItemsTab extends JPanel {
         add(splitRightAndLeftPanes);
     }
 
-    public CreateListener getCreateListenerItemsList() {
-        return itemsList;
+    public CreateListener getAddedItemsListCreateListener() {
+        return addedItemsList;
     }
 }

@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -38,6 +39,7 @@ import utility.date.DateDeselectedListener;
 import utility.date.DateListener;
 import utility.date.DatePicker;
 import warehouse.db.CRUDAddedItems;
+import warehouse.db.CreateListener;
 import warehouse.db.model.AddedItems;
 import warehouse.db.model.Source;
 
@@ -58,9 +60,11 @@ public class AddItemsDialog extends JDialog implements
     private JButton btnSubmit;
     private DatePicker datePicker;
     private LocalDate selectedDate;
+    private ArrayList<CreateListener> createListeners;
 
     public AddItemsDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
+        createListeners = new ArrayList<>();
         container = new JPanel();
         container.setLayout(new MigLayout("center center"));
 
@@ -115,6 +119,16 @@ public class AddItemsDialog extends JDialog implements
         System.out.println("dateDeselected");
     }
 
+    public void addCreateListener(CreateListener createListener) {
+        this.createListeners.add(createListener);
+    }
+
+    public void notifyCreated() {
+        this.createListeners.forEach((createListener) -> {
+            createListener.created();
+        });
+    }
+
     private class BtnSubmitHandler implements ActionListener {
 
         @Override
@@ -126,7 +140,9 @@ public class AddItemsDialog extends JDialog implements
             itemsAdd.setDate(selectedDate);
             Source source = (Source) formFieldSource.getSelectedValue();
             itemsAdd.setSourceId(source.getId());
-            CRUDAddedItems.create(itemsAdd);
+            if (CRUDAddedItems.create(itemsAdd) != null) {
+                notifyCreated();
+            }
         }
     }
 }
