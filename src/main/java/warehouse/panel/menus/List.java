@@ -23,6 +23,7 @@
  */
 package warehouse.panel.menus;
 
+import warehouse.singularlisting.Listable;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.DefaultListCellRenderer;

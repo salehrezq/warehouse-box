@@ -23,7 +23,7 @@
  */
 package warehouse.db.model;
 
-import warehouse.panel.menus.Listable;
+import warehouse.singularlisting.Listable;
 
 /**
  *

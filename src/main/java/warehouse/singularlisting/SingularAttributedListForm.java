@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2023 Saleh.
+ * Copyright 2024 Saleh.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,15 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.createandupdate;
+package warehouse.singularlisting;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -38,35 +36,31 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.miginfocom.swing.MigLayout;
 import warehouse.db.CRUDListable;
-import warehouse.panel.menus.Listable;
-import warehouse.panel.menus.ListableConsumer;
 
 /**
  *
  * @author Saleh
  */
-public class ItemFormQuantityUnit extends JPanel implements ListableConsumer {
+public class SingularAttributedListForm extends JPanel implements ListableConsumer {
 
-    private JTextField tfQuantityUnitSearch;
-    private JLabel lbQuantityUnit;
+    private JTextField tfSearch;
+    private JLabel lbText;
     private ListS list;
     private DeferredDocumentListener docListener;
-    private TfQuantityUnitSearchListener tFListener;
-    private Map data;
+    private TfSearchListener tFListener;
+    ;
     private Listable listableImplementation;
 
-    public ItemFormQuantityUnit() {
+    public SingularAttributedListForm() {
         setLayout(new MigLayout("center center"));
-        data = new HashMap<String, String>();
         list = new ListS();
-        list.setSize(250, 250);
 
-        lbQuantityUnit = new JLabel("Search & select");
-        tfQuantityUnitSearch = new JTextField(12);
-        tFListener = new TfQuantityUnitSearchListener();
+        lbText = new JLabel("Search & select");
+        tfSearch = new JTextField(12);
+        tFListener = new TfSearchListener();
         docListener = new DeferredDocumentListener(700, tFListener, false);
-        tfQuantityUnitSearch.getDocument().addDocumentListener(docListener);
-        tfQuantityUnitSearch.addFocusListener(new FocusListener() {
+        tfSearch.getDocument().addDocumentListener(docListener);
+        tfSearch.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 // no writting
@@ -80,9 +74,13 @@ public class ItemFormQuantityUnit extends JPanel implements ListableConsumer {
             }
         });
 
-        add(lbQuantityUnit);
-        add(tfQuantityUnitSearch, "wrap");
+        add(lbText);
+        add(tfSearch, "wrap");
         add(list.getList(), "span 2");
+    }
+
+    public void setListDimentions(int width, int height) {
+        list.setSize(width, height);
     }
 
     @Override
@@ -92,7 +90,7 @@ public class ItemFormQuantityUnit extends JPanel implements ListableConsumer {
 
     public void rePopulateUnitsListSearch() {
         list.removeAllElements();
-        ArrayList<Listable> listables = CRUDListable.getSearch(listableImplementation, tfQuantityUnitSearch.getText());
+        ArrayList<Listable> listables = CRUDListable.getSearch(listableImplementation, tfSearch.getText());
         listables.forEach(listable -> {
             list.addElement(listable);
         });
@@ -103,14 +101,14 @@ public class ItemFormQuantityUnit extends JPanel implements ListableConsumer {
     }
 
     public void clearFields() {
-        tfQuantityUnitSearch.setText("");
+        tfSearch.setText("");
     }
 
-    private class TfQuantityUnitSearchListener implements ActionListener {
+    private class TfSearchListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!tfQuantityUnitSearch.getText().isBlank()) {
+            if (!tfSearch.getText().isBlank()) {
                 rePopulateUnitsListSearch();
             }
         }

@@ -48,8 +48,8 @@ import warehouse.db.CRUDItems;
 import warehouse.db.CRUDListable;
 import warehouse.db.CreateListener;
 import warehouse.db.model.Item;
-import warehouse.panel.menus.Listable;
-import warehouse.panel.menus.ListableConsumer;
+import warehouse.singularlisting.Listable;
+import warehouse.singularlisting.ListableConsumer;
 
 /**
  *

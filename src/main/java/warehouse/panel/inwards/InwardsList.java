@@ -48,8 +48,8 @@ import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDInwards;
 import warehouse.db.CreateListener;
 import warehouse.db.model.InwardMeta;
-import warehouse.panel.menus.Listable;
-import warehouse.panel.menus.ListableConsumer;
+import warehouse.singularlisting.Listable;
+import warehouse.singularlisting.ListableConsumer;
 
 /**
  *

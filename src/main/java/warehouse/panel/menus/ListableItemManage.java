@@ -23,6 +23,8 @@
  */
 package warehouse.panel.menus;
 
+import warehouse.singularlisting.ListableConsumer;
+import warehouse.singularlisting.Listable;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;

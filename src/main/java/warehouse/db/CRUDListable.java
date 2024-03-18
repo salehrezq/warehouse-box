@@ -30,7 +30,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import warehouse.panel.menus.Listable;
+import warehouse.singularlisting.Listable;
 
 /**
  *

@@ -35,6 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
+import warehouse.singularlisting.SingularAttributedListForm;
 import utility.date.DateDeselectedListener;
 import utility.date.DateListener;
 import utility.date.DatePicker;
@@ -53,7 +54,7 @@ public class InwardDialog extends JDialog implements
 
     private JPanel container;
     private JTextField tfQuantity;
-    private FormFieldSource formFieldSource;
+    private SingularAttributedListForm formFieldSource;
     private JLabel lbQuantity, lbQuantityUnit, lbSource, lbDate;
     private String itemUnit;
     private int itemId;
@@ -72,8 +73,9 @@ public class InwardDialog extends JDialog implements
         lbQuantity = new JLabel("Quantity");
         tfQuantity = new JTextField(5);
 
-        formFieldSource = new FormFieldSource();
+        formFieldSource = new SingularAttributedListForm();
         formFieldSource.setListableImpl(new Source());
+        formFieldSource.setListDimentions(300, 300);
 
         lbDate = new JLabel("Date");
         datePicker = new DatePicker();

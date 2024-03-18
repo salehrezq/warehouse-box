@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.createandupdate;
+package warehouse.singularlisting;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -32,7 +32,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import warehouse.panel.menus.Listable;
 
 /**
  *
