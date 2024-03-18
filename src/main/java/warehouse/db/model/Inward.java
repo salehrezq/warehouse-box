@@ -30,7 +30,7 @@ import java.time.LocalDate;
  *
  * @author Saleh
  */
-public class AddedItems {
+public class Inward {
 
     private int id;
     private int itemId;

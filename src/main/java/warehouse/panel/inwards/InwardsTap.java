@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.addeditems;
+package warehouse.panel.inwards;
 
 import warehouse.panel.items.*;
 import java.awt.BorderLayout;
@@ -34,34 +34,34 @@ import warehouse.db.model.QuantityUnit;
  *
  * @author Saleh
  */
-public class AddedItemsTab extends JPanel {
+public class InwardsTap extends JPanel {
 
     private JSplitPane splitRightAndLeftPanes;
     private JSplitPane splitSearchAndItemsListPane;
     private JPanel panelGatherLeft;
     private JPanel panelGatherRight;
     private ItemsSearch itemsSearch;
-    private AddedItemsList addedItemsList;
+    private InwardsList inwardsList;
     private ItemImage itemsImages;
 
-    public AddedItemsTab() {
+    public InwardsTap() {
 
         setLayout(new BorderLayout());
         panelGatherLeft = new JPanel(new BorderLayout());
         panelGatherRight = new JPanel(new BorderLayout());
 
         itemsSearch = new ItemsSearch();
-        addedItemsList = new AddedItemsList();
-        addedItemsList.setListableImpl(new QuantityUnit());
+        inwardsList = new InwardsList();
+        inwardsList.setListableImpl(new QuantityUnit());
         itemsImages = new ItemImage();
 
-        addedItemsList.addRowIdSelectionListener(itemsImages);
+        inwardsList.addRowIdSelectionListener(itemsImages);
 
         // Add the scroll panes to a split pane.
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitSearchAndItemsListPane.setDividerSize(5);
         splitSearchAndItemsListPane.setTopComponent(itemsSearch);
-        splitSearchAndItemsListPane.setBottomComponent(addedItemsList);
+        splitSearchAndItemsListPane.setBottomComponent(inwardsList);
         panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
         panelGatherRight.add(itemsImages.getFormContainer(), BorderLayout.CENTER);
 
@@ -73,7 +73,7 @@ public class AddedItemsTab extends JPanel {
         add(splitRightAndLeftPanes);
     }
 
-    public CreateListener getAddedItemsListCreateListener() {
-        return addedItemsList;
+    public CreateListener getInwardsListCreateListener() {
+        return inwardsList;
     }
 }

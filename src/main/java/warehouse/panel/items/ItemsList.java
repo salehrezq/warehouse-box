@@ -65,7 +65,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
     private final JMenuItem menuItemAddOfSelectedItem;
-    AddItemsDialog addedItemsDialog;
+    InwardDialog inwardDialog;
 
     public ItemsList() {
 
@@ -98,7 +98,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         table.setComponentPopupMenu(popupMenu);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
-        addedItemsDialog = new AddItemsDialog(null, "Added items", true);
+        inwardDialog = new InwardDialog(null, "Inward", true);
     }
 
     @Override
@@ -107,8 +107,8 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         created();
     }
 
-    public AddItemsDialog getAddedItemsDialog() {
-        return this.addedItemsDialog;
+    public InwardDialog getInwardDialog() {
+        return this.inwardDialog;
     }
 
     @Override
@@ -221,9 +221,9 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
             itemUnit = (String) table.getModel().getValueAt(selectedModelRow, itemUnitColumn);
             System.out.println("unit " + itemUnit);
             int itemId = Integer.parseInt(itemIdObj.toString());
-            addedItemsDialog.setItemId(itemId);
-            addedItemsDialog.setItemUnit(itemUnit);
-            addedItemsDialog.setVisible(true);
+            inwardDialog.setItemId(itemId);
+            inwardDialog.setItemUnit(itemUnit);
+            inwardDialog.setVisible(true);
             System.out.println(itemId);
         }
     }

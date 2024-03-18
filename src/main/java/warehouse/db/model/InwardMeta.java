@@ -30,7 +30,7 @@ import java.time.LocalDate;
  *
  * @author Saleh
  */
-public class AddedItemsExtra {
+public class InwardMeta {
 
     private int itemIdd;
     private int additionId;

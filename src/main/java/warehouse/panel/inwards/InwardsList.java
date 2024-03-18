@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.addeditems;
+package warehouse.panel.inwards;
 
 import warehouse.panel.items.*;
 import java.awt.BorderLayout;
@@ -45,9 +45,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
-import warehouse.db.CRUDAddedItems;
+import warehouse.db.CRUDInwards;
 import warehouse.db.CreateListener;
-import warehouse.db.model.AddedItemsExtra;
+import warehouse.db.model.InwardMeta;
 import warehouse.panel.menus.Listable;
 import warehouse.panel.menus.ListableConsumer;
 
@@ -55,7 +55,7 @@ import warehouse.panel.menus.ListableConsumer;
  *
  * @author Saleh
  */
-public class AddedItemsList extends JPanel implements CreateListener, ListableConsumer {
+public class InwardsList extends JPanel implements CreateListener, ListableConsumer {
 
     private DefaultTableModel model;
     private JTable table;
@@ -66,7 +66,7 @@ public class AddedItemsList extends JPanel implements CreateListener, ListableCo
     private final JPopupMenu popupMenu;
     private final JMenuItem menuItemAddOfSelectedItem;
 
-    public AddedItemsList() {
+    public InwardsList() {
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
@@ -80,7 +80,7 @@ public class AddedItemsList extends JPanel implements CreateListener, ListableCo
 
         popupMenu = new JPopupMenu();
         popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
-        menuItemAddOfSelectedItem = new JMenuItem("Added items");
+        menuItemAddOfSelectedItem = new JMenuItem("Inwards");
         menuItemAddOfSelectedItem.addActionListener(new PopupMenuItemActionHandler());
         popupMenu.add(menuItemAddOfSelectedItem);
 
@@ -109,23 +109,23 @@ public class AddedItemsList extends JPanel implements CreateListener, ListableCo
 
     @Override
     public void created() {
-        System.out.println("Refresh items to reflect newly added item");
+        System.out.println("Refresh inwards to reflect newly inserted inwards");
         // Clear the model every time, to append fresh results
         // and not accumulate on previous results
         model.setRowCount(0);
-        List<AddedItemsExtra> addedItemsExtras = new ArrayList();
-        addedItemsExtras = CRUDAddedItems.getAll();
+        List<InwardMeta> inwardsMeta = new ArrayList();
+        inwardsMeta = CRUDInwards.getAll();
         Object[] modelRow = new Object[6];
 // {"Item code", "Addition code", "Qty.", "Unit", "Source", "Date"}, 0) {
-        int size = addedItemsExtras.size();
+        int size = inwardsMeta.size();
         for (int i = 0; i < size; i++) {
-            AddedItemsExtra addedItemsExtra = addedItemsExtras.get(i);
-            modelRow[0] = addedItemsExtra.getItemIdd(); //code
-            modelRow[1] = addedItemsExtra.getAdditionId();
-            modelRow[2] = addedItemsExtra.getQuantity();
-            modelRow[3] = addedItemsExtra.getUnitName();
-            modelRow[4] = addedItemsExtra.getSource();
-            modelRow[5] = addedItemsExtra.getDate();
+            InwardMeta inwardMeta = inwardsMeta.get(i);
+            modelRow[0] = inwardMeta.getItemIdd(); //code
+            modelRow[1] = inwardMeta.getAdditionId();
+            modelRow[2] = inwardMeta.getQuantity();
+            modelRow[3] = inwardMeta.getUnitName();
+            modelRow[4] = inwardMeta.getSource();
+            modelRow[5] = inwardMeta.getDate();
 //            modelRow[1] = item.getName();
 //            modelRow[2] = item.getSpecification();
 //            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();

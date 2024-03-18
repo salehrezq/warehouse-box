@@ -38,16 +38,16 @@ import net.miginfocom.swing.MigLayout;
 import utility.date.DateDeselectedListener;
 import utility.date.DateListener;
 import utility.date.DatePicker;
-import warehouse.db.CRUDAddedItems;
+import warehouse.db.CRUDInwards;
 import warehouse.db.CreateListener;
-import warehouse.db.model.AddedItems;
+import warehouse.db.model.Inward;
 import warehouse.db.model.Source;
 
 /**
  *
  * @author Saleh
  */
-public class AddItemsDialog extends JDialog implements
+public class InwardDialog extends JDialog implements
         DateListener,
         DateDeselectedListener {
 
@@ -62,7 +62,7 @@ public class AddItemsDialog extends JDialog implements
     private LocalDate selectedDate;
     private ArrayList<CreateListener> createListeners;
 
-    public AddItemsDialog(Frame owner, String title, boolean modal) {
+    public InwardDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         createListeners = new ArrayList<>();
         container = new JPanel();
@@ -134,13 +134,13 @@ public class AddItemsDialog extends JDialog implements
         @Override
         public void actionPerformed(ActionEvent e) {
             BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
-            AddedItems itemsAdd = new AddedItems();
+            Inward itemsAdd = new Inward();
             itemsAdd.setItemId(itemId);
             itemsAdd.setQuantity(bigDecimal);
             itemsAdd.setDate(selectedDate);
             Source source = (Source) formFieldSource.getSelectedValue();
             itemsAdd.setSourceId(source.getId());
-            if (CRUDAddedItems.create(itemsAdd) != null) {
+            if (CRUDInwards.create(itemsAdd) != null) {
                 notifyCreated();
             }
         }
