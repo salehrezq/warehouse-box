@@ -23,29 +23,53 @@
  */
 package warehouse.db.model;
 
+import warehouse.panel.menus.Listable;
+
 /**
  *
  * @author Saleh
  */
-public class Recipient {
+public class Recipient implements Listable {
 
     private int id;
     private String name;
+    private final String strLabel = "Recipient";
+    private final String dbEntityName = "recipient";
+    private final String dbAttributeName = "name";
 
-    public int getId() {
-        return id;
-    }
-
+    @Override
     public void setId(int id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
+    @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public String getLabel() {
+        return this.strLabel;
+    }
+
+    @Override
+    public String getDBEntityName() {
+        return this.dbEntityName;
+    }
+
+    @Override
+    public String getDBAttributeName() {
+        return this.dbAttributeName;
+    }
+
+    @Override
+    public Listable getNewInstance() {
+        return new Recipient();
     }
 
 }
