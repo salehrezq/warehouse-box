@@ -48,7 +48,7 @@ public class SingularAttributedListForm extends JPanel implements ListableConsum
     private ListS list;
     private DeferredDocumentListener docListener;
     private TfSearchListener tFListener;
-    ;
+
     private Listable listableImplementation;
 
     public SingularAttributedListForm() {

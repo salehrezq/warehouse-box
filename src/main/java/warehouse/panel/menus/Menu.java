@@ -45,7 +45,7 @@ public class Menu {
             menuItemMangeSources,
             menuItemMangeUnits;
     private JFrame target;
-    private ListableItemManage manageQuantityUnitDialog, manageSourceDialoge;
+    private ListableItemManage manageQuantityUnitDialog, manageSourceDialog;
     private CreateItemDialog createItemDialog;
     private MenuItemsListener menuItemsListener;
 
@@ -66,8 +66,8 @@ public class Menu {
         createItemDialog = new CreateItemDialog(target, "Create Item", true);
         manageQuantityUnitDialog = new ListableItemManage(target, "Manage units", true);
         manageQuantityUnitDialog.setListableImpl(new QuantityUnit());
-        manageSourceDialoge = new ListableItemManage(target, "Manage Sources", true);
-        manageSourceDialoge.setListableImpl(new Source());
+        manageSourceDialog = new ListableItemManage(target, "Manage Sources", true);
+        manageSourceDialog.setListableImpl(new Source());
         menuItemMangeQuantityUnit.addActionListener(menuItemsListener);
         menuItemMangeSources.addActionListener(menuItemsListener);
         menuCreateItem.addActionListener(menuItemsListener);
@@ -96,8 +96,8 @@ public class Menu {
             } else if (source == menuCreateItem) {
                 createItemDialog.setVisible(true);
             } else if (source == menuItemMangeSources) {
-                manageSourceDialoge.rePopulateUnitsList();
-                manageSourceDialoge.setVisible(true);
+                manageSourceDialog.rePopulateUnitsList();
+                manageSourceDialog.setVisible(true);
             }
         }
     }
