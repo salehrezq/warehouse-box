@@ -30,6 +30,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import warehouse.db.model.QuantityUnit;
+import warehouse.db.model.Recipient;
 import warehouse.db.model.Source;
 import warehouse.panel.createandupdate.FormManagement;
 
@@ -43,9 +44,11 @@ public class Menu {
     private JMenu menuFile;
     private JMenuItem menuCreateItem, menuItemMangeQuantityUnit,
             menuItemMangeSources,
-            menuItemMangeUnits;
+            menuItemManageRecipients;
     private JFrame target;
-    private ListableItemManage manageQuantityUnitDialog, manageSourceDialog;
+    private ListableItemManage manageQuantityUnitDialog,
+            manageSourceDialog,
+            manageRecipientDialog;
     private CreateItemDialog createItemDialog;
     private MenuItemsListener menuItemsListener;
 
@@ -55,11 +58,11 @@ public class Menu {
         menuCreateItem = new JMenuItem("Create new item...");
         menuItemMangeQuantityUnit = new JMenuItem("Manage units...");
         menuItemMangeSources = new JMenuItem("Manage sources...");
-        menuItemMangeUnits = new JMenuItem("Manage units...");
+        menuItemManageRecipients = new JMenuItem("Manage recipients...");
         menuFile.add(menuCreateItem);
         menuFile.add(menuItemMangeQuantityUnit);
         menuFile.add(menuItemMangeSources);
-        menuFile.add(menuItemMangeUnits);
+        menuFile.add(menuItemManageRecipients);
         menubar.add(menuFile);
 
         menuItemsListener = new MenuItemsListener();
@@ -68,9 +71,12 @@ public class Menu {
         manageQuantityUnitDialog.setListableImpl(new QuantityUnit());
         manageSourceDialog = new ListableItemManage(target, "Manage Sources", true);
         manageSourceDialog.setListableImpl(new Source());
+        manageRecipientDialog = new ListableItemManage(target, "Manage Recipients", true);
+        manageRecipientDialog.setListableImpl(new Recipient());
         menuItemMangeQuantityUnit.addActionListener(menuItemsListener);
         menuItemMangeSources.addActionListener(menuItemsListener);
         menuCreateItem.addActionListener(menuItemsListener);
+        menuItemManageRecipients.addActionListener(menuItemsListener);
     }
 
     public JMenuBar getMenuBar() {
@@ -98,6 +104,9 @@ public class Menu {
             } else if (source == menuItemMangeSources) {
                 manageSourceDialog.rePopulateUnitsList();
                 manageSourceDialog.setVisible(true);
+            } else if (source == menuItemManageRecipients) {
+                manageRecipientDialog.rePopulateUnitsList();
+                manageRecipientDialog.setVisible(true);
             }
         }
     }
