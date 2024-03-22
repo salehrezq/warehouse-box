@@ -64,8 +64,10 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
     private ArrayList<RowIdSelectionListener> rowIdSelectionListeners;
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
-    private final JMenuItem menuItemAddOfSelectedItem;
+    private final JMenuItem menuItemInwardsOfSelectedItem,
+            menuItemOutwardOfSelectedItem;
     private InwardDialog inwardDialog;
+    private OutwardDialog outwardDialog;
 
     public ItemsList() {
 
@@ -81,9 +83,12 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
 
         popupMenu = new JPopupMenu();
         popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
-        menuItemAddOfSelectedItem = new JMenuItem("Add items");
-        menuItemAddOfSelectedItem.addActionListener(new PopupMenuItemActionHandler());
-        popupMenu.add(menuItemAddOfSelectedItem);
+        menuItemInwardsOfSelectedItem = new JMenuItem("Inwards");
+        menuItemInwardsOfSelectedItem.addActionListener(new PopupMenuItemActionHandler());
+        menuItemOutwardOfSelectedItem = new JMenuItem("Outwards");
+        menuItemOutwardOfSelectedItem.addActionListener(new PopupMenuItemActionHandler());
+        popupMenu.add(menuItemInwardsOfSelectedItem);
+        popupMenu.add(menuItemOutwardOfSelectedItem);
 
         table = new JTable(model);
         table.addMouseListener(new ItemRowDoubleClickHandler());
@@ -99,6 +104,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
         inwardDialog = new InwardDialog(null, "Inward", true);
+        outwardDialog = new OutwardDialog(null, "Outward", true);
     }
 
     @Override
@@ -221,9 +227,18 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
             itemUnit = (String) table.getModel().getValueAt(selectedModelRow, itemUnitColumn);
             System.out.println("unit " + itemUnit);
             int itemId = Integer.parseInt(itemIdObj.toString());
-            inwardDialog.setItemId(itemId);
-            inwardDialog.setItemUnit(itemUnit);
-            inwardDialog.setVisible(true);
+
+            Object source = e.getSource();
+            if (source == menuItemInwardsOfSelectedItem) {
+                inwardDialog.setItemId(itemId);
+                inwardDialog.setItemUnit(itemUnit);
+                inwardDialog.setVisible(true);
+            } else if (source == menuItemOutwardOfSelectedItem) {
+                outwardDialog.setItemId(itemId);
+                outwardDialog.setItemUnit(itemUnit);
+                outwardDialog.setVisible(true);
+            }
+
             System.out.println(itemId);
         }
     }

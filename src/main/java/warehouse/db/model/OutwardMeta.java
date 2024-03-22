@@ -23,57 +23,77 @@
  */
 package warehouse.db.model;
 
-import warehouse.singularlisting.Listable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  *
  * @author Saleh
  */
-public class Recipient implements Listable {
+public class OutwardMeta {
 
     private int id;
-    private String name;
-    private final String strLabel = "Recipient";
-    private final String dbEntityName = "recipients";
-    private final String dbAttributeName = "name";
+    private int itemId;
+    private BigDecimal quantity;
+    private String unitName;
+    private String recipient;
+    private String usedFor;
+    private LocalDate date;
 
-    @Override
+    public int getId() {
+        return id;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
 
-    public int getId() {
-        return this.id;
+    public int getItemId() {
+        return itemId;
     }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 
-    @Override
-    public String getName() {
-        return this.name;
+    public BigDecimal getQuantity() {
+        return quantity;
     }
 
-    @Override
-    public String getLabel() {
-        return this.strLabel;
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
     }
 
-    @Override
-    public String getDBEntityName() {
-        return this.dbEntityName;
+    public String getUnitName() {
+        return unitName;
     }
 
-    @Override
-    public String getDBAttributeName() {
-        return this.dbAttributeName;
+    public void getUnitName(String unitName) {
+        this.unitName = unitName;
     }
 
-    @Override
-    public Listable getNewInstance() {
-        return new Recipient();
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
+
+    public String getUsedFor() {
+        return usedFor;
+    }
+
+    public void setUsedFor(String usedFor) {
+        this.usedFor = usedFor;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
 }
