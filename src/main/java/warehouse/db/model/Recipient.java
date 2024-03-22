@@ -34,7 +34,7 @@ public class Recipient implements Listable {
     private int id;
     private String name;
     private final String strLabel = "Recipient";
-    private final String dbEntityName = "recipient";
+    private final String dbEntityName = "recipients";
     private final String dbAttributeName = "name";
 
     @Override
