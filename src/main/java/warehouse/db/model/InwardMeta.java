@@ -33,7 +33,7 @@ import java.time.LocalDate;
 public class InwardMeta {
 
     private int itemIdd;
-    private int additionId;
+    private int inwardId;
     private BigDecimal quantity;
     private String unitName;
     private String source;
@@ -49,12 +49,12 @@ public class InwardMeta {
         this.itemIdd = itemIdd;
     }
 
-    public int getAdditionId() {
-        return additionId;
+    public int getInwardId() {
+        return inwardId;
     }
 
-    public void setAdditionId(int additionId) {
-        this.additionId = additionId;
+    public void setInwardId(int inwardId) {
+        this.inwardId = inwardId;
     }
 
     public BigDecimal getQuantity() {

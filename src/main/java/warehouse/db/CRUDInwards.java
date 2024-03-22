@@ -74,7 +74,7 @@ public class CRUDInwards {
         ArrayList<InwardMeta> inwardsMedta = new ArrayList<>();
 
         try {
-            String sql = "SELECT inwards.item_id AS item_id, inwards.id AS addition_id,"
+            String sql = "SELECT inwards.item_id AS item_id, inwards.id AS inward_id,"
                     + " inwards.quantity, u.name AS unit_name, s.information AS source,"
                     + " inwards.date, i.name AS item_name, i.specification AS item_specs"
                     + " FROM inwards JOIN items AS i JOIN quantity_unit AS u JOIN source AS s"
@@ -88,7 +88,7 @@ public class CRUDInwards {
             while (result.next()) {
                 InwardMeta inwardMeta = new InwardMeta();
                 inwardMeta.setItemIdd(result.getInt("item_id"));
-                inwardMeta.setAdditionId(result.getInt("addition_id"));
+                inwardMeta.setInwardId(result.getInt("inward_id"));
                 inwardMeta.setQuantity(result.getBigDecimal("quantity"));
                 inwardMeta.setUnitName(result.getString("unit_name"));
                 inwardMeta.setSource(result.getString("source"));
