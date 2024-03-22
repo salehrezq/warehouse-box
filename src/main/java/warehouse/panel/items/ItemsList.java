@@ -65,7 +65,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
     private final JMenuItem menuItemAddOfSelectedItem;
-    InwardDialog inwardDialog;
+    private InwardDialog inwardDialog;
 
     public ItemsList() {
 
