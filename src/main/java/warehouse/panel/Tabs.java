@@ -31,6 +31,7 @@ import warehouse.db.CreateListener;
 import warehouse.panel.inwards.InwardsTap;
 import warehouse.panel.items.ItemsList;
 import warehouse.panel.items.ItemsTab;
+import warehouse.panel.outwards.OutwardsTap;
 
 /**
  *
@@ -41,6 +42,7 @@ public class Tabs extends JPanel {
     private JTabbedPane tabs;
     private ItemsTab itemsTab;
     private InwardsTap inwardsTap;
+    private OutwardsTap outwardsTap;
 
     public Tabs() {
 
@@ -48,6 +50,7 @@ public class Tabs extends JPanel {
         tabs = new JTabbedPane();
         itemsTab = new ItemsTab();
         inwardsTap = new InwardsTap();
+        outwardsTap = new OutwardsTap();
 
         ((ItemsList) itemsTab.getItemsListCreateListener())
                 .getInwardDialog()
@@ -55,6 +58,7 @@ public class Tabs extends JPanel {
 
         tabs.add(itemsTab, "Items");
         tabs.add(inwardsTap, "Inwards");
+        tabs.add(outwardsTap, "Outwards");
         this.add(tabs, BorderLayout.CENTER);
         this.setPreferredSize(new Dimension(1000, 500));
     }

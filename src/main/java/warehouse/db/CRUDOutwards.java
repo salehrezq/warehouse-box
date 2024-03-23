@@ -67,28 +67,27 @@ public class CRUDOutwards {
         ArrayList<OutwardMeta> outwardMetas = new ArrayList<>();
 
         try {
-            String sql = "SELECT inwards.item_id AS item_id, inwards.id AS inward_id,"
-                    + " inwards.quantity, u.name AS unit_name, s.information AS source,"
-                    + " inwards.date, i.name AS item_name, i.specification AS item_specs"
-                    + " FROM inwards JOIN items AS i JOIN quantity_unit AS u JOIN source AS s"
-                    + " ON (inwards.item_id = i.id) AND (i.unit_id = u.id) AND (s.id = inwards.source_id)"
-                    + " ORDER BY inwards.date ASC, inwards.id ASC;";
+            String sql = "SELECT outwards.id AS outward_id, outwards.item_id AS item_id,"
+                    + " outwards.quantity, u.name AS unit_name, r.name AS recipient,"
+                    + " outwards.date, i.name AS item_name, i.specification AS item_specs"
+                    + " FROM outwards JOIN items AS i JOIN quantity_unit AS u JOIN recipients AS r"
+                    + " ON (outwards.item_id = i.id) AND (i.unit_id = u.id) AND (r.id = outwards.recipient_id)"
+                    + " ORDER BY outwards.date ASC, outwards.id ASC;";
 
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
             ResultSet result = p.executeQuery();
             while (result.next()) {
-//                OutwardMeta outwardMeta = new OutwardMeta();
-//                outwardMetas.setItemIdd(result.getInt("item_id"));
-//                outwardMetas.setInwardId(result.getInt("inward_id"));
-//                outwardMetas.setQuantity(result.getBigDecimal("quantity"));
-//                outwardMetas.setUnitName(result.getString("unit_name"));
-//                outwardMetas.setSource(result.getString("source"));
-//                outwardMetas.setDate(result.getDate("date").toLocalDate());
-//                outwardMetas.setItemName(result.getString("item_name"));
-//                outwardMetas.setItemSpecs(result.getString("item_specs"));
-//                outwardMetas.add(outwardMeta);
+                OutwardMeta outwardMeta = new OutwardMeta();
+                outwardMeta.setId(result.getInt("outward_id"));
+                outwardMeta.setId(result.getInt("item_id"));
+                outwardMeta.setQuantity(result.getBigDecimal("quantity"));
+                outwardMeta.setUnitName(result.getString("unit_name"));
+                outwardMeta.setRecipient(result.getString("recipient"));
+                outwardMeta.setUsedFor(result.getString("for"));
+                outwardMeta.setDate(result.getDate("date").toLocalDate());
+                outwardMetas.add(outwardMeta);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDOutwards.class.getName()).log(Level.SEVERE, null, ex);

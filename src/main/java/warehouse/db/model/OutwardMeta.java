@@ -68,7 +68,7 @@ public class OutwardMeta {
         return unitName;
     }
 
-    public void getUnitName(String unitName) {
+    public void setUnitName(String unitName) {
         this.unitName = unitName;
     }
 
