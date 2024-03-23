@@ -117,6 +117,10 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         return this.inwardDialog;
     }
 
+    public OutwardDialog getOutwardDialog() {
+        return this.outwardDialog;
+    }
+
     @Override
     public void created() {
         System.out.println("Refresh items to reflect newly created item");

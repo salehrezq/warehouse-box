@@ -41,7 +41,7 @@ public class OutwardsTap extends JPanel {
     private JPanel panelGatherLeft;
     private JPanel panelGatherRight;
     private ItemsSearch itemsSearch;
-    private OutwardsList inwardsList;
+    private OutwardsList outwardsList;
     private ItemImage itemsImages;
 
     public OutwardsTap() {
@@ -51,17 +51,17 @@ public class OutwardsTap extends JPanel {
         panelGatherRight = new JPanel(new BorderLayout());
 
         itemsSearch = new ItemsSearch();
-        inwardsList = new OutwardsList();
-        inwardsList.setListableImpl(new QuantityUnit());
+        outwardsList = new OutwardsList();
+        outwardsList.setListableImpl(new QuantityUnit());
         itemsImages = new ItemImage();
 
-        inwardsList.addRowIdSelectionListener(itemsImages);
+        outwardsList.addRowIdSelectionListener(itemsImages);
 
         // Add the scroll panes to a split pane.
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitSearchAndItemsListPane.setDividerSize(5);
         splitSearchAndItemsListPane.setTopComponent(itemsSearch);
-        splitSearchAndItemsListPane.setBottomComponent(inwardsList);
+        splitSearchAndItemsListPane.setBottomComponent(outwardsList);
         panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
         panelGatherRight.add(itemsImages.getFormContainer(), BorderLayout.CENTER);
 
@@ -73,7 +73,8 @@ public class OutwardsTap extends JPanel {
         add(splitRightAndLeftPanes);
     }
 
-    public CreateListener getInwardsListCreateListener() {
-        return inwardsList;
+    public CreateListener getOutwardsListCreateListener() {
+        return outwardsList;
     }
+
 }

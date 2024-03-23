@@ -67,12 +67,12 @@ public class CRUDOutwards {
         ArrayList<OutwardMeta> outwardMetas = new ArrayList<>();
 
         try {
-            String sql = "SELECT outwards.id AS outward_id, outwards.item_id AS item_id,"
-                    + " outwards.quantity, u.name AS unit_name, r.name AS recipient,"
-                    + " outwards.date, i.name AS item_name, i.specification AS item_specs"
-                    + " FROM outwards JOIN items AS i JOIN quantity_unit AS u JOIN recipients AS r"
-                    + " ON (outwards.item_id = i.id) AND (i.unit_id = u.id) AND (r.id = outwards.recipient_id)"
-                    + " ORDER BY outwards.date ASC, outwards.id ASC;";
+            String sql = "SELECT o.id AS outward_id, o.item_id AS item_id,"
+                    + " o.quantity, u.name AS unit_name, r.name AS recipient, o.`for`,"
+                    + " o.date, i.name AS item_name, i.specification AS item_specs"
+                    + " FROM outwards AS o JOIN items AS i JOIN quantity_unit AS u JOIN recipients AS r"
+                    + " ON (o.item_id = i.id) AND (i.unit_id = u.id) AND (r.id = o.recipient_id)"
+                    + " ORDER BY o.date ASC, o.id ASC;";
 
             con = Connect.getConnection();
             PreparedStatement p;
@@ -81,7 +81,7 @@ public class CRUDOutwards {
             while (result.next()) {
                 OutwardMeta outwardMeta = new OutwardMeta();
                 outwardMeta.setId(result.getInt("outward_id"));
-                outwardMeta.setId(result.getInt("item_id"));
+                outwardMeta.setItemId(result.getInt("item_id"));
                 outwardMeta.setQuantity(result.getBigDecimal("quantity"));
                 outwardMeta.setUnitName(result.getString("unit_name"));
                 outwardMeta.setRecipient(result.getString("recipient"));
