@@ -36,6 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import warehouse.db.model.Item;
+import warehouse.db.model.ItemMeta;
 
 /**
  *
@@ -93,6 +94,45 @@ public class CRUDItems {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
         }
         return items;
+    }
+
+    public static ArrayList<ItemMeta> getMetaAll() {
+        ArrayList<ItemMeta> itemsMeta = new ArrayList<>();
+        try {
+
+            String sql = " SELECT it.id , it.`name`, it.specification,"
+                    + " ("
+                    + " COALESCE((SELECT SUM(i.quantity)"
+                    + " FROM inwards AS i"
+                    + " WHERE i.item_id = it.id),0)"
+                    + " -"
+                    + " COALESCE((SELECT SUM(o.quantity)"
+                    + " FROM outwards AS o"
+                    + " WHERE o.item_id = it.id),0)"
+                    + " "
+                    + " ) AS balance, u.`name` AS unit"
+                    + " "
+                    + " FROM `items` AS it JOIN `quantity_unit` AS u"
+                    + " ON it.unit_id = u.id"
+                    + " ORDER BY `id` ASC;";
+
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                ItemMeta itemMeta = new ItemMeta();
+                itemMeta.setId(result.getInt("id"));
+                itemMeta.setName(result.getString("name"));
+                itemMeta.setSpecification(result.getString("specification"));
+                itemMeta.setBalance(result.getBigDecimal("balance"));
+                itemMeta.setUnit(result.getString("unit"));
+                itemsMeta.add(itemMeta);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return itemsMeta;
     }
 
     public static BufferedImage toBufferedImage(byte[] photo) {

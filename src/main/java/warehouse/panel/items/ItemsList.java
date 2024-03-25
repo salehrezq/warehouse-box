@@ -45,9 +45,8 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDItems;
-import warehouse.db.CRUDListable;
 import warehouse.db.CreateListener;
-import warehouse.db.model.Item;
+import warehouse.db.model.ItemMeta;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
 
@@ -73,7 +72,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
-        model = new DefaultTableModel(new String[]{"Code", "Name", "Specification", "Unit"}, 0) {
+        model = new DefaultTableModel(new String[]{"Code", "Name", "Specification", "Balance", "Unit"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Disable cells editing.
@@ -127,17 +126,18 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         // Clear the model every time, to append fresh results
         // and not accumulate on previous results
         model.setRowCount(0);
-        List<Item> itemsRecords = new ArrayList();
-        itemsRecords = CRUDItems.getAll();
+        List<ItemMeta> itemsMetaRecords = new ArrayList();
+        itemsMetaRecords = CRUDItems.getMetaAll();
         Object[] modelRow = new Object[5];
 
-        int size = itemsRecords.size();
+        int size = itemsMetaRecords.size();
         for (int i = 0; i < size; i++) {
-            Item item = itemsRecords.get(i);
-            modelRow[0] = item.getId(); //code
-            modelRow[1] = item.getName();
-            modelRow[2] = item.getSpecification();
-            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();
+            ItemMeta itemMeta = itemsMetaRecords.get(i);
+            modelRow[0] = itemMeta.getId(); //code
+            modelRow[1] = itemMeta.getName();
+            modelRow[2] = itemMeta.getSpecification();
+            modelRow[3] = itemMeta.getBalance();
+            modelRow[4] = itemMeta.getUnit();
             model.addRow(modelRow);
         }
     }
@@ -224,7 +224,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         @Override
         public void actionPerformed(ActionEvent e) {
             int itemIdColumn = 0;
-            int itemUnitColumn = 3;
+            int itemUnitColumn = 4;
             String itemUnit;
             selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
             Object itemIdObj = table.getModel().getValueAt(selectedModelRow, itemIdColumn);
