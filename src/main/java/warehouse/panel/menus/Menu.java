@@ -23,6 +23,7 @@
  */
 package warehouse.panel.menus;
 
+import warehouse.panel.createandupdate.CreateItemDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
