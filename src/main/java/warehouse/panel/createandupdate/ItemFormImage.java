@@ -23,6 +23,7 @@
  */
 package warehouse.panel.createandupdate;
 
+import utility.imagefilechooser.ImageRemovedListener;
 import utility.imagefilechooser.IMGFileChooser;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;

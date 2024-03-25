@@ -42,7 +42,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import warehouse.db.model.Image;
-import warehouse.panel.createandupdate.ImageRemovedListener;
 
 /**
  *
