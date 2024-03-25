@@ -64,7 +64,8 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
     private final JMenuItem menuItemInwardsOfSelectedItem,
-            menuItemOutwardOfSelectedItem;
+            menuItemOutwardOfSelectedItem,
+            menuItemUpdateItem;
     private InwardDialog inwardDialog;
     private OutwardDialog outwardDialog;
 
@@ -86,8 +87,12 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         menuItemInwardsOfSelectedItem.addActionListener(new PopupMenuItemActionHandler());
         menuItemOutwardOfSelectedItem = new JMenuItem("Outwards");
         menuItemOutwardOfSelectedItem.addActionListener(new PopupMenuItemActionHandler());
+        menuItemUpdateItem = new JMenuItem("Edit item");
+        menuItemUpdateItem.addActionListener(new PopupMenuItemActionHandler());
         popupMenu.add(menuItemInwardsOfSelectedItem);
         popupMenu.add(menuItemOutwardOfSelectedItem);
+        popupMenu.addSeparator();
+        popupMenu.add(menuItemUpdateItem);
 
         table = new JTable(model);
         table.addMouseListener(new ItemRowDoubleClickHandler());
@@ -241,6 +246,8 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
                 outwardDialog.setItemId(itemId);
                 outwardDialog.setItemUnit(itemUnit);
                 outwardDialog.setVisible(true);
+            } else if (source == menuItemUpdateItem) {
+                System.out.println("Place holder to update item");
             }
 
             System.out.println(itemId);
