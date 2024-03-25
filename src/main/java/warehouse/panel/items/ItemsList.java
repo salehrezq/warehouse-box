@@ -47,6 +47,7 @@ import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDItems;
 import warehouse.db.CreateListener;
 import warehouse.db.model.ItemMeta;
+import warehouse.items.update.UpdateItemDialog;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
 
@@ -68,6 +69,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
             menuItemUpdateItem;
     private InwardDialog inwardDialog;
     private OutwardDialog outwardDialog;
+    private UpdateItemDialog updateItemDialog;
 
     public ItemsList() {
 
@@ -109,6 +111,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         add(scrollTable, BorderLayout.CENTER);
         inwardDialog = new InwardDialog(null, "Inward", true);
         outwardDialog = new OutwardDialog(null, "Outward", true);
+        updateItemDialog = new UpdateItemDialog(null, "Update item", true);
     }
 
     @Override
@@ -247,7 +250,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
                 outwardDialog.setItemUnit(itemUnit);
                 outwardDialog.setVisible(true);
             } else if (source == menuItemUpdateItem) {
-                System.out.println("Place holder to update item");
+                updateItemDialog.setVisible(true);
             }
 
             System.out.println(itemId);
