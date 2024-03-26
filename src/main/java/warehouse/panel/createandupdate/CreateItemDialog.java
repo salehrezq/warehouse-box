@@ -27,8 +27,6 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
-import warehouse.panel.createandupdate.FormManagement;
-import warehouse.panel.createandupdate.ItemForm;
 
 /**
  *
