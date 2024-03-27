@@ -73,8 +73,8 @@ public class ItemFormTextFields extends JPanel implements Collectable {
         tfSpecs.setText(itemSpecs);
     }
 
-    public void setUnitIdDummy(int unitId) {
-        System.out.println("unit_id " + unitId);
+    public void setPreviewSelected(QuantityUnit quantityUnit) {
+        itemFormQuantityUnit.setPreviewSelected(quantityUnit);
     }
 
     @Override

@@ -47,6 +47,7 @@ import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDItems;
 import warehouse.db.CreateListener;
 import warehouse.db.model.ItemMeta;
+import warehouse.db.model.QuantityUnit;
 import warehouse.items.update.UpdateItemDialog;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
@@ -267,7 +268,10 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
             } else if (source == menuItemUpdateItem) {
                 updateItemDialog.setTfName(itemName);
                 updateItemDialog.setTfSpecs(itemSpecs);
-                updateItemDialog.setunitId(unitId);
+                QuantityUnit quantityUnit = new QuantityUnit();
+                quantityUnit.setId(unitId);
+                quantityUnit.setName(itemUnit);
+                updateItemDialog.setUnitName(quantityUnit);
                 updateItemDialog.setVisible(true);
             }
 

@@ -27,6 +27,7 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
+import warehouse.db.model.QuantityUnit;
 
 /**
  *
@@ -61,8 +62,8 @@ public class UpdateItemDialog extends JDialog {
         itemFormTextFields.setTfSpecs(itemSpecs);
     }
 
-    public void setunitId(int unitId) {
-        itemFormTextFields.setUnitIdDummy(unitId);
+    public void setUnitName(QuantityUnit quantityUnit) {
+        itemFormTextFields.setPreviewSelected(quantityUnit);
     }
 
     private class ClosingWindowHandler extends WindowAdapter {

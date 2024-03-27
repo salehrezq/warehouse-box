@@ -96,6 +96,15 @@ public class SingularAttributedListForm extends JPanel implements ListableConsum
         });
     }
 
+    /**
+     * Used to add element preview selected for editing
+     *
+     * @param listable
+     */
+    public void setPreviewSelected(Listable listable) {
+        list.setPreviewSelected(listable);
+    }
+
     public Listable getSelectedValue() {
         return this.list.getSelectedValue();
     }

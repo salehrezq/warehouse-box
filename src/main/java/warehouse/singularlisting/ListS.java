@@ -66,6 +66,13 @@ public class ListS implements ListSelectionListener {
         listModel.removeAllElements();
     }
 
+    protected void setPreviewSelected(Listable listable) {
+        removeAllElements();
+        addElement(listable);
+        // Set the only added element selected
+        list.getSelectionModel().setSelectionInterval(0, 0);
+    }
+
     public void selectResposivity() {
         list.addListSelectionListener(this);
     }
