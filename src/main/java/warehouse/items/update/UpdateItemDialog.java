@@ -36,12 +36,14 @@ public class UpdateItemDialog extends JDialog {
 
     private ItemForm itemForm;
     private FormManagement formManagement;
+    private ItemFormTextFields itemFormTextFields;
 
     public UpdateItemDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         itemForm = new ItemForm();
         formManagement = itemForm.getFormManagement();
         formManagement.addNavigationListener(itemForm);
+        itemFormTextFields = itemForm.getItemFormTextFields();
         add(itemForm);
         pack();
         this.addWindowListener(new ClosingWindowHandler());
@@ -49,6 +51,18 @@ public class UpdateItemDialog extends JDialog {
 
     public FormManagement getFormManagement() {
         return formManagement;
+    }
+
+    public void setTfName(String itemName) {
+        itemFormTextFields.setTfName(itemName);
+    }
+
+    public void setTfSpecs(String itemSpecs) {
+        itemFormTextFields.setTfSpecs(itemSpecs);
+    }
+
+    public void setunitId(int unitId) {
+        itemFormTextFields.setUnitIdDummy(unitId);
     }
 
     private class ClosingWindowHandler extends WindowAdapter {

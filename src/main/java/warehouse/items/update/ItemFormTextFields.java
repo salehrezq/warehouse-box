@@ -65,6 +65,18 @@ public class ItemFormTextFields extends JPanel implements Collectable {
         add(itemFormQuantityUnit, "center, span 2");
     }
 
+    public void setTfName(String itemName) {
+        tfName.setText(itemName);
+    }
+
+    public void setTfSpecs(String itemSpecs) {
+        tfSpecs.setText(itemSpecs);
+    }
+
+    public void setUnitIdDummy(int unitId) {
+        System.out.println("unit_id " + unitId);
+    }
+
     @Override
     public Map collect() {
         data.put("name", tfName.getText());

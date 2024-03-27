@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 public class ItemMeta extends Item {
 
     private BigDecimal balance;
+    private int unitId;
     private String unit;
 
     public BigDecimal getBalance() {

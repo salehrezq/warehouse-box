@@ -110,7 +110,7 @@ public class CRUDItems {
                     + " FROM outwards AS o"
                     + " WHERE o.item_id = it.id),0)"
                     + " "
-                    + " ) AS balance, u.`name` AS unit"
+                    + " ) AS balance, u.id AS unit_id, u.`name` AS unit"
                     + " "
                     + " FROM `items` AS it JOIN `quantity_unit` AS u"
                     + " ON it.unit_id = u.id"
@@ -126,6 +126,7 @@ public class CRUDItems {
                 itemMeta.setName(result.getString("name"));
                 itemMeta.setSpecification(result.getString("specification"));
                 itemMeta.setBalance(result.getBigDecimal("balance"));
+                itemMeta.setUnitId(result.getInt("unit_id"));
                 itemMeta.setUnit(result.getString("unit"));
                 itemsMeta.add(itemMeta);
             }

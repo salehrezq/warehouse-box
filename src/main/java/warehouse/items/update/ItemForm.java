@@ -69,6 +69,10 @@ public class ItemForm extends JPanel implements Navigatable {
         add(formManagement, BorderLayout.PAGE_END);
     }
 
+    public ItemFormTextFields getItemFormTextFields() {
+        return this.itemFormTextFields;
+    }
+
     private void linkListenersToChangeProviders(ItemFormImage itemFormImage) {
         IMGFileChooser iMGFileChooser = itemFormImage.getIMGFileChooser();
         iMGFileChooser.addImageSelectedListener(itemFormImage);

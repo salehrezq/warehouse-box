@@ -75,7 +75,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
-        model = new DefaultTableModel(new String[]{"Code", "Name", "Specification", "Balance", "Unit"}, 0) {
+        model = new DefaultTableModel(new String[]{"Code", "Name", "Specification", "Balance", "unit_id", "Unit"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Disable cells editing.
@@ -101,10 +101,13 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         //    table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
         table.setFillsViewportHeight(true);
+        // Hide column number 4 which holds unit_id values
+        table.removeColumn(table.getColumnModel().getColumn(4));
         table.getColumnModel().getColumn(0).setPreferredWidth(1);
         table.getColumnModel().getColumn(1).setPreferredWidth(1);
         table.getColumnModel().getColumn(2).setPreferredWidth(1);
         table.getColumnModel().getColumn(3).setPreferredWidth(1);
+        table.getColumnModel().getColumn(4).setPreferredWidth(1);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setComponentPopupMenu(popupMenu);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -136,7 +139,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         model.setRowCount(0);
         List<ItemMeta> itemsMetaRecords = new ArrayList();
         itemsMetaRecords = CRUDItems.getMetaAll();
-        Object[] modelRow = new Object[5];
+        Object[] modelRow = new Object[6];
 
         int size = itemsMetaRecords.size();
         for (int i = 0; i < size; i++) {
@@ -145,7 +148,8 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
             modelRow[1] = itemMeta.getName();
             modelRow[2] = itemMeta.getSpecification();
             modelRow[3] = itemMeta.getBalance();
-            modelRow[4] = itemMeta.getUnit();
+            modelRow[4] = itemMeta.getUnitId(); // will be hidden column
+            modelRow[5] = itemMeta.getUnit();
             model.addRow(modelRow);
         }
     }
@@ -227,18 +231,29 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         }
     }
 
+    private Object getColumnOfSelectedRow(int column) {
+        selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
+        return table.getModel().getValueAt(selectedModelRow, column);
+    }
+
     private class PopupMenuItemActionHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            //"Code", "Name", "Specification", "Balance", "unit_id", "Unit"
             int itemIdColumn = 0;
-            int itemUnitColumn = 4;
-            String itemUnit;
-            selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
-            Object itemIdObj = table.getModel().getValueAt(selectedModelRow, itemIdColumn);
-            itemUnit = (String) table.getModel().getValueAt(selectedModelRow, itemUnitColumn);
+            int itemNameColumn = 1;
+            int itemSpecsColumn = 2;
+            int itemBalanceColumn = 3; // not needed
+            int itemUnitIdColumn = 4; // hiddenColumn
+            int itemUnitColumn = 5;
+            // Retrieving values from columns
+            int itemId = (Integer) getColumnOfSelectedRow(itemIdColumn);
+            String itemName = (String) getColumnOfSelectedRow(itemNameColumn);
+            String itemSpecs = (String) getColumnOfSelectedRow(itemSpecsColumn);
+            int unitId = (Integer) getColumnOfSelectedRow(itemUnitIdColumn);
+            String itemUnit = (String) getColumnOfSelectedRow(itemUnitColumn);
             System.out.println("unit " + itemUnit);
-            int itemId = Integer.parseInt(itemIdObj.toString());
 
             Object source = e.getSource();
             if (source == menuItemInwardsOfSelectedItem) {
@@ -250,6 +265,9 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
                 outwardDialog.setItemUnit(itemUnit);
                 outwardDialog.setVisible(true);
             } else if (source == menuItemUpdateItem) {
+                updateItemDialog.setTfName(itemName);
+                updateItemDialog.setTfSpecs(itemSpecs);
+                updateItemDialog.setunitId(unitId);
                 updateItemDialog.setVisible(true);
             }
 
