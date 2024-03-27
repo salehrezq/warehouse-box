@@ -84,6 +84,10 @@ public class ItemForm extends JPanel implements Navigatable {
         return this.formManagement;
     }
 
+    protected ItemFormImage getItemFormImage() {
+        return itemFormImage;
+    }
+
     @Override
     public void next() {
         cardLayout.next(panelCards);

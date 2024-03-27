@@ -46,6 +46,7 @@ import utility.horizontalspinner.SpinnerH;
 import utility.imagefilechooser.FilesSelectionLimitListener;
 import utility.imagepane.ScrollableScalableImageContainer;
 import utility.imagefilechooser.ImagesSelectedListener;
+import warehouse.db.CRUDImages;
 import warehouse.db.model.Image;
 
 /**
@@ -128,6 +129,11 @@ public class ItemFormImage implements
             scalableImageContainer.setBufferedImage(null);
         }
         spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
+    }
+
+    protected void loadItemImages(int itemId) {
+        imagesSelected = CRUDImages.getImagesByItemId(itemId);
+        imagesSelected(imagesSelected);
     }
 
     @Override

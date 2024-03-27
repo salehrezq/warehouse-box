@@ -272,6 +272,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
                 quantityUnit.setId(unitId);
                 quantityUnit.setName(itemUnit);
                 updateItemDialog.setUnitName(quantityUnit);
+                updateItemDialog.setItemImages(itemId);
                 updateItemDialog.setVisible(true);
             }
 

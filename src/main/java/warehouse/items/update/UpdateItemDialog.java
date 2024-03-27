@@ -66,6 +66,10 @@ public class UpdateItemDialog extends JDialog {
         itemFormTextFields.setPreviewSelected(quantityUnit);
     }
 
+    public void setItemImages(int itemId) {
+        itemForm.getItemFormImage().loadItemImages(itemId);
+    }
+
     private class ClosingWindowHandler extends WindowAdapter {
 
         @Override
