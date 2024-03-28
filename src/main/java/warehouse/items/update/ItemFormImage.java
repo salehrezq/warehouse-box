@@ -42,11 +42,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import utility.horizontalspinner.Renderer;
 import utility.horizontalspinner.SpinnerH;
-import utility.imagefilechooser.FilesSelectionLimitListener;
 import utility.imagepane.ScrollableScalableImageContainer;
-import utility.imagefilechooser.ImagesSelectedListener;
 import warehouse.db.CRUDImages;
 import warehouse.db.model.Image;
+import warehouse.items.update.imgfilechooser.FilesSelectionLimitListener;
+import warehouse.items.update.imgfilechooser.IMGFileChooser;
+import warehouse.items.update.imgfilechooser.ImageRemovedListener;
+import warehouse.items.update.imgfilechooser.ImagesSelectedListener;
 
 /**
  *
