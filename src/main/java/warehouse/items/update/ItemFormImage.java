@@ -23,8 +23,6 @@
  */
 package warehouse.items.update;
 
-import utility.imagefilechooser.ImageRemovedListener;
-import utility.imagefilechooser.IMGFileChooser;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -133,8 +131,8 @@ public class ItemFormImage implements
     }
 
     protected void loadItemImages(int itemId) {
-        imagesRetrieved = CRUDImages.getImagesByItemId(itemId);
-        imagesSelected(imagesRetrieved);
+        imagesSelected = CRUDImages.getImagesByItemId(itemId);
+        imagesSelected(imagesSelected);
     }
 
     @Override
