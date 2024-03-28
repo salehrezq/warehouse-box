@@ -23,7 +23,7 @@
  */
 package utility.imagefilechooser;
 
-import java.util.ArrayList;
+import java.util.List;
 import warehouse.db.model.Image;
 
 /**
@@ -33,5 +33,5 @@ import warehouse.db.model.Image;
 public interface ImagesSelectedListener {
 
     // public void imagesSelected(byte[] photoInBytes);
-    public void imagesSelected(ArrayList<Image> images);
+    public void imagesSelected(List<Image> images);
 }

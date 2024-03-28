@@ -31,6 +31,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -68,7 +69,7 @@ public class ItemFormImage implements
     private Map data;
     private SpinnerH spinnerH;
     private HashMap<Integer, Image> imagesMap;
-    private ArrayList<Image> imagesSelected;
+    private List<Image> imagesSelected;
     private int spinnerValueOnSpinning;
     private ArrayList<ImageRemovedListener> imageRemovedListeners;
 
@@ -109,7 +110,7 @@ public class ItemFormImage implements
     }
 
     @Override
-    public void imagesSelected(ArrayList<Image> images) {
+    public void imagesSelected(List<Image> images) {
         imagesSelected = images;
         int imagesCount = images.size();
         int spinnerValue = 0;
