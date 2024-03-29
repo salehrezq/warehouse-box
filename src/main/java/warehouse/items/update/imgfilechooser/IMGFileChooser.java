@@ -60,7 +60,7 @@ public class IMGFileChooser implements
     private static int maxSelectedFiles = 5;
     private File[] limitedFilesSelection;
     private int incrementedFilesSelecionLength, previousIncrementedFilesSelecionLength;
-    private ArrayList<Image> imagesSelectedByUser;
+    private List<Image> imagesSelectedByUser;
     private List<File> filesChosenByUser;
 
     public IMGFileChooser() {
@@ -78,7 +78,7 @@ public class IMGFileChooser implements
         this.imagesSelectedListeners.add(imagesSelectedListener);
     }
 
-    public void notifyImagesSelected(ArrayList<Image> bufferedImages) {
+    public void notifyImagesSelected(List<Image> bufferedImages) {
         this.imagesSelectedListeners.forEach((imagesSelectedListener) -> {
             imagesSelectedListener.imagesSelected(bufferedImages);
         });
@@ -129,7 +129,7 @@ public class IMGFileChooser implements
         clearFileChooserCurrentSelection();
     }
 
-    private ArrayList<Image> processSelectedImages(ArrayList<Image> images, File[] files) {
+    private List<Image> processSelectedImages(List<Image> images, File[] files) {
         /**
          * You have to make account for set order to adjust more order number
          * keep note of length increment.
