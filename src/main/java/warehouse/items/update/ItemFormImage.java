@@ -135,6 +135,11 @@ public class ItemFormImage implements
     protected void loadItemImages(int itemId) {
         imagesSelected = CRUDImages.getImagesByItemId(itemId);
         imagesSelected(imagesSelected);
+        iMGFileChooser.setUpLoadedImagesForUpdate(imagesSelected);
+        // iMGFileChooser notify it about files state
+        // cashe alvailable files in case user cancel updating, so we perserve them
+        // noify iMGFileChooser about images order and count
+        // accomdate it however you do it
     }
 
     @Override

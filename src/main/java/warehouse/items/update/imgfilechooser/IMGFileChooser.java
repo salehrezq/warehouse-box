@@ -129,6 +129,12 @@ public class IMGFileChooser implements
         clearFileChooserCurrentSelection();
     }
 
+    public void setUpLoadedImagesForUpdate(List<Image> images) {
+        incrementedFilesSelecionLength = images.size();
+        previousIncrementedFilesSelecionLength = images.size();
+        imagesSelectedByUser = images;
+    }
+
     private List<Image> processSelectedImages(List<Image> images, File[] files) {
         /**
          * You have to make account for set order to adjust more order number
