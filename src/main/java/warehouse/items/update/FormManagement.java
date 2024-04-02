@@ -26,9 +26,9 @@ package warehouse.items.update;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import warehouse.db.CRUDImages;
 import warehouse.db.CRUDItems;
 import warehouse.db.CreateListener;
 import warehouse.db.model.Image;
@@ -103,9 +103,16 @@ public class FormManagement extends JPanel {
 
         Item item;
         ArrayList<Image> images;
+        boolean isUpdateOperation = false;
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            /**
+             * Variable to hold operation type. Will detect item id, if item id
+             * is available, then it is meant for update operation, otherwise if
+             * it is not available, then it is meant for create operation.
+             */
+
             JButton btnNavigate = (JButton) e.getSource();
             if (btnNavigate == btnNext) {
                 navigateTracker++;
@@ -118,14 +125,14 @@ public class FormManagement extends JPanel {
                 images = new ArrayList<>();
                 collectables.forEach((c) -> {
                     if (c instanceof ItemFormTextFields) {
-                        Map mapData = c.collect();
                         // If item id is avalible then it is for an update operation. 
-                        Object itemId = mapData.get("id");
+                        Object itemId = c.collect().get("id");
                         System.out.println("---");
                         System.out.println("following is itemid");
                         System.out.println(itemId);
                         System.out.println("---");
                         if (itemId != null) {
+                            isUpdateOperation = true;
                             item.setId((int) itemId);
                         }
                         item.setName((String) c.collect().get("name"));
@@ -142,15 +149,21 @@ public class FormManagement extends JPanel {
                 System.out.println(item.getSpecification());
                 System.out.println(item.getUnitId());
 
-                boolean update = CRUDItems.update(item);
-                System.out.println(update ? "Updated" : "Not updated");
-//                System.out.println("Newly created Item id " + item.getId());
-//                int idOfCreatedItem = item.getId();
-//                if (idOfCreatedItem > 0) {
-//                    notifyCreated();
-//                    // Create images
-//                    CRUDImages.create(images, idOfCreatedItem);
-//                }
+                boolean affected = false;
+
+                if (isUpdateOperation) {
+                    affected = CRUDItems.update(item);
+                    System.out.println(affected ? "Updated" : "Not updated");
+                } else {
+                    CRUDItems.create(item);
+                    System.out.println("Newly created Item id " + item.getId());
+                    int idOfCreatedItem = item.getId();
+                    if (idOfCreatedItem > 0) {
+                        notifyCreated();
+                        // Create images
+                        CRUDImages.create(images, idOfCreatedItem);
+                    }
+                }
             }
             btnPrevious.setEnabled(navigateTracker > 0);
             btnNext.setEnabled(navigateTracker < formLastStep);
