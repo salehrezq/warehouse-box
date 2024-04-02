@@ -136,6 +136,29 @@ public class CRUDItems {
         return itemsMeta;
     }
 
+    public static boolean update(Item item) {
+        int update = 0;
+        String sql = "UPDATE items"
+                + " SET name = ?, specification = ?, unit_id = ?"
+                + " WHERE id = ?";
+        con = Connect.getConnection();
+        try {
+            System.out.println(sql);
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setString(1, item.getName());
+            p.setString(2, item.getSpecification());
+            p.setInt(3, item.getUnitId());
+            p.setInt(4, item.getId());
+            update = p.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return (update > 0);
+    }
+
     public static BufferedImage toBufferedImage(byte[] photo) {
         BufferedImage img = null;
         if (photo != null) {

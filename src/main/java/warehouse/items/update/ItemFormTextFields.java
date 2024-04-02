@@ -42,6 +42,7 @@ public class ItemFormTextFields extends JPanel implements Collectable {
     private JLabel lbName, lbSpecs;
     private SingularAttributedListForm itemFormQuantityUnit;
     private Map data;
+    private int itemIdForUpdate;
 
     public ItemFormTextFields() {
 
@@ -65,6 +66,10 @@ public class ItemFormTextFields extends JPanel implements Collectable {
         add(itemFormQuantityUnit, "center, span 2");
     }
 
+    public void setItemIdForUpdate(int itemId) {
+        this.itemIdForUpdate = itemId;
+    }
+
     public void setTfName(String itemName) {
         tfName.setText(itemName);
     }
@@ -79,6 +84,10 @@ public class ItemFormTextFields extends JPanel implements Collectable {
 
     @Override
     public Map collect() {
+        // If class used for item update; this field will be populated elsewhere.
+        if (itemIdForUpdate > 0) {
+            data.put("id", itemIdForUpdate);
+        }
         data.put("name", tfName.getText());
         data.put("specs", tfSpecs.getText());
         data.put("unit", itemFormQuantityUnit.getSelectedValue());

@@ -54,6 +54,10 @@ public class UpdateItemDialog extends JDialog {
         return formManagement;
     }
 
+    public void setItemIdForUpdate(int itemIdForUpdate) {
+        itemFormTextFields.setItemIdForUpdate(itemIdForUpdate);
+    }
+
     public void setTfName(String itemName) {
         itemFormTextFields.setTfName(itemName);
     }

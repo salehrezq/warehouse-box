@@ -26,9 +26,9 @@ package warehouse.items.update;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import warehouse.db.CRUDImages;
 import warehouse.db.CRUDItems;
 import warehouse.db.CreateListener;
 import warehouse.db.model.Image;
@@ -118,6 +118,16 @@ public class FormManagement extends JPanel {
                 images = new ArrayList<>();
                 collectables.forEach((c) -> {
                     if (c instanceof ItemFormTextFields) {
+                        Map mapData = c.collect();
+                        // If item id is avalible then it is for an update operation. 
+                        Object itemId = mapData.get("id");
+                        System.out.println("---");
+                        System.out.println("following is itemid");
+                        System.out.println(itemId);
+                        System.out.println("---");
+                        if (itemId != null) {
+                            item.setId((int) itemId);
+                        }
                         item.setName((String) c.collect().get("name"));
                         item.setSpecification((String) c.collect().get("specs"));
                         QuantityUnit qty = (QuantityUnit) c.collect().get("unit");
@@ -126,14 +136,21 @@ public class FormManagement extends JPanel {
                         images = (ArrayList<Image>) c.collect().get("images");
                     }
                 });
-                item = CRUDItems.create(item);
-                System.out.println("Newly created Item id " + item.getId());
-                int idOfCreatedItem = item.getId();
-                if (idOfCreatedItem > 0) {
-                    notifyCreated();
-                    // Create images
-                    CRUDImages.create(images, idOfCreatedItem);
-                }
+
+                System.out.println(item.getId());
+                System.out.println(item.getName());
+                System.out.println(item.getSpecification());
+                System.out.println(item.getUnitId());
+
+                boolean update = CRUDItems.update(item);
+                System.out.println(update ? "Updated" : "Not updated");
+//                System.out.println("Newly created Item id " + item.getId());
+//                int idOfCreatedItem = item.getId();
+//                if (idOfCreatedItem > 0) {
+//                    notifyCreated();
+//                    // Create images
+//                    CRUDImages.create(images, idOfCreatedItem);
+//                }
             }
             btnPrevious.setEnabled(navigateTracker > 0);
             btnNext.setEnabled(navigateTracker < formLastStep);

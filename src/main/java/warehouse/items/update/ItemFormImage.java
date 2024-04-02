@@ -112,11 +112,13 @@ public class ItemFormImage implements
 
     @Override
     public void imagesSelected(List<Image> images) {
+        System.out.println(imagesSelected.size());
         imagesSelected = images;
         int imagesCount = images.size();
         int spinnerValue = 0;
         if (imagesCount > 0) {
             for (Image image : images) {
+                System.out.println((image.getImageFile() == null) ? "No file" : "file");
                 imagesMap.put(image.getOrder(), image);
                 if (image.isDefaultImage()) {
                     scalableImageContainer.setBufferedImage(image.getBufferedImage());
@@ -124,6 +126,7 @@ public class ItemFormImage implements
                     spinnerValueOnSpinning = spinnerValue;
                 }
             }
+            System.out.println("-------------------");
         } else {
             spinnerValueOnSpinning = 0;
             imagesMap.clear();
