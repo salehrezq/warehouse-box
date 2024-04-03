@@ -47,6 +47,7 @@ import utility.horizontalspinner.SpinnerH;
 import utility.imagefilechooser.FilesSelectionLimitListener;
 import utility.imagepane.ScrollableScalableImageContainer;
 import utility.imagefilechooser.ImagesSelectedListener;
+import warehouse.db.CRUDImages;
 import warehouse.db.model.Image;
 
 /**
@@ -69,7 +70,7 @@ public class ItemFormImage implements
     private Map data;
     private SpinnerH spinnerH;
     private HashMap<Integer, Image> imagesMap;
-    private List<Image> imagesSelected;
+    private List<Image> imagesSelected, imagesRetrieved;
     private int spinnerValueOnSpinning;
     private ArrayList<ImageRemovedListener> imageRemovedListeners;
 
@@ -111,11 +112,21 @@ public class ItemFormImage implements
 
     @Override
     public void imagesSelected(List<Image> images) {
+        /**
+         * Case of {@code images} as null is when the initial open form is for
+         * create, otherwise when the open form for update, it takes images from
+         * database which make {@code images} loaded and not null.
+         */
+        if (images == null) {
+            return;
+        }
+        //  System.out.println(imagesSelected.size());
         imagesSelected = images;
         int imagesCount = images.size();
         int spinnerValue = 0;
         if (imagesCount > 0) {
             for (Image image : images) {
+                System.out.println((image.getImageFile() == null) ? "No file" : "file");
                 imagesMap.put(image.getOrder(), image);
                 if (image.isDefaultImage()) {
                     scalableImageContainer.setBufferedImage(image.getBufferedImage());
@@ -123,12 +134,23 @@ public class ItemFormImage implements
                     spinnerValueOnSpinning = spinnerValue;
                 }
             }
+            System.out.println("-------------------");
         } else {
             spinnerValueOnSpinning = 0;
             imagesMap.clear();
             scalableImageContainer.setBufferedImage(null);
         }
         spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
+    }
+
+    protected void loadItemImages(int itemId) {
+        imagesSelected = CRUDImages.getImagesByItemId(itemId);
+        imagesSelected(imagesSelected);
+        iMGFileChooser.setUpLoadedImagesForUpdate(imagesSelected);
+        // iMGFileChooser notify it about files state
+        // cashe alvailable files in case user cancel updating, so we perserve them
+        // noify iMGFileChooser about images order and count
+        // accomdate it however you do it
     }
 
     @Override

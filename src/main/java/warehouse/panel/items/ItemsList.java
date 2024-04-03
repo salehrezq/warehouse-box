@@ -48,7 +48,7 @@ import warehouse.db.CRUDItems;
 import warehouse.db.CreateListener;
 import warehouse.db.model.ItemMeta;
 import warehouse.db.model.QuantityUnit;
-import warehouse.items.update.UpdateItemDialog;
+import warehouse.panel.createandupdate.CreateItemDialog;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
 
@@ -70,7 +70,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
             menuItemUpdateItem;
     private InwardDialog inwardDialog;
     private OutwardDialog outwardDialog;
-    private UpdateItemDialog updateItemDialog;
+    private CreateItemDialog updateItemDialog;
 
     public ItemsList() {
 
@@ -115,7 +115,7 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         add(scrollTable, BorderLayout.CENTER);
         inwardDialog = new InwardDialog(null, "Inward", true);
         outwardDialog = new OutwardDialog(null, "Outward", true);
-        updateItemDialog = new UpdateItemDialog(null, "Update item", true);
+        updateItemDialog = new CreateItemDialog(null, "Update item", true);
     }
 
     @Override

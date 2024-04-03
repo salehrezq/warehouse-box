@@ -103,6 +103,7 @@ public class FormManagement extends JPanel {
 
         Item item;
         ArrayList<Image> images;
+        boolean isUpdateOperation = false;
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -118,6 +119,18 @@ public class FormManagement extends JPanel {
                 images = new ArrayList<>();
                 collectables.forEach((c) -> {
                     if (c instanceof ItemFormTextFields) {
+                        // If item id is avalible then it is meant for an update operation. 
+                        Object itemId = c.collect().get("id");
+                        if (itemId != null) {
+                            /**
+                             * Variable to hold operation type. Will detect item
+                             * id, if item id is available, then it is meant for
+                             * update operation, otherwise if it is not
+                             * available, then it is meant for create operation.
+                             */
+                            isUpdateOperation = true;
+                            item.setId((int) itemId);
+                        }
                         item.setName((String) c.collect().get("name"));
                         item.setSpecification((String) c.collect().get("specs"));
                         QuantityUnit qty = (QuantityUnit) c.collect().get("unit");
@@ -126,13 +139,26 @@ public class FormManagement extends JPanel {
                         images = (ArrayList<Image>) c.collect().get("images");
                     }
                 });
-                item = CRUDItems.create(item);
-                System.out.println("Newly created Item id " + item.getId());
-                int idOfCreatedItem = item.getId();
-                if (idOfCreatedItem > 0) {
-                    notifyCreated();
-                    // Create images
-                    CRUDImages.create(images, idOfCreatedItem);
+
+                System.out.println(item.getId());
+                System.out.println(item.getName());
+                System.out.println(item.getSpecification());
+                System.out.println(item.getUnitId());
+
+                boolean affected = false;
+
+                if (isUpdateOperation) {
+                    affected = CRUDItems.update(item);
+                    System.out.println(affected ? "Updated" : "Not updated");
+                } else {
+                    Item createdItem = CRUDItems.create(item);
+                    System.out.println("Newly created Item id " + createdItem.getId());
+                    int idOfCreatedItem = createdItem.getId();
+                    if (idOfCreatedItem > 0) {
+                        notifyCreated();
+                        // Create images
+                        CRUDImages.create(images, idOfCreatedItem);
+                    }
                 }
             }
             btnPrevious.setEnabled(navigateTracker > 0);

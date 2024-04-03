@@ -27,6 +27,7 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
+import warehouse.db.model.QuantityUnit;
 
 /**
  *
@@ -36,12 +37,14 @@ public class CreateItemDialog extends JDialog {
 
     private ItemForm itemForm;
     private FormManagement formManagement;
+    private ItemFormTextFields itemFormTextFields;
 
     public CreateItemDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         itemForm = new ItemForm();
         formManagement = itemForm.getFormManagement();
         formManagement.addNavigationListener(itemForm);
+        itemFormTextFields = itemForm.getItemFormTextFields();
         add(itemForm);
         pack();
         this.addWindowListener(new ClosingWindowHandler());
@@ -49,6 +52,51 @@ public class CreateItemDialog extends JDialog {
 
     public FormManagement getFormManagement() {
         return formManagement;
+    }
+
+    /**
+     * Method for update item process.
+     *
+     * @param itemIdForUpdate
+     */
+    public void setItemIdForUpdate(int itemIdForUpdate) {
+        itemFormTextFields.setItemIdForUpdate(itemIdForUpdate);
+    }
+
+    /**
+     * Method for update item process.
+     *
+     * @param itemName
+     */
+    public void setTfName(String itemName) {
+        itemFormTextFields.setTfName(itemName);
+    }
+
+    /**
+     * Method for update item process.
+     *
+     * @param itemSpecs
+     */
+    public void setTfSpecs(String itemSpecs) {
+        itemFormTextFields.setTfSpecs(itemSpecs);
+    }
+
+    /**
+     * Method for update item process.
+     *
+     * @param quantityUnit
+     */
+    public void setUnitName(QuantityUnit quantityUnit) {
+        itemFormTextFields.setSelectedUnit(quantityUnit);
+    }
+
+    /**
+     * Method for update item process.
+     *
+     * @param itemId
+     */
+    public void setItemImages(int itemId) {
+        itemForm.getItemFormImage().loadItemImages(itemId);
     }
 
     private class ClosingWindowHandler extends WindowAdapter {
