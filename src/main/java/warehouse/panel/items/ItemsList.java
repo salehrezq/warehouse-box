@@ -45,7 +45,8 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDItems;
-import warehouse.db.CreateListener;
+import warehouse.db.CRUDListable;
+import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
 import warehouse.db.model.QuantityUnit;
 import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
@@ -54,7 +55,7 @@ import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
  *
  * @author Saleh
  */
-public class ItemsList extends JPanel implements CreateListener {
+public class ItemsList extends JPanel implements CreateItemListener {
 
     private DefaultTableModel model;
     private JTable table;
@@ -141,26 +142,16 @@ public class ItemsList extends JPanel implements CreateListener {
     }
 
     @Override
-    public void created() {
-        System.out.println("Refresh items to reflect newly created item");
-        // Clear the model every time, to append fresh results
-        // and not accumulate on previous results
-        model.setRowCount(0);
-        List<ItemMeta> itemsMetaRecords = new ArrayList();
-        itemsMetaRecords = CRUDItems.getMetaAll();
-        Object[] modelRow = new Object[6];
-
-        int size = itemsMetaRecords.size();
-        for (int i = 0; i < size; i++) {
-            ItemMeta itemMeta = itemsMetaRecords.get(i);
-            modelRow[0] = itemMeta.getId(); //code
-            modelRow[1] = itemMeta.getName();
-            modelRow[2] = itemMeta.getSpecification();
-            modelRow[3] = itemMeta.getBalance();
-            modelRow[4] = itemMeta.getUnitId(); // will be hidden column
-            modelRow[5] = itemMeta.getUnit();
-            model.addRow(modelRow);
-        }
+    public void created(Item item) {
+        QuantityUnit unit = (QuantityUnit) CRUDListable.getById(new QuantityUnit(), item.getUnitId());
+        model.addRow(new String[]{
+            String.valueOf(item.getId()),
+            item.getName(),
+            item.getSpecification(),
+            "0.00",
+            String.valueOf(unit.getId()),
+            unit.getName()
+        });
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
@@ -171,6 +162,7 @@ public class ItemsList extends JPanel implements CreateListener {
         this.rowIdSelectionListeners.forEach((item) -> {
             item.selectedRowId(rowId);
         });
+
     }
 
     private class RowSelectionListener implements ListSelectionListener {
@@ -243,6 +235,7 @@ public class ItemsList extends JPanel implements CreateListener {
     private Object getColumnOfSelectedRow(int column) {
         selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
         return table.getModel().getValueAt(selectedModelRow, column);
+
     }
 
     private class PopupMenuItemActionHandler implements ActionListener {

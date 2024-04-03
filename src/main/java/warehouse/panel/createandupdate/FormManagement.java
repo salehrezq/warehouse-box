@@ -26,14 +26,15 @@ package warehouse.panel.createandupdate;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import warehouse.db.CRUDImages;
 import warehouse.db.CRUDItems;
-import warehouse.db.CreateListener;
 import warehouse.db.model.Image;
 import warehouse.db.model.Item;
 import warehouse.db.model.QuantityUnit;
+import warehouse.panel.items.CreateItemListener;
 
 /**
  *
@@ -47,13 +48,13 @@ public class FormManagement extends JPanel {
     private int formLastStep;
     private int navigateTracker;
     private ArrayList<Collectable> collectables;
-    private ArrayList<CreateListener> createListeners;
+    private List<CreateItemListener> createItemListeners;
 
     public FormManagement(ArrayList<Collectable> collectables) {
 
         this.collectables = collectables;
         navigatables = new ArrayList<>();
-        createListeners = new ArrayList<>();
+        createItemListeners = new ArrayList<>();
         btnNext = new JButton("Next>>");
         btnPrevious = new JButton("<<Previous");
         btnSubmit = new JButton("Submit");
@@ -89,13 +90,13 @@ public class FormManagement extends JPanel {
         });
     }
 
-    public void addCreateListener(CreateListener createListener) {
-        this.createListeners.add(createListener);
+    public void addCreateListener(CreateItemListener createItemListener) {
+        this.createItemListeners.add(createItemListener);
     }
 
-    public void notifyCreated() {
-        this.createListeners.forEach((createListener) -> {
-            createListener.created();
+    public void notifyCreated(Item item) {
+        this.createItemListeners.forEach((createItemListener) -> {
+            createItemListener.created(item);
         });
     }
 
@@ -155,7 +156,7 @@ public class FormManagement extends JPanel {
                     System.out.println("Newly created Item id " + createdItem.getId());
                     int idOfCreatedItem = createdItem.getId();
                     if (idOfCreatedItem > 0) {
-                        notifyCreated();
+                        notifyCreated(createdItem);
                         // Create images
                         CRUDImages.create(images, idOfCreatedItem);
                     }

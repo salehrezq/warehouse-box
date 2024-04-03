@@ -26,7 +26,6 @@ package warehouse.panel.items;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import warehouse.db.CreateListener;
 
 /**
  *
@@ -71,7 +70,7 @@ public class ItemsTab extends JPanel {
         add(splitRightAndLeftPanes);
     }
 
-    public CreateListener getItemsListCreateListener() {
+    public CreateItemListener getItemCreatelistener() {
         return itemsList;
     }
 }

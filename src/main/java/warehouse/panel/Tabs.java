@@ -27,8 +27,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import warehouse.db.CreateListener;
 import warehouse.panel.inwards.InwardsTap;
+import warehouse.panel.items.CreateItemListener;
 import warehouse.panel.items.ItemsList;
 import warehouse.panel.items.ItemsTab;
 import warehouse.panel.outwards.OutwardsTap;
@@ -52,11 +52,11 @@ public class Tabs extends JPanel {
         inwardsTap = new InwardsTap();
         outwardsTap = new OutwardsTap();
 
-        ((ItemsList) itemsTab.getItemsListCreateListener())
+        ((ItemsList) itemsTab.getItemCreatelistener())
                 .getInwardDialog()
                 .addCreateListener(inwardsTap.getInwardsListCreateListener());
 
-        ((ItemsList) itemsTab.getItemsListCreateListener())
+        ((ItemsList) itemsTab.getItemCreatelistener())
                 .getOutwardDialog()
                 .addCreateListener(outwardsTap.getOutwardsListCreateListener());
 
@@ -67,7 +67,7 @@ public class Tabs extends JPanel {
         this.setPreferredSize(new Dimension(1000, 500));
     }
 
-    public CreateListener getCreateListenerItemsList() {
-        return itemsTab.getItemsListCreateListener();
+    public CreateItemListener getCreateListenerItemsList() {
+        return itemsTab.getItemCreatelistener();
     }
 }
