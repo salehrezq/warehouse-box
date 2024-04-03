@@ -54,7 +54,7 @@ public class MainRun {
     }
 
     private void linkActionToListeners() {
-        menu.getFormManagement().addCreateListener(tabs.getCreateListenerItemsList());
+        menu.getFormManagement().addItemCRUDListener(tabs.getItemCRUDListener());
     }
 
     public static void main(String[] args) {

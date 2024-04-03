@@ -34,7 +34,7 @@ import warehouse.db.CRUDItems;
 import warehouse.db.model.Image;
 import warehouse.db.model.Item;
 import warehouse.db.model.QuantityUnit;
-import warehouse.panel.items.CreateItemListener;
+import warehouse.panel.items.ItemCRUDListener;
 
 /**
  *
@@ -48,13 +48,13 @@ public class FormManagement extends JPanel {
     private int formLastStep;
     private int navigateTracker;
     private ArrayList<Collectable> collectables;
-    private List<CreateItemListener> createItemListeners;
+    private List<ItemCRUDListener> itemCRUDListeners;
 
     public FormManagement(ArrayList<Collectable> collectables) {
 
         this.collectables = collectables;
         navigatables = new ArrayList<>();
-        createItemListeners = new ArrayList<>();
+        itemCRUDListeners = new ArrayList<>();
         btnNext = new JButton("Next>>");
         btnPrevious = new JButton("<<Previous");
         btnSubmit = new JButton("Submit");
@@ -90,13 +90,19 @@ public class FormManagement extends JPanel {
         });
     }
 
-    public void addCreateListener(CreateItemListener createItemListener) {
-        this.createItemListeners.add(createItemListener);
+    public void addItemCRUDListener(ItemCRUDListener itemCRUDListener) {
+        this.itemCRUDListeners.add(itemCRUDListener);
     }
 
-    public void notifyCreated(Item item) {
-        this.createItemListeners.forEach((createItemListener) -> {
-            createItemListener.created(item);
+    public void notifyCreated(Item createdItem) {
+        this.itemCRUDListeners.forEach((itemCRUDListener) -> {
+            itemCRUDListener.created(createdItem);
+        });
+    }
+
+    public void notifyUpdated(Item updatedItem) {
+        this.itemCRUDListeners.forEach((itemCRUDListener) -> {
+            itemCRUDListener.updated(updatedItem);
         });
     }
 
@@ -150,6 +156,9 @@ public class FormManagement extends JPanel {
 
                 if (isUpdateOperation) {
                     affected = CRUDItems.update(item);
+                    if (affected) {
+                        notifyUpdated(item);
+                    }
                     System.out.println(affected ? "Updated" : "Not updated");
                 } else {
                     Item createdItem = CRUDItems.create(item);

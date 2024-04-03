@@ -29,7 +29,9 @@ import warehouse.db.model.Item;
  *
  * @author Saleh
  */
-public interface CreateItemListener {
+public interface ItemCRUDListener {
 
-    public void created(Item item);
+    public void created(Item createdItem);
+
+    public void updated(Item updatedItem);
 }

@@ -55,7 +55,7 @@ import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
  *
  * @author Saleh
  */
-public class ItemsList extends JPanel implements CreateItemListener {
+public class ItemsList extends JPanel implements ItemCRUDListener {
 
     private DefaultTableModel model;
     private JTable table;
@@ -152,6 +152,10 @@ public class ItemsList extends JPanel implements CreateItemListener {
             String.valueOf(unit.getId()),
             unit.getName()
         });
+    }
+
+    public void updated(Item updatedItem) {
+        System.out.println("updated item");
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
