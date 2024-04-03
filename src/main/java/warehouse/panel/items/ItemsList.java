@@ -49,21 +49,18 @@ import warehouse.db.CreateListener;
 import warehouse.db.model.ItemMeta;
 import warehouse.db.model.QuantityUnit;
 import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
-import warehouse.singularlisting.Listable;
-import warehouse.singularlisting.ListableConsumer;
 
 /**
  *
  * @author Saleh
  */
-public class ItemsList extends JPanel implements CreateListener, ListableConsumer {
+public class ItemsList extends JPanel implements CreateListener {
 
     private DefaultTableModel model;
     private JTable table;
     private JScrollPane scrollTable;
     private Integer selectedModelRow;
     private ArrayList<RowIdSelectionListener> rowIdSelectionListeners;
-    private Listable listableImplementation;
     private final JPopupMenu popupMenu;
     private final JMenuItem menuItemInwardsOfSelectedItem,
             menuItemOutwardOfSelectedItem,
@@ -118,10 +115,21 @@ public class ItemsList extends JPanel implements CreateListener, ListableConsume
         updateItemDialog = new ItemCreateUpdateDialog(null, "Update item", true);
     }
 
-    @Override
-    public void setListableImpl(Listable listable) {
-        this.listableImplementation = listable;
-        created();
+    protected void loadDBItems() {
+        List<ItemMeta> itemsMetaRecords = CRUDItems.getMetaAll();
+        Object[] modelRow = new Object[6];
+
+        int size = itemsMetaRecords.size();
+        for (int i = 0; i < size; i++) {
+            ItemMeta itemMeta = itemsMetaRecords.get(i);
+            modelRow[0] = itemMeta.getId(); //code
+            modelRow[1] = itemMeta.getName();
+            modelRow[2] = itemMeta.getSpecification();
+            modelRow[3] = itemMeta.getBalance();
+            modelRow[4] = itemMeta.getUnitId(); // will be hidden column
+            modelRow[5] = itemMeta.getUnit();
+            model.addRow(modelRow);
+        }
     }
 
     public InwardDialog getInwardDialog() {
