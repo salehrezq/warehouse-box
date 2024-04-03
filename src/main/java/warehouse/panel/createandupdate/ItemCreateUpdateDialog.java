@@ -33,13 +33,13 @@ import warehouse.db.model.QuantityUnit;
  *
  * @author Saleh
  */
-public class CreateItemDialog extends JDialog {
+public class ItemCreateUpdateDialog extends JDialog {
 
     private ItemForm itemForm;
     private FormManagement formManagement;
     private ItemFormTextFields itemFormTextFields;
 
-    public CreateItemDialog(Frame owner, String title, boolean modal) {
+    public ItemCreateUpdateDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         itemForm = new ItemForm();
         formManagement = itemForm.getFormManagement();

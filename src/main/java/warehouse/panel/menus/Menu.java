@@ -23,7 +23,7 @@
  */
 package warehouse.panel.menus;
 
-import warehouse.panel.createandupdate.CreateItemDialog;
+import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
@@ -50,7 +50,7 @@ public class Menu {
     private ListableItemManage manageQuantityUnitDialog,
             manageSourceDialog,
             manageRecipientDialog;
-    private CreateItemDialog createItemDialog;
+    private ItemCreateUpdateDialog createItemDialog;
     private MenuItemsListener menuItemsListener;
 
     public Menu() {
@@ -67,7 +67,7 @@ public class Menu {
         menubar.add(menuFile);
 
         menuItemsListener = new MenuItemsListener();
-        createItemDialog = new CreateItemDialog(target, "Create Item", true);
+        createItemDialog = new ItemCreateUpdateDialog(target, "Create Item", true);
         manageQuantityUnitDialog = new ListableItemManage(target, "Manage units", true);
         manageQuantityUnitDialog.setListableImpl(new QuantityUnit());
         manageSourceDialog = new ListableItemManage(target, "Manage Sources", true);
