@@ -152,20 +152,21 @@ public class FormManagement extends JPanel {
                 System.out.println(item.getSpecification());
                 System.out.println(item.getUnitId());
 
-                boolean affected = false;
+                boolean isUpdated = false;
 
                 if (isUpdateOperation) {
-                    affected = CRUDItems.update(item);
-                    if (affected) {
-                        notifyUpdated(item);
-                    }
-                    System.out.println(affected ? "Updated" : "Not updated");
+                    // Is update operation
+                    isUpdated = CRUDItems.update(item);
+                    notifyUpdated(isUpdated ? item : null);
+                    System.out.println(isUpdated ? "Updated" : "Not updated");
                 } else {
+                    // Is create operation
                     Item createdItem = CRUDItems.create(item);
                     System.out.println("Newly created Item id " + createdItem.getId());
                     int idOfCreatedItem = createdItem.getId();
-                    if (idOfCreatedItem > 0) {
-                        notifyCreated(createdItem);
+                    boolean isCreated = idOfCreatedItem > 0;
+                    notifyCreated(isCreated ? createdItem : null);
+                    if (isCreated) {
                         // Create images
                         CRUDImages.create(images, idOfCreatedItem);
                     }
