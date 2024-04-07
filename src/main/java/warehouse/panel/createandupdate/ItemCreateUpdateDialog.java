@@ -27,13 +27,15 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
+import warehouse.db.model.Item;
 import warehouse.db.model.QuantityUnit;
+import warehouse.panel.items.ItemCRUDListener;
 
 /**
  *
  * @author Saleh
  */
-public class ItemCreateUpdateDialog extends JDialog {
+public class ItemCreateUpdateDialog extends JDialog implements ItemCRUDListener {
 
     private ItemForm itemForm;
     private FormManagement formManagement;
@@ -43,6 +45,7 @@ public class ItemCreateUpdateDialog extends JDialog {
         super(owner, title, modal);
         itemForm = new ItemForm();
         formManagement = itemForm.getFormManagement();
+        formManagement.addItemCRUDListener(ItemCreateUpdateDialog.this);
         formManagement.addNavigationListener(itemForm);
         itemFormTextFields = itemForm.getItemFormTextFields();
         add(itemForm);
@@ -97,6 +100,16 @@ public class ItemCreateUpdateDialog extends JDialog {
      */
     public void setItemImages(int itemId) {
         itemForm.getItemFormImage().loadItemImages(itemId);
+    }
+
+    @Override
+    public void created(Item createdItem) {
+        System.out.println("ItemCreateUpdateDialog created: process and dismiss");
+    }
+
+    @Override
+    public void updated(Item updatedItem) {
+        System.out.println("ItemCreateUpdateDialog updated: process and dismiss");
     }
 
     private class ClosingWindowHandler extends WindowAdapter {

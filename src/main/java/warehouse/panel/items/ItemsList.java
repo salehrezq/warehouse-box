@@ -154,6 +154,7 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
         });
     }
 
+    @Override
     public void updated(Item updatedItem) {
         System.out.println("updated item");
     }
@@ -166,7 +167,6 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
         this.rowIdSelectionListeners.forEach((item) -> {
             item.selectedRowId(rowId);
         });
-
     }
 
     private class RowSelectionListener implements ListSelectionListener {
@@ -277,6 +277,7 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
                 quantityUnit.setId(unitId);
                 quantityUnit.setName(itemUnit);
                 updateItemDialog.setItemIdForUpdate(itemId);
+                updateItemDialog.getFormManagement().addItemCRUDListener(ItemsList.this);
                 updateItemDialog.setUnitName(quantityUnit);
                 updateItemDialog.setItemImages(itemId);
                 updateItemDialog.setVisible(true);
