@@ -27,6 +27,7 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import warehouse.db.model.Item;
 import warehouse.db.model.QuantityUnit;
 import warehouse.panel.items.ItemCRUDListener;
@@ -104,12 +105,38 @@ public class ItemCreateUpdateDialog extends JDialog implements ItemCRUDListener 
 
     @Override
     public void created(Item createdItem) {
-        System.out.println("ItemCreateUpdateDialog created: process and dismiss");
+        if (createdItem != null) {
+            this.dispose();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Item created successfully",
+                    "Created",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Issue: Item was not created",
+                    "Fail to create",
+                    JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     @Override
     public void updated(Item updatedItem) {
-        System.out.println("ItemCreateUpdateDialog updated: process and dismiss");
+        if (updatedItem != null) {
+            this.dispose();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Item updated successfully",
+                    "Updated",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Issue: Item was not updated",
+                    "Fail to update",
+                    JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private class ClosingWindowHandler extends WindowAdapter {
