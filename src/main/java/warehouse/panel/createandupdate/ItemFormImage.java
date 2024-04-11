@@ -112,15 +112,6 @@ public class ItemFormImage implements
 
     @Override
     public void imagesSelected(List<Image> images) {
-        /**
-         * Case of {@code images} as null is when the initial open form is for
-         * create, otherwise when the open form for update, it takes images from
-         * database which make {@code images} loaded and not null.
-         */
-        if (images == null) {
-            return;
-        }
-        //  System.out.println(imagesSelected.size());
         imagesSelected = images;
         int imagesCount = images.size();
         int spinnerValue = 0;
