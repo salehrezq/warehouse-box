@@ -156,7 +156,13 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
 
     @Override
     public void updated(Item updatedItem) {
-        System.out.println("updated item");
+        // "Code", "Name", "Specification", "Balance", "unit_id", "Unit"
+        QuantityUnit unit = (QuantityUnit) CRUDListable.getById(new QuantityUnit(), updatedItem.getUnitId());
+        model.setValueAt(updatedItem.getName(), selectedModelRow, 1);
+        model.setValueAt(updatedItem.getSpecification(), selectedModelRow, 2);
+        // 3 is calculated value not relevant on the update here
+        model.setValueAt(unit.getId(), selectedModelRow, 4);
+        model.setValueAt(unit.getName(), selectedModelRow, 5);
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
