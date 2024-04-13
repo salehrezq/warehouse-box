@@ -29,6 +29,7 @@ import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -88,7 +89,7 @@ public class ItemImage implements RowIdSelectionListener {
 
     @Override
     public void selectedRowId(int rowId) {
-        ArrayList<Image> images = CRUDImages.getImagesByItemId(rowId);
+        List<Image> images = CRUDImages.getImagesByItemId(rowId);
         int imagesCount = images.size();
         System.out.println("imagesCount " + imagesCount);
         int spinnerValue = 0;

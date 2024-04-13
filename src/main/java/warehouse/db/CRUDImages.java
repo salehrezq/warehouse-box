@@ -29,6 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utility.filemanage.ImageFileManager;
@@ -42,7 +43,7 @@ public class CRUDImages {
 
     private static Connection con;
 
-    public static int create(ArrayList<Image> images, int itemId) {
+    public static int create(List<Image> images, int itemId) {
         int insert = 0;
         String sql = "INSERT INTO images (`item_id`, `order`, `name`, `default_image`, `scale`) VALUES (?, ?, ?, ?, ?)";
         con = Connect.getConnection();
@@ -71,8 +72,8 @@ public class CRUDImages {
         return insert;
     }
 
-    public static ArrayList<Image> getImagesByItemId(int itemId) {
-        ArrayList<Image> images = new ArrayList<>();
+    public static List<Image> getImagesByItemId(int itemId) {
+        List<Image> images = new ArrayList<>();
         try {
             String sql = "SELECT * FROM `images` WHERE item_id =" + itemId + " ORDER BY `order` ASC";
             con = Connect.getConnection();

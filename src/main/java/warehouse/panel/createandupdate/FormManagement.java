@@ -109,7 +109,7 @@ public class FormManagement extends JPanel {
     private class NavigateButtonsListener implements ActionListener {
 
         Item item;
-        ArrayList<Image> images;
+        List<Image> images;
         boolean isUpdateOperation = false;
 
         @Override
