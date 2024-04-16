@@ -44,7 +44,7 @@ public class CRUDImages {
     private static Connection con;
 
     public static int create(List<Image> images, int itemId) {
-        int insert = 0;
+        int[] patchArray = null;
         String sql = "INSERT INTO images (`item_id`, `order`, `name`, `default_image`, `scale`) VALUES (?, ?, ?, ?, ?)";
         con = Connect.getConnection();
         String newImageName = "";
@@ -62,14 +62,14 @@ public class CRUDImages {
                 // Copy image to app directory
                 ImageFileManager.copyFileUsingJava7Files(image.getImageFile(), newImageName);
             }
-            pstmt.executeBatch();
+            patchArray = pstmt.executeBatch();
             con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDImages.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             Connect.cleanUp();
         }
-        return insert;
+        return patchArray.length;
     }
 
     public static List<Image> getImagesByItemId(int itemId) {
@@ -97,4 +97,54 @@ public class CRUDImages {
         }
         return images;
     }
+
+    public static int update(List<Image> images) {
+        int[] patchArray = null;
+        String sql = "UPDATE images"
+                + " SET"
+                + " `order` = ?,"
+                + " `default_image` = ?"
+                + " WHERE `id` = ?";
+
+        con = Connect.getConnection();
+        try {
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            for (int i = 0; i < images.size(); i++) {
+                Image image = images.get(i);
+                pstmt.setInt(1, image.getOrder());
+                pstmt.setBoolean(2, image.isDefaultImage());
+                pstmt.setInt(3, image.getId());
+                pstmt.addBatch();
+            }
+            patchArray = pstmt.executeBatch();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDImages.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return patchArray.length;
+    }
+
+    public static int delete(List<Image> images) {
+        int[] patchArray = null;
+        String sql = "DELETE FROM images WHERE `id` = ?";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            for (int i = 0; i < images.size(); i++) {
+                Image image = images.get(i);
+                pstmt.setInt(1, image.getId());
+                pstmt.addBatch();
+            }
+            patchArray = pstmt.executeBatch();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDImages.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return patchArray.length;
+    }
+
 }

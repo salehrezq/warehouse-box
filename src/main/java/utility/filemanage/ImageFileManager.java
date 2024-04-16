@@ -59,6 +59,15 @@ public class ImageFileManager {
         }
     }
 
+    public static void delete(String filename) {
+        try {
+            Path destFile = Paths.get(appImagesPath + slash + filename);
+            Files.delete(destFile);
+        } catch (IOException ex) {
+            Logger.getLogger(ImageFileManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public static String generateImageName(File file) {
         Optional<String> extension = getExtensionByStringHandling(file.getName());
         UUID fileNewName = generateType1UUID();
@@ -98,6 +107,7 @@ public class ImageFileManager {
         try {
             image = ImageIO.read(new File(appImagesPath + slash + imageName));
         } catch (IOException ex) {
+            System.err.println("Issue image name " + imageName);
             Logger.getLogger(ImageFileManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return image;

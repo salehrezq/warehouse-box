@@ -70,7 +70,7 @@ public class ItemFormImage implements
     private Map data;
     private SpinnerH spinnerH;
     private HashMap<Integer, Image> imagesMap;
-    private List<Image> imagesSelected, imagesRetrieved;
+    private List<Image> imagesSelected, imagesRetrievedFromDB;
     private int spinnerValueOnSpinning;
     private ArrayList<ImageRemovedListener> imageRemovedListeners;
 
@@ -136,6 +136,7 @@ public class ItemFormImage implements
 
     protected void loadItemImages(int itemId) {
         imagesSelected = CRUDImages.getImagesByItemId(itemId);
+        imagesRetrievedFromDB = new ArrayList<>(imagesSelected);
         imagesSelected(imagesSelected);
         iMGFileChooser.setUpLoadedImagesForUpdate(imagesSelected);
         // iMGFileChooser notify it about files state
@@ -147,6 +148,7 @@ public class ItemFormImage implements
     @Override
     public Map collect() {
         data.put("images", imagesSelected);
+        data.put("imagesRetrievedFromDB", imagesRetrievedFromDB);
         return data;
     }
 

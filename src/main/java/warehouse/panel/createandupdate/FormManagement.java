@@ -27,8 +27,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import utility.filemanage.ImageFileManager;
 import warehouse.db.CRUDImages;
 import warehouse.db.CRUDItems;
 import warehouse.db.model.Image;
@@ -109,7 +111,7 @@ public class FormManagement extends JPanel {
     private class NavigateButtonsListener implements ActionListener {
 
         Item item;
-        List<Image> images;
+        List<Image> images, imagesRetrievedFromDB;
         boolean isUpdateOperation = false;
 
         @Override
@@ -144,6 +146,7 @@ public class FormManagement extends JPanel {
                         item.setUnitId(qty.getId());
                     } else if (c instanceof ItemFormImage) {
                         images = (ArrayList<Image>) c.collect().get("images");
+                        imagesRetrievedFromDB = (ArrayList<Image>) c.collect().get("imagesRetrievedFromDB");
                     }
                 });
 
@@ -159,6 +162,43 @@ public class FormManagement extends JPanel {
                     isUpdated = CRUDItems.update(item);
                     notifyUpdated(isUpdated ? item : null);
                     System.out.println(isUpdated ? "Updated" : "Not updated");
+
+                    // Images which were deselected during form update process.
+                    List<Image> deselectedImages = imagesRetrievedFromDB.stream()
+                            .filter(deslectedImage -> !images.contains(deslectedImage))
+                            .collect(Collectors.toList());
+
+                    // Delete actual files from file system of deselected images
+                    deselectedImages.forEach(imageTobeRemoved
+                            -> ImageFileManager.delete(imageTobeRemoved.getImageName()));
+
+                    // Delete operation for DB image records using file names.
+                    if (!deselectedImages.isEmpty()) {
+                        CRUDImages.delete(deselectedImages);
+                    }
+
+                    // Images that were retrieved from database and not removed,
+                    // but their properties may change in case of selecting new images
+                    // and/or removing some of the retrieved images. Because some properties
+                    // are mutual between item images
+                    List<Image> imagesRetrievedFromDBTobeUpdateProperies = images.stream()
+                            .filter(dbRetrievedImage -> imagesRetrievedFromDB.contains(dbRetrievedImage))
+                            .collect(Collectors.toList());
+
+                    // Update operation for properties of the database retrieved images;
+                    if (!imagesRetrievedFromDBTobeUpdateProperies.isEmpty()) {
+                        CRUDImages.update(imagesRetrievedFromDBTobeUpdateProperies);
+                    }
+
+                    // New images that were selected during form update process
+                    List<Image> newSelectedImagesToBeUploaded = images.stream()
+                            .filter(image -> !imagesRetrievedFromDB.contains(image))
+                            .collect(Collectors.toList());
+
+                    // Create operation for the new selected images
+                    if (!newSelectedImagesToBeUploaded.isEmpty()) {
+                        CRUDImages.create(newSelectedImagesToBeUploaded, item.getId());
+                    }
                 } else {
                     // Is create operation
                     Item createdItem = CRUDItems.create(item);
