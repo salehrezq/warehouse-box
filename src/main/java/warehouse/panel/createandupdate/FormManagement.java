@@ -155,13 +155,15 @@ public class FormManagement extends JPanel {
                 System.out.println(item.getSpecification());
                 System.out.println(item.getUnitId());
 
-                boolean isUpdated = false;
+                boolean isItemUpdate = false;
+                boolean isItemImagesUpdate = false;
+                boolean isItemImagesCreate = false;
+                boolean isItemsImagesDelete = false;
 
                 if (isUpdateOperation) {
                     // Is update operation
-                    isUpdated = CRUDItems.update(item);
-                    notifyUpdated(isUpdated ? item : null);
-                    System.out.println(isUpdated ? "Updated" : "Not updated");
+                    isItemUpdate = CRUDItems.update(item);
+                    System.out.println(isItemUpdate ? "Updated" : "Not updated");
 
                     // Images which were deselected during form update process.
                     List<Image> deselectedImages = imagesRetrievedFromDB.stream()
@@ -174,7 +176,8 @@ public class FormManagement extends JPanel {
 
                     // Delete operation for DB image records using file names.
                     if (!deselectedImages.isEmpty()) {
-                        CRUDImages.delete(deselectedImages);
+                        int imagesDelete = CRUDImages.delete(deselectedImages);
+                        isItemsImagesDelete = (imagesDelete > 0);
                     }
 
                     // Images that were retrieved from database and not removed,
@@ -187,7 +190,8 @@ public class FormManagement extends JPanel {
 
                     // Update operation for properties of the database retrieved images;
                     if (!imagesRetrievedFromDBTobeUpdateProperies.isEmpty()) {
-                        CRUDImages.update(imagesRetrievedFromDBTobeUpdateProperies);
+                        int imagesUpdate = CRUDImages.update(imagesRetrievedFromDBTobeUpdateProperies);
+                        isItemImagesUpdate = (imagesUpdate > 0);
                     }
 
                     // New images that were selected during form update process
@@ -197,19 +201,29 @@ public class FormManagement extends JPanel {
 
                     // Create operation for the new selected images
                     if (!newSelectedImagesToBeUploaded.isEmpty()) {
-                        CRUDImages.create(newSelectedImagesToBeUploaded, item.getId());
+                        int imagesCreate = CRUDImages.create(newSelectedImagesToBeUploaded, item.getId());
+                        isItemImagesCreate = (imagesCreate > 0);
                     }
+
+                    boolean anyItemRelevantUpdate
+                            = isItemUpdate
+                            || isItemImagesCreate
+                            || isItemImagesUpdate
+                            || isItemsImagesDelete;
+
+                    System.out.println(anyItemRelevantUpdate ? "update true" : "no update");
+                    notifyUpdated(anyItemRelevantUpdate ? item : null);
                 } else {
                     // Is create operation
                     Item createdItem = CRUDItems.create(item);
                     System.out.println("Newly created Item id " + createdItem.getId());
                     int idOfCreatedItem = createdItem.getId();
                     boolean isCreated = idOfCreatedItem > 0;
-                    notifyCreated(isCreated ? createdItem : null);
                     if (isCreated) {
                         // Create images
                         CRUDImages.create(images, idOfCreatedItem);
                     }
+                    notifyCreated(isCreated ? createdItem : null);
                 }
             }
             btnPrevious.setEnabled(navigateTracker > 0);

@@ -70,7 +70,12 @@ public class ItemsTab extends JPanel {
         add(splitRightAndLeftPanes);
     }
 
-    public ItemCRUDListener getItemCRUDListener() {
+    public ItemsList getItemsList() {
         return itemsList;
     }
+
+    public ItemImage getItemImage() {
+        return itemsImages;
+    }
+
 }

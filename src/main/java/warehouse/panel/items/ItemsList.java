@@ -116,6 +116,10 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
         updateItemDialog = new ItemCreateUpdateDialog(null, "Update item", true);
     }
 
+    public ItemCreateUpdateDialog getUpdateItemDialog() {
+        return updateItemDialog;
+    }
+
     protected void loadDBItems() {
         List<ItemMeta> itemsMetaRecords = CRUDItems.getMetaAll();
         Object[] modelRow = new Object[6];

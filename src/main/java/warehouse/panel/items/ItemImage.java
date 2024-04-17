@@ -40,12 +40,16 @@ import utility.horizontalspinner.Renderer;
 import utility.horizontalspinner.SpinnerH;
 import warehouse.db.CRUDImages;
 import warehouse.db.model.Image;
+import warehouse.db.model.Item;
 
 /**
  *
  * @author Saleh
  */
-public class ItemImage implements RowIdSelectionListener {
+public class ItemImage
+        implements
+        RowIdSelectionListener,
+        ItemCRUDListener {
 
     private JPanel panelContainer, panelContols;
     private ScrollableScalableImageContainer scalableImageContainer;
@@ -86,9 +90,8 @@ public class ItemImage implements RowIdSelectionListener {
         spinnerH.setModel(0, 0, 0, 1);
     }
 
-    @Override
-    public void selectedRowId(int rowId) {
-        List<Image> images = CRUDImages.getImagesByItemId(rowId);
+    private void setImagesOfSelectedItem(int itemId) {
+        List<Image> images = CRUDImages.getImagesByItemId(itemId);
         int imagesCount = images.size();
         System.out.println("imagesCount " + imagesCount);
         int spinnerValue = 0;
@@ -107,6 +110,21 @@ public class ItemImage implements RowIdSelectionListener {
             scalableImageContainer.setBufferedImage(null);
         }
         spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
+    }
+
+    @Override
+    public void selectedRowId(int rowId) {
+        setImagesOfSelectedItem(rowId);
+    }
+
+    @Override
+    public void created(Item createdItem) {
+        // Not required.
+    }
+
+    @Override
+    public void updated(Item updatedItem) {
+        setImagesOfSelectedItem(updatedItem.getId());
     }
 
     private class JSpinnerHandler implements ChangeListener {

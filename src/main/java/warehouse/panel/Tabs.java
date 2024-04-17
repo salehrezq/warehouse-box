@@ -31,7 +31,7 @@ import warehouse.panel.inwards.InwardsTap;
 import warehouse.panel.items.ItemsList;
 import warehouse.panel.items.ItemsTab;
 import warehouse.panel.outwards.OutwardsTap;
-import warehouse.panel.items.ItemCRUDListener;
+import warehouse.panel.items.ItemImage;
 
 /**
  *
@@ -52,11 +52,11 @@ public class Tabs extends JPanel {
         inwardsTap = new InwardsTap();
         outwardsTap = new OutwardsTap();
 
-        ((ItemsList) itemsTab.getItemCRUDListener())
+        ((ItemsList) itemsTab.getItemsList())
                 .getInwardDialog()
                 .addCreateListener(inwardsTap.getInwardsListCreateListener());
 
-        ((ItemsList) itemsTab.getItemCRUDListener())
+        ((ItemsList) itemsTab.getItemsList())
                 .getOutwardDialog()
                 .addCreateListener(outwardsTap.getOutwardsListCreateListener());
 
@@ -67,7 +67,11 @@ public class Tabs extends JPanel {
         this.setPreferredSize(new Dimension(1000, 500));
     }
 
-    public ItemCRUDListener getItemCRUDListener() {
-        return itemsTab.getItemCRUDListener();
+    public ItemsList getItemsList() {
+        return itemsTab.getItemsList();
+    }
+
+    public ItemImage getItemImage() {
+        return itemsTab.getItemImage();
     }
 }

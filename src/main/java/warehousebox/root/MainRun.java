@@ -26,6 +26,8 @@ package warehousebox.root;
 import javax.swing.JFrame;
 import warehouse.panel.menus.Menu;
 import warehouse.panel.Tabs;
+import warehouse.panel.createandupdate.FormManagement;
+import warehouse.panel.items.ItemImage;
 
 /**
  *
@@ -54,7 +56,10 @@ public class MainRun {
     }
 
     private void linkActionToListeners() {
-        menu.getFormManagement().addItemCRUDListener(tabs.getItemCRUDListener());
+        menu.getFormManagement().addItemCRUDListener(tabs.getItemsList());
+        ItemImage itemImage = tabs.getItemImage();
+        FormManagement updateFormManagment = tabs.getItemsList().getUpdateItemDialog().getFormManagement();
+        updateFormManagment.addItemCRUDListener(itemImage);
     }
 
     public static void main(String[] args) {
