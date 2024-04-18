@@ -53,6 +53,7 @@ public class InwardsTap extends JPanel {
         itemsSearch = new ItemsSearch();
         inwardsList = new InwardsList();
         inwardsList.setListableImpl(new QuantityUnit());
+        inwardsList.loadDBInwards();
         itemsImages = new ItemImage();
 
         inwardsList.addRowIdSelectionListener(itemsImages);

@@ -104,7 +104,26 @@ public class InwardsList extends JPanel implements CreateListener, ListableConsu
     @Override
     public void setListableImpl(Listable listable) {
         this.listableImplementation = listable;
-        created();
+    }
+
+    protected void loadDBInwards() {
+        List<InwardMeta> inwardsMeta = CRUDInwards.getAll();
+        Object[] modelRow = new Object[6];
+
+        int size = inwardsMeta.size();
+        for (int i = 0; i < size; i++) {
+            InwardMeta inwardMeta = inwardsMeta.get(i);
+            modelRow[0] = inwardMeta.getItemIdd(); //code
+            modelRow[1] = inwardMeta.getInwardId();
+            modelRow[2] = inwardMeta.getQuantity();
+            modelRow[3] = inwardMeta.getUnitName();
+            modelRow[4] = inwardMeta.getSource();
+            modelRow[5] = inwardMeta.getDate();
+//            modelRow[1] = item.getName();
+//            modelRow[2] = item.getSpecification();
+//            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();
+            model.addRow(modelRow);
+        }
     }
 
     @Override
