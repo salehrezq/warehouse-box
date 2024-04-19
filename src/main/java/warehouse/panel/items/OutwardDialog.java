@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
@@ -40,9 +41,10 @@ import utility.date.DateDeselectedListener;
 import utility.date.DateListener;
 import utility.date.DatePicker;
 import warehouse.db.CRUDOutwards;
-import warehouse.db.CreateListener;
+import warehouse.db.model.ItemMeta;
 import warehouse.db.model.Outward;
 import warehouse.db.model.Recipient;
+import warehouse.panel.outwards.OutwardCRUDListener;
 
 /**
  *
@@ -56,16 +58,15 @@ public class OutwardDialog extends JDialog implements
     private JTextField tfQuantity, tfUsedFor;
     private SingularAttributedListForm formFieldRecipient;
     private JLabel lbQuantity, lbQuantityUnit, lbUsedFor, lbSource, lbDate;
-    private String itemUnit;
-    private int itemId;
     private JButton btnSubmit;
     private DatePicker datePicker;
     private LocalDate selectedDate;
-    private ArrayList<CreateListener> createListeners;
+    private ArrayList<OutwardCRUDListener> outwardCRUDListeners;
+    private ItemMeta itemMeta;
 
     public OutwardDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
-        createListeners = new ArrayList<>();
+        outwardCRUDListeners = new ArrayList<>();
         container = new JPanel();
         container.setLayout(new MigLayout("center center"));
 
@@ -107,13 +108,9 @@ public class OutwardDialog extends JDialog implements
         selectedDate = datePicker.getDate();
     }
 
-    public void setItemUnit(String itemUnit) {
-        this.itemUnit = itemUnit;
-        lbQuantityUnit.setText(itemUnit);
-    }
-
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
+    public void setItemMeta(ItemMeta itemMeta) {
+        this.itemMeta = itemMeta;
+        lbQuantityUnit.setText(itemMeta.getUnit());
     }
 
     @Override
@@ -126,13 +123,13 @@ public class OutwardDialog extends JDialog implements
         System.out.println("dateDeselected");
     }
 
-    public void addCreateListener(CreateListener createListener) {
-        this.createListeners.add(createListener);
+    public void addOutwardCRUDListener(OutwardCRUDListener outwardCRUDListener) {
+        this.outwardCRUDListeners.add(outwardCRUDListener);
     }
 
-    public void notifyCreated() {
-        this.createListeners.forEach((createListener) -> {
-            createListener.created();
+    public void notifyCreated(Outward outward, ItemMeta relatedItemMeta) {
+        this.outwardCRUDListeners.forEach((outwardCRUDListener) -> {
+            outwardCRUDListener.created(outward, relatedItemMeta);
         });
     }
 
@@ -141,15 +138,28 @@ public class OutwardDialog extends JDialog implements
         @Override
         public void actionPerformed(ActionEvent e) {
             BigDecimal quantity = new BigDecimal(tfQuantity.getText());
-            Outward itemsOutwards = new Outward();
-            itemsOutwards.setItemId(itemId);
-            itemsOutwards.setQuantity(quantity);
-            itemsOutwards.setUsedFor(tfUsedFor.getText());
-            itemsOutwards.setDate(selectedDate);
+            Outward itemOutward = new Outward();
+            itemOutward.setItemId(itemMeta.getId());
+            itemOutward.setQuantity(quantity);
+            itemOutward.setUsedFor(tfUsedFor.getText());
+            itemOutward.setDate(selectedDate);
             Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
-            itemsOutwards.setRecipientId(recipient.getId());
-            if (CRUDOutwards.create(itemsOutwards) != null) {
-                notifyCreated();
+            itemOutward.setRecipientId(recipient.getId());
+            Outward outward = CRUDOutwards.create(itemOutward);
+            if (outward != null) {
+                notifyCreated(itemOutward, itemMeta);
+                OutwardDialog.this.dispose();
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Outward added successfully",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Issue: Outward was not added",
+                        "Failure",
+                        JOptionPane.WARNING_MESSAGE);
             }
         }
     }

@@ -284,8 +284,7 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
                 inwardDialog.setItemMeta(itemMeta);
                 inwardDialog.setVisible(true);
             } else if (source == menuItemOutwardOfSelectedItem) {
-                outwardDialog.setItemId(itemId);
-                outwardDialog.setItemUnit(itemUnit);
+                outwardDialog.setItemMeta(itemMeta);
                 outwardDialog.setVisible(true);
             } else if (source == menuItemUpdateItem) {
                 updateItemDialog.setTfName(itemName);

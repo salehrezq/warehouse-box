@@ -45,9 +45,12 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
+import warehouse.db.CRUDListable;
 import warehouse.db.CRUDOutwards;
-import warehouse.db.CreateListener;
+import warehouse.db.model.ItemMeta;
+import warehouse.db.model.Outward;
 import warehouse.db.model.OutwardMeta;
+import warehouse.db.model.Recipient;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
 
@@ -55,7 +58,7 @@ import warehouse.singularlisting.ListableConsumer;
  *
  * @author Saleh
  */
-public class OutwardsList extends JPanel implements CreateListener, ListableConsumer {
+public class OutwardsList extends JPanel implements OutwardCRUDListener, ListableConsumer {
 
     private DefaultTableModel model;
     private JTable table;
@@ -105,34 +108,44 @@ public class OutwardsList extends JPanel implements CreateListener, ListableCons
     @Override
     public void setListableImpl(Listable listable) {
         this.listableImplementation = listable;
-        created();
     }
 
-    @Override
-    public void created() {
-        System.out.println("Refresh outwards to reflect newly inserted outwards");
-        // Clear the model every time, to append fresh results
-        // and not accumulate on previous results
-        model.setRowCount(0);
-        List<OutwardMeta> outwardsMetas = new ArrayList();
-        outwardsMetas = CRUDOutwards.getAll();
+    protected void loadDBOutwards() {
+        List<OutwardMeta> outwardsMeta = CRUDOutwards.getAll();
         Object[] modelRow = new Object[7];
-        int size = outwardsMetas.size();
+
+        int size = outwardsMeta.size();
         for (int i = 0; i < size; i++) {
-            //{"Item code", "Outward code", "Qty.", "Unit", "Recipient", "For" ,"Date"}
-            OutwardMeta inwardMeta = outwardsMetas.get(i);
-            modelRow[0] = inwardMeta.getId();
-            modelRow[1] = inwardMeta.getItemId();
-            modelRow[2] = inwardMeta.getQuantity();
-            modelRow[3] = inwardMeta.getUnitName();
-            modelRow[4] = inwardMeta.getRecipient();
-            modelRow[5] = inwardMeta.getUsedFor();
-            modelRow[6] = inwardMeta.getDate();
+            OutwardMeta outwardMeta = outwardsMeta.get(i);
+            modelRow[0] = outwardMeta.getId();
+            modelRow[1] = outwardMeta.getItemId();
+            modelRow[2] = outwardMeta.getQuantity();
+            modelRow[3] = outwardMeta.getUnitName();
+            modelRow[4] = outwardMeta.getRecipient();
+            modelRow[5] = outwardMeta.getUsedFor();
+            modelRow[6] = outwardMeta.getDate();
+//            modelRow[1] = item.getName();
+//            modelRow[2] = item.getSpecification();
+//            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();
             model.addRow(modelRow);
         }
     }
 
-    public void addRowIdSelectionListener(RowIdSelectionListener var) {
+    @Override
+    public void created(Outward outward, ItemMeta relatedItemMeta) {
+        Recipient recipient = (Recipient) CRUDListable.getById(new Recipient(), outward.getRecipientId());
+        model.addRow(new Object[]{
+            outward.getId(),
+            outward.getItemId(),
+            outward.getQuantity(),
+            relatedItemMeta.getUnit(),
+            recipient.getName(),
+            outward.getUsedFor(),
+            outward.getDate()
+        });
+    }
+
+public void addRowIdSelectionListener(RowIdSelectionListener var) {
         this.rowIdSelectionListeners.add(var);
     }
 
@@ -140,79 +153,80 @@ public class OutwardsList extends JPanel implements CreateListener, ListableCons
         this.rowIdSelectionListeners.forEach((item) -> {
             item.selectedRowId(rowId);
         });
-    }
+
+}
 
     private class RowSelectionListener implements ListSelectionListener {
 
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
-                DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) e.getSource();
-                if (selectionModel.isSelectionEmpty()) {
-                    // Table row de-selection occurred
-                    System.out.println("row de-selected");
-                } else {
-                    System.out.println("row selected");
-                    int viewRow = table.getSelectedRow();
-                    if (viewRow > -1) {
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+            DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) e.getSource();
+            if (selectionModel.isSelectionEmpty()) {
+                // Table row de-selection occurred
+                System.out.println("row de-selected");
+            } else {
+                System.out.println("row selected");
+                int viewRow = table.getSelectedRow();
+                if (viewRow > -1) {
 
-                        int itemIdColumnIndex = 0;
+                    int itemIdColumnIndex = 0;
 
-                        selectedModelRow = table.convertRowIndexToModel(viewRow);
-                        Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
-                        Integer itemId = Integer.parseInt(itemIdObject.toString());
-                        System.out.println("Item ID " + itemId);
-                        notifySelectedRowId(itemId);
-                    }
+                    selectedModelRow = table.convertRowIndexToModel(viewRow);
+                    Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
+                    Integer itemId = Integer.parseInt(itemIdObject.toString());
+                    System.out.println("Item ID " + itemId);
+                    notifySelectedRowId(itemId);
                 }
             }
         }
     }
+}
 
-    private class ItemRowDoubleClickHandler extends MouseAdapter {
+private class ItemRowDoubleClickHandler extends MouseAdapter {
 
-        @Override
-        public void mousePressed(MouseEvent mouseEvent) {
-            JTable table = (JTable) mouseEvent.getSource();
-            int viewRow = table.getSelectedRow();
-            if (mouseEvent.getClickCount() == 2 && viewRow != -1) {
-                int itemIdColumnIndex = 1;
-                selectedModelRow = table.convertRowIndexToModel(viewRow);
-                Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
-                Integer itemId = Integer.parseInt(itemIdObject.toString());
-                System.out.println("Item ID " + itemId);
-                notifySelectedRowId(itemId);
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+        JTable table = (JTable) mouseEvent.getSource();
+        int viewRow = table.getSelectedRow();
+        if (mouseEvent.getClickCount() == 2 && viewRow != -1) {
+            int itemIdColumnIndex = 1;
+            selectedModelRow = table.convertRowIndexToModel(viewRow);
+            Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
+            Integer itemId = Integer.parseInt(itemIdObject.toString());
+            System.out.println("Item ID " + itemId);
+            notifySelectedRowId(itemId);
+        }
+    }
+}
+
+private class RowMouseRightClickHandler implements PopupMenuListener {
+
+    @Override
+    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            int rowAtPoint = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
+            if (rowAtPoint > -1) {
+                table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
             }
-        }
+        });
     }
 
-    private class RowMouseRightClickHandler implements PopupMenuListener {
-
-        @Override
-        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-            SwingUtilities.invokeLater(() -> {
-                int rowAtPoint = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
-                if (rowAtPoint > -1) {
-                    table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
-                }
-            });
-        }
-
-        @Override
-        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-            // throw new UnsupportedOperationException
-        }
-
-        @Override
-        public void popupMenuCanceled(PopupMenuEvent e) {
-            //throw new UnsupportedOperationException
-        }
+    @Override
+    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+        // throw new UnsupportedOperationException
     }
 
-    private class PopupMenuItemActionHandler implements ActionListener {
+    @Override
+    public void popupMenuCanceled(PopupMenuEvent e) {
+        //throw new UnsupportedOperationException
+    }
+}
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
+private class PopupMenuItemActionHandler implements ActionListener {
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
 //            int itemIdColumn = 0;
 //            int itemUnitColumn = 3;
 //            String itemUnit;
@@ -225,8 +239,8 @@ public class OutwardsList extends JPanel implements CreateListener, ListableCons
 //            addItemsDialog.setItemId(itemId);
 //            addItemsDialog.setItemUnit(itemUnit);
 //            addItemsDialog.setVisible(true);
-            System.out.println("Placeholder to implement");
-        }
+        System.out.println("Placeholder to implement");
     }
+}
 
 }
