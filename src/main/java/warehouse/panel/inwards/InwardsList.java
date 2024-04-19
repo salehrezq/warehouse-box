@@ -73,7 +73,7 @@ public class InwardsList extends JPanel implements InwardCRUDListener, ListableC
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
-        model = new DefaultTableModel(new String[]{"Item code", "Inward code", "Qty.", "Unit", "Source", "Date"}, 0) {
+        model = new DefaultTableModel(new String[]{"Inward code", "Item code", "Qty.", "Unit", "Source", "Date"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Disable cells editing.
@@ -116,8 +116,8 @@ public class InwardsList extends JPanel implements InwardCRUDListener, ListableC
         int size = inwardsMeta.size();
         for (int i = 0; i < size; i++) {
             InwardMeta inwardMeta = inwardsMeta.get(i);
-            modelRow[0] = inwardMeta.getItemIdd(); //code
-            modelRow[1] = inwardMeta.getInwardId();
+            modelRow[0] = inwardMeta.getInwardId();
+            modelRow[1] = inwardMeta.getItemIdd();
             modelRow[2] = inwardMeta.getQuantity();
             modelRow[3] = inwardMeta.getUnitName();
             modelRow[4] = inwardMeta.getSource();
