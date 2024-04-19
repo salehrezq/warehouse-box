@@ -27,7 +27,6 @@ import warehouse.panel.items.*;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import warehouse.db.CreateListener;
 import warehouse.db.model.QuantityUnit;
 
 /**
@@ -53,6 +52,7 @@ public class OutwardsTap extends JPanel {
         itemsSearch = new ItemsSearch();
         outwardsList = new OutwardsList();
         outwardsList.setListableImpl(new QuantityUnit());
+        outwardsList.loadDBOutwards();
         itemsImages = new ItemImage();
 
         outwardsList.addRowIdSelectionListener(itemsImages);
@@ -73,7 +73,7 @@ public class OutwardsTap extends JPanel {
         add(splitRightAndLeftPanes);
     }
 
-    public CreateListener getOutwardsListCreateListener() {
+    public OutwardsList getOutwardsList() {
         return outwardsList;
     }
 

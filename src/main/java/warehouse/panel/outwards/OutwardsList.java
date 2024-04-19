@@ -46,7 +46,8 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDOutwards;
-import warehouse.db.CreateListener;
+import warehouse.db.model.ItemMeta;
+import warehouse.db.model.Outward;
 import warehouse.db.model.OutwardMeta;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
@@ -55,7 +56,7 @@ import warehouse.singularlisting.ListableConsumer;
  *
  * @author Saleh
  */
-public class OutwardsList extends JPanel implements CreateListener, ListableConsumer {
+public class OutwardsList extends JPanel implements OutwardCRUDListener, ListableConsumer {
 
     private DefaultTableModel model;
     private JTable table;
@@ -105,11 +106,31 @@ public class OutwardsList extends JPanel implements CreateListener, ListableCons
     @Override
     public void setListableImpl(Listable listable) {
         this.listableImplementation = listable;
-        created();
+    }
+
+    protected void loadDBOutwards() {
+        List<OutwardMeta> outwardsMeta = CRUDOutwards.getAll();
+        Object[] modelRow = new Object[7];
+
+        int size = outwardsMeta.size();
+        for (int i = 0; i < size; i++) {
+            OutwardMeta outwardMeta = outwardsMeta.get(i);
+            modelRow[0] = outwardMeta.getId();
+            modelRow[1] = outwardMeta.getItemId();
+            modelRow[2] = outwardMeta.getQuantity();
+            modelRow[3] = outwardMeta.getUnitName();
+            modelRow[4] = outwardMeta.getRecipient();
+            modelRow[5] = outwardMeta.getUsedFor();
+            modelRow[6] = outwardMeta.getDate();
+//            modelRow[1] = item.getName();
+//            modelRow[2] = item.getSpecification();
+//            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();
+            model.addRow(modelRow);
+        }
     }
 
     @Override
-    public void created() {
+    public void created(Outward outward, ItemMeta relatedItemMeta) {
         System.out.println("Refresh outwards to reflect newly inserted outwards");
         // Clear the model every time, to append fresh results
         // and not accumulate on previous results
