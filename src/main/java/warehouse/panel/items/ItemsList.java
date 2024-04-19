@@ -271,10 +271,17 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
             String itemUnit = (String) getColumnOfSelectedRow(itemUnitColumn);
             System.out.println("unit " + itemUnit);
 
+            ItemMeta itemMeta = new ItemMeta();
+            itemMeta.setId(itemId);
+            itemMeta.setName(itemName);
+            itemMeta.setSpecification(itemSpecs);
+            // itemMeta.setBalance(); not needed
+            itemMeta.setUnitId(unitId);
+            itemMeta.setUnit(itemUnit);
+
             Object source = e.getSource();
             if (source == menuItemInwardsOfSelectedItem) {
-                inwardDialog.setItemId(itemId);
-                inwardDialog.setItemUnit(itemUnit);
+                inwardDialog.setItemMeta(itemMeta);
                 inwardDialog.setVisible(true);
             } else if (source == menuItemOutwardOfSelectedItem) {
                 outwardDialog.setItemId(itemId);

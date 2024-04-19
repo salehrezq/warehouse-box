@@ -27,7 +27,6 @@ import warehouse.panel.items.*;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import warehouse.db.CreateListener;
 import warehouse.db.model.QuantityUnit;
 
 /**
@@ -74,7 +73,7 @@ public class InwardsTap extends JPanel {
         add(splitRightAndLeftPanes);
     }
 
-    public CreateListener getInwardsListCreateListener() {
+    public InwardsList getInwardsList() {
         return inwardsList;
     }
 }

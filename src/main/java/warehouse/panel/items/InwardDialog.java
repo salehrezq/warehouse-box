@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
@@ -40,9 +41,10 @@ import utility.date.DateDeselectedListener;
 import utility.date.DateListener;
 import utility.date.DatePicker;
 import warehouse.db.CRUDInwards;
-import warehouse.db.CreateListener;
 import warehouse.db.model.Inward;
+import warehouse.db.model.ItemMeta;
 import warehouse.db.model.Source;
+import warehouse.panel.inwards.InwardCRUDListener;
 
 /**
  *
@@ -56,16 +58,16 @@ public class InwardDialog extends JDialog implements
     private JTextField tfQuantity;
     private SingularAttributedListForm formFieldSource;
     private JLabel lbQuantity, lbQuantityUnit, lbSource, lbDate;
-    private String itemUnit;
     private int itemId;
     private JButton btnSubmit;
     private DatePicker datePicker;
     private LocalDate selectedDate;
-    private ArrayList<CreateListener> createListeners;
+    private ArrayList<InwardCRUDListener> inwardCRUDListeners;
+    private ItemMeta itemMeta;
 
     public InwardDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
-        createListeners = new ArrayList<>();
+        inwardCRUDListeners = new ArrayList<>();
         container = new JPanel();
         container.setLayout(new MigLayout("center center"));
 
@@ -102,13 +104,9 @@ public class InwardDialog extends JDialog implements
         selectedDate = datePicker.getDate();
     }
 
-    public void setItemUnit(String itemUnit) {
-        this.itemUnit = itemUnit;
-        lbQuantityUnit.setText(itemUnit);
-    }
-
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
+    public void setItemMeta(ItemMeta itemMeta) {
+        this.itemMeta = itemMeta;
+        lbQuantityUnit.setText(itemMeta.getUnit());
     }
 
     @Override
@@ -121,13 +119,13 @@ public class InwardDialog extends JDialog implements
         System.out.println("dateDeselected");
     }
 
-    public void addCreateListener(CreateListener createListener) {
-        this.createListeners.add(createListener);
+    public void addInwardCRUDListener(InwardCRUDListener inwardCRUDListener) {
+        this.inwardCRUDListeners.add(inwardCRUDListener);
     }
 
-    public void notifyCreated() {
-        this.createListeners.forEach((createListener) -> {
-            createListener.created();
+    public void notifyCreated(Inward inward, ItemMeta relatedItemMeta) {
+        this.inwardCRUDListeners.forEach((inwardCRUDListener) -> {
+            inwardCRUDListener.created(inward, relatedItemMeta);
         });
     }
 
@@ -137,13 +135,27 @@ public class InwardDialog extends JDialog implements
         public void actionPerformed(ActionEvent e) {
             BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
             Inward itemsAdd = new Inward();
-            itemsAdd.setItemId(itemId);
+            itemsAdd.setItemId(itemMeta.getId());
             itemsAdd.setQuantity(bigDecimal);
             itemsAdd.setDate(selectedDate);
             Source source = (Source) formFieldSource.getSelectedValue();
             itemsAdd.setSourceId(source.getId());
-            if (CRUDInwards.create(itemsAdd) != null) {
-                notifyCreated();
+            Inward inward = CRUDInwards.create(itemsAdd);
+            notifyCreated(inward, itemMeta);
+            if (inward != null) {
+                InwardDialog.this.dispose();
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Inward added successfully",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            } else {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Issue: Inward was not added",
+                        "Failure",
+                        JOptionPane.WARNING_MESSAGE);
             }
         }
     }

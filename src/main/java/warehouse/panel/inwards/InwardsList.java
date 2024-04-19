@@ -46,8 +46,11 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDInwards;
-import warehouse.db.CreateListener;
+import warehouse.db.CRUDListable;
+import warehouse.db.model.Inward;
 import warehouse.db.model.InwardMeta;
+import warehouse.db.model.ItemMeta;
+import warehouse.db.model.Source;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
 
@@ -55,7 +58,7 @@ import warehouse.singularlisting.ListableConsumer;
  *
  * @author Saleh
  */
-public class InwardsList extends JPanel implements CreateListener, ListableConsumer {
+public class InwardsList extends JPanel implements InwardCRUDListener, ListableConsumer {
 
     private DefaultTableModel model;
     private JTable table;
@@ -127,29 +130,16 @@ public class InwardsList extends JPanel implements CreateListener, ListableConsu
     }
 
     @Override
-    public void created() {
-        System.out.println("Refresh inwards to reflect newly inserted inwards");
-        // Clear the model every time, to append fresh results
-        // and not accumulate on previous results
-        model.setRowCount(0);
-        List<InwardMeta> inwardsMeta = new ArrayList();
-        inwardsMeta = CRUDInwards.getAll();
-        Object[] modelRow = new Object[6];
-// {"Item code", "Addition code", "Qty.", "Unit", "Source", "Date"}, 0) {
-        int size = inwardsMeta.size();
-        for (int i = 0; i < size; i++) {
-            InwardMeta inwardMeta = inwardsMeta.get(i);
-            modelRow[0] = inwardMeta.getItemIdd(); //code
-            modelRow[1] = inwardMeta.getInwardId();
-            modelRow[2] = inwardMeta.getQuantity();
-            modelRow[3] = inwardMeta.getUnitName();
-            modelRow[4] = inwardMeta.getSource();
-            modelRow[5] = inwardMeta.getDate();
-//            modelRow[1] = item.getName();
-//            modelRow[2] = item.getSpecification();
-//            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();
-            model.addRow(modelRow);
-        }
+    public void created(Inward inward, ItemMeta itemMeta) {
+        Source source = (Source) CRUDListable.getById(new Source(), inward.getSourceId());
+        model.addRow(new Object[]{
+            inward.getItemId(),
+            inward.getId(),
+            inward.getQuantity(),
+            itemMeta.getUnit(),
+            source,
+            inward.getDate()
+        });
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
