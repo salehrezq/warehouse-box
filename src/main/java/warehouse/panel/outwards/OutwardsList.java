@@ -145,7 +145,7 @@ public class OutwardsList extends JPanel implements OutwardCRUDListener, Listabl
         });
     }
 
-public void addRowIdSelectionListener(RowIdSelectionListener var) {
+    public void addRowIdSelectionListener(RowIdSelectionListener var) {
         this.rowIdSelectionListeners.add(var);
     }
 
@@ -153,80 +153,79 @@ public void addRowIdSelectionListener(RowIdSelectionListener var) {
         this.rowIdSelectionListeners.forEach((item) -> {
             item.selectedRowId(rowId);
         });
-
-}
+    }
 
     private class RowSelectionListener implements ListSelectionListener {
 
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
-            DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) e.getSource();
-            if (selectionModel.isSelectionEmpty()) {
-                // Table row de-selection occurred
-                System.out.println("row de-selected");
-            } else {
-                System.out.println("row selected");
-                int viewRow = table.getSelectedRow();
-                if (viewRow > -1) {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+                DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) e.getSource();
+                if (selectionModel.isSelectionEmpty()) {
+                    // Table row de-selection occurred
+                    System.out.println("row de-selected");
+                } else {
+                    System.out.println("row selected");
+                    int viewRow = table.getSelectedRow();
+                    if (viewRow > -1) {
 
-                    int itemIdColumnIndex = 0;
+                        int itemIdColumnIndex = 0;
 
-                    selectedModelRow = table.convertRowIndexToModel(viewRow);
-                    Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
-                    Integer itemId = Integer.parseInt(itemIdObject.toString());
-                    System.out.println("Item ID " + itemId);
-                    notifySelectedRowId(itemId);
+                        selectedModelRow = table.convertRowIndexToModel(viewRow);
+                        Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
+                        Integer itemId = Integer.parseInt(itemIdObject.toString());
+                        System.out.println("Item ID " + itemId);
+                        notifySelectedRowId(itemId);
+                    }
                 }
             }
         }
     }
-}
 
-private class ItemRowDoubleClickHandler extends MouseAdapter {
+    private class ItemRowDoubleClickHandler extends MouseAdapter {
 
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {
-        JTable table = (JTable) mouseEvent.getSource();
-        int viewRow = table.getSelectedRow();
-        if (mouseEvent.getClickCount() == 2 && viewRow != -1) {
-            int itemIdColumnIndex = 1;
-            selectedModelRow = table.convertRowIndexToModel(viewRow);
-            Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
-            Integer itemId = Integer.parseInt(itemIdObject.toString());
-            System.out.println("Item ID " + itemId);
-            notifySelectedRowId(itemId);
+        @Override
+        public void mousePressed(MouseEvent mouseEvent) {
+            JTable table = (JTable) mouseEvent.getSource();
+            int viewRow = table.getSelectedRow();
+            if (mouseEvent.getClickCount() == 2 && viewRow != -1) {
+                int itemIdColumnIndex = 1;
+                selectedModelRow = table.convertRowIndexToModel(viewRow);
+                Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
+                Integer itemId = Integer.parseInt(itemIdObject.toString());
+                System.out.println("Item ID " + itemId);
+                notifySelectedRowId(itemId);
+            }
         }
     }
-}
 
-private class RowMouseRightClickHandler implements PopupMenuListener {
+    private class RowMouseRightClickHandler implements PopupMenuListener {
 
-    @Override
-    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            int rowAtPoint = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
-            if (rowAtPoint > -1) {
-                table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
-            }
-        });
+        @Override
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+            SwingUtilities.invokeLater(() -> {
+                int rowAtPoint = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
+                if (rowAtPoint > -1) {
+                    table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
+                }
+            });
+        }
+
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            // throw new UnsupportedOperationException
+        }
+
+        @Override
+        public void popupMenuCanceled(PopupMenuEvent e) {
+            //throw new UnsupportedOperationException
+        }
     }
 
-    @Override
-    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-        // throw new UnsupportedOperationException
-    }
+    private class PopupMenuItemActionHandler implements ActionListener {
 
-    @Override
-    public void popupMenuCanceled(PopupMenuEvent e) {
-        //throw new UnsupportedOperationException
-    }
-}
-
-private class PopupMenuItemActionHandler implements ActionListener {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
 //            int itemIdColumn = 0;
 //            int itemUnitColumn = 3;
 //            String itemUnit;
@@ -239,8 +238,8 @@ private class PopupMenuItemActionHandler implements ActionListener {
 //            addItemsDialog.setItemId(itemId);
 //            addItemsDialog.setItemUnit(itemUnit);
 //            addItemsDialog.setVisible(true);
-        System.out.println("Placeholder to implement");
+            System.out.println("Placeholder to implement");
+        }
     }
-}
 
 }
