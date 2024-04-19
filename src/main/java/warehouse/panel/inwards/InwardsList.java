@@ -137,7 +137,7 @@ public class InwardsList extends JPanel implements InwardCRUDListener, ListableC
             inward.getId(),
             inward.getQuantity(),
             itemMeta.getUnit(),
-            source,
+            source.getName(),
             inward.getDate()
         });
     }
