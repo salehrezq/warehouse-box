@@ -186,7 +186,7 @@ public class InwardsList extends JPanel implements InwardCRUDListener, ListableC
             JTable table = (JTable) mouseEvent.getSource();
             int viewRow = table.getSelectedRow();
             if (mouseEvent.getClickCount() == 2 && viewRow != -1) {
-                int itemIdColumnIndex = 0;
+                int itemIdColumnIndex = 1;
                 selectedModelRow = table.convertRowIndexToModel(viewRow);
                 Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
                 Integer itemId = Integer.parseInt(itemIdObject.toString());
