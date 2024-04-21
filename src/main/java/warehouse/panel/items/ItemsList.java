@@ -33,6 +33,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -69,6 +70,8 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
     private InwardDialog inwardDialog;
     private OutwardDialog outwardDialog;
     private ItemCreateUpdateDialog updateItemDialog;
+    private JButton btnLoadMore;
+    private int itemsRowsCount, incrementedReturnedRowsCount;
 
     public ItemsList() {
 
@@ -111,6 +114,10 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
         table.setComponentPopupMenu(popupMenu);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
+
+        btnLoadMore = new JButton("Load more");
+        btnLoadMore.addActionListener(new LoadMoreHandler());
+        add(btnLoadMore, BorderLayout.PAGE_END);
         inwardDialog = new InwardDialog(null, "Inward", true);
         outwardDialog = new OutwardDialog(null, "Outward", true);
         updateItemDialog = new ItemCreateUpdateDialog(null, "Update item", true);
@@ -121,10 +128,11 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
     }
 
     protected void loadDBItems() {
-        List<ItemMeta> itemsMetaRecords = CRUDItems.getMetaAll();
+        List<ItemMeta> itemsMetaRecords = CRUDItems.getMetaPage();
         Object[] modelRow = new Object[6];
 
         int size = itemsMetaRecords.size();
+        incrementedReturnedRowsCount += size;
         for (int i = 0; i < size; i++) {
             ItemMeta itemMeta = itemsMetaRecords.get(i);
             modelRow[0] = itemMeta.getId(); //code
@@ -177,6 +185,18 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
         this.rowIdSelectionListeners.forEach((item) -> {
             item.selectedRowId(rowId);
         });
+    }
+
+    private class LoadMoreHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (itemsRowsCount < 1) {
+                itemsRowsCount = CRUDItems.getRecordsCount();
+            }
+            loadDBItems();
+            btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= itemsRowsCount));
+        }
     }
 
     private class RowSelectionListener implements ListSelectionListener {

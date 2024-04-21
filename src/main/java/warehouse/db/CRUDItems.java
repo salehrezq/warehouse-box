@@ -45,6 +45,8 @@ import warehouse.db.model.ItemMeta;
 public class CRUDItems {
 
     private static Connection con;
+    private static int OFFSET = 0;
+    private static final int LIMIT = 20;
 
     public static Item create(Item item) {
         String sqlCreateItem = "INSERT INTO items (`name`, `specification`, `unit_id`) VALUES (?, ?, ?)";
@@ -134,6 +136,63 @@ public class CRUDItems {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
         }
         return itemsMeta;
+    }
+
+    public static ArrayList<ItemMeta> getMetaPage() {
+        ArrayList<ItemMeta> itemsMeta = new ArrayList<>();
+        try {
+            String sql = " SELECT it.id , it.`name`, it.specification,"
+                    + " ("
+                    + " COALESCE((SELECT SUM(i.quantity)"
+                    + " FROM inwards AS i"
+                    + " WHERE i.item_id = it.id),0)"
+                    + " -"
+                    + " COALESCE((SELECT SUM(o.quantity)"
+                    + " FROM outwards AS o"
+                    + " WHERE o.item_id = it.id),0)"
+                    + " "
+                    + " ) AS balance, u.id AS unit_id, u.`name` AS unit"
+                    + " "
+                    + " FROM `items` AS it JOIN `quantity_unit` AS u"
+                    + " ON it.unit_id = u.id"
+                    + " ORDER BY `id` ASC"
+                    + " LIMIT " + LIMIT + " OFFSET " + OFFSET;
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                ItemMeta itemMeta = new ItemMeta();
+                itemMeta.setId(result.getInt("id"));
+                itemMeta.setName(result.getString("name"));
+                itemMeta.setSpecification(result.getString("specification"));
+                itemMeta.setBalance(result.getBigDecimal("balance"));
+                itemMeta.setUnitId(result.getInt("unit_id"));
+                itemMeta.setUnit(result.getString("unit"));
+                itemsMeta.add(itemMeta);
+            }
+            OFFSET += LIMIT;
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return itemsMeta;
+    }
+
+    public static int getRecordsCount() {
+        int numberOfRows = 0;
+        String sql = "SELECT COUNT(*) AS `items_rows_count` FROM items";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                numberOfRows = result.getInt("items_rows_count");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return numberOfRows;
     }
 
     public static boolean update(Item item) {
