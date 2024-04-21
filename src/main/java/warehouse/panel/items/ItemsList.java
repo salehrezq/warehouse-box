@@ -71,7 +71,9 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
     private OutwardDialog outwardDialog;
     private ItemCreateUpdateDialog updateItemDialog;
     private JButton btnLoadMore;
-    private int itemsRowsCount, incrementedReturnedRowsCount;
+    private int itemsRowsCount,
+            incrementedReturnedRowsCount,
+            rowIndex;
 
     public ItemsList() {
 
@@ -128,11 +130,23 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
     }
 
     protected void loadDBItems() {
+        /**
+         * To organize order after new item insert. After creating new items,
+         * new rows added to the model at run time to reflect newly created
+         * items. However these rows are off order. So here we remove them, so
+         * that they will be fetched through the following fetches or via search
+         * requests.
+         */
+        for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
+            model.removeRow(incrementedReturnedRowsCount);
+        }
+
         List<ItemMeta> itemsMetaRecords = CRUDItems.getMetaPage();
         Object[] modelRow = new Object[6];
 
         int size = itemsMetaRecords.size();
         incrementedReturnedRowsCount += size;
+        rowIndex = incrementedReturnedRowsCount;
         for (int i = 0; i < size; i++) {
             ItemMeta itemMeta = itemsMetaRecords.get(i);
             modelRow[0] = itemMeta.getId(); //code
@@ -164,6 +178,7 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
             unit.getId(),
             unit.getName()
         });
+        rowIndex++;
     }
 
     @Override
