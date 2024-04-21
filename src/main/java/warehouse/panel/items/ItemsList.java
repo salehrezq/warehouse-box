@@ -156,12 +156,12 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
     @Override
     public void created(Item item) {
         QuantityUnit unit = (QuantityUnit) CRUDListable.getById(new QuantityUnit(), item.getUnitId());
-        model.addRow(new String[]{
-            String.valueOf(item.getId()),
+        model.addRow(new Object[]{
+            item.getId(),
             item.getName(),
             item.getSpecification(),
             "0.00",
-            String.valueOf(unit.getId()),
+            unit.getId(),
             unit.getName()
         });
     }

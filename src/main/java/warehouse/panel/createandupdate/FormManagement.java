@@ -221,7 +221,9 @@ public class FormManagement extends JPanel {
                     boolean isCreated = idOfCreatedItem > 0;
                     if (isCreated) {
                         // Create images
-                        CRUDImages.create(images, idOfCreatedItem);
+                        if (images != null) {
+                            CRUDImages.create(images, idOfCreatedItem);
+                        }
                     }
                     notifyCreated(isCreated ? createdItem : null);
                 }
