@@ -56,7 +56,10 @@ import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
  *
  * @author Saleh
  */
-public class ItemsList extends JPanel implements ItemCRUDListener {
+public class ItemsList extends JPanel
+        implements
+        ItemCRUDListener,
+        ItemsSearchListener {
 
     private DefaultTableModel model;
     private JTable table;
@@ -190,6 +193,37 @@ public class ItemsList extends JPanel implements ItemCRUDListener {
         // 3 is calculated value not relevant on the update here
         model.setValueAt(unit.getId(), selectedModelRow, 4);
         model.setValueAt(unit.getName(), selectedModelRow, 5);
+    }
+
+    @Override
+    public void notifySearchResult(List<ItemMeta> itemsMeta) {
+        /**
+         * To organize order after new item insert. After creating new items,
+         * new rows added to the model at run time to reflect newly created
+         * items. However these rows are off order. So here we remove them, so
+         * that they will be fetched through the following fetches or via search
+         * requests.
+         */
+        for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
+            model.removeRow(incrementedReturnedRowsCount);
+        }
+
+        List<ItemMeta> itemsMetaRecords = itemsMeta;
+        Object[] modelRow = new Object[6];
+
+        int size = itemsMetaRecords.size();
+        incrementedReturnedRowsCount += size;
+        rowIndex = incrementedReturnedRowsCount;
+        for (int i = 0; i < size; i++) {
+            ItemMeta itemMeta = itemsMetaRecords.get(i);
+            modelRow[0] = itemMeta.getId(); //code
+            modelRow[1] = itemMeta.getName();
+            modelRow[2] = itemMeta.getSpecification();
+            modelRow[3] = itemMeta.getBalance();
+            modelRow[4] = itemMeta.getUnitId(); // will be hidden column
+            modelRow[5] = itemMeta.getUnit();
+            model.addRow(modelRow);
+        }
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {

@@ -32,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -178,6 +179,50 @@ public class CRUDItems {
         return itemsMeta;
     }
 
+    public static List<ItemMeta> search(String query) {
+        OFFSET = 0;
+        List<ItemMeta> itemsMeta = new ArrayList<>();
+        try {
+            String sql = " SELECT it.id , it.`name`, it.specification,"
+                    + " ("
+                    + " COALESCE((SELECT SUM(i.quantity)"
+                    + " FROM inwards AS i"
+                    + " WHERE i.item_id = it.id),0)"
+                    + " -"
+                    + " COALESCE((SELECT SUM(o.quantity)"
+                    + " FROM outwards AS o"
+                    + " WHERE o.item_id = it.id),0)"
+                    + " ) AS balance, u.id AS unit_id, u.`name` AS unit"
+                    + " "
+                    + " FROM `items` AS it JOIN `quantity_unit` AS u"
+                    + " ON it.unit_id = u.id"
+                    + " WHERE it.specification LIKE ? OR it.`name` LIKE ?"
+                    + " ORDER BY `id` ASC"
+                    + " LIMIT " + LIMIT + " OFFSET " + OFFSET;
+
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            p.setString(1, "%" + query + "%");
+            p.setString(2, "%" + query + "%");
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                ItemMeta itemMeta = new ItemMeta();
+                itemMeta.setId(result.getInt("id"));
+                itemMeta.setName(result.getString("name"));
+                itemMeta.setSpecification(result.getString("specification"));
+                itemMeta.setBalance(result.getBigDecimal("balance"));
+                itemMeta.setUnitId(result.getInt("unit_id"));
+                itemMeta.setUnit(result.getString("unit"));
+                itemsMeta.add(itemMeta);
+            }
+            OFFSET += LIMIT;
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return itemsMeta;
+    }
+
     public static int getRecordsCount() {
         int numberOfRows = 0;
         String sql = "SELECT COUNT(*) AS `items_rows_count` FROM items";
@@ -229,6 +274,18 @@ public class CRUDItems {
             }
         }
         return img;
+    }
+
+    public static int getOffset() {
+        return OFFSET;
+    }
+
+    public static int getLimit() {
+        return LIMIT;
+    }
+
+    public static void setOffset(int OFFSET) {
+        CRUDItems.OFFSET = OFFSET;
     }
 
 }

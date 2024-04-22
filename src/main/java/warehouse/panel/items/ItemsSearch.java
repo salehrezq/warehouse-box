@@ -23,7 +23,15 @@
  */
 package warehouse.panel.items;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import warehouse.db.CRUDItems;
+import warehouse.db.model.ItemMeta;
 
 /**
  *
@@ -31,4 +39,42 @@ import javax.swing.JPanel;
  */
 public class ItemsSearch extends JPanel {
 
+    private JPanel container;
+    private JTextField tfSearch;
+    private JButton btnSearch;
+    private List<ItemsSearchListener> itemsSearchListeners;
+
+    public ItemsSearch() {
+        container = new JPanel();
+        itemsSearchListeners = new ArrayList<>();
+        tfSearch = new JTextField(35);
+        btnSearch = new JButton("Search");
+        btnSearch.addActionListener(new SearchHandler());
+
+        container.add(tfSearch);
+        container.add(btnSearch);
+    }
+
+    public JPanel getContainer() {
+        return this.container;
+    }
+
+    public void addItemSearchListener(ItemsSearchListener itemsSearchListener) {
+        this.itemsSearchListeners.add(itemsSearchListener);
+    }
+
+    public void notifySearchResult(List<ItemMeta> itemsMeta) {
+        this.itemsSearchListeners.forEach((item) -> {
+            item.notifySearchResult(itemsMeta);
+        });
+    }
+
+    private class SearchHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            notifySearchResult(CRUDItems.search(tfSearch.getText()));
+        }
+
+    }
 }
