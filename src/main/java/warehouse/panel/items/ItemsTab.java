@@ -26,6 +26,7 @@ package warehouse.panel.items;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import warehouse.panel.items.nameandspecsdisplay.NameAndSpecDisplayFields;
 
 /**
  *
@@ -39,6 +40,8 @@ public class ItemsTab extends JPanel {
     private JPanel panelGatherRight;
     private ItemsSearchPane itemsSearchPane;
     private ItemsSearchLogic itemsSearchLogic;
+    private JPanel panelItemsList;
+    private NameAndSpecDisplayFields nameAndSpecDisplayFields;
     private ItemsList itemsList;
     private ItemImage itemsImages;
 
@@ -49,7 +52,11 @@ public class ItemsTab extends JPanel {
         panelGatherRight = new JPanel(new BorderLayout());
 
         itemsSearchPane = new ItemsSearchPane();
+        panelItemsList = new JPanel(new BorderLayout());
+        nameAndSpecDisplayFields = new NameAndSpecDisplayFields();
         itemsList = new ItemsList();
+        panelItemsList.add(nameAndSpecDisplayFields.getContainer(), BorderLayout.PAGE_START);
+        panelItemsList.add(itemsList, BorderLayout.CENTER);
         itemsSearchLogic = new ItemsSearchLogic();
         itemsSearchLogic.addItemSearchListener(itemsList);
         itemsSearchLogic.setTfSearchQuery(itemsSearchPane.getTfSearchQuery());
@@ -64,7 +71,7 @@ public class ItemsTab extends JPanel {
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitSearchAndItemsListPane.setDividerSize(5);
         splitSearchAndItemsListPane.setTopComponent(itemsSearchPane.getContainer());
-        splitSearchAndItemsListPane.setBottomComponent(itemsList);
+        splitSearchAndItemsListPane.setBottomComponent(panelItemsList);
 
         panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
         panelGatherRight.add(itemsImages.getFormContainer(), BorderLayout.CENTER);
