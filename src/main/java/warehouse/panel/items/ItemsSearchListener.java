@@ -36,8 +36,6 @@ public interface ItemsSearchListener {
 
     public void notifySearchResultTotalRowsCount(int count);
 
-    public void notifySearchQuery(String currentQuery, String previousQuery);
-
     public void notifySearchResult(List<ItemMeta> itemsMeta);
 
 }

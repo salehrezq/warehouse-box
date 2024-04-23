@@ -45,7 +45,6 @@ public class ItemsSearchLogic {
     private JTextField tfSearchQuery;
     private JButton btnSearch;
     private JButton btnLoadMore;
-    private int searchResultTotalRowsCount;
 
     public ItemsSearchLogic() {
         itemsSearchListeners = new ArrayList<>();
@@ -89,12 +88,11 @@ public class ItemsSearchLogic {
         });
     }
 
-    public void notifySearchQuery(String currentQuery, String previousQuery) {
-        this.itemsSearchListeners.forEach((itemsSearchListener) -> {
-            itemsSearchListener.notifySearchQuery(currentQuery, previousQuery);
-        });
-    }
-
+//    public void notifySearchQuery(String currentQuery, String previousQuery) {
+//        this.itemsSearchListeners.forEach((itemsSearchListener) -> {
+//            itemsSearchListener.notifySearchQuery(currentQuery, previousQuery);
+//        });
+//    }
     public void notifySearchResult(List<ItemMeta> itemsMeta) {
         this.itemsSearchListeners.forEach((itemsSearchListener) -> {
             itemsSearchListener.notifySearchResult(itemsMeta);
@@ -110,10 +108,7 @@ public class ItemsSearchLogic {
             searchQuery = tfSearchQuery.getText();
             OFFSET = 0;
             notifyOFFSET(OFFSET);
-            notifySearchQuery(searchQuery, previousSearchQuery);
-            searchResultTotalRowsCount = CRUDItems.searchResultRowsCount(searchQuery);
-            System.out.println(searchResultTotalRowsCount);
-            notifySearchResultTotalRowsCount(searchResultTotalRowsCount);
+            notifySearchResultTotalRowsCount(CRUDItems.searchResultRowsCount(searchQuery));
             notifySearchResult(CRUDItems.search(searchQuery, LIMIT, OFFSET));
         }
     }
@@ -123,7 +118,6 @@ public class ItemsSearchLogic {
         @Override
         public void actionPerformed(ActionEvent e) {
             OFFSET += LIMIT;
-            notifyOFFSET(OFFSET);
             notifySearchResult(CRUDItems.search(searchQuery, LIMIT, OFFSET));
         }
     }

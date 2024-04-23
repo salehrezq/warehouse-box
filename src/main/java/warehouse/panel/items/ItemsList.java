@@ -184,13 +184,6 @@ public class ItemsList extends JPanel
     }
 
     @Override
-    public void notifySearchQuery(String currentQuery, String previousQuery) {
-        if (!currentQuery.equals(previousQuery)) {
-            model.setRowCount(0);
-        }
-    }
-
-    @Override
     public void notifySearchResult(List<ItemMeta> itemsMeta) {
         /**
          * To organize order after new item insert. After creating new items,
