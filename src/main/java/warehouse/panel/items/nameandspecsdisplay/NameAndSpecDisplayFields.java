@@ -27,6 +27,7 @@ import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import javax.swing.Box;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 
 /**
@@ -40,6 +41,7 @@ public class NameAndSpecDisplayFields {
             tfItemSpecifications;
     private ScrollBarThin scrollBarTfName,
             scrollBarTfSpecifications;
+    private JSplitPane splitpane;
 
     public NameAndSpecDisplayFields() {
         container = new JPanel(new BorderLayout());
@@ -57,12 +59,13 @@ public class NameAndSpecDisplayFields {
         Box boxSpecsField = Box.createVerticalBox();
         boxSpecsField.add(tfItemSpecifications);
         boxSpecsField.add(scrollBarTfSpecifications);
-        Box boxContainer = Box.createHorizontalBox();
-        boxContainer.add(boxNameField);
-        boxContainer.add(boxSpecsField);
         // box.add(Box.createVerticalGlue());
         // container.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        container.add(boxContainer, BorderLayout.NORTH);
+        splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitpane.setDividerSize(3);
+        splitpane.setTopComponent(boxNameField);
+        splitpane.setBottomComponent(boxSpecsField);
+        container.add(splitpane, BorderLayout.NORTH);
     }
 
     public JPanel getContainer() {
