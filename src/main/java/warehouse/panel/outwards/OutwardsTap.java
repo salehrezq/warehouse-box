@@ -39,7 +39,7 @@ public class OutwardsTap extends JPanel {
     private JSplitPane splitSearchAndItemsListPane;
     private JPanel panelGatherLeft;
     private JPanel panelGatherRight;
-    private ItemsSearch itemsSearch;
+    private ItemsSearchPane itemsSearch;
     private OutwardsList outwardsList;
     private ItemImage itemsImages;
 
@@ -49,7 +49,7 @@ public class OutwardsTap extends JPanel {
         panelGatherLeft = new JPanel(new BorderLayout());
         panelGatherRight = new JPanel(new BorderLayout());
 
-        itemsSearch = new ItemsSearch();
+        itemsSearch = new ItemsSearchPane();
         outwardsList = new OutwardsList();
         outwardsList.setListableImpl(new QuantityUnit());
         outwardsList.loadDBOutwards();

@@ -179,9 +179,9 @@ public class CRUDItems {
         return itemsMeta;
     }
 
-    public static List<ItemMeta> search(String query) {
-        OFFSET = 0;
+    public static List<ItemMeta> search(String query, int LIMIT, int OFFSET) {
         List<ItemMeta> itemsMeta = new ArrayList<>();
+        boolean isQueryBlank = query.isBlank();
         try {
             String sql = " SELECT it.id , it.`name`, it.specification,"
                     + " ("
@@ -196,15 +196,19 @@ public class CRUDItems {
                     + " "
                     + " FROM `items` AS it JOIN `quantity_unit` AS u"
                     + " ON it.unit_id = u.id"
-                    + " WHERE it.specification LIKE ? OR it.`name` LIKE ?"
+                    + (!isQueryBlank ? " WHERE it.specification LIKE ? OR it.`name` LIKE ?" : "")
                     + " ORDER BY `id` ASC"
-                    + " LIMIT " + LIMIT + " OFFSET " + OFFSET;
+                    + " LIMIT ? OFFSET ?";
 
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
-            p.setString(1, "%" + query + "%");
-            p.setString(2, "%" + query + "%");
+            if (!isQueryBlank) {
+                p.setString(1, "%" + query + "%");
+                p.setString(2, "%" + query + "%");
+            }
+            p.setInt(isQueryBlank ? 1 : 3, LIMIT);
+            p.setInt(isQueryBlank ? 2 : 4, OFFSET);
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 ItemMeta itemMeta = new ItemMeta();
@@ -216,11 +220,32 @@ public class CRUDItems {
                 itemMeta.setUnit(result.getString("unit"));
                 itemsMeta.add(itemMeta);
             }
-            OFFSET += LIMIT;
         } catch (SQLException ex) {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
         }
         return itemsMeta;
+    }
+
+    public static int searchResultRowsCount(String query) {
+        int searchResultRowsCount = 0;
+        try {
+            String sql = "SELECT COUNT(id) AS search_result_rows_count"
+                    + " FROM `items`"
+                    + " WHERE `name` LIKE ? OR `specification` LIKE ?";
+
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            p.setString(1, "%" + query + "%");
+            p.setString(2, "%" + query + "%");
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                searchResultRowsCount = result.getInt("search_result_rows_count");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return searchResultRowsCount;
     }
 
     public static int getRecordsCount() {
@@ -275,17 +300,4 @@ public class CRUDItems {
         }
         return img;
     }
-
-    public static int getOffset() {
-        return OFFSET;
-    }
-
-    public static int getLimit() {
-        return LIMIT;
-    }
-
-    public static void setOffset(int OFFSET) {
-        CRUDItems.OFFSET = OFFSET;
-    }
-
 }

@@ -45,7 +45,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
-import warehouse.db.CRUDItems;
 import warehouse.db.CRUDListable;
 import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
@@ -74,7 +73,7 @@ public class ItemsList extends JPanel
     private OutwardDialog outwardDialog;
     private ItemCreateUpdateDialog updateItemDialog;
     private JButton btnLoadMore;
-    private int itemsRowsCount,
+    private int searchResultTotalRowsCount,
             incrementedReturnedRowsCount,
             rowIndex;
 
@@ -121,7 +120,8 @@ public class ItemsList extends JPanel
         add(scrollTable, BorderLayout.CENTER);
 
         btnLoadMore = new JButton("Load more");
-        btnLoadMore.addActionListener(new LoadMoreHandler());
+        btnLoadMore.setEnabled(false);
+        //  btnLoadMore.addActionListener(new LoadMoreHandler());
         add(btnLoadMore, BorderLayout.PAGE_END);
         inwardDialog = new InwardDialog(null, "Inward", true);
         outwardDialog = new OutwardDialog(null, "Outward", true);
@@ -132,34 +132,8 @@ public class ItemsList extends JPanel
         return updateItemDialog;
     }
 
-    protected void loadDBItems() {
-        /**
-         * To organize order after new item insert. After creating new items,
-         * new rows added to the model at run time to reflect newly created
-         * items. However these rows are off order. So here we remove them, so
-         * that they will be fetched through the following fetches or via search
-         * requests.
-         */
-        for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
-            model.removeRow(incrementedReturnedRowsCount);
-        }
-
-        List<ItemMeta> itemsMetaRecords = CRUDItems.getMetaPage();
-        Object[] modelRow = new Object[6];
-
-        int size = itemsMetaRecords.size();
-        incrementedReturnedRowsCount += size;
-        rowIndex = incrementedReturnedRowsCount;
-        for (int i = 0; i < size; i++) {
-            ItemMeta itemMeta = itemsMetaRecords.get(i);
-            modelRow[0] = itemMeta.getId(); //code
-            modelRow[1] = itemMeta.getName();
-            modelRow[2] = itemMeta.getSpecification();
-            modelRow[3] = itemMeta.getBalance();
-            modelRow[4] = itemMeta.getUnitId(); // will be hidden column
-            modelRow[5] = itemMeta.getUnit();
-            model.addRow(modelRow);
-        }
+    protected JButton getBtnLoadMore() {
+        return btnLoadMore;
     }
 
     public InwardDialog getInwardDialog() {
@@ -196,6 +170,27 @@ public class ItemsList extends JPanel
     }
 
     @Override
+    public void notifyOFFSET(int OFFSET) {
+        if (OFFSET == 0) {
+            model.setRowCount(0);
+            incrementedReturnedRowsCount = 0;
+        }
+    }
+
+    @Override
+    public void notifySearchResultTotalRowsCount(int searchResultTotalRowsCount) {
+        this.searchResultTotalRowsCount = searchResultTotalRowsCount;
+        btnLoadMore.setEnabled(!(ItemsSearchLogic.getResultsPageLimit() >= searchResultTotalRowsCount));
+    }
+
+    @Override
+    public void notifySearchQuery(String currentQuery, String previousQuery) {
+        if (!currentQuery.equals(previousQuery)) {
+            model.setRowCount(0);
+        }
+    }
+
+    @Override
     public void notifySearchResult(List<ItemMeta> itemsMeta) {
         /**
          * To organize order after new item insert. After creating new items,
@@ -204,8 +199,10 @@ public class ItemsList extends JPanel
          * that they will be fetched through the following fetches or via search
          * requests.
          */
-        for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
-            model.removeRow(incrementedReturnedRowsCount);
+        if (model.getRowCount() > 0) {
+            for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
+                model.removeRow(incrementedReturnedRowsCount);
+            }
         }
 
         List<ItemMeta> itemsMetaRecords = itemsMeta;
@@ -224,6 +221,7 @@ public class ItemsList extends JPanel
             modelRow[5] = itemMeta.getUnit();
             model.addRow(modelRow);
         }
+        btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
@@ -234,18 +232,6 @@ public class ItemsList extends JPanel
         this.rowIdSelectionListeners.forEach((item) -> {
             item.selectedRowId(rowId);
         });
-    }
-
-    private class LoadMoreHandler implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (itemsRowsCount < 1) {
-                itemsRowsCount = CRUDItems.getRecordsCount();
-            }
-            loadDBItems();
-            btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= itemsRowsCount));
-        }
     }
 
     private class RowSelectionListener implements ListSelectionListener {

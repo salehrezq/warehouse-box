@@ -37,7 +37,8 @@ public class ItemsTab extends JPanel {
     private JSplitPane splitSearchAndItemsListPane;
     private JPanel panelGatherLeft;
     private JPanel panelGatherRight;
-    private ItemsSearch itemsSearch;
+    private ItemsSearchPane itemsSearchPane;
+    private ItemsSearchLogic itemsSearchLogic;
     private ItemsList itemsList;
     private ItemImage itemsImages;
 
@@ -47,9 +48,14 @@ public class ItemsTab extends JPanel {
         panelGatherLeft = new JPanel(new BorderLayout());
         panelGatherRight = new JPanel(new BorderLayout());
 
-        itemsSearch = new ItemsSearch();
+        itemsSearchPane = new ItemsSearchPane();
         itemsList = new ItemsList();
-        itemsList.loadDBItems();
+        itemsSearchLogic = new ItemsSearchLogic();
+        itemsSearchLogic.addItemSearchListener(itemsList);
+        itemsSearchLogic.setTfSearchQuery(itemsSearchPane.getTfSearchQuery());
+        itemsSearchLogic.setBtnSearch(itemsSearchPane.getBtnSearchQuery());
+        itemsSearchLogic.setBtnLoadMore(itemsList.getBtnLoadMore());
+        ItemsSearchLogic.setResultsPageLimit(3);
         itemsImages = new ItemImage();
 
         itemsList.addRowIdSelectionListener(itemsImages);
@@ -57,9 +63,9 @@ public class ItemsTab extends JPanel {
         // Add the scroll panes to a split pane.
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitSearchAndItemsListPane.setDividerSize(5);
-        splitSearchAndItemsListPane.setTopComponent(itemsSearch.getContainer());
+        splitSearchAndItemsListPane.setTopComponent(itemsSearchPane.getContainer());
         splitSearchAndItemsListPane.setBottomComponent(itemsList);
-        itemsSearch.addItemSearchListener(itemsList);
+
         panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
         panelGatherRight.add(itemsImages.getFormContainer(), BorderLayout.CENTER);
 

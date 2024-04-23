@@ -23,58 +23,40 @@
  */
 package warehouse.panel.items;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import warehouse.db.CRUDItems;
-import warehouse.db.model.ItemMeta;
 
 /**
  *
  * @author Saleh
  */
-public class ItemsSearch extends JPanel {
+public class ItemsSearchPane extends JPanel {
 
     private JPanel container;
-    private JTextField tfSearch;
-    private JButton btnSearch;
-    private List<ItemsSearchListener> itemsSearchListeners;
+    private JTextField tfSearchQuery;
+    private JButton btnSearchQuery;
 
-    public ItemsSearch() {
+    public ItemsSearchPane() {
         container = new JPanel();
-        itemsSearchListeners = new ArrayList<>();
-        tfSearch = new JTextField(35);
-        btnSearch = new JButton("Search");
-        btnSearch.addActionListener(new SearchHandler());
 
-        container.add(tfSearch);
-        container.add(btnSearch);
+        tfSearchQuery = new JTextField(35);
+        btnSearchQuery = new JButton("Search");
+
+        container.add(tfSearchQuery);
+        container.add(btnSearchQuery);
     }
 
-    public JPanel getContainer() {
+    protected JPanel getContainer() {
         return this.container;
     }
 
-    public void addItemSearchListener(ItemsSearchListener itemsSearchListener) {
-        this.itemsSearchListeners.add(itemsSearchListener);
+    protected JTextField getTfSearchQuery() {
+        return tfSearchQuery;
     }
 
-    public void notifySearchResult(List<ItemMeta> itemsMeta) {
-        this.itemsSearchListeners.forEach((item) -> {
-            item.notifySearchResult(itemsMeta);
-        });
+    protected JButton getBtnSearchQuery() {
+        return btnSearchQuery;
     }
 
-    private class SearchHandler implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            notifySearchResult(CRUDItems.search(tfSearch.getText()));
-        }
-
-    }
 }

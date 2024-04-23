@@ -39,7 +39,7 @@ public class InwardsTap extends JPanel {
     private JSplitPane splitSearchAndItemsListPane;
     private JPanel panelGatherLeft;
     private JPanel panelGatherRight;
-    private ItemsSearch itemsSearch;
+    private ItemsSearchPane itemsSearch;
     private InwardsList inwardsList;
     private ItemImage itemsImages;
 
@@ -49,7 +49,7 @@ public class InwardsTap extends JPanel {
         panelGatherLeft = new JPanel(new BorderLayout());
         panelGatherRight = new JPanel(new BorderLayout());
 
-        itemsSearch = new ItemsSearch();
+        itemsSearch = new ItemsSearchPane();
         inwardsList = new InwardsList();
         inwardsList.setListableImpl(new QuantityUnit());
         inwardsList.loadDBInwards();
