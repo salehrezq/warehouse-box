@@ -228,16 +228,19 @@ public class CRUDItems {
 
     public static int searchResultRowsCount(String query) {
         int searchResultRowsCount = 0;
+        boolean isQueryBlank = query.isBlank();
         try {
             String sql = "SELECT COUNT(id) AS search_result_rows_count"
                     + " FROM `items`"
-                    + " WHERE `name` LIKE ? OR `specification` LIKE ?";
+                    + (!isQueryBlank ? " WHERE `name` LIKE ? OR `specification` LIKE ?" : "");
 
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
-            p.setString(1, "%" + query + "%");
-            p.setString(2, "%" + query + "%");
+            if (!isQueryBlank) {
+                p.setString(1, "%" + query + "%");
+                p.setString(2, "%" + query + "%");
+            }
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 searchResultRowsCount = result.getInt("search_result_rows_count");
