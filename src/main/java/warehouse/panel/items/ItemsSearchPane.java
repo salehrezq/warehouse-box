@@ -23,7 +23,9 @@
  */
 package warehouse.panel.items;
 
+import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -36,6 +38,9 @@ public class ItemsSearchPane extends JPanel {
     private JPanel container;
     private JTextField tfSearchQuery;
     private JButton btnSearchQuery;
+    private JCheckBox checkCodeFilter,
+            checkNameFilter,
+            checkSpecificationFilter;
 
     public ItemsSearchPane() {
         container = new JPanel();
@@ -43,8 +48,23 @@ public class ItemsSearchPane extends JPanel {
         tfSearchQuery = new JTextField(35);
         btnSearchQuery = new JButton("Search");
 
-        container.add(tfSearchQuery);
-        container.add(btnSearchQuery);
+        checkCodeFilter = new JCheckBox("Code");
+        checkNameFilter = new JCheckBox("Name");
+        checkSpecificationFilter = new JCheckBox("Specification");
+
+        Box boxSearch = Box.createHorizontalBox();
+        boxSearch.add(tfSearchQuery);
+        boxSearch.add(btnSearchQuery);
+        Box boxFilters = Box.createHorizontalBox();
+        boxFilters.add(checkCodeFilter);
+        boxFilters.add(Box.createHorizontalStrut(5));
+        boxFilters.add(checkNameFilter);
+        boxFilters.add(Box.createHorizontalStrut(5));
+        boxFilters.add(checkSpecificationFilter);
+        Box boxContainer = Box.createVerticalBox();
+        boxContainer.add(boxSearch);
+        boxContainer.add(boxFilters);
+        container.add(boxContainer);
     }
 
     protected JPanel getContainer() {
@@ -57,6 +77,18 @@ public class ItemsSearchPane extends JPanel {
 
     protected JButton getBtnSearchQuery() {
         return btnSearchQuery;
+    }
+
+    protected JCheckBox getCheckCodeFilter() {
+        return checkCodeFilter;
+    }
+
+    protected JCheckBox getCheckNameFilter() {
+        return checkNameFilter;
+    }
+
+    protected JCheckBox getCheckSpecificationFilter() {
+        return checkSpecificationFilter;
     }
 
 }
