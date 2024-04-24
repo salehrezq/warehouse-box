@@ -50,7 +50,6 @@ import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
 import warehouse.db.model.QuantityUnit;
 import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
-import warehouse.panel.items.nameandspecsdisplay.NameAndSpecDisplayFields;
 
 /**
  *

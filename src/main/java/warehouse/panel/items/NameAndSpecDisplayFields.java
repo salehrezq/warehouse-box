@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.items.nameandspecsdisplay;
+package warehouse.panel.items;
 
 import utility.scrollbarthin.ScrollBarThin;
 import java.awt.Adjustable;
@@ -75,15 +75,15 @@ public class NameAndSpecDisplayFields {
         container.add(splitpane, BorderLayout.NORTH);
     }
 
-    public void setTfItemNameText(String name) {
+    protected void setTfItemNameText(String name) {
         tfItemName.setText(name);
     }
 
-    public void setTfItemSpecificationsText(String specs) {
+    protected void setTfItemSpecificationsText(String specs) {
         tfItemSpecifications.setText(specs);
     }
 
-    public JPanel getContainer() {
+    protected JPanel getContainer() {
         return this.container;
     }
 
