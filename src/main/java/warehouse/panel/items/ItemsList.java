@@ -50,6 +50,7 @@ import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
 import warehouse.db.model.QuantityUnit;
 import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
+import warehouse.panel.items.nameandspecsdisplay.NameAndSpecDisplayFields;
 
 /**
  *
@@ -76,6 +77,7 @@ public class ItemsList extends JPanel
     private int searchResultTotalRowsCount,
             incrementedReturnedRowsCount,
             rowIndex;
+    private NameAndSpecDisplayFields nameAndSpecDisplayFields;
 
     public ItemsList() {
 
@@ -104,7 +106,7 @@ public class ItemsList extends JPanel
 
         table = new JTable(model);
         table.addMouseListener(new ItemRowDoubleClickHandler());
-        //    table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
+        table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
         table.setFillsViewportHeight(true);
         // Hide column number 4 which holds unit_id values
@@ -142,6 +144,10 @@ public class ItemsList extends JPanel
 
     public OutwardDialog getOutwardDialog() {
         return this.outwardDialog;
+    }
+
+    protected void setnameAndSpecDisplayFields(NameAndSpecDisplayFields nameAndSpecDisplayFields) {
+        this.nameAndSpecDisplayFields = nameAndSpecDisplayFields;
     }
 
     @Override
@@ -241,13 +247,14 @@ public class ItemsList extends JPanel
                     int viewRow = table.getSelectedRow();
                     if (viewRow > -1) {
 
-                        int itemIdColumnIndex = 0;
+                        int itemNameColumnIndex = 1;
+                        int itemSpecificationColumnIndex = 2;
 
                         selectedModelRow = table.convertRowIndexToModel(viewRow);
-                        Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
-                        Integer itemId = Integer.parseInt(itemIdObject.toString());
-                        System.out.println("Item ID " + itemId);
-                        notifySelectedRowId(itemId);
+                        String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
+                        String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
+                        nameAndSpecDisplayFields.setTfItemNameText(itemNameObject);
+                        nameAndSpecDisplayFields.setTfItemSpecificationsText(itemSpecificationObject);
                     }
                 }
             }

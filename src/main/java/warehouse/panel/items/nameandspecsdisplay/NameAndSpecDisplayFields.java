@@ -25,6 +25,7 @@ package warehouse.panel.items.nameandspecsdisplay;
 
 import java.awt.Adjustable;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -42,11 +43,16 @@ public class NameAndSpecDisplayFields {
     private ScrollBarThin scrollBarTfName,
             scrollBarTfSpecifications;
     private JSplitPane splitpane;
+    private final Color colorTextField = new Color(84, 84, 84);
 
     public NameAndSpecDisplayFields() {
         container = new JPanel(new BorderLayout());
         tfItemName = new JTextField(1);
+        tfItemName.setEnabled(false);
+        tfItemName.setDisabledTextColor(colorTextField);
         tfItemSpecifications = new JTextField(30);
+        tfItemSpecifications.setEnabled(false);
+        tfItemSpecifications.setDisabledTextColor(colorTextField);
 
         scrollBarTfName = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarTfName.setModel(tfItemName.getHorizontalVisibility());
@@ -66,6 +72,14 @@ public class NameAndSpecDisplayFields {
         splitpane.setTopComponent(boxNameField);
         splitpane.setBottomComponent(boxSpecsField);
         container.add(splitpane, BorderLayout.NORTH);
+    }
+
+    public void setTfItemNameText(String name) {
+        tfItemName.setText(name);
+    }
+
+    public void setTfItemSpecificationsText(String specs) {
+        tfItemSpecifications.setText(specs);
     }
 
     public JPanel getContainer() {

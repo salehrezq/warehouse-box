@@ -55,6 +55,7 @@ public class ItemsTab extends JPanel {
         panelItemsList = new JPanel(new BorderLayout());
         nameAndSpecDisplayFields = new NameAndSpecDisplayFields();
         itemsList = new ItemsList();
+        itemsList.setnameAndSpecDisplayFields(nameAndSpecDisplayFields);
         panelItemsList.add(nameAndSpecDisplayFields.getContainer(), BorderLayout.PAGE_START);
         panelItemsList.add(itemsList, BorderLayout.CENTER);
         itemsSearchLogic = new ItemsSearchLogic();
