@@ -23,6 +23,7 @@
  */
 package warehouse.panel.items.nameandspecsdisplay;
 
+import utility.scrollbarthin.ScrollBarThin;
 import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import java.awt.Color;

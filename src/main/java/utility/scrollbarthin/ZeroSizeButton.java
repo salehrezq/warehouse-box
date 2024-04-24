@@ -21,31 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.items.nameandspecsdisplay;
+package utility.scrollbarthin;
 
 import java.awt.Dimension;
-import javax.swing.JScrollBar;
+import javax.swing.JButton;
 
 /**
  *
  * @author Saleh
  */
-public class ScrollBarThin extends JScrollBar {
+public class ZeroSizeButton extends JButton {
 
-    public ScrollBarThin(int orientation) {
-        super(orientation);
-    }
-
-    @Override
-    public void updateUI() {
-        //super.updateUI();
-        setUI(new ArrowButtonlessScrollBarUI());
-    }
+    private static final Dimension ZERO_SIZE = new Dimension();
 
     @Override
     public Dimension getPreferredSize() {
-        Dimension d = super.getPreferredSize();
-        d.height = 4;
-        return d;
+        return ZERO_SIZE;
     }
 }
