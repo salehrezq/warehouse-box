@@ -26,8 +26,11 @@ package warehouse.panel.items;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import warehouse.db.CRUDItems;
 import warehouse.db.model.ItemMeta;
@@ -45,9 +48,17 @@ public class ItemsSearchLogic {
     private JTextField tfSearchQuery;
     private JButton btnSearch;
     private JButton btnLoadMore;
+    private JCheckBox checkCodeFilter,
+            checkNameFilter,
+            checkSpecificationFilter;
+    private Map<String, Boolean> searchFilters;
 
     public ItemsSearchLogic() {
         itemsSearchListeners = new ArrayList<>();
+        searchFilters = new HashMap<>();
+        searchFilters.put("code", Boolean.FALSE);
+        searchFilters.put("name", Boolean.FALSE);
+        searchFilters.put("specification", Boolean.FALSE);
     }
 
     protected void setTfSearchQuery(JTextField tfSearchQuery) {
@@ -62,6 +73,21 @@ public class ItemsSearchLogic {
     protected void setBtnLoadMore(JButton btnLoadMore) {
         this.btnLoadMore = btnLoadMore;
         this.btnLoadMore.addActionListener(new LoadMoreHandler());
+    }
+
+    protected void setCheckCodeFilter(JCheckBox checkCodeFilter) {
+        this.checkCodeFilter = checkCodeFilter;
+        this.checkCodeFilter.addActionListener(new CheckBoxHandler());
+    }
+
+    protected void setCheckNameFilter(JCheckBox checkNameFilter) {
+        this.checkNameFilter = checkNameFilter;
+        this.checkNameFilter.addActionListener(new CheckBoxHandler());
+    }
+
+    protected void setCheckSpecificationFilter(JCheckBox checkSpecificationFilter) {
+        this.checkSpecificationFilter = checkSpecificationFilter;
+        this.checkSpecificationFilter.addActionListener(new CheckBoxHandler());
     }
 
     public static void setResultsPageLimit(int pageLimit) {
@@ -108,8 +134,8 @@ public class ItemsSearchLogic {
             searchQuery = tfSearchQuery.getText();
             OFFSET = 0;
             notifyOFFSET(OFFSET);
-            notifySearchResultTotalRowsCount(CRUDItems.searchResultRowsCount(searchQuery));
-            notifySearchResult(CRUDItems.search(searchQuery, LIMIT, OFFSET));
+            notifySearchResultTotalRowsCount(CRUDItems.searchResultRowsCount(searchQuery, searchFilters));
+            notifySearchResult(CRUDItems.search(searchQuery, searchFilters, LIMIT, OFFSET));
         }
     }
 
@@ -118,8 +144,27 @@ public class ItemsSearchLogic {
         @Override
         public void actionPerformed(ActionEvent e) {
             OFFSET += LIMIT;
-            notifySearchResult(CRUDItems.search(searchQuery, LIMIT, OFFSET));
+            notifySearchResult(CRUDItems.search(searchQuery, searchFilters, LIMIT, OFFSET));
         }
+    }
+
+    private class CheckBoxHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JCheckBox c = (JCheckBox) e.getSource();
+
+            if (c == checkCodeFilter) {
+                searchFilters.put("code", checkCodeFilter.isSelected());
+            }
+            if (c == checkNameFilter) {
+                searchFilters.put("name", checkNameFilter.isSelected());
+            }
+            if (c == checkSpecificationFilter) {
+                searchFilters.put("specification", checkSpecificationFilter.isSelected());
+            }
+        }
+
     }
 
 }

@@ -61,6 +61,9 @@ public class ItemsTab extends JPanel {
         itemsSearchLogic.addItemSearchListener(itemsList);
         itemsSearchLogic.setTfSearchQuery(itemsSearchPane.getTfSearchQuery());
         itemsSearchLogic.setBtnSearch(itemsSearchPane.getBtnSearchQuery());
+        itemsSearchLogic.setCheckCodeFilter(itemsSearchPane.getCheckCodeFilter());
+        itemsSearchLogic.setCheckNameFilter(itemsSearchPane.getCheckNameFilter());
+        itemsSearchLogic.setCheckSpecificationFilter(itemsSearchPane.getCheckSpecificationFilter());
         itemsSearchLogic.setBtnLoadMore(itemsList.getBtnLoadMore());
         ItemsSearchLogic.setResultsPageLimit(3);
         itemsImages = new ItemImage();

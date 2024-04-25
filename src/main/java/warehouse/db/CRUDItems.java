@@ -33,8 +33,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
@@ -48,6 +50,7 @@ public class CRUDItems {
     private static Connection con;
     private static int OFFSET = 0;
     private static final int LIMIT = 20;
+    private static Map<String, Boolean> searchFilters;
 
     public static Item create(Item item) {
         String sqlCreateItem = "INSERT INTO items (`name`, `specification`, `unit_id`) VALUES (?, ?, ?)";
@@ -179,7 +182,34 @@ public class CRUDItems {
         return itemsMeta;
     }
 
-    public static List<ItemMeta> search(String query, int LIMIT, int OFFSET) {
+    private static String formulateFilters(Map<String, Boolean> searchFilters) {
+        String sqlFilter = " WHERE";
+        if (searchFilters != null) {
+            boolean boolCodeFilter = searchFilters.get("code");
+            boolean boolNameFilter = searchFilters.get("name");
+            boolean boolSpecificationFilter = searchFilters.get("specification");
+
+            if (boolCodeFilter) {
+                sqlFilter += " it.`id` LIKE ?";
+                if (boolNameFilter || boolSpecificationFilter) {
+                    sqlFilter += " OR";
+                }
+            }
+            if (boolNameFilter) {
+                sqlFilter += " it.`name` LIKE ?";
+                if (boolSpecificationFilter) {
+                    sqlFilter += " OR";
+                }
+            }
+            if (boolSpecificationFilter) {
+                sqlFilter += " it.`specification` LIKE ?";
+            }
+        }
+
+        return sqlFilter;
+    }
+
+    public static List<ItemMeta> search(String query, Map<String, Boolean> searchFilters, int LIMIT, int OFFSET) {
         List<ItemMeta> itemsMeta = new ArrayList<>();
         boolean isQueryBlank = query.isBlank();
         try {
@@ -196,19 +226,28 @@ public class CRUDItems {
                     + " "
                     + " FROM `items` AS it JOIN `quantity_unit` AS u"
                     + " ON it.unit_id = u.id"
-                    + (!isQueryBlank ? " WHERE it.specification LIKE ? OR it.`name` LIKE ?" : "")
+                    + (isQueryBlank ? "" : formulateFilters(searchFilters))
                     + " ORDER BY `id` ASC"
                     + " LIMIT ? OFFSET ?";
 
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
+            int parameterIndex = 0;
             if (!isQueryBlank) {
-                p.setString(1, "%" + query + "%");
-                p.setString(2, "%" + query + "%");
+                List<Boolean> filters
+                        = searchFilters
+                                .values()
+                                .stream()
+                                .filter(boolEntry -> boolEntry == true)
+                                .collect(Collectors.toList());
+                for (int i = 0; i < filters.size(); i++) {
+                    p.setString(++parameterIndex, "%" + query + "%");
+                }
             }
-            p.setInt(isQueryBlank ? 1 : 3, LIMIT);
-            p.setInt(isQueryBlank ? 2 : 4, OFFSET);
+            p.setInt(++parameterIndex, LIMIT);
+            p.setInt(++parameterIndex, OFFSET);
+            System.out.println(p);
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 ItemMeta itemMeta = new ItemMeta();
@@ -226,21 +265,30 @@ public class CRUDItems {
         return itemsMeta;
     }
 
-    public static int searchResultRowsCount(String query) {
+    public static int searchResultRowsCount(String query, Map<String, Boolean> searchFilters) {
         int searchResultRowsCount = 0;
         boolean isQueryBlank = query.isBlank();
         try {
             String sql = "SELECT COUNT(id) AS search_result_rows_count"
-                    + " FROM `items`"
-                    + (!isQueryBlank ? " WHERE `name` LIKE ? OR `specification` LIKE ?" : "");
+                    + " FROM `items` AS `it`"
+                    + (isQueryBlank ? "" : formulateFilters(searchFilters));
 
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
             if (!isQueryBlank) {
-                p.setString(1, "%" + query + "%");
-                p.setString(2, "%" + query + "%");
+                int parameterIndex = 0;
+                List<Boolean> filters
+                        = searchFilters
+                                .values()
+                                .stream()
+                                .filter(boolEntry -> boolEntry == true)
+                                .collect(Collectors.toList());
+                for (int i = 0; i < filters.size(); i++) {
+                    p.setString(++parameterIndex, "%" + query + "%");
+                }
             }
+            System.out.println(p);
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 searchResultRowsCount = result.getInt("search_result_rows_count");
