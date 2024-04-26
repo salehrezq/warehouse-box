@@ -57,8 +57,8 @@ public class ItemsSearchLogic {
         itemsSearchListeners = new ArrayList<>();
         searchFilters = new HashMap<>();
         searchFilters.put("code", Boolean.FALSE);
-        searchFilters.put("name", Boolean.FALSE);
-        searchFilters.put("specification", Boolean.FALSE);
+        searchFilters.put("name", Boolean.TRUE);
+        searchFilters.put("specification", Boolean.TRUE);
     }
 
     protected void setTfSearchQuery(JTextField tfSearchQuery) {
@@ -82,11 +82,13 @@ public class ItemsSearchLogic {
 
     protected void setCheckNameFilter(JCheckBox checkNameFilter) {
         this.checkNameFilter = checkNameFilter;
+        this.checkNameFilter.setSelected(true);
         this.checkNameFilter.addActionListener(new CheckBoxHandler());
     }
 
     protected void setCheckSpecificationFilter(JCheckBox checkSpecificationFilter) {
         this.checkSpecificationFilter = checkSpecificationFilter;
+        this.checkSpecificationFilter.setSelected(true);
         this.checkSpecificationFilter.addActionListener(new CheckBoxHandler());
     }
 
@@ -153,6 +155,10 @@ public class ItemsSearchLogic {
         @Override
         public void actionPerformed(ActionEvent e) {
             JCheckBox source = (JCheckBox) e.getSource();
+
+            boolean isAnyChecked = checkCodeFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
+            btnSearch.setText(isAnyChecked ? "Search" : "Get all");
+            tfSearchQuery.setEnabled(isAnyChecked);
 
             if (source == checkCodeFilter) {
                 boolean isCodeSelected = checkCodeFilter.isSelected();
