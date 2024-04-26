@@ -206,6 +206,9 @@ public class CRUDItems {
 
     public static List<ItemMeta> search(String query, Map<String, Boolean> searchFilters, int LIMIT, int OFFSET) {
         List<ItemMeta> itemsMeta = new ArrayList<>();
+        boolean isFiltersAvailable = (searchFilters != null);
+        boolean isAnyFilterOn = isFiltersAvailable
+                ? searchFilters.values().stream().anyMatch(filterValue -> filterValue == true) : false;
         boolean isQueryBlank = query.isBlank();
         try {
             String sql = " SELECT it.id , it.`name`, it.specification,"
@@ -221,7 +224,7 @@ public class CRUDItems {
                     + " "
                     + " FROM `items` AS it JOIN `quantity_unit` AS u"
                     + " ON it.unit_id = u.id"
-                    + (isQueryBlank ? "" : formulateFilters(searchFilters))
+                    + ((isQueryBlank || !isAnyFilterOn) ? "" : formulateFilters(searchFilters))
                     + " ORDER BY `id` ASC"
                     + " LIMIT ? OFFSET ?";
 
@@ -262,11 +265,14 @@ public class CRUDItems {
 
     public static int searchResultRowsCount(String query, Map<String, Boolean> searchFilters) {
         int searchResultRowsCount = 0;
+        boolean isFiltersAvailable = (searchFilters != null);
+        boolean isAnyFilterOn = isFiltersAvailable
+                ? searchFilters.values().stream().anyMatch(filterValue -> filterValue == true) : false;
         boolean isQueryBlank = query.isBlank();
         try {
             String sql = "SELECT COUNT(id) AS search_result_rows_count"
                     + " FROM `items` AS `it`"
-                    + (isQueryBlank ? "" : formulateFilters(searchFilters));
+                    + ((isQueryBlank || !isAnyFilterOn) ? "" : formulateFilters(searchFilters));
 
             con = Connect.getConnection();
             PreparedStatement p;
