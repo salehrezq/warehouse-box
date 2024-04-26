@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
@@ -186,15 +185,12 @@ public class CRUDItems {
         String sqlFilter = " WHERE";
         if (searchFilters != null) {
             boolean boolCodeFilter = searchFilters.get("code");
+            if (boolCodeFilter) {
+                sqlFilter += " it.`id` = ?";
+                return sqlFilter;
+            }
             boolean boolNameFilter = searchFilters.get("name");
             boolean boolSpecificationFilter = searchFilters.get("specification");
-
-            if (boolCodeFilter) {
-                sqlFilter += " it.`id` LIKE ?";
-                if (boolNameFilter || boolSpecificationFilter) {
-                    sqlFilter += " OR";
-                }
-            }
             if (boolNameFilter) {
                 sqlFilter += " it.`name` LIKE ?";
                 if (boolSpecificationFilter) {
@@ -205,7 +201,6 @@ public class CRUDItems {
                 sqlFilter += " it.`specification` LIKE ?";
             }
         }
-
         return sqlFilter;
     }
 
@@ -235,14 +230,14 @@ public class CRUDItems {
             p = con.prepareStatement(sql);
             int parameterIndex = 0;
             if (!isQueryBlank) {
-                List<Boolean> filters
-                        = searchFilters
-                                .values()
-                                .stream()
-                                .filter(boolEntry -> boolEntry == true)
-                                .collect(Collectors.toList());
-                for (int i = 0; i < filters.size(); i++) {
-                    p.setString(++parameterIndex, "%" + query + "%");
+                for (var filter : searchFilters.entrySet()) {
+                    if (filter.getValue() == true) {
+                        if (filter.getKey().equals("code")) {
+                            p.setInt(++parameterIndex, Integer.parseInt(query));
+                        } else {
+                            p.setString(++parameterIndex, "%" + query + "%");
+                        }
+                    }
                 }
             }
             p.setInt(++parameterIndex, LIMIT);
@@ -278,14 +273,14 @@ public class CRUDItems {
             p = con.prepareStatement(sql);
             if (!isQueryBlank) {
                 int parameterIndex = 0;
-                List<Boolean> filters
-                        = searchFilters
-                                .values()
-                                .stream()
-                                .filter(boolEntry -> boolEntry == true)
-                                .collect(Collectors.toList());
-                for (int i = 0; i < filters.size(); i++) {
-                    p.setString(++parameterIndex, "%" + query + "%");
+                for (var filter : searchFilters.entrySet()) {
+                    if (filter.getValue() == true) {
+                        if (filter.getKey().equals("code")) {
+                            p.setInt(++parameterIndex, Integer.parseInt(query));
+                        } else {
+                            p.setString(++parameterIndex, "%" + query + "%");
+                        }
+                    }
                 }
             }
             System.out.println(p);

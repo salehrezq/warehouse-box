@@ -152,19 +152,36 @@ public class ItemsSearchLogic {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            JCheckBox c = (JCheckBox) e.getSource();
+            JCheckBox source = (JCheckBox) e.getSource();
 
-            if (c == checkCodeFilter) {
-                searchFilters.put("code", checkCodeFilter.isSelected());
-            }
-            if (c == checkNameFilter) {
-                searchFilters.put("name", checkNameFilter.isSelected());
-            }
-            if (c == checkSpecificationFilter) {
-                searchFilters.put("specification", checkSpecificationFilter.isSelected());
+            if (source == checkCodeFilter) {
+                boolean isCodeSelected = checkCodeFilter.isSelected();
+                checkNameFilter.setEnabled(!isCodeSelected);
+                checkSpecificationFilter.setEnabled(!isCodeSelected);
+                searchFilters.put("code", isCodeSelected);
+                if (checkCodeFilter.isSelected()) {
+                    checkNameFilter.setSelected(false);
+                    checkSpecificationFilter.setSelected(false);
+                    searchFilters.put("name", false);
+                    searchFilters.put("specification", false);
+                }
+            } else {
+                if (source == checkNameFilter || source == checkSpecificationFilter) {
+                    boolean isNameORSpecificationSelected = (checkNameFilter.isSelected() || checkSpecificationFilter.isSelected());
+                    boolean isNameANDSpecificationBothDeselected = !checkNameFilter.isSelected() && !checkSpecificationFilter.isSelected();
+                    if (isNameORSpecificationSelected) {
+                        checkCodeFilter.setEnabled(false);
+                        checkCodeFilter.setSelected(false);
+                        searchFilters.put("code", false);
+                    }
+                    if (isNameANDSpecificationBothDeselected) {
+                        checkCodeFilter.setEnabled(true);
+                    }
+                    searchFilters.put("name", checkNameFilter.isSelected());
+                    searchFilters.put("specification", checkSpecificationFilter.isSelected());
+                }
             }
         }
-
     }
 
 }
