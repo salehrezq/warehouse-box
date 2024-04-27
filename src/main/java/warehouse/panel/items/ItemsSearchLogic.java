@@ -23,15 +23,19 @@
  */
 package warehouse.panel.items;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import warehouse.db.CRUDItems;
 import warehouse.db.model.ItemMeta;
 
@@ -52,10 +56,14 @@ public class ItemsSearchLogic {
             checkNameFilter,
             checkSpecificationFilter;
     private Map<String, Boolean> searchFilters;
+    boolean isCodeChecked;
+    private MatchDigitsOnlyHandler matchDigitsOnly;
+    private final Pattern pattern = Pattern.compile("\\d+");
 
     public ItemsSearchLogic() {
         itemsSearchListeners = new ArrayList<>();
         searchFilters = new HashMap<>();
+        matchDigitsOnly = new MatchDigitsOnlyHandler();
         searchFilters.put("code", Boolean.FALSE);
         searchFilters.put("name", Boolean.TRUE);
         searchFilters.put("specification", Boolean.TRUE);
@@ -63,6 +71,8 @@ public class ItemsSearchLogic {
 
     protected void setTfSearchQuery(JTextField tfSearchQuery) {
         this.tfSearchQuery = tfSearchQuery;
+        isCodeChecked = false;
+        this.tfSearchQuery.getDocument().addDocumentListener(matchDigitsOnly);
     }
 
     protected void setBtnSearch(JButton btnSearch) {
@@ -150,6 +160,22 @@ public class ItemsSearchLogic {
         }
     }
 
+    private void tfSearchQueryCodeChecker() {
+        if (isCodeChecked) {
+            System.out.println("isCodeChecked " + isCodeChecked);
+            if (pattern.matcher(tfSearchQuery.getText()).matches()) {
+                tfSearchQuery.setBackground(Color.WHITE);
+                btnSearch.setEnabled(true);
+            } else {
+                tfSearchQuery.setBackground(new Color(255, 204, 204));
+                btnSearch.setEnabled(false);
+            }
+        } else if (!isCodeChecked) {
+            tfSearchQuery.setBackground(Color.WHITE);
+            btnSearch.setEnabled(true);
+        }
+    }
+
     private class CheckBoxHandler implements ActionListener {
 
         @Override
@@ -187,6 +213,32 @@ public class ItemsSearchLogic {
                     searchFilters.put("specification", checkSpecificationFilter.isSelected());
                 }
             }
+            isCodeChecked = checkCodeFilter.isSelected();
+            tfSearchQueryCodeChecker();
+        }
+    }
+
+    private class MatchDigitsOnlyHandler implements DocumentListener {
+
+        private void check(DocumentEvent e) {
+            if (e.getDocument() == tfSearchQuery.getDocument()) {
+                tfSearchQueryCodeChecker();
+            }
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            check(e);
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            check(e);
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            check(e);
         }
     }
 
