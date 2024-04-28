@@ -23,7 +23,6 @@
  */
 package warehouse.panel.inwards;
 
-import warehouse.panel.items.*;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -39,7 +38,8 @@ public class InwardsTap extends JPanel {
     private JSplitPane splitSearchAndItemsListPane;
     private JPanel panelGatherLeft;
     private JPanel panelGatherRight;
-    private ItemsSearchPane itemsSearch;
+    private ItemsSearchPane inwardsSearchPane;
+    private ItemsSearchLogic inwardsSearchLogic;
     private InwardsList inwardsList;
     private ItemImage itemsImages;
 
@@ -49,10 +49,18 @@ public class InwardsTap extends JPanel {
         panelGatherLeft = new JPanel(new BorderLayout());
         panelGatherRight = new JPanel(new BorderLayout());
 
-        itemsSearch = new ItemsSearchPane();
+        inwardsSearchPane = new ItemsSearchPane();
         inwardsList = new InwardsList();
         inwardsList.setListableImpl(new QuantityUnit());
-        inwardsList.loadDBInwards();
+        inwardsSearchLogic = new ItemsSearchLogic();
+        inwardsSearchLogic.addItemSearchListener(inwardsList);
+        inwardsSearchLogic.setTfSearchQuery(inwardsSearchPane.getTfSearchQuery());
+        inwardsSearchLogic.setBtnSearch(inwardsSearchPane.getBtnSearchQuery());
+        inwardsSearchLogic.setCheckCodeFilter(inwardsSearchPane.getCheckCodeFilter());
+        inwardsSearchLogic.setCheckNameFilter(inwardsSearchPane.getCheckNameFilter());
+        inwardsSearchLogic.setCheckSpecificationFilter(inwardsSearchPane.getCheckSpecificationFilter());
+        inwardsSearchLogic.setBtnLoadMore(inwardsList.getBtnLoadMore());
+        ItemsSearchLogic.setResultsPageLimit(3);
         itemsImages = new ItemImage();
 
         inwardsList.addRowIdSelectionListener(itemsImages);
@@ -60,7 +68,7 @@ public class InwardsTap extends JPanel {
         // Add the scroll panes to a split pane.
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitSearchAndItemsListPane.setDividerSize(5);
-        splitSearchAndItemsListPane.setTopComponent(itemsSearch);
+        splitSearchAndItemsListPane.setTopComponent(inwardsSearchPane.getContainer());
         splitSearchAndItemsListPane.setBottomComponent(inwardsList);
         panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
         panelGatherRight.add(itemsImages.getFormContainer(), BorderLayout.CENTER);

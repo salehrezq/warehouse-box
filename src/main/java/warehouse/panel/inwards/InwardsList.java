@@ -34,6 +34,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -58,7 +59,11 @@ import warehouse.singularlisting.ListableConsumer;
  *
  * @author Saleh
  */
-public class InwardsList extends JPanel implements InwardCRUDListener, ListableConsumer {
+public class InwardsList extends JPanel
+        implements
+        InwardCRUDListener,
+        ListableConsumer,
+        ItemsSearchListener {
 
     private DefaultTableModel model;
     private JTable table;
@@ -68,6 +73,10 @@ public class InwardsList extends JPanel implements InwardCRUDListener, ListableC
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
     private final JMenuItem menuItemAddOfSelectedItem;
+    private JButton btnLoadMore;
+    private int searchResultTotalRowsCount,
+            incrementedReturnedRowsCount,
+            rowIndex;
 
     public InwardsList() {
 
@@ -102,11 +111,19 @@ public class InwardsList extends JPanel implements InwardCRUDListener, ListableC
         table.setComponentPopupMenu(popupMenu);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
+
+        btnLoadMore = new JButton("Load more");
+        btnLoadMore.setEnabled(false);
+        add(btnLoadMore, BorderLayout.PAGE_END);
     }
 
     @Override
     public void setListableImpl(Listable listable) {
         this.listableImplementation = listable;
+    }
+
+    protected JButton getBtnLoadMore() {
+        return btnLoadMore;
     }
 
     protected void loadDBInwards() {
@@ -150,6 +167,56 @@ public class InwardsList extends JPanel implements InwardCRUDListener, ListableC
         this.rowIdSelectionListeners.forEach((item) -> {
             item.selectedRowId(rowId);
         });
+    }
+
+    @Override
+    public void notifyOFFSET(int OFFSET) {
+        if (OFFSET == 0) {
+            model.setRowCount(0);
+            incrementedReturnedRowsCount = 0;
+        }
+    }
+
+    @Override
+    public void notifySearchResultTotalRowsCount(int searchResultTotalRowsCount) {
+        this.searchResultTotalRowsCount = searchResultTotalRowsCount;
+        btnLoadMore.setEnabled(!(ItemsSearchLogic.getResultsPageLimit() >= searchResultTotalRowsCount));
+    }
+
+    @Override
+    public void notifySearchResult(List<InwardMeta> inwardsMeta) {
+        /**
+         * To organize order after new item insert. After creating new items,
+         * new rows added to the model at run time to reflect newly created
+         * items. However these rows are off order. So here we remove them, so
+         * that they will be fetched through the following fetches or via search
+         * requests.
+         */
+        if (model.getRowCount() > 0) {
+            for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
+                model.removeRow(incrementedReturnedRowsCount);
+            }
+        }
+
+        List<InwardMeta> itemsMetaRecords = inwardsMeta;
+        Object[] modelRow = new Object[8];
+
+        int size = itemsMetaRecords.size();
+        incrementedReturnedRowsCount += size;
+        rowIndex = incrementedReturnedRowsCount;
+        for (int i = 0; i < size; i++) {
+            InwardMeta inwardMeta = itemsMetaRecords.get(i);
+            modelRow[0] = inwardMeta.getInwardId();//code
+            modelRow[1] = inwardMeta.getItemIdd();
+            modelRow[2] = inwardMeta.getQuantity();
+            modelRow[3] = inwardMeta.getUnitName();
+            modelRow[4] = inwardMeta.getSource(); // will be hidden column
+            modelRow[5] = inwardMeta.getDate();
+            modelRow[6] = inwardMeta.getItemName();
+            modelRow[7] = inwardMeta.getItemSpecs();
+            model.addRow(modelRow);
+        }
+        btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
     }
 
     private class RowSelectionListener implements ListSelectionListener {

@@ -29,6 +29,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import warehouse.db.model.Inward;
@@ -101,6 +103,120 @@ public class CRUDInwards {
             Logger.getLogger(CRUDInwards.class.getName()).log(Level.SEVERE, null, ex);
         }
         return inwardsMedta;
+    }
+
+    private static String formulateFilters(Map<String, Boolean> searchFilters) {
+        String sqlFilter = " WHERE";
+        if (searchFilters != null) {
+            boolean boolCodeFilter = searchFilters.get("code");
+            if (boolCodeFilter) {
+                sqlFilter += " i.`id` = ?";
+                return sqlFilter;
+            }
+            boolean boolNameFilter = searchFilters.get("name");
+            boolean boolSpecificationFilter = searchFilters.get("specification");
+            if (boolNameFilter) {
+                sqlFilter += " i.`name` LIKE ?";
+                if (boolSpecificationFilter) {
+                    sqlFilter += " OR";
+                }
+            }
+            if (boolSpecificationFilter) {
+                sqlFilter += " i.`specification` LIKE ?";
+            }
+        }
+        return sqlFilter;
+    }
+
+    public static List<InwardMeta> search(String query, Map<String, Boolean> searchFilters, int LIMIT, int OFFSET) {
+        List<InwardMeta> inwardsMedta = new ArrayList<>();
+        boolean isFiltersAvailable = (searchFilters != null);
+        boolean isAnyFilterOn = isFiltersAvailable
+                ? searchFilters.values().stream().anyMatch(filterValue -> filterValue == true) : false;
+        boolean isQueryBlank = query.isBlank();
+        try {
+            String sql = "SELECT inwards.item_id AS item_id, inwards.id AS inward_id,"
+                    + " inwards.quantity, u.name AS unit_name, s.information AS source,"
+                    + " inwards.date, i.name AS item_name, i.specification AS item_specs"
+                    + " FROM inwards JOIN items AS i JOIN quantity_unit AS u JOIN source AS s"
+                    + " ON (inwards.item_id = i.id) AND (i.unit_id = u.id) AND (s.id = inwards.source_id)"
+                    + ((isQueryBlank || !isAnyFilterOn) ? "" : formulateFilters(searchFilters))
+                    + " ORDER BY inwards.date ASC, inwards.id ASC"
+                    + " LIMIT ? OFFSET ?";
+
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            int parameterIndex = 0;
+            if (!isQueryBlank) {
+                for (var filter : searchFilters.entrySet()) {
+                    if (filter.getValue() == true) {
+                        if (filter.getKey().equals("code")) {
+                            p.setInt(++parameterIndex, Integer.parseInt(query));
+                        } else {
+                            p.setString(++parameterIndex, "%" + query + "%");
+                        }
+                    }
+                }
+            }
+            p.setInt(++parameterIndex, LIMIT);
+            p.setInt(++parameterIndex, OFFSET);
+            System.out.println(p);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                InwardMeta inwardMeta = new InwardMeta();
+                inwardMeta.setInwardId(result.getInt("inward_id"));
+                inwardMeta.setItemIdd(result.getInt("item_id"));
+                inwardMeta.setQuantity(result.getBigDecimal("quantity"));
+                inwardMeta.setUnitName(result.getString("unit_name"));
+                inwardMeta.setSource(result.getString("source"));
+                inwardMeta.setDate(result.getDate("date").toLocalDate());
+                inwardMeta.setItemName(result.getString("item_name"));
+                inwardMeta.setItemSpecs(result.getString("item_specs"));
+                inwardsMedta.add(inwardMeta);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return inwardsMedta;
+    }
+
+    public static int searchResultRowsCount(String query, Map<String, Boolean> searchFilters) {
+        int searchResultRowsCount = 0;
+        boolean isFiltersAvailable = (searchFilters != null);
+        boolean isAnyFilterOn = isFiltersAvailable
+                ? searchFilters.values().stream().anyMatch(filterValue -> filterValue == true) : false;
+        boolean isQueryBlank = query.isBlank();
+        try {
+            String sql = "SELECT COUNT(inwards.id) AS search_result_rows_count"
+                    + " FROM inwards JOIN items AS i"
+                    + " ON inwards.item_id = i.id"
+                    + ((isQueryBlank || !isAnyFilterOn) ? "" : formulateFilters(searchFilters));
+
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            if (!isQueryBlank) {
+                int parameterIndex = 0;
+                for (var filter : searchFilters.entrySet()) {
+                    if (filter.getValue() == true) {
+                        if (filter.getKey().equals("code")) {
+                            p.setInt(++parameterIndex, Integer.parseInt(query));
+                        } else {
+                            p.setString(++parameterIndex, "%" + query + "%");
+                        }
+                    }
+                }
+            }
+            System.out.println(p);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                searchResultRowsCount = result.getInt("search_result_rows_count");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return searchResultRowsCount;
     }
 
 }
