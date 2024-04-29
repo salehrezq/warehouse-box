@@ -36,12 +36,14 @@ public class InwardsTap extends JPanel {
 
     private JSplitPane splitRightAndLeftPanes;
     private JSplitPane splitSearchAndItemsListPane;
-    private JPanel panelGatherLeft;
-    private JPanel panelGatherRight;
+    private JPanel panelGatherLeft,
+            panelGatherRight,
+            panelInwardsList;
     private ItemsSearchPane inwardsSearchPane;
     private ItemsSearchLogic inwardsSearchLogic;
     private InwardsList inwardsList;
     private ItemImage itemsImages;
+    private NameAndSpecDisplayFields nameAndSpecDisplayFields;
 
     public InwardsTap() {
 
@@ -50,8 +52,13 @@ public class InwardsTap extends JPanel {
         panelGatherRight = new JPanel(new BorderLayout());
 
         inwardsSearchPane = new ItemsSearchPane();
+        panelInwardsList = new JPanel(new BorderLayout());
         inwardsList = new InwardsList();
         inwardsList.setListableImpl(new QuantityUnit());
+        nameAndSpecDisplayFields = new NameAndSpecDisplayFields();
+        inwardsList.setnameAndSpecDisplayFields(nameAndSpecDisplayFields);
+        panelInwardsList.add(nameAndSpecDisplayFields.getContainer(), BorderLayout.PAGE_START);
+        panelInwardsList.add(inwardsList, BorderLayout.CENTER);
         inwardsSearchLogic = new ItemsSearchLogic();
         inwardsSearchLogic.addItemSearchListener(inwardsList);
         inwardsSearchLogic.setTfSearchQuery(inwardsSearchPane.getTfSearchQuery());
@@ -69,7 +76,7 @@ public class InwardsTap extends JPanel {
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitSearchAndItemsListPane.setDividerSize(5);
         splitSearchAndItemsListPane.setTopComponent(inwardsSearchPane.getContainer());
-        splitSearchAndItemsListPane.setBottomComponent(inwardsList);
+        splitSearchAndItemsListPane.setBottomComponent(panelInwardsList);
         panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
         panelGatherRight.add(itemsImages.getFormContainer(), BorderLayout.CENTER);
 

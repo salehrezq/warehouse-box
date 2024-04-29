@@ -46,7 +46,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
-import warehouse.db.CRUDInwards;
 import warehouse.db.CRUDListable;
 import warehouse.db.model.Inward;
 import warehouse.db.model.InwardMeta;
@@ -77,12 +76,13 @@ public class InwardsList extends JPanel
     private int searchResultTotalRowsCount,
             incrementedReturnedRowsCount,
             rowIndex;
+    private NameAndSpecDisplayFields nameAndSpecDisplayFields;
 
     public InwardsList() {
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
-        model = new DefaultTableModel(new String[]{"Inward code", "Item code", "Qty.", "Unit", "Source", "Date"}, 0) {
+        model = new DefaultTableModel(new String[]{"Inward code", "Item code", "Qty.", "Unit", "Source", "Date", "Name", "Specification"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Disable cells editing.
@@ -98,9 +98,11 @@ public class InwardsList extends JPanel
 
         table = new JTable(model);
         table.addMouseListener(new ItemRowDoubleClickHandler());
-        //    table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
+        table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
         table.setFillsViewportHeight(true);
+        table.removeColumn(table.getColumnModel().getColumn(5));
+        table.removeColumn(table.getColumnModel().getColumn(6));
         table.getColumnModel().getColumn(0).setPreferredWidth(2);
         table.getColumnModel().getColumn(1).setPreferredWidth(2);
         table.getColumnModel().getColumn(2).setPreferredWidth(2);
@@ -126,24 +128,8 @@ public class InwardsList extends JPanel
         return btnLoadMore;
     }
 
-    protected void loadDBInwards() {
-        List<InwardMeta> inwardsMeta = CRUDInwards.getAll();
-        Object[] modelRow = new Object[6];
-
-        int size = inwardsMeta.size();
-        for (int i = 0; i < size; i++) {
-            InwardMeta inwardMeta = inwardsMeta.get(i);
-            modelRow[0] = inwardMeta.getInwardId();
-            modelRow[1] = inwardMeta.getItemIdd();
-            modelRow[2] = inwardMeta.getQuantity();
-            modelRow[3] = inwardMeta.getUnitName();
-            modelRow[4] = inwardMeta.getSource();
-            modelRow[5] = inwardMeta.getDate();
-//            modelRow[1] = item.getName();
-//            modelRow[2] = item.getSpecification();
-//            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();
-            model.addRow(modelRow);
-        }
+    protected void setnameAndSpecDisplayFields(NameAndSpecDisplayFields nameAndSpecDisplayFields) {
+        this.nameAndSpecDisplayFields = nameAndSpecDisplayFields;
     }
 
     @Override
@@ -234,12 +220,19 @@ public class InwardsList extends JPanel
                     if (viewRow > -1) {
 
                         int itemIdColumnIndex = 0;
+                        int itemNameColumnIndex = 6;
+                        int itemSpecificationColumnIndex = 7;
 
                         selectedModelRow = table.convertRowIndexToModel(viewRow);
                         Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
-                        Integer itemId = Integer.parseInt(itemIdObject.toString());
+                        Integer itemId = Integer.valueOf(itemIdObject.toString());
                         System.out.println("Item ID " + itemId);
                         notifySelectedRowId(itemId);
+                        String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
+                        String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
+                        nameAndSpecDisplayFields.setTfItemNameText(itemNameObject);
+                        nameAndSpecDisplayFields.setTfItemSpecificationsText(itemSpecificationObject);
+
                     }
                 }
             }
