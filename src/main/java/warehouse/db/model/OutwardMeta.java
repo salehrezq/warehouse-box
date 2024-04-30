@@ -39,6 +39,8 @@ public class OutwardMeta {
     private String recipient;
     private String usedFor;
     private LocalDate date;
+    private String itemName;
+    private String itemSpecification;
 
     public int getId() {
         return id;
@@ -94,6 +96,22 @@ public class OutwardMeta {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public String getItemSpecification() {
+        return itemSpecification;
+    }
+
+    public void setItemSpecification(String itemSpecification) {
+        this.itemSpecification = itemSpecification;
     }
 
 }

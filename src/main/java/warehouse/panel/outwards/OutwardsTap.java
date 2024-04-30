@@ -37,31 +37,35 @@ public class OutwardsTap extends JPanel {
 
     private JSplitPane splitRightAndLeftPanes;
     private JSplitPane splitSearchAndItemsListPane;
-    private JPanel panelGatherLeft;
-    private JPanel panelGatherRight;
+    private JPanel panelGatherLeft,
+            panelGatherRight,
+            panelOutwardsList;
     private ItemsSearchPane itemsSearch;
     private OutwardsList outwardsList;
     private ItemImage itemsImages;
+    private NameAndSpecDisplayFields nameAndSpecDisplayFields;
 
     public OutwardsTap() {
 
         setLayout(new BorderLayout());
         panelGatherLeft = new JPanel(new BorderLayout());
         panelGatherRight = new JPanel(new BorderLayout());
-
+        panelOutwardsList = new JPanel(new BorderLayout());
         itemsSearch = new ItemsSearchPane();
         outwardsList = new OutwardsList();
         outwardsList.setListableImpl(new QuantityUnit());
+        nameAndSpecDisplayFields = new NameAndSpecDisplayFields();
+        outwardsList.setnameAndSpecDisplayFields(nameAndSpecDisplayFields);
+        panelOutwardsList.add(nameAndSpecDisplayFields.getContainer(), BorderLayout.PAGE_START);
+        panelOutwardsList.add(outwardsList, BorderLayout.CENTER);
         outwardsList.loadDBOutwards();
         itemsImages = new ItemImage();
-
         outwardsList.addRowIdSelectionListener(itemsImages);
-
         // Add the scroll panes to a split pane.
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitSearchAndItemsListPane.setDividerSize(5);
         splitSearchAndItemsListPane.setTopComponent(itemsSearch);
-        splitSearchAndItemsListPane.setBottomComponent(outwardsList);
+        splitSearchAndItemsListPane.setBottomComponent(panelOutwardsList);
         panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
         panelGatherRight.add(itemsImages.getFormContainer(), BorderLayout.CENTER);
 

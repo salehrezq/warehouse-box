@@ -68,12 +68,13 @@ public class OutwardsList extends JPanel implements OutwardCRUDListener, Listabl
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
     private final JMenuItem menuItemAddOfSelectedItem;
+    private NameAndSpecDisplayFields nameAndSpecDisplayFields;
 
     public OutwardsList() {
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
-        model = new DefaultTableModel(new String[]{"Outward code", "Item code", "Qty.", "Unit", "Recipient", "For", "Date"}, 0) {
+        model = new DefaultTableModel(new String[]{"Outward code", "Item code", "Qty.", "Unit", "Recipient", "For", "Date", "Name", "Spcification"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Disable cells editing.
@@ -89,9 +90,18 @@ public class OutwardsList extends JPanel implements OutwardCRUDListener, Listabl
 
         table = new JTable(model);
         table.addMouseListener(new ItemRowDoubleClickHandler());
-        //    table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
+        table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
         table.setFillsViewportHeight(true);
+        /**
+         * The order of columns removal is important. The columns are 0-based
+         * indexes. To remove the last column from a table of 9 columns you need
+         * to remove the column at the index (8). After that removal, the model
+         * has 8 columns remaining, so to remove the last column again, you need
+         * to remove the column at the index (7).
+         */
+        table.removeColumn(table.getColumnModel().getColumn(8));
+        table.removeColumn(table.getColumnModel().getColumn(7));
         table.getColumnModel().getColumn(0).setPreferredWidth(2);
         table.getColumnModel().getColumn(1).setPreferredWidth(2);
         table.getColumnModel().getColumn(2).setPreferredWidth(2);
@@ -110,10 +120,14 @@ public class OutwardsList extends JPanel implements OutwardCRUDListener, Listabl
         this.listableImplementation = listable;
     }
 
+    protected void setnameAndSpecDisplayFields(NameAndSpecDisplayFields nameAndSpecDisplayFields) {
+        this.nameAndSpecDisplayFields = nameAndSpecDisplayFields;
+    }
+
     protected void loadDBOutwards() {
         List<OutwardMeta> outwardsMeta = CRUDOutwards.getAll();
-        Object[] modelRow = new Object[7];
-
+        Object[] modelRow = new Object[9];
+// "Outward code", "Item code", "Qty.", "Unit", "Recipient", "For", "Date", "Name", "Spcification"
         int size = outwardsMeta.size();
         for (int i = 0; i < size; i++) {
             OutwardMeta outwardMeta = outwardsMeta.get(i);
@@ -124,8 +138,8 @@ public class OutwardsList extends JPanel implements OutwardCRUDListener, Listabl
             modelRow[4] = outwardMeta.getRecipient();
             modelRow[5] = outwardMeta.getUsedFor();
             modelRow[6] = outwardMeta.getDate();
-//            modelRow[1] = item.getName();
-//            modelRow[2] = item.getSpecification();
+            modelRow[7] = outwardMeta.getItemName();
+            modelRow[8] = outwardMeta.getItemSpecification();
 //            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();
             model.addRow(modelRow);
         }
@@ -170,12 +184,18 @@ public class OutwardsList extends JPanel implements OutwardCRUDListener, Listabl
                     if (viewRow > -1) {
 
                         int itemIdColumnIndex = 0;
+                        int itemNameColumnIndex = 7;
+                        int itemSpecificationColumnIndex = 8;
 
                         selectedModelRow = table.convertRowIndexToModel(viewRow);
                         Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
                         Integer itemId = Integer.parseInt(itemIdObject.toString());
                         System.out.println("Item ID " + itemId);
                         notifySelectedRowId(itemId);
+                        String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
+                        String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
+                        nameAndSpecDisplayFields.setTfItemNameText(itemNameObject);
+                        nameAndSpecDisplayFields.setTfItemSpecificationsText(itemSpecificationObject);
                     }
                 }
             }

@@ -87,6 +87,8 @@ public class CRUDOutwards {
                 outwardMeta.setRecipient(result.getString("recipient"));
                 outwardMeta.setUsedFor(result.getString("for"));
                 outwardMeta.setDate(result.getDate("date").toLocalDate());
+                outwardMeta.setItemName(result.getString("item_name"));
+                outwardMeta.setItemSpecification(result.getString("item_specs"));
                 outwardMetas.add(outwardMeta);
             }
         } catch (SQLException ex) {
