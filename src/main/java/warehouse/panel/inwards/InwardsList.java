@@ -101,7 +101,14 @@ public class InwardsList extends JPanel
         table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
         table.setFillsViewportHeight(true);
-        table.removeColumn(table.getColumnModel().getColumn(5));
+        /**
+         * The order of columns removal is important. The columns are 0-based
+         * indexes. To remove the last column from a table of 8 columns you need
+         * to remove the column at the index (7). After that removal, the model
+         * has 7 columns remaining, so to remove the last column again, you need
+         * to remove the column at the index (6).
+         */
+        table.removeColumn(table.getColumnModel().getColumn(7));
         table.removeColumn(table.getColumnModel().getColumn(6));
         table.getColumnModel().getColumn(0).setPreferredWidth(2);
         table.getColumnModel().getColumn(1).setPreferredWidth(2);
@@ -196,10 +203,10 @@ public class InwardsList extends JPanel
             modelRow[1] = inwardMeta.getItemIdd();
             modelRow[2] = inwardMeta.getQuantity();
             modelRow[3] = inwardMeta.getUnitName();
-            modelRow[4] = inwardMeta.getSource(); // will be hidden column
+            modelRow[4] = inwardMeta.getSource();
             modelRow[5] = inwardMeta.getDate();
-            modelRow[6] = inwardMeta.getItemName();
-            modelRow[7] = inwardMeta.getItemSpecs();
+            modelRow[6] = inwardMeta.getItemName(); // will be hidden column
+            modelRow[7] = inwardMeta.getItemSpecs(); // will be hidden column
             model.addRow(modelRow);
         }
         btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
