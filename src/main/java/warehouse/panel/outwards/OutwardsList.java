@@ -34,6 +34,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -46,7 +47,6 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDListable;
-import warehouse.db.CRUDOutwards;
 import warehouse.db.model.ItemMeta;
 import warehouse.db.model.Outward;
 import warehouse.db.model.OutwardMeta;
@@ -58,7 +58,11 @@ import warehouse.singularlisting.ListableConsumer;
  *
  * @author Saleh
  */
-public class OutwardsList extends JPanel implements OutwardCRUDListener, ListableConsumer {
+public class OutwardsList extends JPanel
+        implements
+        OutwardCRUDListener,
+        ListableConsumer,
+        ItemsSearchListener {
 
     private DefaultTableModel model;
     private JTable table;
@@ -68,6 +72,10 @@ public class OutwardsList extends JPanel implements OutwardCRUDListener, Listabl
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
     private final JMenuItem menuItemAddOfSelectedItem;
+    private JButton btnLoadMore;
+    private int searchResultTotalRowsCount,
+            incrementedReturnedRowsCount,
+            rowIndex;
     private NameAndSpecDisplayFields nameAndSpecDisplayFields;
 
     public OutwardsList() {
@@ -113,6 +121,10 @@ public class OutwardsList extends JPanel implements OutwardCRUDListener, Listabl
         table.setComponentPopupMenu(popupMenu);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
+
+        btnLoadMore = new JButton("Load more");
+        btnLoadMore.setEnabled(false);
+        add(btnLoadMore, BorderLayout.PAGE_END);
     }
 
     @Override
@@ -120,29 +132,12 @@ public class OutwardsList extends JPanel implements OutwardCRUDListener, Listabl
         this.listableImplementation = listable;
     }
 
-    protected void setnameAndSpecDisplayFields(NameAndSpecDisplayFields nameAndSpecDisplayFields) {
-        this.nameAndSpecDisplayFields = nameAndSpecDisplayFields;
+    protected JButton getBtnLoadMore() {
+        return btnLoadMore;
     }
 
-    protected void loadDBOutwards() {
-        List<OutwardMeta> outwardsMeta = CRUDOutwards.getAll();
-        Object[] modelRow = new Object[9];
-// "Outward code", "Item code", "Qty.", "Unit", "Recipient", "For", "Date", "Name", "Spcification"
-        int size = outwardsMeta.size();
-        for (int i = 0; i < size; i++) {
-            OutwardMeta outwardMeta = outwardsMeta.get(i);
-            modelRow[0] = outwardMeta.getId();
-            modelRow[1] = outwardMeta.getItemId();
-            modelRow[2] = outwardMeta.getQuantity();
-            modelRow[3] = outwardMeta.getUnitName();
-            modelRow[4] = outwardMeta.getRecipient();
-            modelRow[5] = outwardMeta.getUsedFor();
-            modelRow[6] = outwardMeta.getDate();
-            modelRow[7] = outwardMeta.getItemName();
-            modelRow[8] = outwardMeta.getItemSpecification();
-//            modelRow[3] = CRUDListable.getById(listableImplementation, item.getUnitId()).getName();
-            model.addRow(modelRow);
-        }
+    protected void setnameAndSpecDisplayFields(NameAndSpecDisplayFields nameAndSpecDisplayFields) {
+        this.nameAndSpecDisplayFields = nameAndSpecDisplayFields;
     }
 
     @Override
@@ -167,6 +162,57 @@ public class OutwardsList extends JPanel implements OutwardCRUDListener, Listabl
         this.rowIdSelectionListeners.forEach((item) -> {
             item.selectedRowId(rowId);
         });
+    }
+
+    @Override
+    public void notifyOFFSET(int OFFSET) {
+        if (OFFSET == 0) {
+            model.setRowCount(0);
+            incrementedReturnedRowsCount = 0;
+        }
+    }
+
+    @Override
+    public void notifySearchResultTotalRowsCount(int searchResultTotalRowsCount) {
+        this.searchResultTotalRowsCount = searchResultTotalRowsCount;
+        btnLoadMore.setEnabled(!(ItemsSearchLogic.getResultsPageLimit() >= searchResultTotalRowsCount));
+    }
+
+    @Override
+    public void notifySearchResult(List<OutwardMeta> outwardsMeta) {
+        /**
+         * To organize order after new item insert. After creating new items,
+         * new rows added to the model at run time to reflect newly created
+         * items. However these rows are off order. So here we remove them, so
+         * that they will be fetched through the following fetches or via search
+         * requests.
+         */
+        if (model.getRowCount() > 0) {
+            for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
+                model.removeRow(incrementedReturnedRowsCount);
+            }
+        }
+
+        List<OutwardMeta> outwardsMetaRecords = outwardsMeta;
+        Object[] modelRow = new Object[9];
+
+        int size = outwardsMetaRecords.size();
+        incrementedReturnedRowsCount += size;
+        rowIndex = incrementedReturnedRowsCount;
+        for (int i = 0; i < size; i++) {
+            OutwardMeta outwardMeta = outwardsMetaRecords.get(i);
+            modelRow[0] = outwardMeta.getId();
+            modelRow[1] = outwardMeta.getItemId();
+            modelRow[2] = outwardMeta.getQuantity();
+            modelRow[3] = outwardMeta.getUnitName();
+            modelRow[4] = outwardMeta.getRecipient();
+            modelRow[5] = outwardMeta.getUsedFor();
+            modelRow[6] = outwardMeta.getDate();
+            modelRow[7] = outwardMeta.getItemName(); // will be hidden column
+            modelRow[8] = outwardMeta.getItemSpecification(); // will be hidden column
+            model.addRow(modelRow);
+        }
+        btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
     }
 
     private class RowSelectionListener implements ListSelectionListener {

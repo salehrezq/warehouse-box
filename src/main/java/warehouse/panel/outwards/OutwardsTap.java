@@ -23,7 +23,6 @@
  */
 package warehouse.panel.outwards;
 
-import warehouse.panel.items.*;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -40,7 +39,8 @@ public class OutwardsTap extends JPanel {
     private JPanel panelGatherLeft,
             panelGatherRight,
             panelOutwardsList;
-    private ItemsSearchPane itemsSearch;
+    private ItemsSearchPane outwardsSearchPane;
+    private ItemsSearchLogic outwardsSearchLogic;
     private OutwardsList outwardsList;
     private ItemImage itemsImages;
     private NameAndSpecDisplayFields nameAndSpecDisplayFields;
@@ -51,20 +51,28 @@ public class OutwardsTap extends JPanel {
         panelGatherLeft = new JPanel(new BorderLayout());
         panelGatherRight = new JPanel(new BorderLayout());
         panelOutwardsList = new JPanel(new BorderLayout());
-        itemsSearch = new ItemsSearchPane();
+        outwardsSearchPane = new ItemsSearchPane();
         outwardsList = new OutwardsList();
         outwardsList.setListableImpl(new QuantityUnit());
         nameAndSpecDisplayFields = new NameAndSpecDisplayFields();
         outwardsList.setnameAndSpecDisplayFields(nameAndSpecDisplayFields);
         panelOutwardsList.add(nameAndSpecDisplayFields.getContainer(), BorderLayout.PAGE_START);
         panelOutwardsList.add(outwardsList, BorderLayout.CENTER);
-        outwardsList.loadDBOutwards();
+        outwardsSearchLogic = new ItemsSearchLogic();
+        outwardsSearchLogic.addItemSearchListener(outwardsList);
+        outwardsSearchLogic.setTfSearchQuery(outwardsSearchPane.getTfSearchQuery());
+        outwardsSearchLogic.setBtnSearch(outwardsSearchPane.getBtnSearchQuery());
+        outwardsSearchLogic.setCheckCodeFilter(outwardsSearchPane.getCheckCodeFilter());
+        outwardsSearchLogic.setCheckNameFilter(outwardsSearchPane.getCheckNameFilter());
+        outwardsSearchLogic.setCheckSpecificationFilter(outwardsSearchPane.getCheckSpecificationFilter());
+        outwardsSearchLogic.setBtnLoadMore(outwardsList.getBtnLoadMore());
+        ItemsSearchLogic.setResultsPageLimit(3);
         itemsImages = new ItemImage();
         outwardsList.addRowIdSelectionListener(itemsImages);
         // Add the scroll panes to a split pane.
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitSearchAndItemsListPane.setDividerSize(5);
-        splitSearchAndItemsListPane.setTopComponent(itemsSearch);
+        splitSearchAndItemsListPane.setTopComponent(outwardsSearchPane.getContainer());
         splitSearchAndItemsListPane.setBottomComponent(panelOutwardsList);
         panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
         panelGatherRight.add(itemsImages.getFormContainer(), BorderLayout.CENTER);
