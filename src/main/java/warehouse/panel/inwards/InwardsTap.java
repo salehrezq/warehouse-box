@@ -67,6 +67,7 @@ public class InwardsTap extends JPanel {
         inwardsSearchLogic.setCheckNameFilter(inwardsSearchPane.getCheckNameFilter());
         inwardsSearchLogic.setCheckSpecificationFilter(inwardsSearchPane.getCheckSpecificationFilter());
         inwardsSearchLogic.setBtnLoadMore(inwardsList.getBtnLoadMore());
+        inwardsSearchLogic.setDateRangeFilter(inwardsSearchPane.getDateRange());
         ItemsSearchLogic.setResultsPageLimit(3);
         itemsImages = new ItemImage();
 

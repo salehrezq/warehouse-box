@@ -23,6 +23,9 @@
  */
 package warehouse.panel.inwards;
 
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
+import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,10 +61,14 @@ public class ItemsSearchLogic {
     boolean isCodeChecked;
     private MatchDigitsOnlyHandler matchDigitsOnly;
     private final Pattern pattern = Pattern.compile("\\d+");
+    private DateRange dateRange;
+    private DateChangeHandler dateChangeHandler;
+    private CheckBoxHandler checkBoxHandler;
 
     public ItemsSearchLogic() {
         itemsSearchListeners = new ArrayList<>();
         searchFilters = new HashMap<>();
+        checkBoxHandler = new CheckBoxHandler();
         matchDigitsOnly = new MatchDigitsOnlyHandler();
         searchFilters.put("code", Boolean.FALSE);
         searchFilters.put("name", Boolean.TRUE);
@@ -99,6 +106,14 @@ public class ItemsSearchLogic {
         this.checkSpecificationFilter = checkSpecificationFilter;
         this.checkSpecificationFilter.setSelected(true);
         this.checkSpecificationFilter.addActionListener(new CheckBoxHandler());
+    }
+
+    protected void setDateRangeFilter(DateRange dateRange) {
+        this.dateRange = dateRange;
+        dateChangeHandler = new DateChangeHandler();
+        this.dateRange.getDatePickerStart().addDateChangeListener(dateChangeHandler);
+        this.dateRange.getDatePickerEnd().addDateChangeListener(dateChangeHandler);
+        this.dateRange.getCheckDateFilter().addActionListener(checkBoxHandler);
     }
 
     public static void setResultsPageLimit(int pageLimit) {
@@ -185,6 +200,14 @@ public class ItemsSearchLogic {
             btnSearch.setText(isAnyChecked ? "Search" : "Get all");
             tfSearchQuery.setEnabled(isAnyChecked);
 
+            if (source == dateRange.getCheckDateFilter()) {
+                if (dateRange.getCheckDateFilter().isSelected()) {
+                    System.out.println("Date range filter is selected");
+                } else {
+                    System.out.println("Date range filter is deselected");
+                }
+            }
+
             if (source == checkCodeFilter) {
                 boolean isCodeSelected = checkCodeFilter.isSelected();
                 checkNameFilter.setEnabled(!isCodeSelected);
@@ -238,6 +261,20 @@ public class ItemsSearchLogic {
         @Override
         public void changedUpdate(DocumentEvent e) {
             check(e);
+        }
+    }
+
+    private class DateChangeHandler implements DateChangeListener {
+
+        @Override
+        public void dateChanged(DateChangeEvent event) {
+            DatePicker datePicker = (DatePicker) event.getSource();
+            if (datePicker == dateRange.getDatePickerStart()) {
+                System.out.println("start date is " + datePicker.getText());
+            }
+            if (datePicker == dateRange.getDatePickerEnd()) {
+                System.out.println("end date is " + datePicker.getText());
+            }
         }
     }
 

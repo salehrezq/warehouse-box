@@ -79,4 +79,15 @@ public class DateRange {
         return container;
     }
 
+    protected DatePicker getDatePickerStart() {
+        return this.datePickerStart;
+    }
+
+    protected DatePicker getDatePickerEnd() {
+        return datePickerEnd;
+    }
+
+    protected JCheckBox getCheckDateFilter() {
+        return checkDateFilter;
+    }
 }

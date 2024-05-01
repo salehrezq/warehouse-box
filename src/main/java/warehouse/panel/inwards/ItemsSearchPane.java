@@ -41,7 +41,7 @@ public class ItemsSearchPane {
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
-    private DateRange dateSearch;
+    private DateRange dateRange;
 
     public ItemsSearchPane() {
         container = new JPanel();
@@ -53,7 +53,7 @@ public class ItemsSearchPane {
         checkNameFilter = new JCheckBox("Name");
         checkSpecificationFilter = new JCheckBox("Specification");
 
-        dateSearch = new DateRange();
+        dateRange = new DateRange();
 
         Box boxSearch = Box.createHorizontalBox();
         boxSearch.add(tfSearchQuery);
@@ -67,7 +67,7 @@ public class ItemsSearchPane {
         Box boxContainer = Box.createVerticalBox();
         boxContainer.add(boxSearch);
         boxContainer.add(boxFilters);
-        boxContainer.add(dateSearch.getContainer());
+        boxContainer.add(dateRange.getContainer());
         container.add(boxContainer);
     }
 
@@ -93,6 +93,10 @@ public class ItemsSearchPane {
 
     protected JCheckBox getCheckSpecificationFilter() {
         return checkSpecificationFilter;
+    }
+
+    protected DateRange getDateRange() {
+        return this.dateRange;
     }
 
 }
