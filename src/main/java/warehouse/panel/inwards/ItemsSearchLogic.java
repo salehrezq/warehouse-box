@@ -30,9 +30,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -57,7 +55,7 @@ public class ItemsSearchLogic {
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
-    private Map<String, Boolean> searchFilters;
+    private SearchFilters searchFilters;
     boolean isCodeChecked;
     private MatchDigitsOnlyHandler matchDigitsOnly;
     private final Pattern pattern = Pattern.compile("\\d+");
@@ -67,12 +65,13 @@ public class ItemsSearchLogic {
 
     public ItemsSearchLogic() {
         itemsSearchListeners = new ArrayList<>();
-        searchFilters = new HashMap<>();
+        searchFilters = new SearchFilters();
         checkBoxHandler = new CheckBoxHandler();
         matchDigitsOnly = new MatchDigitsOnlyHandler();
-        searchFilters.put("code", Boolean.FALSE);
-        searchFilters.put("name", Boolean.TRUE);
-        searchFilters.put("specification", Boolean.TRUE);
+        searchFilters.setCodeFilter(false);
+        searchFilters.setNameFilter(true);
+        searchFilters.setSpecificationFilter(true);
+        searchFilters.enableDateRangeFilter(false);
     }
 
     protected void setTfSearchQuery(JTextField tfSearchQuery) {
@@ -114,6 +113,8 @@ public class ItemsSearchLogic {
         this.dateRange.getDatePickerStart().addDateChangeListener(dateChangeHandler);
         this.dateRange.getDatePickerEnd().addDateChangeListener(dateChangeHandler);
         this.dateRange.getCheckDateFilter().addActionListener(checkBoxHandler);
+        searchFilters.setDateRangeStart(dateRange.getDatePickerStart().getDate());
+        searchFilters.setDateRangeEnd(dateRange.getDatePickerEnd().getDate());
     }
 
     public static void setResultsPageLimit(int pageLimit) {
@@ -158,10 +159,11 @@ public class ItemsSearchLogic {
             System.out.println("SearchHandler");
             previousSearchQuery = searchQuery;
             searchQuery = tfSearchQuery.getText();
+            searchFilters.setSearchQuery(searchQuery);
             OFFSET = 0;
             notifyOFFSET(OFFSET);
-            notifySearchResultTotalRowsCount(CRUDInwards.searchResultRowsCount(searchQuery, searchFilters));
-            notifySearchResult(CRUDInwards.search(searchQuery, searchFilters, LIMIT, OFFSET));
+            notifySearchResultTotalRowsCount(CRUDInwards.searchResultRowsCount(searchFilters));
+            notifySearchResult(CRUDInwards.search(searchFilters, LIMIT, OFFSET));
         }
     }
 
@@ -170,7 +172,7 @@ public class ItemsSearchLogic {
         @Override
         public void actionPerformed(ActionEvent e) {
             OFFSET += LIMIT;
-            notifySearchResult(CRUDInwards.search(searchQuery, searchFilters, LIMIT, OFFSET));
+            notifySearchResult(CRUDInwards.search(searchFilters, LIMIT, OFFSET));
         }
     }
 
@@ -200,24 +202,18 @@ public class ItemsSearchLogic {
             btnSearch.setText(isAnyChecked ? "Search" : "Get all");
             tfSearchQuery.setEnabled(isAnyChecked);
 
-            if (source == dateRange.getCheckDateFilter()) {
-                if (dateRange.getCheckDateFilter().isSelected()) {
-                    System.out.println("Date range filter is selected");
-                } else {
-                    System.out.println("Date range filter is deselected");
-                }
-            }
+            searchFilters.enableDateRangeFilter(dateRange.getCheckDateFilter().isSelected());
 
             if (source == checkCodeFilter) {
                 boolean isCodeSelected = checkCodeFilter.isSelected();
                 checkNameFilter.setEnabled(!isCodeSelected);
                 checkSpecificationFilter.setEnabled(!isCodeSelected);
-                searchFilters.put("code", isCodeSelected);
+                searchFilters.setCodeFilter(isCodeSelected);
                 if (checkCodeFilter.isSelected()) {
                     checkNameFilter.setSelected(false);
                     checkSpecificationFilter.setSelected(false);
-                    searchFilters.put("name", false);
-                    searchFilters.put("specification", false);
+                    searchFilters.setNameFilter(false);
+                    searchFilters.setSpecificationFilter(false);
                 }
             } else {
                 if (source == checkNameFilter || source == checkSpecificationFilter) {
@@ -226,13 +222,13 @@ public class ItemsSearchLogic {
                     if (isNameORSpecificationSelected) {
                         checkCodeFilter.setEnabled(false);
                         checkCodeFilter.setSelected(false);
-                        searchFilters.put("code", false);
+                        searchFilters.setCodeFilter(false);
                     }
                     if (isNameANDSpecificationBothDeselected) {
                         checkCodeFilter.setEnabled(true);
                     }
-                    searchFilters.put("name", checkNameFilter.isSelected());
-                    searchFilters.put("specification", checkSpecificationFilter.isSelected());
+                    searchFilters.setNameFilter(checkNameFilter.isSelected());
+                    searchFilters.setSpecificationFilter(checkSpecificationFilter.isSelected());
                 }
             }
             isCodeChecked = checkCodeFilter.isSelected();
@@ -270,10 +266,10 @@ public class ItemsSearchLogic {
         public void dateChanged(DateChangeEvent event) {
             DatePicker datePicker = (DatePicker) event.getSource();
             if (datePicker == dateRange.getDatePickerStart()) {
-                System.out.println("start date is " + datePicker.getText());
+                searchFilters.setDateRangeStart(datePicker.getDate());
             }
             if (datePicker == dateRange.getDatePickerEnd()) {
-                System.out.println("end date is " + datePicker.getText());
+                searchFilters.setDateRangeEnd(datePicker.getDate());
             }
         }
     }
