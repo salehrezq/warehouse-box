@@ -59,7 +59,7 @@ public class CRUDInwards {
                 if (generatedKeys.next()) {
                     inward.setId(generatedKeys.getInt(1));
                 } else {
-                    throw new SQLException("Creating user failed, no ID obtained.");
+                    throw new SQLException("Obtaining inward ID failed.");
                 }
             }
             con.commit();
