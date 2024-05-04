@@ -143,8 +143,8 @@ public class InwardsList extends JPanel
     public void created(Inward inward, ItemMeta itemMeta) {
         Source source = (Source) CRUDListable.getById(new Source(), inward.getSourceId());
         model.addRow(new Object[]{
-            inward.getItemId(),
             inward.getId(),
+            inward.getItemId(),
             inward.getQuantity(),
             itemMeta.getUnit(),
             source.getName(),
