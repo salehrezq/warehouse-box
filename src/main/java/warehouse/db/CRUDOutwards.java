@@ -30,11 +30,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import warehouse.db.model.Outward;
 import warehouse.db.model.OutwardMeta;
+import warehouse.panel.outwards.SearchFilters;
 
 /**
  *
@@ -107,60 +107,87 @@ public class CRUDOutwards {
         return outwardMetas;
     }
 
-    private static String formulateFilters(Map<String, Boolean> searchFilters) {
+    private static String formulateSearchFilters(SearchFilters searchFilters) {
         String sqlFilter = " WHERE";
-        if (searchFilters != null) {
-            boolean boolCodeFilter = searchFilters.get("code");
-            if (boolCodeFilter) {
-                sqlFilter += " i.`id` = ?";
-                return sqlFilter;
+        boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
+        boolean isCodeFilter = searchFilters.isCodeFilter();
+        boolean isNameFilter = searchFilters.isNameFilter();
+        boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
+        boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
+
+        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isDateRangeFilter;
+
+        if (!isAnyFilterOn || isSearchisQueryBlank) {
+            sqlFilter = "";
+            return sqlFilter;
+        }
+        if (isDateRangeFilter) {
+            sqlFilter += " (date >= ? AND date <= ?)";
+            if (isCodeFilter || isNameFilter || isSpecificationFilter) {
+                sqlFilter += " AND";
             }
-            boolean boolNameFilter = searchFilters.get("name");
-            boolean boolSpecificationFilter = searchFilters.get("specification");
-            if (boolNameFilter) {
-                sqlFilter += " i.`name` LIKE ?";
-                if (boolSpecificationFilter) {
-                    sqlFilter += " OR";
-                }
-            }
-            if (boolSpecificationFilter) {
-                sqlFilter += " i.`specification` LIKE ?";
-            }
+        }
+        if (isCodeFilter) {
+            sqlFilter += " i.`id` = ?";
+            return sqlFilter;
+        }
+        if (isNameFilter) {
+            sqlFilter += " (i.`name` LIKE ?";
+            sqlFilter += (isSpecificationFilter) ? " OR" : ")";
+        }
+        if (isSpecificationFilter) {
+            sqlFilter += isNameFilter ? "" : "(";
+            sqlFilter += " i.`specification` LIKE ?)";
         }
         return sqlFilter;
     }
 
-    public static List<OutwardMeta> search(String query, Map<String, Boolean> searchFilters, int LIMIT, int OFFSET) {
+    private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
+        String searchQuery = searchFilters.getSearchQuery();
+        boolean isCodeFilter = searchFilters.isCodeFilter();
+        boolean isNameFilter = searchFilters.isNameFilter();
+        boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
+        boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
+        PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
+
+        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isDateRangeFilter;
+
+        if (!isAnyFilterOn || searchQuery.isBlank()) {
+            return preparedStatementWrapper;
+        }
+        if (isDateRangeFilter) {
+            p.setObject(preparedStatementWrapper.incrementParameterIndex(), searchFilters.getDateRangeStart());
+            p.setObject(preparedStatementWrapper.incrementParameterIndex(), searchFilters.getDateRangeEnd());
+        }
+        if (isCodeFilter) {
+            p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
+        }
+        if (isNameFilter) {
+            p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchQuery + "%");
+        }
+        if (isSpecificationFilter) {
+            p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchQuery + "%");
+        }
+        return preparedStatementWrapper;
+    }
+
+    public static List<OutwardMeta> search(SearchFilters searchFilters, int LIMIT, int OFFSET) {
         List<OutwardMeta> outwardsMeta = new ArrayList<>();
-        boolean isFiltersAvailable = (searchFilters != null);
-        boolean isAnyFilterOn = isFiltersAvailable
-                ? searchFilters.values().stream().anyMatch(filterValue -> filterValue == true) : false;
-        boolean isQueryBlank = query.isBlank();
         try {
             String sql = "SELECT o.id AS outward_id, o.item_id AS item_id,"
                     + " o.quantity, u.name AS unit_name, r.name AS recipient, o.`for`,"
                     + " o.date, i.name AS item_name, i.specification AS item_specs"
                     + " FROM outwards AS o JOIN items AS i JOIN quantity_unit AS u JOIN recipients AS r"
                     + " ON (o.item_id = i.id) AND (i.unit_id = u.id) AND (r.id = o.recipient_id)"
-                    + ((isQueryBlank || !isAnyFilterOn) ? "" : formulateFilters(searchFilters))
+                    + formulateSearchFilters(searchFilters)
                     + " ORDER BY o.date ASC, o.id ASC"
                     + " LIMIT ? OFFSET ?";
-
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
-            int parameterIndex = 0;
-            if (!isQueryBlank) {
-                for (var filter : searchFilters.entrySet()) {
-                    if (filter.getValue() == true) {
-                        if (filter.getKey().equals("code")) {
-                            p.setInt(++parameterIndex, Integer.parseInt(query));
-                        } else {
-                            p.setString(++parameterIndex, "%" + query + "%");
-                        }
-                    }
-                }
-            }
+            PreparedStatementWrapper preparedStatementWrapper
+                    = formulateSearchPreparedStatement(searchFilters, new PreparedStatementWrapper(p));
+            int parameterIndex = preparedStatementWrapper.getParameterIndex();
             p.setInt(++parameterIndex, LIMIT);
             p.setInt(++parameterIndex, OFFSET);
             System.out.println(p);
@@ -184,33 +211,18 @@ public class CRUDOutwards {
         return outwardsMeta;
     }
 
-    public static int searchResultRowsCount(String query, Map<String, Boolean> searchFilters) {
+    public static int searchResultRowsCount(SearchFilters searchFilters) {
         int searchResultRowsCount = 0;
-        boolean isFiltersAvailable = (searchFilters != null);
-        boolean isAnyFilterOn = isFiltersAvailable
-                ? searchFilters.values().stream().anyMatch(filterValue -> filterValue == true) : false;
-        boolean isQueryBlank = query.isBlank();
         try {
             String sql = "SELECT COUNT(outwards.id) AS search_result_rows_count"
                     + " FROM outwards JOIN items AS i"
                     + " ON outwards.item_id = i.id"
-                    + ((isQueryBlank || !isAnyFilterOn) ? "" : formulateFilters(searchFilters));
+                    + formulateSearchFilters(searchFilters);
 
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
-            if (!isQueryBlank) {
-                int parameterIndex = 0;
-                for (var filter : searchFilters.entrySet()) {
-                    if (filter.getValue() == true) {
-                        if (filter.getKey().equals("code")) {
-                            p.setInt(++parameterIndex, Integer.parseInt(query));
-                        } else {
-                            p.setString(++parameterIndex, "%" + query + "%");
-                        }
-                    }
-                }
-            }
+            formulateSearchPreparedStatement(searchFilters, new PreparedStatementWrapper(p));
             System.out.println(p);
             ResultSet result = p.executeQuery();
             while (result.next()) {

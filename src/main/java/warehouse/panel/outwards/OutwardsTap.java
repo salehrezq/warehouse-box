@@ -66,6 +66,7 @@ public class OutwardsTap extends JPanel {
         outwardsSearchLogic.setCheckNameFilter(outwardsSearchPane.getCheckNameFilter());
         outwardsSearchLogic.setCheckSpecificationFilter(outwardsSearchPane.getCheckSpecificationFilter());
         outwardsSearchLogic.setBtnLoadMore(outwardsList.getBtnLoadMore());
+        outwardsSearchLogic.setDateRangeFilter(outwardsSearchPane.getDateRange());
         ItemsSearchLogic.setResultsPageLimit(3);
         itemsImages = new ItemImage();
         outwardsList.addRowIdSelectionListener(itemsImages);

@@ -23,13 +23,14 @@
  */
 package warehouse.panel.outwards;
 
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
+import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -54,18 +55,23 @@ public class ItemsSearchLogic {
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
-    private Map<String, Boolean> searchFilters;
+    private SearchFilters searchFilters;
     boolean isCodeChecked;
     private MatchDigitsOnlyHandler matchDigitsOnly;
     private final Pattern pattern = Pattern.compile("\\d+");
+    private DateRange dateRange;
+    private DateChangeHandler dateChangeHandler;
+    private CheckBoxHandler checkBoxHandler;
 
     public ItemsSearchLogic() {
         itemsSearchListeners = new ArrayList<>();
-        searchFilters = new HashMap<>();
+        searchFilters = new SearchFilters();
+        checkBoxHandler = new CheckBoxHandler();
         matchDigitsOnly = new MatchDigitsOnlyHandler();
-        searchFilters.put("code", Boolean.FALSE);
-        searchFilters.put("name", Boolean.TRUE);
-        searchFilters.put("specification", Boolean.TRUE);
+        searchFilters.setCodeFilter(false);
+        searchFilters.setNameFilter(true);
+        searchFilters.setSpecificationFilter(true);
+        searchFilters.enableDateRangeFilter(false);
     }
 
     protected void setTfSearchQuery(JTextField tfSearchQuery) {
@@ -92,13 +98,23 @@ public class ItemsSearchLogic {
     protected void setCheckNameFilter(JCheckBox checkNameFilter) {
         this.checkNameFilter = checkNameFilter;
         this.checkNameFilter.setSelected(true);
-        this.checkNameFilter.addActionListener(new CheckBoxHandler());
+        this.checkNameFilter.addActionListener(checkBoxHandler);
     }
 
     protected void setCheckSpecificationFilter(JCheckBox checkSpecificationFilter) {
         this.checkSpecificationFilter = checkSpecificationFilter;
         this.checkSpecificationFilter.setSelected(true);
-        this.checkSpecificationFilter.addActionListener(new CheckBoxHandler());
+        this.checkSpecificationFilter.addActionListener(checkBoxHandler);
+    }
+
+    protected void setDateRangeFilter(DateRange dateRange) {
+        this.dateRange = dateRange;
+        dateChangeHandler = new DateChangeHandler();
+        this.dateRange.getDatePickerStart().addDateChangeListener(dateChangeHandler);
+        this.dateRange.getDatePickerEnd().addDateChangeListener(dateChangeHandler);
+        this.dateRange.getCheckDateFilter().addActionListener(checkBoxHandler);
+        searchFilters.setDateRangeStart(dateRange.getDatePickerStart().getDate());
+        searchFilters.setDateRangeEnd(dateRange.getDatePickerEnd().getDate());
     }
 
     public static void setResultsPageLimit(int pageLimit) {
@@ -143,10 +159,11 @@ public class ItemsSearchLogic {
             System.out.println("SearchHandler");
             previousSearchQuery = searchQuery;
             searchQuery = tfSearchQuery.getText();
+            searchFilters.setSearchQuery(searchQuery);
             OFFSET = 0;
             notifyOFFSET(OFFSET);
-            notifySearchResultTotalRowsCount(CRUDOutwards.searchResultRowsCount(searchQuery, searchFilters));
-            notifySearchResult(CRUDOutwards.search(searchQuery, searchFilters, LIMIT, OFFSET));
+            notifySearchResultTotalRowsCount(CRUDOutwards.searchResultRowsCount(searchFilters));
+            notifySearchResult(CRUDOutwards.search(searchFilters, LIMIT, OFFSET));
         }
     }
 
@@ -155,7 +172,7 @@ public class ItemsSearchLogic {
         @Override
         public void actionPerformed(ActionEvent e) {
             OFFSET += LIMIT;
-            notifySearchResult(CRUDOutwards.search(searchQuery, searchFilters, LIMIT, OFFSET));
+            notifySearchResult(CRUDOutwards.search(searchFilters, LIMIT, OFFSET));
         }
     }
 
@@ -185,16 +202,18 @@ public class ItemsSearchLogic {
             btnSearch.setText(isAnyChecked ? "Search" : "Get all");
             tfSearchQuery.setEnabled(isAnyChecked);
 
+            searchFilters.enableDateRangeFilter(dateRange.getCheckDateFilter().isSelected());
+
             if (source == checkCodeFilter) {
                 boolean isCodeSelected = checkCodeFilter.isSelected();
                 checkNameFilter.setEnabled(!isCodeSelected);
                 checkSpecificationFilter.setEnabled(!isCodeSelected);
-                searchFilters.put("code", isCodeSelected);
+                searchFilters.setCodeFilter(isCodeSelected);
                 if (checkCodeFilter.isSelected()) {
                     checkNameFilter.setSelected(false);
                     checkSpecificationFilter.setSelected(false);
-                    searchFilters.put("name", false);
-                    searchFilters.put("specification", false);
+                    searchFilters.setNameFilter(false);
+                    searchFilters.setSpecificationFilter(false);
                 }
             } else {
                 if (source == checkNameFilter || source == checkSpecificationFilter) {
@@ -203,13 +222,13 @@ public class ItemsSearchLogic {
                     if (isNameORSpecificationSelected) {
                         checkCodeFilter.setEnabled(false);
                         checkCodeFilter.setSelected(false);
-                        searchFilters.put("code", false);
+                        searchFilters.setCodeFilter(false);
                     }
                     if (isNameANDSpecificationBothDeselected) {
                         checkCodeFilter.setEnabled(true);
                     }
-                    searchFilters.put("name", checkNameFilter.isSelected());
-                    searchFilters.put("specification", checkSpecificationFilter.isSelected());
+                    searchFilters.setNameFilter(checkNameFilter.isSelected());
+                    searchFilters.setSpecificationFilter(checkSpecificationFilter.isSelected());
                 }
             }
             isCodeChecked = checkCodeFilter.isSelected();
@@ -241,4 +260,17 @@ public class ItemsSearchLogic {
         }
     }
 
+    private class DateChangeHandler implements DateChangeListener {
+
+        @Override
+        public void dateChanged(DateChangeEvent event) {
+            DatePicker datePicker = (DatePicker) event.getSource();
+            if (datePicker == dateRange.getDatePickerStart()) {
+                searchFilters.setDateRangeStart(datePicker.getDate());
+            }
+            if (datePicker == dateRange.getDatePickerEnd()) {
+                searchFilters.setDateRangeEnd(datePicker.getDate());
+            }
+        }
+    }
 }
