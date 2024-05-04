@@ -55,6 +55,14 @@ public class CRUDOutwards {
             p.setString(4, outward.getUsedFor());
             p.setObject(5, outward.getDate());
             p.executeUpdate();
+
+            try (ResultSet generatedKeys = p.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    outward.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("Obtaining outward ID failed.");
+                }
+            }
             con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDOutwards.class.getName()).log(Level.SEVERE, null, ex);
