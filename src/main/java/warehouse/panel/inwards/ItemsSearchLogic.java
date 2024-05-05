@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -162,8 +163,21 @@ public class ItemsSearchLogic {
             searchFilters.setSearchQuery(searchQuery);
             OFFSET = 0;
             notifyOFFSET(OFFSET);
-            notifySearchResultTotalRowsCount(CRUDInwards.searchResultRowsCount(searchFilters));
-            notifySearchResult(CRUDInwards.search(searchFilters, LIMIT, OFFSET));
+            if (!searchFilters.isCodeFilter()) {
+                notifySearchResultTotalRowsCount(CRUDInwards.searchResultRowsCount(searchFilters));
+                notifySearchResult(CRUDInwards.search(searchFilters, LIMIT, OFFSET));
+            } else if (searchFilters.isCodeFilter()) {
+                if (pattern.matcher(searchFilters.getSearchQuery()).matches()) {
+                    notifySearchResultTotalRowsCount(CRUDInwards.searchResultRowsCount(searchFilters));
+                    notifySearchResult(CRUDInwards.search(searchFilters, LIMIT, OFFSET));
+                } else {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Input must be digits",
+                            "Invalide input",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
     }
 
@@ -181,14 +195,11 @@ public class ItemsSearchLogic {
             System.out.println("isCodeChecked " + isCodeChecked);
             if (pattern.matcher(tfSearchQuery.getText()).matches()) {
                 tfSearchQuery.setBackground(Color.WHITE);
-                btnSearch.setEnabled(true);
             } else {
                 tfSearchQuery.setBackground(new Color(255, 204, 204));
-                btnSearch.setEnabled(false);
             }
         } else if (!isCodeChecked) {
             tfSearchQuery.setBackground(Color.WHITE);
-            btnSearch.setEnabled(true);
         }
     }
 
