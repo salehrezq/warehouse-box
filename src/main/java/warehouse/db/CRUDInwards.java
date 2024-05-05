@@ -115,7 +115,7 @@ public class CRUDInwards {
 
         boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isDateRangeFilter;
 
-        if (!isAnyFilterOn || isSearchisQueryBlank) {
+        if (((!isAnyFilterOn || isSearchisQueryBlank)) && !isDateRangeFilter) {
             sqlFilter = "";
             return sqlFilter;
         }
@@ -150,7 +150,7 @@ public class CRUDInwards {
 
         boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isDateRangeFilter;
 
-        if (!isAnyFilterOn || searchQuery.isBlank()) {
+        if ((!isAnyFilterOn || searchQuery.isBlank()) && !isDateRangeFilter) {
             return preparedStatementWrapper;
         }
         if (isDateRangeFilter) {
