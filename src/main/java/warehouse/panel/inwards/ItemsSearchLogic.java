@@ -163,21 +163,27 @@ public class ItemsSearchLogic {
             searchFilters.setSearchQuery(searchQuery);
             OFFSET = 0;
             notifyOFFSET(OFFSET);
-            if (!searchFilters.isCodeFilter()) {
-                notifySearchResultTotalRowsCount(CRUDInwards.searchResultRowsCount(searchFilters));
-                notifySearchResult(CRUDInwards.search(searchFilters, LIMIT, OFFSET));
-            } else if (searchFilters.isCodeFilter()) {
-                if (pattern.matcher(searchFilters.getSearchQuery()).matches()) {
-                    notifySearchResultTotalRowsCount(CRUDInwards.searchResultRowsCount(searchFilters));
-                    notifySearchResult(CRUDInwards.search(searchFilters, LIMIT, OFFSET));
-                } else {
+            if (searchFilters.isNameFilter() || searchFilters.isSpecificationFilter()) {
+                if (searchQuery.isBlank()) {
                     JOptionPane.showMessageDialog(
                             null,
-                            "Input must be digits",
+                            "Write some search query.",
+                            "Search query is empty",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } else if (searchFilters.isCodeFilter()) {
+                if (!pattern.matcher(searchFilters.getSearchQuery()).matches()) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Input must be digits.",
                             "Invalide input",
                             JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
             }
+            notifySearchResultTotalRowsCount(CRUDInwards.searchResultRowsCount(searchFilters));
+            notifySearchResult(CRUDInwards.search(searchFilters, LIMIT, OFFSET));
         }
     }
 
