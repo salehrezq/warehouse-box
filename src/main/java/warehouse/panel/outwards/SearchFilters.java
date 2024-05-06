@@ -40,6 +40,24 @@ public class SearchFilters {
     private LocalDate dateRangeStart;
     private LocalDate dateRangeEnd;
 
+    public SearchFilters() {
+    }
+
+    /**
+     * Copy constructor to clone an immutable instance.
+     *
+     * @param searchFilters
+     */
+    public SearchFilters(SearchFilters searchFilters) {
+        this.searchQuery = searchFilters.searchQuery;
+        this.codeFilter = searchFilters.codeFilter;
+        this.nameFilter = searchFilters.nameFilter;
+        this.specificationFilter = searchFilters.specificationFilter;
+        this.enableDateRangeFilter = searchFilters.enableDateRangeFilter;
+        this.dateRangeStart = searchFilters.dateRangeStart;
+        this.dateRangeEnd = searchFilters.dateRangeEnd;
+    }
+
     public String getSearchQuery() {
         return searchQuery;
     }

@@ -56,7 +56,7 @@ public class ItemsSearchLogic {
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
-    private SearchFilters searchFilters;
+    private SearchFilters searchFilters, searchFiltersImmutableCopy;
     boolean isCodeChecked;
     private MatchDigitsOnlyHandler matchDigitsOnly;
     private final Pattern pattern = Pattern.compile("\\d+");
@@ -161,6 +161,7 @@ public class ItemsSearchLogic {
             previousSearchQuery = searchQuery;
             searchQuery = tfSearchQuery.getText();
             searchFilters.setSearchQuery(searchQuery);
+            searchFiltersImmutableCopy = new SearchFilters(searchFilters);
             OFFSET = 0;
             notifyOFFSET(OFFSET);
             if (searchFilters.isNameFilter() || searchFilters.isSpecificationFilter()) {
@@ -192,7 +193,7 @@ public class ItemsSearchLogic {
         @Override
         public void actionPerformed(ActionEvent e) {
             OFFSET += LIMIT;
-            notifySearchResult(CRUDOutwards.search(searchFilters, LIMIT, OFFSET));
+            notifySearchResult(CRUDOutwards.search(searchFiltersImmutableCopy, LIMIT, OFFSET));
         }
     }
 

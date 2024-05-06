@@ -32,13 +32,31 @@ import java.time.LocalDate;
 public class SearchFilters {
 
     private String searchQuery;
-    private boolean codeFilter;
-    private boolean nameFilter;
-    private boolean specificationFilter;
+    private Boolean codeFilter;
+    private Boolean nameFilter;
+    private Boolean specificationFilter;
     // Date range
-    private boolean enableDateRangeFilter;
+    private Boolean enableDateRangeFilter;
     private LocalDate dateRangeStart;
     private LocalDate dateRangeEnd;
+
+    public SearchFilters() {
+    }
+
+    /**
+     * Copy constructor to clone an immutable instance.
+     *
+     * @param searchFilters
+     */
+    public SearchFilters(SearchFilters searchFilters) {
+        this.searchQuery = searchFilters.searchQuery;
+        this.codeFilter = searchFilters.codeFilter;
+        this.nameFilter = searchFilters.nameFilter;
+        this.specificationFilter = searchFilters.specificationFilter;
+        this.enableDateRangeFilter = searchFilters.enableDateRangeFilter;
+        this.dateRangeStart = searchFilters.dateRangeStart;
+        this.dateRangeEnd = searchFilters.dateRangeEnd;
+    }
 
     public String getSearchQuery() {
         return searchQuery;
@@ -48,35 +66,35 @@ public class SearchFilters {
         this.searchQuery = searchQuery;
     }
 
-    public boolean isCodeFilter() {
+    public Boolean isCodeFilter() {
         return codeFilter;
     }
 
-    public void setCodeFilter(boolean codeFilter) {
+    public void setCodeFilter(Boolean codeFilter) {
         this.codeFilter = codeFilter;
     }
 
-    public boolean isNameFilter() {
+    public Boolean isNameFilter() {
         return nameFilter;
     }
 
-    public void setNameFilter(boolean nameFilter) {
+    public void setNameFilter(Boolean nameFilter) {
         this.nameFilter = nameFilter;
     }
 
-    public boolean isSpecificationFilter() {
+    public Boolean isSpecificationFilter() {
         return specificationFilter;
     }
 
-    public void setSpecificationFilter(boolean specificationFilter) {
+    public void setSpecificationFilter(Boolean specificationFilter) {
         this.specificationFilter = specificationFilter;
     }
 
-    public boolean isEnabledDateRangeFilter() {
+    public Boolean isEnabledDateRangeFilter() {
         return enableDateRangeFilter;
     }
 
-    public void enableDateRangeFilter(boolean enable) {
+    public void enableDateRangeFilter(Boolean enable) {
         this.enableDateRangeFilter = enable;
     }
 
