@@ -32,11 +32,11 @@ import java.time.LocalDate;
 public class SearchFilters {
 
     private String searchQuery;
-    private Boolean codeFilter;
-    private Boolean nameFilter;
-    private Boolean specificationFilter;
+    private boolean codeFilter;
+    private boolean nameFilter;
+    private boolean specificationFilter;
     // Date range
-    private Boolean enableDateRangeFilter;
+    private boolean enableDateRangeFilter;
     private LocalDate dateRangeStart;
     private LocalDate dateRangeEnd;
 
@@ -70,31 +70,31 @@ public class SearchFilters {
         return codeFilter;
     }
 
-    public void setCodeFilter(Boolean codeFilter) {
+    public void setCodeFilter(boolean codeFilter) {
         this.codeFilter = codeFilter;
     }
 
-    public Boolean isNameFilter() {
+    public boolean isNameFilter() {
         return nameFilter;
     }
 
-    public void setNameFilter(Boolean nameFilter) {
+    public void setNameFilter(boolean nameFilter) {
         this.nameFilter = nameFilter;
     }
 
-    public Boolean isSpecificationFilter() {
+    public boolean isSpecificationFilter() {
         return specificationFilter;
     }
 
-    public void setSpecificationFilter(Boolean specificationFilter) {
+    public void setSpecificationFilter(boolean specificationFilter) {
         this.specificationFilter = specificationFilter;
     }
 
-    public Boolean isEnabledDateRangeFilter() {
+    public boolean isEnabledDateRangeFilter() {
         return enableDateRangeFilter;
     }
 
-    public void enableDateRangeFilter(Boolean enable) {
+    public void enableDateRangeFilter(boolean enable) {
         this.enableDateRangeFilter = enable;
     }
 
