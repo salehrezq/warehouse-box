@@ -39,6 +39,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
+import warehouse.panel.items.SearchFilters;
 
 /**
  *
@@ -204,12 +205,60 @@ public class CRUDItems {
         return sqlFilter;
     }
 
-    public static List<ItemMeta> search(String query, Map<String, Boolean> searchFilters, int LIMIT, int OFFSET) {
+    private static String formulateSearchFilters(SearchFilters searchFilters) {
+        String sqlFilter = " WHERE";
+        boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
+        boolean isCodeFilter = searchFilters.isCodeFilter();
+        boolean isNameFilter = searchFilters.isNameFilter();
+        boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
+
+        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter;
+
+        if (!isAnyFilterOn || isSearchisQueryBlank) {
+            sqlFilter = "";
+            return sqlFilter;
+        }
+        if (isCodeFilter) {
+            sqlFilter += " i.`id` = ?";
+            return sqlFilter;
+        }
+        if (isNameFilter) {
+            sqlFilter += " (i.`name` LIKE ?";
+            sqlFilter += (isSpecificationFilter) ? " OR" : ")";
+        }
+        if (isSpecificationFilter) {
+            sqlFilter += isNameFilter ? "" : "(";
+            sqlFilter += " i.`specification` LIKE ?)";
+        }
+        return sqlFilter;
+    }
+
+    private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
+        String searchQuery = searchFilters.getSearchQuery();
+        boolean isCodeFilter = searchFilters.isCodeFilter();
+        boolean isNameFilter = searchFilters.isNameFilter();
+        boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
+        PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
+
+        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter;
+
+        if (!isAnyFilterOn || searchQuery.isBlank()) {
+            return preparedStatementWrapper;
+        }
+        if (isCodeFilter) {
+            p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
+        }
+        if (isNameFilter) {
+            p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchQuery + "%");
+        }
+        if (isSpecificationFilter) {
+            p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchQuery + "%");
+        }
+        return preparedStatementWrapper;
+    }
+
+    public static List<ItemMeta> search(SearchFilters searchFilters, int LIMIT, int OFFSET) {
         List<ItemMeta> itemsMeta = new ArrayList<>();
-        boolean isFiltersAvailable = (searchFilters != null);
-        boolean isAnyFilterOn = isFiltersAvailable
-                ? searchFilters.values().stream().anyMatch(filterValue -> filterValue == true) : false;
-        boolean isQueryBlank = query.isBlank();
         try {
             String sql = " SELECT it.id , it.`name`, it.specification,"
                     + " ("
@@ -224,25 +273,16 @@ public class CRUDItems {
                     + " "
                     + " FROM `items` AS it JOIN `quantity_unit` AS u"
                     + " ON it.unit_id = u.id"
-                    + ((isQueryBlank || !isAnyFilterOn) ? "" : formulateFilters(searchFilters))
+                    + formulateSearchFilters(searchFilters)
                     + " ORDER BY `id` ASC"
                     + " LIMIT ? OFFSET ?";
 
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
-            int parameterIndex = 0;
-            if (!isQueryBlank) {
-                for (var filter : searchFilters.entrySet()) {
-                    if (filter.getValue() == true) {
-                        if (filter.getKey().equals("code")) {
-                            p.setInt(++parameterIndex, Integer.parseInt(query));
-                        } else {
-                            p.setString(++parameterIndex, "%" + query + "%");
-                        }
-                    }
-                }
-            }
+            PreparedStatementWrapper preparedStatementWrapper
+                    = formulateSearchPreparedStatement(searchFilters, new PreparedStatementWrapper(p));
+            int parameterIndex = preparedStatementWrapper.getParameterIndex();
             p.setInt(++parameterIndex, LIMIT);
             p.setInt(++parameterIndex, OFFSET);
             System.out.println(p);
@@ -263,32 +303,17 @@ public class CRUDItems {
         return itemsMeta;
     }
 
-    public static int searchResultRowsCount(String query, Map<String, Boolean> searchFilters) {
+    public static int searchResultRowsCount(SearchFilters searchFilters) {
         int searchResultRowsCount = 0;
-        boolean isFiltersAvailable = (searchFilters != null);
-        boolean isAnyFilterOn = isFiltersAvailable
-                ? searchFilters.values().stream().anyMatch(filterValue -> filterValue == true) : false;
-        boolean isQueryBlank = query.isBlank();
         try {
             String sql = "SELECT COUNT(id) AS search_result_rows_count"
                     + " FROM `items` AS `it`"
-                    + ((isQueryBlank || !isAnyFilterOn) ? "" : formulateFilters(searchFilters));
+                    + formulateSearchFilters(searchFilters);
 
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
-            if (!isQueryBlank) {
-                int parameterIndex = 0;
-                for (var filter : searchFilters.entrySet()) {
-                    if (filter.getValue() == true) {
-                        if (filter.getKey().equals("code")) {
-                            p.setInt(++parameterIndex, Integer.parseInt(query));
-                        } else {
-                            p.setString(++parameterIndex, "%" + query + "%");
-                        }
-                    }
-                }
-            }
+            formulateSearchPreparedStatement(searchFilters, new PreparedStatementWrapper(p));
             System.out.println(p);
             ResultSet result = p.executeQuery();
             while (result.next()) {
