@@ -148,6 +148,7 @@ public class ItemsSearchLogic {
             OFFSET = 0;
             notifyOFFSET(OFFSET);
             if (searchFilters.isNameFilter() || searchFilters.isSpecificationFilter()) {
+                btnLoadMore.setEnabled(false);
                 if (searchQuery.isBlank()) {
                     JOptionPane.showMessageDialog(
                             null,
@@ -158,6 +159,7 @@ public class ItemsSearchLogic {
                 }
             } else if (searchFilters.isCodeFilter()) {
                 if (!pattern.matcher(searchFilters.getSearchQuery()).matches()) {
+                    btnLoadMore.setEnabled(false);
                     JOptionPane.showMessageDialog(
                             null,
                             "Input must be digits.",

@@ -166,6 +166,7 @@ public class ItemsSearchLogic {
             notifyOFFSET(OFFSET);
             if (searchFilters.isNameFilter() || searchFilters.isSpecificationFilter()) {
                 if (searchQuery.isBlank()) {
+                    btnLoadMore.setEnabled(false);
                     JOptionPane.showMessageDialog(
                             null,
                             "Write some search query.",
@@ -175,6 +176,7 @@ public class ItemsSearchLogic {
                 }
             } else if (searchFilters.isCodeFilter()) {
                 if (!pattern.matcher(searchFilters.getSearchQuery()).matches()) {
+                    btnLoadMore.setEnabled(false);
                     JOptionPane.showMessageDialog(
                             null,
                             "Input must be digits.",
