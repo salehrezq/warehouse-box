@@ -219,16 +219,16 @@ public class CRUDItems {
             return sqlFilter;
         }
         if (isCodeFilter) {
-            sqlFilter += " i.`id` = ?";
+            sqlFilter += " it.`id` = ?";
             return sqlFilter;
         }
         if (isNameFilter) {
-            sqlFilter += " (i.`name` LIKE ?";
+            sqlFilter += " (it.`name` LIKE ?";
             sqlFilter += (isSpecificationFilter) ? " OR" : ")";
         }
         if (isSpecificationFilter) {
             sqlFilter += isNameFilter ? "" : "(";
-            sqlFilter += " i.`specification` LIKE ?)";
+            sqlFilter += " it.`specification` LIKE ?)";
         }
         return sqlFilter;
     }
