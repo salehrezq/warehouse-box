@@ -30,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListSelectionModel;
@@ -324,9 +325,10 @@ public class ItemsList extends JPanel
             int itemUnitIdColumn = 4; // hiddenColumn
             int itemUnitColumn = 5;
             // Retrieving values from columns
-            int itemId = (Integer) getColumnOfSelectedRow(itemIdColumn);
+            int itemId = (int) getColumnOfSelectedRow(itemIdColumn);
             String itemName = (String) getColumnOfSelectedRow(itemNameColumn);
             String itemSpecs = (String) getColumnOfSelectedRow(itemSpecsColumn);
+            BigDecimal itemBalance = (BigDecimal) getColumnOfSelectedRow(itemBalanceColumn);
             int unitId = (Integer) getColumnOfSelectedRow(itemUnitIdColumn);
             String itemUnit = (String) getColumnOfSelectedRow(itemUnitColumn);
             System.out.println("unit " + itemUnit);
@@ -335,7 +337,7 @@ public class ItemsList extends JPanel
             itemMeta.setId(itemId);
             itemMeta.setName(itemName);
             itemMeta.setSpecification(itemSpecs);
-            // itemMeta.setBalance(); not needed
+            itemMeta.setBalance(itemBalance);
             itemMeta.setUnitId(unitId);
             itemMeta.setUnit(itemUnit);
 

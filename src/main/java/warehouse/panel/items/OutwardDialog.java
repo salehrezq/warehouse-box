@@ -57,7 +57,7 @@ public class OutwardDialog extends JDialog implements
     private JPanel container;
     private JTextField tfQuantity, tfUsedFor;
     private SingularAttributedListForm formFieldRecipient;
-    private JLabel lbQuantity, lbQuantityUnit, lbUsedFor, lbSource, lbDate;
+    private JLabel lbQuantity, lbQuantityUnit, lbBalance, lbUsedFor, lbSource, lbDate;
     private JButton btnSubmit;
     private DatePicker datePicker;
     private LocalDate selectedDate;
@@ -73,6 +73,8 @@ public class OutwardDialog extends JDialog implements
         lbQuantityUnit = new JLabel();
         lbQuantity = new JLabel("Quantity");
         tfQuantity = new JTextField(5);
+
+        lbBalance = new JLabel();
 
         lbUsedFor = new JLabel("Used for");
         tfUsedFor = new JTextField(15);
@@ -90,13 +92,14 @@ public class OutwardDialog extends JDialog implements
 
         container.add(lbQuantity);
         container.add(tfQuantity);
-        container.add(lbQuantityUnit, "wrap");
+        container.add(lbQuantityUnit);
+        container.add(lbBalance, "wrap");
         container.add(lbUsedFor);
-        container.add(tfUsedFor, "grow, span 2, wrap");
-        container.add(formFieldRecipient, "span 3,wrap");
+        container.add(tfUsedFor, "grow, span 3, wrap");
+        container.add(formFieldRecipient, "span 4,wrap");
         container.add(lbDate);
-        container.add(datePicker.getDatePicker(), "span 2, wrap");
-        container.add(btnSubmit, "span 3, center, gapy 10");
+        container.add(datePicker.getDatePicker(), "span 3, wrap");
+        container.add(btnSubmit, "span 4, center, gapy 10");
         add(container);
         pack();
     }
@@ -111,6 +114,8 @@ public class OutwardDialog extends JDialog implements
     public void setItemMeta(ItemMeta itemMeta) {
         this.itemMeta = itemMeta;
         lbQuantityUnit.setText(itemMeta.getUnit());
+        BigDecimal balance = itemMeta.getBalance();
+        lbBalance.setText(" | Balance: " + balance.toPlainString());
     }
 
     @Override
