@@ -182,6 +182,36 @@ public class CRUDItems {
         return itemsMeta;
     }
 
+    public static int getBalance(int itemId) {
+        int itemBalance = 0;
+        try {
+            String sql = "SELECT "
+                    + " (COALESCE("
+                    + " (SELECT sum(i.quantity)"
+                    + " FROM inwards i"
+                    + " WHERE i.item_id = ?),0)"
+                    + " -"
+                    + " COALESCE("
+                    + " (SELECT sum(o.quantity)"
+                    + " FROM outwards o"
+                    + " WHERE o.item_id = ?),"
+                    + " 0)) balance";
+
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            p.setInt(1, itemId);
+            p.setInt(2, itemId);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                itemBalance = result.getInt("balance");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return itemBalance;
+    }
+
     private static String formulateFilters(Map<String, Boolean> searchFilters) {
         String sqlFilter = " WHERE";
         if (searchFilters != null) {
