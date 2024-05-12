@@ -37,9 +37,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
 import warehouse.singularlisting.SingularAttributedListForm;
-import utility.date.DateDeselectedListener;
-import utility.date.DateListener;
-import utility.date.DatePicker;
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
+import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
+import java.util.Locale;
 import warehouse.db.CRUDInwards;
 import warehouse.db.model.Inward;
 import warehouse.db.model.ItemMeta;
@@ -49,9 +51,7 @@ import warehouse.db.model.Source;
  *
  * @author Saleh
  */
-public class InwardDialog extends JDialog implements
-        DateListener,
-        DateDeselectedListener {
+public class InwardDialog extends JDialog {
 
     private JPanel container;
     private JTextField tfQuantity;
@@ -60,7 +60,9 @@ public class InwardDialog extends JDialog implements
     private int itemId;
     private JButton btnSubmit;
     private DatePicker datePicker;
+    private DatePickerSettings datePickerSettings;
     private LocalDate selectedDate;
+    private DateChangeHandler dateChangeHandler;
     private ArrayList<InwardCRUDListener> inwardCRUDListeners;
     private ItemMeta itemMeta;
 
@@ -80,6 +82,8 @@ public class InwardDialog extends JDialog implements
 
         lbDate = new JLabel("Date");
         datePicker = new DatePicker();
+        dateChangeHandler = new DateChangeHandler();
+        datePicker.addDateChangeListener(dateChangeHandler);
         this.setupDateField(datePicker);
 
         btnSubmit = new JButton("Submit addition");
@@ -90,32 +94,25 @@ public class InwardDialog extends JDialog implements
         container.add(lbQuantityUnit, "wrap");
         container.add(formFieldSource, "span 3,wrap");
         container.add(lbDate);
-        container.add(datePicker.getDatePicker(), "span 2, wrap");
+        container.add(datePicker, "span 2, wrap");
         container.add(btnSubmit, "span 3, center, gapy 10");
         add(container);
         pack();
     }
 
     private void setupDateField(DatePicker datePicker) {
-        datePicker.setTodayAsDefault();
-        datePicker.addDateListener(this);
-        datePicker.addDateDeselectedListener(this);
+        datePickerSettings = new DatePickerSettings();
+        datePickerSettings.setAllowEmptyDates(false);
+        datePickerSettings.setAllowKeyboardEditing(false);
+        datePickerSettings.setLocale(Locale.ENGLISH);
+        datePickerSettings.setFormatForDatesCommonEra("dd-MMM-uuuu");
+        datePicker.setSettings(datePickerSettings);
         selectedDate = datePicker.getDate();
     }
 
     public void setItemMeta(ItemMeta itemMeta) {
         this.itemMeta = itemMeta;
         lbQuantityUnit.setText(itemMeta.getUnit());
-    }
-
-    @Override
-    public void dateChanged(LocalDate date) {
-        selectedDate = date;
-    }
-
-    @Override
-    public void dateDeselected() {
-        System.out.println("dateDeselected");
     }
 
     public void addInwardCRUDListener(InwardCRUDListener inwardCRUDListener) {
@@ -126,6 +123,14 @@ public class InwardDialog extends JDialog implements
         this.inwardCRUDListeners.forEach((inwardCRUDListener) -> {
             inwardCRUDListener.created(inward, relatedItemMeta);
         });
+    }
+
+    private class DateChangeHandler implements DateChangeListener {
+
+        @Override
+        public void dateChanged(DateChangeEvent event) {
+            selectedDate = datePicker.getDate();
+        }
     }
 
     private class BtnSubmitHandler implements ActionListener {
@@ -158,4 +163,5 @@ public class InwardDialog extends JDialog implements
             }
         }
     }
+
 }
