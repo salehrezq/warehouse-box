@@ -23,6 +23,8 @@
  */
 package warehouse.panel.items;
 
+import warehouse.panel.outwards.OutwardDialog;
+import warehouse.panel.inwards.InwardDialog;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Point;

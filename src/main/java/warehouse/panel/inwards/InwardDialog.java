@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.items;
+package warehouse.panel.inwards;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -40,33 +40,33 @@ import warehouse.singularlisting.SingularAttributedListForm;
 import utility.date.DateDeselectedListener;
 import utility.date.DateListener;
 import utility.date.DatePicker;
-import warehouse.db.CRUDOutwards;
+import warehouse.db.CRUDInwards;
+import warehouse.db.model.Inward;
 import warehouse.db.model.ItemMeta;
-import warehouse.db.model.Outward;
-import warehouse.db.model.Recipient;
-import warehouse.panel.outwards.OutwardCRUDListener;
+import warehouse.db.model.Source;
 
 /**
  *
  * @author Saleh
  */
-public class OutwardDialog extends JDialog implements
+public class InwardDialog extends JDialog implements
         DateListener,
         DateDeselectedListener {
 
     private JPanel container;
-    private JTextField tfQuantity, tfUsedFor;
-    private SingularAttributedListForm formFieldRecipient;
-    private JLabel lbQuantity, lbQuantityUnit, lbBalance, lbUsedFor, lbSource, lbDate;
+    private JTextField tfQuantity;
+    private SingularAttributedListForm formFieldSource;
+    private JLabel lbQuantity, lbQuantityUnit, lbSource, lbDate;
+    private int itemId;
     private JButton btnSubmit;
     private DatePicker datePicker;
     private LocalDate selectedDate;
-    private ArrayList<OutwardCRUDListener> outwardCRUDListeners;
+    private ArrayList<InwardCRUDListener> inwardCRUDListeners;
     private ItemMeta itemMeta;
 
-    public OutwardDialog(Frame owner, String title, boolean modal) {
+    public InwardDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
-        outwardCRUDListeners = new ArrayList<>();
+        inwardCRUDListeners = new ArrayList<>();
         container = new JPanel();
         container.setLayout(new MigLayout("center center"));
 
@@ -74,14 +74,9 @@ public class OutwardDialog extends JDialog implements
         lbQuantity = new JLabel("Quantity");
         tfQuantity = new JTextField(5);
 
-        lbBalance = new JLabel();
-
-        lbUsedFor = new JLabel("Used for");
-        tfUsedFor = new JTextField(15);
-
-        formFieldRecipient = new SingularAttributedListForm();
-        formFieldRecipient.setListableImpl(new Recipient());
-        formFieldRecipient.setListDimentions(300, 300);
+        formFieldSource = new SingularAttributedListForm();
+        formFieldSource.setListableImpl(new Source());
+        formFieldSource.setListDimentions(300, 300);
 
         lbDate = new JLabel("Date");
         datePicker = new DatePicker();
@@ -91,15 +86,12 @@ public class OutwardDialog extends JDialog implements
         btnSubmit.addActionListener(new BtnSubmitHandler());
 
         container.add(lbQuantity);
-        container.add(tfQuantity);
-        container.add(lbQuantityUnit);
-        container.add(lbBalance, "wrap");
-        container.add(lbUsedFor);
-        container.add(tfUsedFor, "grow, span 3, wrap");
-        container.add(formFieldRecipient, "span 4,wrap");
+        container.add(tfQuantity, "grow");
+        container.add(lbQuantityUnit, "wrap");
+        container.add(formFieldSource, "span 3,wrap");
         container.add(lbDate);
-        container.add(datePicker.getDatePicker(), "span 3, wrap");
-        container.add(btnSubmit, "span 4, center, gapy 10");
+        container.add(datePicker.getDatePicker(), "span 2, wrap");
+        container.add(btnSubmit, "span 3, center, gapy 10");
         add(container);
         pack();
     }
@@ -114,8 +106,6 @@ public class OutwardDialog extends JDialog implements
     public void setItemMeta(ItemMeta itemMeta) {
         this.itemMeta = itemMeta;
         lbQuantityUnit.setText(itemMeta.getUnit());
-        BigDecimal balance = itemMeta.getBalance();
-        lbBalance.setText(" | Balance: " + balance.toPlainString());
     }
 
     @Override
@@ -128,13 +118,13 @@ public class OutwardDialog extends JDialog implements
         System.out.println("dateDeselected");
     }
 
-    public void addOutwardCRUDListener(OutwardCRUDListener outwardCRUDListener) {
-        this.outwardCRUDListeners.add(outwardCRUDListener);
+    public void addInwardCRUDListener(InwardCRUDListener inwardCRUDListener) {
+        this.inwardCRUDListeners.add(inwardCRUDListener);
     }
 
-    public void notifyCreated(Outward outward, ItemMeta relatedItemMeta) {
-        this.outwardCRUDListeners.forEach((outwardCRUDListener) -> {
-            outwardCRUDListener.created(outward, relatedItemMeta);
+    public void notifyCreated(Inward inward, ItemMeta relatedItemMeta) {
+        this.inwardCRUDListeners.forEach((inwardCRUDListener) -> {
+            inwardCRUDListener.created(inward, relatedItemMeta);
         });
     }
 
@@ -142,27 +132,27 @@ public class OutwardDialog extends JDialog implements
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            BigDecimal quantity = new BigDecimal(tfQuantity.getText());
-            Outward itemOutward = new Outward();
-            itemOutward.setItemId(itemMeta.getId());
-            itemOutward.setQuantity(quantity);
-            itemOutward.setUsedFor(tfUsedFor.getText());
-            itemOutward.setDate(selectedDate);
-            Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
-            itemOutward.setRecipientId(recipient.getId());
-            Outward outward = CRUDOutwards.create(itemOutward);
-            if (outward != null) {
-                notifyCreated(itemOutward, itemMeta);
-                OutwardDialog.this.dispose();
+            BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
+            Inward itemsAdd = new Inward();
+            itemsAdd.setItemId(itemMeta.getId());
+            itemsAdd.setQuantity(bigDecimal);
+            itemsAdd.setDate(selectedDate);
+            Source source = (Source) formFieldSource.getSelectedValue();
+            itemsAdd.setSourceId(source.getId());
+            Inward inward = CRUDInwards.create(itemsAdd);
+            notifyCreated(inward, itemMeta);
+            if (inward != null) {
+                InwardDialog.this.dispose();
                 JOptionPane.showMessageDialog(
                         null,
-                        "Outward added successfully",
+                        "Inward added successfully",
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE);
+
             } else {
                 JOptionPane.showMessageDialog(
                         null,
-                        "Issue: Outward was not added",
+                        "Issue: Inward was not added",
                         "Failure",
                         JOptionPane.WARNING_MESSAGE);
             }
