@@ -35,7 +35,6 @@ import warehouse.db.model.QuantityUnit;
  * @author Saleh
  */
 public class ItemTableModel extends AbstractTableModel {
-//"Code", "Name", "Specification", "Balance", "unit_id", "Unit"
 
     private String[] columnNames
             = {
@@ -73,11 +72,6 @@ public class ItemTableModel extends AbstractTableModel {
 
     @Override
     public Class getColumnClass(int column) {
-//         "ID",
-//        "Name",
-//        "Specification",
-//        "Balance",
-//        "Unit"
         switch (column) {
             case 4:
                 return QuantityUnit.class;
@@ -89,62 +83,42 @@ public class ItemTableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int row, int column) {
         return false;
-//    switch (column)
-//    {
-//        case 2: return true; // only the birth date is editable
-//        default: return false;
-//    }
     }
 
     @Override
     public Object getValueAt(int row, int column) {
-        //         "ID",
-//        "Name",
-//        "Specification",
-//        "Balance",
-//        "Unit"
         ItemMeta itemMeta = getItemMeta(row);
 
-        switch (column) {
-            case 0:
-                return itemMeta.getId();
-            case 1:
-                return itemMeta.getName();
-            case 2:
-                return itemMeta.getSpecification();
-            case 3:
-                return itemMeta.getBalance();
-            case 4:
-                return itemMeta.getQuantityUnit().getName();
-            default:
-                return null;
-        }
+        return switch (column) {
+            case 0 ->
+                itemMeta.getId();
+            case 1 ->
+                itemMeta.getName();
+            case 2 ->
+                itemMeta.getSpecification();
+            case 3 ->
+                itemMeta.getBalance();
+            case 4 ->
+                itemMeta.getQuantityUnit().getName();
+            default ->
+                null;
+        };
     }
 
     @Override
     public void setValueAt(Object value, int row, int column) {
         ItemMeta itemMeta = getItemMeta(row);
-        //         "ID",
-//        "Name",
-//        "Specification",
-//        "Balance",
-//        "Unit"
         switch (column) {
-            case 0:
+            case 0 ->
                 itemMeta.setId((int) value);
-                break;
-            case 1:
+            case 1 ->
                 itemMeta.setName((String) value);
-                break;
-            case 2:
+            case 2 ->
                 itemMeta.setSpecification((String) value);
-                break;
-            case 3:
+            case 3 ->
                 itemMeta.setBalance((BigDecimal) value);
-                break;
-            case 4:
+            case 4 ->
                 itemMeta.setQuantityUnit((QuantityUnit) value);
-                break;
         }
 
         fireTableCellUpdated(row, column);
