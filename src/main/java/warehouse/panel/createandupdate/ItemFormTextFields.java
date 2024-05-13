@@ -89,8 +89,8 @@ public class ItemFormTextFields extends JPanel implements Collectable {
             data.put("id", itemIdForUpdate);
         }
         data.put("name", tfName.getText());
-        data.put("specs", tfSpecs.getText());
-        data.put("unit", itemFormQuantityUnit.getSelectedValue());
+        data.put("specification", tfSpecs.getText());
+        data.put("quantityUnit", itemFormQuantityUnit.getSelectedValue());
         return data;
     }
 

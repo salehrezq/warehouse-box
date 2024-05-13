@@ -39,7 +39,7 @@ public class Item {
     private int id;
     private String name;
     private String specification;
-    private QuantityUnit quantityUnit; // foreign key
+    private QuantityUnit quantityUnit;
 
     public int getId() {
         return id;

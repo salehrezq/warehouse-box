@@ -63,7 +63,6 @@ public class ItemsList extends JPanel
         ItemCRUDListener,
         ItemsSearchListener {
 
-    //  private DefaultTableModel model;
     private ItemTableModel model;
     private JTable table;
     private JScrollPane scrollTable;
@@ -106,13 +105,10 @@ public class ItemsList extends JPanel
         table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
         table.setFillsViewportHeight(true);
-        // Hide column number 4 which holds unit_id values
-//        table.removeColumn(table.getColumnModel().getColumn(4));
         table.getColumnModel().getColumn(0).setPreferredWidth(1);
         table.getColumnModel().getColumn(1).setPreferredWidth(1);
         table.getColumnModel().getColumn(2).setPreferredWidth(1);
         table.getColumnModel().getColumn(3).setPreferredWidth(1);
-        //   table.getColumnModel().getColumn(4).setPreferredWidth(1);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setComponentPopupMenu(popupMenu);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -175,7 +171,6 @@ public class ItemsList extends JPanel
         if (OFFSET == 0) {
             model = new ItemTableModel();
             table.setModel(model);
-//            model.setRowCount(0);
             incrementedReturnedRowsCount = 0;
         }
     }

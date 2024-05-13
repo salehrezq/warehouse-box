@@ -141,9 +141,9 @@ public class FormManagement extends JPanel {
                             item.setId((int) itemId);
                         }
                         item.setName((String) c.collect().get("name"));
-                        item.setSpecification((String) c.collect().get("specs"));
-                        QuantityUnit qty = (QuantityUnit) c.collect().get("unit");
-                        item.setQuantityUnit(qty);
+                        item.setSpecification((String) c.collect().get("specification"));
+                        QuantityUnit quamtityUnit = (QuantityUnit) c.collect().get("quantityUnit");
+                        item.setQuantityUnit(quamtityUnit);
                     } else if (c instanceof ItemFormImage) {
                         images = (ArrayList<Image>) c.collect().get("images");
                         imagesRetrievedFromDB = (ArrayList<Image>) c.collect().get("imagesRetrievedFromDB");
