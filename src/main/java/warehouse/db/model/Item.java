@@ -39,7 +39,7 @@ public class Item {
     private int id;
     private String name;
     private String specification;
-    private int unitId; // foreign key
+    private QuantityUnit quantityUnit; // foreign key
 
     public int getId() {
         return id;
@@ -65,12 +65,12 @@ public class Item {
         this.specification = specification;
     }
 
-    public int getUnitId() {
-        return unitId;
+    public QuantityUnit getQuantityUnit() {
+        return quantityUnit;
     }
 
-    public void setUnitId(int unitId) {
-        this.unitId = unitId;
+    public void setQuantityUnit(QuantityUnit quantityUnit) {
+        this.quantityUnit = quantityUnit;
     }
 
     public byte[] toBytesArray(BufferedImage image) {

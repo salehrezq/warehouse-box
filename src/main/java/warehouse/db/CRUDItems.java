@@ -39,6 +39,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
+import warehouse.db.model.QuantityUnit;
 import warehouse.panel.items.SearchFilters;
 
 /**
@@ -59,7 +60,7 @@ public class CRUDItems {
             PreparedStatement createItemsStatement = con.prepareStatement(sqlCreateItem, Statement.RETURN_GENERATED_KEYS);
             createItemsStatement.setString(1, item.getName());
             createItemsStatement.setString(2, item.getSpecification());
-            createItemsStatement.setInt(3, item.getUnitId());
+            createItemsStatement.setInt(3, item.getQuantityUnit().getId());
             createItemsStatement.executeUpdate();
 
             try (ResultSet generatedKeys = createItemsStatement.getGeneratedKeys()) {
@@ -93,7 +94,7 @@ public class CRUDItems {
                 item.setId(result.getInt("id"));
                 item.setName(result.getString("name"));
                 item.setSpecification(result.getString("specification"));
-                item.setUnitId(result.getInt("unit_id"));
+                item.setQuantityUnit((QuantityUnit) CRUDListable.getById(new QuantityUnit(), result.getInt("unit_id")));
                 items.add(item);
             }
         } catch (SQLException ex) {
@@ -132,8 +133,8 @@ public class CRUDItems {
                 itemMeta.setName(result.getString("name"));
                 itemMeta.setSpecification(result.getString("specification"));
                 itemMeta.setBalance(result.getBigDecimal("balance"));
-                itemMeta.setUnitId(result.getInt("unit_id"));
-                itemMeta.setUnit(result.getString("unit"));
+                //  itemMeta.setUnitId(result.getInt("unit_id"));
+                //  itemMeta.setUnit(result.getString("unit"));
                 itemsMeta.add(itemMeta);
             }
         } catch (SQLException ex) {
@@ -171,8 +172,8 @@ public class CRUDItems {
                 itemMeta.setName(result.getString("name"));
                 itemMeta.setSpecification(result.getString("specification"));
                 itemMeta.setBalance(result.getBigDecimal("balance"));
-                itemMeta.setUnitId(result.getInt("unit_id"));
-                itemMeta.setUnit(result.getString("unit"));
+//                itemMeta.setUnitId(result.getInt("unit_id"));
+                itemMeta.setQuantityUnit((QuantityUnit) CRUDListable.getById(new QuantityUnit(), result.getInt("unit")));
                 itemsMeta.add(itemMeta);
             }
             OFFSET += LIMIT;
@@ -323,8 +324,7 @@ public class CRUDItems {
                 itemMeta.setName(result.getString("name"));
                 itemMeta.setSpecification(result.getString("specification"));
                 itemMeta.setBalance(result.getBigDecimal("balance"));
-                itemMeta.setUnitId(result.getInt("unit_id"));
-                itemMeta.setUnit(result.getString("unit"));
+                itemMeta.setQuantityUnit((QuantityUnit) CRUDListable.getById(new QuantityUnit(), result.getInt("unit_id")));
                 itemsMeta.add(itemMeta);
             }
         } catch (SQLException ex) {
@@ -383,7 +383,7 @@ public class CRUDItems {
             PreparedStatement p = con.prepareStatement(sql);
             p.setString(1, item.getName());
             p.setString(2, item.getSpecification());
-            p.setInt(3, item.getUnitId());
+            p.setInt(3, item.getQuantityUnit().getId());
             p.setInt(4, item.getId());
             update = p.executeUpdate();
             con.commit();

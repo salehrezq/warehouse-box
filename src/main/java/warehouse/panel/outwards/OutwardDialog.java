@@ -119,7 +119,7 @@ public class OutwardDialog extends JDialog {
 
     public void setItemMeta(ItemMeta itemMeta) {
         this.itemMeta = itemMeta;
-        lbQuantityUnit.setText(itemMeta.getUnit());
+        lbQuantityUnit.setText(itemMeta.getQuantityUnit().getName());
         BigDecimal balance = itemMeta.getBalance();
         lbBalance.setText(" | Balance: " + balance.toPlainString());
     }

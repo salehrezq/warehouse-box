@@ -146,7 +146,7 @@ public class InwardsList extends JPanel
             inward.getId(),
             inward.getItemId(),
             inward.getQuantity(),
-            itemMeta.getUnit(),
+            itemMeta.getQuantityUnit().getName(),
             source.getName(),
             inward.getDate()
         });

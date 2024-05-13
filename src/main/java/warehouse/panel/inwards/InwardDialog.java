@@ -112,7 +112,7 @@ public class InwardDialog extends JDialog {
 
     public void setItemMeta(ItemMeta itemMeta) {
         this.itemMeta = itemMeta;
-        lbQuantityUnit.setText(itemMeta.getUnit());
+        lbQuantityUnit.setText(itemMeta.getQuantityUnit().getName());
     }
 
     public void addInwardCRUDListener(InwardCRUDListener inwardCRUDListener) {

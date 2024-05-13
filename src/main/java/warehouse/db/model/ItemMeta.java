@@ -33,7 +33,7 @@ public class ItemMeta extends Item {
 
     private BigDecimal balance;
     private int unitId;
-    private String unit;
+    // private String unit;
 
     public BigDecimal getBalance() {
         return balance;
@@ -43,12 +43,11 @@ public class ItemMeta extends Item {
         this.balance = balance;
     }
 
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
+//    public String getUnit() {
+//        return unit;
+//    }
+//
+//    public void setUnit(String unit) {
+//        this.unit = unit;
+//    }
 }

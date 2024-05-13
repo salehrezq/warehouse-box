@@ -47,7 +47,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.table.DefaultTableModel;
 import warehouse.db.CRUDItems;
 import warehouse.db.CRUDListable;
 import warehouse.db.model.Item;
@@ -64,7 +63,8 @@ public class ItemsList extends JPanel
         ItemCRUDListener,
         ItemsSearchListener {
 
-    private DefaultTableModel model;
+    //  private DefaultTableModel model;
+    private ItemTableModel model;
     private JTable table;
     private JScrollPane scrollTable;
     private Integer selectedModelRow;
@@ -86,13 +86,7 @@ public class ItemsList extends JPanel
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
-        model = new DefaultTableModel(new String[]{"Code", "Name", "Specification", "Balance", "unit_id", "Unit"}, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                // Disable cells editing.
-                return false;
-            }
-        };
+        model = new ItemTableModel();
 
         popupMenu = new JPopupMenu();
         popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
@@ -113,12 +107,12 @@ public class ItemsList extends JPanel
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
         table.setFillsViewportHeight(true);
         // Hide column number 4 which holds unit_id values
-        table.removeColumn(table.getColumnModel().getColumn(4));
+//        table.removeColumn(table.getColumnModel().getColumn(4));
         table.getColumnModel().getColumn(0).setPreferredWidth(1);
         table.getColumnModel().getColumn(1).setPreferredWidth(1);
         table.getColumnModel().getColumn(2).setPreferredWidth(1);
         table.getColumnModel().getColumn(3).setPreferredWidth(1);
-        table.getColumnModel().getColumn(4).setPreferredWidth(1);
+        //   table.getColumnModel().getColumn(4).setPreferredWidth(1);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setComponentPopupMenu(popupMenu);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -155,22 +149,20 @@ public class ItemsList extends JPanel
 
     @Override
     public void created(Item item) {
-        QuantityUnit unit = (QuantityUnit) CRUDListable.getById(new QuantityUnit(), item.getUnitId());
-        model.addRow(new Object[]{
-            item.getId(),
-            item.getName(),
-            item.getSpecification(),
-            "0.00",
-            unit.getId(),
-            unit.getName()
-        });
+        ItemMeta itemMeta = new ItemMeta();
+        itemMeta.setId(item.getId());
+        itemMeta.setName(item.getName());
+        itemMeta.setSpecification(item.getSpecification());
+        itemMeta.setBalance(BigDecimal.ONE);
+        itemMeta.setQuantityUnit(item.getQuantityUnit());
+        model.addItemMeta(itemMeta);
         rowIndex++;
     }
 
     @Override
     public void updated(Item updatedItem) {
         // "Code", "Name", "Specification", "Balance", "unit_id", "Unit"
-        QuantityUnit unit = (QuantityUnit) CRUDListable.getById(new QuantityUnit(), updatedItem.getUnitId());
+        QuantityUnit unit = (QuantityUnit) CRUDListable.getById(new QuantityUnit(), updatedItem.getQuantityUnit().getId());
         model.setValueAt(updatedItem.getName(), selectedModelRow, 1);
         model.setValueAt(updatedItem.getSpecification(), selectedModelRow, 2);
         // 3 is calculated value not relevant on the update here
@@ -181,7 +173,9 @@ public class ItemsList extends JPanel
     @Override
     public void notifyOFFSET(int OFFSET) {
         if (OFFSET == 0) {
-            model.setRowCount(0);
+            model = new ItemTableModel();
+            table.setModel(model);
+//            model.setRowCount(0);
             incrementedReturnedRowsCount = 0;
         }
     }
@@ -203,25 +197,16 @@ public class ItemsList extends JPanel
          */
         if (model.getRowCount() > 0) {
             for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
-                model.removeRow(incrementedReturnedRowsCount);
+                model.removeItemMeta(incrementedReturnedRowsCount);
             }
         }
-
         List<ItemMeta> itemsMetaRecords = itemsMeta;
-        Object[] modelRow = new Object[6];
-
         int size = itemsMetaRecords.size();
         incrementedReturnedRowsCount += size;
         rowIndex = incrementedReturnedRowsCount;
         for (int i = 0; i < size; i++) {
             ItemMeta itemMeta = itemsMetaRecords.get(i);
-            modelRow[0] = itemMeta.getId(); //code
-            modelRow[1] = itemMeta.getName();
-            modelRow[2] = itemMeta.getSpecification();
-            modelRow[3] = itemMeta.getBalance();
-            modelRow[4] = itemMeta.getUnitId(); // will be hidden column
-            modelRow[5] = itemMeta.getUnit();
-            model.addRow(modelRow);
+            model.addItemMeta(itemMeta);
         }
         btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
     }
@@ -309,39 +294,12 @@ public class ItemsList extends JPanel
         }
     }
 
-    private Object getColumnOfSelectedRow(int column) {
-        selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
-        return table.getModel().getValueAt(selectedModelRow, column);
-
-    }
-
     private class PopupMenuItemActionHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            //"Code", "Name", "Specification", "Balance", "unit_id", "Unit"
-            int itemIdColumn = 0;
-            int itemNameColumn = 1;
-            int itemSpecsColumn = 2;
-            int itemBalanceColumn = 3; // not needed
-            int itemUnitIdColumn = 4; // hiddenColumn
-            int itemUnitColumn = 5;
-            // Retrieving values from columns
-            int itemId = (int) getColumnOfSelectedRow(itemIdColumn);
-            String itemName = (String) getColumnOfSelectedRow(itemNameColumn);
-            String itemSpecs = (String) getColumnOfSelectedRow(itemSpecsColumn);
-            BigDecimal itemBalance = (BigDecimal) getColumnOfSelectedRow(itemBalanceColumn);
-            int unitId = (Integer) getColumnOfSelectedRow(itemUnitIdColumn);
-            String itemUnit = (String) getColumnOfSelectedRow(itemUnitColumn);
-            System.out.println("unit " + itemUnit);
-
-            ItemMeta itemMeta = new ItemMeta();
-            itemMeta.setId(itemId);
-            itemMeta.setName(itemName);
-            itemMeta.setSpecification(itemSpecs);
-            itemMeta.setBalance(itemBalance);
-            itemMeta.setUnitId(unitId);
-            itemMeta.setUnit(itemUnit);
+            int modelRowIndex = table.convertRowIndexToModel(table.getSelectedRow());
+            ItemMeta itemMeta = model.getItemMeta(modelRowIndex);
 
             Object source = e.getSource();
             if (source == menuItemInwardsOfSelectedItem) {
@@ -351,19 +309,17 @@ public class ItemsList extends JPanel
                 outwardDialog.setItemMeta(itemMeta);
                 outwardDialog.setVisible(true);
             } else if (source == menuItemUpdateItem) {
-                updateItemDialog.setTfName(itemName);
-                updateItemDialog.setTfSpecs(itemSpecs);
+                updateItemDialog.setTfName(itemMeta.getName());
+                updateItemDialog.setTfSpecs(itemMeta.getSpecification());
                 QuantityUnit quantityUnit = new QuantityUnit();
-                quantityUnit.setId(unitId);
-                quantityUnit.setName(itemUnit);
-                updateItemDialog.setItemIdForUpdate(itemId);
+                quantityUnit.setId(itemMeta.getQuantityUnit().getId());
+                quantityUnit.setName(itemMeta.getQuantityUnit().getName());
+                updateItemDialog.setItemIdForUpdate(itemMeta.getId());
                 updateItemDialog.getFormManagement().addItemCRUDListener(ItemsList.this);
                 updateItemDialog.setUnitName(quantityUnit);
-                updateItemDialog.setItemImages(itemId);
+                updateItemDialog.setItemImages(itemMeta.getId());
                 updateItemDialog.setVisible(true);
             }
-
-            System.out.println(itemId);
         }
     }
 

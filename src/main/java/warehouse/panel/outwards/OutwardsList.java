@@ -147,7 +147,7 @@ public class OutwardsList extends JPanel
             outward.getId(),
             outward.getItemId(),
             outward.getQuantity(),
-            relatedItemMeta.getUnit(),
+            relatedItemMeta.getQuantityUnit().getName(),
             recipient.getName(),
             outward.getUsedFor(),
             outward.getDate()

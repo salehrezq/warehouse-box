@@ -143,7 +143,7 @@ public class FormManagement extends JPanel {
                         item.setName((String) c.collect().get("name"));
                         item.setSpecification((String) c.collect().get("specs"));
                         QuantityUnit qty = (QuantityUnit) c.collect().get("unit");
-                        item.setUnitId(qty.getId());
+                        item.setQuantityUnit(qty);
                     } else if (c instanceof ItemFormImage) {
                         images = (ArrayList<Image>) c.collect().get("images");
                         imagesRetrievedFromDB = (ArrayList<Image>) c.collect().get("imagesRetrievedFromDB");
@@ -153,7 +153,7 @@ public class FormManagement extends JPanel {
                 System.out.println(item.getId());
                 System.out.println(item.getName());
                 System.out.println(item.getSpecification());
-                System.out.println(item.getUnitId());
+                System.out.println(item.getQuantityUnit());
 
                 boolean isItemUpdate = false;
                 boolean isItemImagesUpdate = false;
