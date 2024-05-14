@@ -119,9 +119,9 @@ public class InwardDialog extends JDialog {
         this.inwardCRUDListeners.add(inwardCRUDListener);
     }
 
-    public void notifyCreated(Inward inward, ItemMeta relatedItemMeta) {
+    public void notifyCreated(Inward inward) {
         this.inwardCRUDListeners.forEach((inwardCRUDListener) -> {
-            inwardCRUDListener.created(inward, relatedItemMeta);
+            inwardCRUDListener.created(inward);
         });
     }
 
@@ -138,15 +138,15 @@ public class InwardDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
-            Inward inwardToAdd = new Inward();
-            inwardToAdd.setItem(itemMeta);
-            inwardToAdd.setQuantity(bigDecimal);
-            inwardToAdd.setDate(selectedDate);
+            Inward inward = new Inward();
+            inward.setItem(itemMeta);
+            inward.setQuantity(bigDecimal);
+            inward.setDate(selectedDate);
             Source source = (Source) formFieldSource.getSelectedValue();
-            inwardToAdd.setSource(source);
-            Inward inward = CRUDInwards.create(inwardToAdd);
-            notifyCreated(inward, itemMeta);
-            if (inward != null) {
+            inward.setSource(source);
+            Inward inwardRetrieved = CRUDInwards.create(inward);
+            notifyCreated(inwardRetrieved);
+            if (inwardRetrieved != null) {
                 InwardDialog.this.dispose();
                 JOptionPane.showMessageDialog(
                         null,

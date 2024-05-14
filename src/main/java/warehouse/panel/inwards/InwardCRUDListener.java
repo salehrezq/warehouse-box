@@ -24,7 +24,6 @@
 package warehouse.panel.inwards;
 
 import warehouse.db.model.Inward;
-import warehouse.db.model.ItemMeta;
 
 /**
  *
@@ -32,5 +31,5 @@ import warehouse.db.model.ItemMeta;
  */
 public interface InwardCRUDListener {
 
-    public void created(Inward inward, ItemMeta relatedItemMeta);
+    public void created(Inward inward);
 }
