@@ -33,7 +33,7 @@ import java.time.LocalDate;
 public class Inward {
 
     private int id;
-    private int itemId;
+    private Item item;
     private BigDecimal quantity;
     private LocalDate date;
     private Source source;
@@ -46,12 +46,12 @@ public class Inward {
         this.id = id;
     }
 
-    public int getItemId() {
-        return itemId;
+    public Item getItem() {
+        return item;
     }
 
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     public BigDecimal getQuantity() {

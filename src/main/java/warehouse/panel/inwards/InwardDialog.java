@@ -138,13 +138,13 @@ public class InwardDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
-            Inward itemsAdd = new Inward();
-            itemsAdd.setItemId(itemMeta.getId());
-            itemsAdd.setQuantity(bigDecimal);
-            itemsAdd.setDate(selectedDate);
+            Inward inwardToAdd = new Inward();
+            inwardToAdd.setItem(itemMeta);
+            inwardToAdd.setQuantity(bigDecimal);
+            inwardToAdd.setDate(selectedDate);
             Source source = (Source) formFieldSource.getSelectedValue();
-            itemsAdd.setSource(source);
-            Inward inward = CRUDInwards.create(itemsAdd);
+            inwardToAdd.setSource(source);
+            Inward inward = CRUDInwards.create(inwardToAdd);
             notifyCreated(inward, itemMeta);
             if (inward != null) {
                 InwardDialog.this.dispose();

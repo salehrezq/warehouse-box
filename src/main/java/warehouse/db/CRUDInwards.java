@@ -52,7 +52,7 @@ public class CRUDInwards {
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            p.setInt(1, inward.getItemId());
+            p.setInt(1, inward.getItem().getId());
             p.setBigDecimal(2, inward.getQuantity());
             p.setObject(3, inward.getDate());
             p.setInt(4, inward.getSource().getId());
