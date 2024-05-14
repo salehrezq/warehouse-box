@@ -244,7 +244,10 @@ public class CRUDItems {
                 itemMeta.setName(result.getString("name"));
                 itemMeta.setSpecification(result.getString("specification"));
                 itemMeta.setBalance(result.getBigDecimal("balance"));
-                itemMeta.setQuantityUnit((QuantityUnit) CRUDListable.getById(new QuantityUnit(), result.getInt("unit_id")));
+                QuantityUnit quantityUnit = new QuantityUnit();
+                quantityUnit.setId(result.getInt("unit_id"));
+                quantityUnit.setName(result.getString("unit"));
+                itemMeta.setQuantityUnit(quantityUnit);
                 itemsMeta.add(itemMeta);
             }
         } catch (SQLException ex) {
