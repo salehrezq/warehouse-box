@@ -32,21 +32,18 @@ import java.time.LocalDate;
  */
 public class InwardMeta {
 
-    private int itemIdd;
     private int inwardId;
+    private Item item;
     private BigDecimal quantity;
-    private String unitName;
-    private String source;
+    private Source source;
     private LocalDate date;
-    private String itemName;
-    private String itemSpecs;
 
-    public int getItemIdd() {
-        return itemIdd;
+    public Item getItem() {
+        return item;
     }
 
-    public void setItemIdd(int itemIdd) {
-        this.itemIdd = itemIdd;
+    public void setItem(Item itemIdd) {
+        this.item = itemIdd;
     }
 
     public int getInwardId() {
@@ -65,19 +62,19 @@ public class InwardMeta {
         this.quantity = quantity;
     }
 
-    public String getUnitName() {
-        return unitName;
+    public QuantityUnit getQuantityUnit() {
+        return item.getQuantityUnit();
     }
 
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
+    public void setQuantityUnit(QuantityUnit quantityUnit) {
+        this.item.setQuantityUnit(quantityUnit);
     }
 
-    public String getSource() {
+    public Source getSource() {
         return source;
     }
 
-    public void setSource(String source) {
+    public void setSource(Source source) {
         this.source = source;
     }
 
@@ -88,21 +85,4 @@ public class InwardMeta {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-
-    public String getItemName() {
-        return itemName;
-    }
-
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public String getItemSpecs() {
-        return itemSpecs;
-    }
-
-    public void setItemSpecs(String itemSpecs) {
-        this.itemSpecs = itemSpecs;
-    }
-
 }

@@ -45,12 +45,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.table.DefaultTableModel;
-import warehouse.db.CRUDListable;
 import warehouse.db.model.Inward;
 import warehouse.db.model.InwardMeta;
 import warehouse.db.model.ItemMeta;
-import warehouse.db.model.Source;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
 
@@ -64,7 +61,7 @@ public class InwardsList extends JPanel
         ListableConsumer,
         ItemsSearchListener {
 
-    private DefaultTableModel model;
+    private InwardTableModel model;
     private JTable table;
     private JScrollPane scrollTable;
     private Integer selectedModelRow;
@@ -82,13 +79,7 @@ public class InwardsList extends JPanel
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
-        model = new DefaultTableModel(new String[]{"Inward code", "Item code", "Qty.", "Unit", "Source", "Date", "Name", "Specification"}, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                // Disable cells editing.
-                return false;
-            }
-        };
+        model = new InwardTableModel();
 
         popupMenu = new JPopupMenu();
         popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
@@ -141,15 +132,13 @@ public class InwardsList extends JPanel
 
     @Override
     public void created(Inward inward, ItemMeta itemMeta) {
-        Source source = (Source) CRUDListable.getById(new Source(), inward.getSourceId());
-        model.addRow(new Object[]{
-            inward.getId(),
-            inward.getItemId(),
-            inward.getQuantity(),
-            itemMeta.getQuantityUnit().getName(),
-            source.getName(),
-            inward.getDate()
-        });
+        InwardMeta inwardMeta = new InwardMeta();
+        inwardMeta.setInwardId(inward.getId());
+        inwardMeta.setItem(itemMeta);
+        inwardMeta.setQuantity(inward.getQuantity());
+        inwardMeta.setSource(inward.getSource());
+        inwardMeta.setDate(inward.getDate());
+        model.addInwardMeta(inwardMeta);
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
@@ -165,7 +154,10 @@ public class InwardsList extends JPanel
     @Override
     public void notifyOFFSET(int OFFSET) {
         if (OFFSET == 0) {
-            model.setRowCount(0);
+            model = new InwardTableModel();
+            table.setModel(model);
+            table.removeColumn(table.getColumnModel().getColumn(7));
+            table.removeColumn(table.getColumnModel().getColumn(6));
             incrementedReturnedRowsCount = 0;
         }
     }
@@ -187,7 +179,7 @@ public class InwardsList extends JPanel
          */
         if (model.getRowCount() > 0) {
             for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
-                model.removeRow(incrementedReturnedRowsCount);
+                model.removeInwardMeta(incrementedReturnedRowsCount);
             }
         }
 
@@ -199,15 +191,7 @@ public class InwardsList extends JPanel
         rowIndex = incrementedReturnedRowsCount;
         for (int i = 0; i < size; i++) {
             InwardMeta inwardMeta = itemsMetaRecords.get(i);
-            modelRow[0] = inwardMeta.getInwardId();//code
-            modelRow[1] = inwardMeta.getItemIdd();
-            modelRow[2] = inwardMeta.getQuantity();
-            modelRow[3] = inwardMeta.getUnitName();
-            modelRow[4] = inwardMeta.getSource();
-            modelRow[5] = inwardMeta.getDate();
-            modelRow[6] = inwardMeta.getItemName(); // will be hidden column
-            modelRow[7] = inwardMeta.getItemSpecs(); // will be hidden column
-            model.addRow(modelRow);
+            model.addInwardMeta(inwardMeta);
         }
         btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
     }

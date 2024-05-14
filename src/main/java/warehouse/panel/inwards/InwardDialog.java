@@ -143,7 +143,7 @@ public class InwardDialog extends JDialog {
             itemsAdd.setQuantity(bigDecimal);
             itemsAdd.setDate(selectedDate);
             Source source = (Source) formFieldSource.getSelectedValue();
-            itemsAdd.setSourceId(source.getId());
+            itemsAdd.setSource(source);
             Inward inward = CRUDInwards.create(itemsAdd);
             notifyCreated(inward, itemMeta);
             if (inward != null) {

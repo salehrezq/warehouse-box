@@ -34,6 +34,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import warehouse.db.model.Inward;
 import warehouse.db.model.InwardMeta;
+import warehouse.db.model.Item;
+import warehouse.db.model.QuantityUnit;
+import warehouse.db.model.Source;
 import warehouse.panel.inwards.SearchFilters;
 
 /**
@@ -52,7 +55,7 @@ public class CRUDInwards {
             p.setInt(1, inward.getItemId());
             p.setBigDecimal(2, inward.getQuantity());
             p.setObject(3, inward.getDate());
-            p.setInt(4, inward.getSourceId());
+            p.setInt(4, inward.getSource().getId());
             p.executeUpdate();
 
             try (ResultSet generatedKeys = p.getGeneratedKeys()) {
@@ -69,40 +72,6 @@ public class CRUDInwards {
             Connect.cleanUp();
         }
         return inward;
-    }
-
-    public static ArrayList<InwardMeta> getAll() {
-
-        ArrayList<InwardMeta> inwardsMedta = new ArrayList<>();
-
-        try {
-            String sql = "SELECT inwards.item_id AS item_id, inwards.id AS inward_id,"
-                    + " inwards.quantity, u.name AS unit_name, s.information AS source,"
-                    + " inwards.date, i.name AS item_name, i.specification AS item_specs"
-                    + " FROM inwards JOIN items AS i JOIN quantity_unit AS u JOIN source AS s"
-                    + " ON (inwards.item_id = i.id) AND (i.unit_id = u.id) AND (s.id = inwards.source_id)"
-                    + " ORDER BY inwards.date ASC, inwards.id ASC;";
-
-            con = Connect.getConnection();
-            PreparedStatement p;
-            p = con.prepareStatement(sql);
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                InwardMeta inwardMeta = new InwardMeta();
-                inwardMeta.setItemIdd(result.getInt("item_id"));
-                inwardMeta.setInwardId(result.getInt("inward_id"));
-                inwardMeta.setQuantity(result.getBigDecimal("quantity"));
-                inwardMeta.setUnitName(result.getString("unit_name"));
-                inwardMeta.setSource(result.getString("source"));
-                inwardMeta.setDate(result.getDate("date").toLocalDate());
-                inwardMeta.setItemName(result.getString("item_name"));
-                inwardMeta.setItemSpecs(result.getString("item_specs"));
-                inwardsMedta.add(inwardMeta);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(CRUDInwards.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return inwardsMedta;
     }
 
     private static String formulateSearchFilters(SearchFilters searchFilters) {
@@ -173,7 +142,7 @@ public class CRUDInwards {
         List<InwardMeta> inwardsMedta = new ArrayList<>();
         try {
             String sql = "SELECT inwards.item_id AS item_id, inwards.id AS inward_id,"
-                    + " inwards.quantity, u.name AS unit_name, s.information AS source,"
+                    + " inwards.quantity, u.id AS unit_id ,u.name AS unit_name, s.id AS source_id, s.information AS source_information,"
                     + " inwards.date, i.name AS item_name, i.specification AS item_specs"
                     + " FROM inwards JOIN items AS i JOIN quantity_unit AS u JOIN source AS s"
                     + " ON (inwards.item_id = i.id) AND (i.unit_id = u.id) AND (s.id = inwards.source_id)"
@@ -192,14 +161,22 @@ public class CRUDInwards {
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 InwardMeta inwardMeta = new InwardMeta();
+                Item item = new Item();
+                item.setId(result.getInt("item_id"));
+                item.setName(result.getString("item_name"));
+                item.setSpecification(result.getString("item_specs"));
+                QuantityUnit quantityUnit = new QuantityUnit();
+                quantityUnit.setId(result.getInt("unit_id"));
+                quantityUnit.setName(result.getString("unit_name"));
+                item.setQuantityUnit(quantityUnit);
                 inwardMeta.setInwardId(result.getInt("inward_id"));
-                inwardMeta.setItemIdd(result.getInt("item_id"));
+                inwardMeta.setItem(item);
+                Source source = new Source();
+                source.setId(result.getInt("source_id"));
+                source.setName(result.getString("source_information"));
+                inwardMeta.setSource(source);
                 inwardMeta.setQuantity(result.getBigDecimal("quantity"));
-                inwardMeta.setUnitName(result.getString("unit_name"));
-                inwardMeta.setSource(result.getString("source"));
                 inwardMeta.setDate(result.getDate("date").toLocalDate());
-                inwardMeta.setItemName(result.getString("item_name"));
-                inwardMeta.setItemSpecs(result.getString("item_specs"));
                 inwardsMedta.add(inwardMeta);
             }
         } catch (SQLException ex) {

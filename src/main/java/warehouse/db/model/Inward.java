@@ -36,7 +36,7 @@ public class Inward {
     private int itemId;
     private BigDecimal quantity;
     private LocalDate date;
-    private int sourceId;
+    private Source source;
 
     public int getId() {
         return id;
@@ -70,12 +70,12 @@ public class Inward {
         this.date = date;
     }
 
-    public int getSourceId() {
-        return sourceId;
+    public Source getSource() {
+        return source;
     }
 
-    public void setSourceId(int sourceId) {
-        this.sourceId = sourceId;
+    public void setSource(Source source) {
+        this.source = source;
     }
 
 }
