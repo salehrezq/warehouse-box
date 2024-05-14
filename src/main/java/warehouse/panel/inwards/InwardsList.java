@@ -46,8 +46,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import warehouse.db.model.Inward;
-import warehouse.db.model.InwardMeta;
-import warehouse.db.model.ItemMeta;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
 
@@ -131,14 +129,8 @@ public class InwardsList extends JPanel
     }
 
     @Override
-    public void created(Inward inward, ItemMeta itemMeta) {
-        InwardMeta inwardMeta = new InwardMeta();
-        inwardMeta.setInwardId(inward.getId());
-        inwardMeta.setItem(itemMeta);
-        inwardMeta.setQuantity(inward.getQuantity());
-        inwardMeta.setSource(inward.getSource());
-        inwardMeta.setDate(inward.getDate());
-        model.addInwardMeta(inwardMeta);
+    public void created(Inward inward) {
+        model.addInward(inward);
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
@@ -169,7 +161,7 @@ public class InwardsList extends JPanel
     }
 
     @Override
-    public void notifySearchResult(List<InwardMeta> inwardsMeta) {
+    public void notifySearchResult(List<Inward> inwards) {
         /**
          * To organize order after new item insert. After creating new items,
          * new rows added to the model at run time to reflect newly created
@@ -179,19 +171,19 @@ public class InwardsList extends JPanel
          */
         if (model.getRowCount() > 0) {
             for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
-                model.removeInwardMeta(incrementedReturnedRowsCount);
+                model.removeInward(incrementedReturnedRowsCount);
             }
         }
 
-        List<InwardMeta> itemsMetaRecords = inwardsMeta;
+        List<Inward> inwardsRecords = inwards;
         Object[] modelRow = new Object[8];
 
-        int size = itemsMetaRecords.size();
+        int size = inwardsRecords.size();
         incrementedReturnedRowsCount += size;
         rowIndex = incrementedReturnedRowsCount;
         for (int i = 0; i < size; i++) {
-            InwardMeta inwardMeta = itemsMetaRecords.get(i);
-            model.addInwardMeta(inwardMeta);
+            Inward inward = inwardsRecords.get(i);
+            model.addInward(inward);
         }
         btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
     }

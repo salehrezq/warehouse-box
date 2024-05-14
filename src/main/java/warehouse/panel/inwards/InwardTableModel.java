@@ -28,7 +28,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
-import warehouse.db.model.InwardMeta;
+import warehouse.db.model.Inward;
 import warehouse.db.model.Item;
 import warehouse.db.model.QuantityUnit;
 import warehouse.db.model.Source;
@@ -51,14 +51,14 @@ public class InwardTableModel extends AbstractTableModel {
                 "Specification"
             };
 
-    private List<InwardMeta> inwardsMeta;
+    private List<Inward> inwards;
 
     public InwardTableModel() {
-        inwardsMeta = new ArrayList<>();
+        inwards = new ArrayList<>();
     }
 
-    public InwardTableModel(List<InwardMeta> itemMeta) {
-        this.inwardsMeta = itemMeta;
+    public InwardTableModel(List<Inward> inwards) {
+        this.inwards = inwards;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class InwardTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return inwardsMeta.size();
+        return inwards.size();
     }
 
     @Override
@@ -97,25 +97,25 @@ public class InwardTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int row, int column) {
-        InwardMeta inwardMeta = getInwardMeta(row);
+        Inward inward = getInward(row);
 
         return switch (column) {
             case 0 ->
-                inwardMeta.getInwardId();
+                inward.getId();
             case 1 ->
-                inwardMeta.getItem().getId();
+                inward.getItem().getId();
             case 2 ->
-                inwardMeta.getQuantity();
+                inward.getQuantity();
             case 3 ->
-                inwardMeta.getItem().getQuantityUnit().getName();
+                inward.getItem().getQuantityUnit().getName();
             case 4 ->
-                inwardMeta.getSource().getName();
+                inward.getSource().getName();
             case 5 ->
-                inwardMeta.getDate();
+                inward.getDate();
             case 6 ->
-                inwardMeta.getItem().getName();
+                inward.getItem().getName();
             case 7 ->
-                inwardMeta.getItem().getSpecification();
+                inward.getItem().getSpecification();
             default ->
                 null;
         };
@@ -123,44 +123,44 @@ public class InwardTableModel extends AbstractTableModel {
 
     @Override
     public void setValueAt(Object value, int row, int column) {
-        InwardMeta inwardMeta = getInwardMeta(row);
+        Inward inward = getInward(row);
 
         switch (column) {
             case 0 ->
-                inwardMeta.setInwardId((int) value);
+                inward.setId((int) value);
             case 1 ->
-                inwardMeta.setItem((Item) value); // Item Id
+                inward.setItem((Item) value); // Item Id
             case 2 ->
-                inwardMeta.setQuantity((BigDecimal) value);
+                inward.setQuantity((BigDecimal) value);
             case 3 ->
-                inwardMeta.setItem((Item) value); // Item Quantity unit
+                inward.setItem((Item) value); // Item Quantity unit
             case 4 ->
-                inwardMeta.setSource((Source) value);
+                inward.setSource((Source) value);
             case 5 ->
-                inwardMeta.setDate((LocalDate) value);
+                inward.setDate((LocalDate) value);
             case 6 ->
-                inwardMeta.setItem((Item) value); // Item Name
+                inward.setItem((Item) value); // Item Name
             case 7 ->
-                inwardMeta.setItem((Item) value); // Item Specification
+                inward.setItem((Item) value); // Item Specification
         }
         fireTableCellUpdated(row, column);
     }
 
-    public InwardMeta getInwardMeta(int row) {
-        return inwardsMeta.get(row);
+    public Inward getInward(int row) {
+        return inwards.get(row);
     }
 
-    public void addInwardMeta(InwardMeta inwardMeta) {
-        insertInwardMeta(getRowCount(), inwardMeta);
+    public void addInward(Inward inward) {
+        insertInward(getRowCount(), inward);
     }
 
-    public void insertInwardMeta(int row, InwardMeta inwardMeta) {
-        inwardsMeta.add(row, inwardMeta);
+    public void insertInward(int row, Inward inward) {
+        inwards.add(row, inward);
         fireTableRowsInserted(row, row);
     }
 
-    public void removeInwardMeta(int row) {
-        inwardsMeta.remove(row);
+    public void removeInward(int row) {
+        inwards.remove(row);
         fireTableRowsDeleted(row, row);
     }
 
