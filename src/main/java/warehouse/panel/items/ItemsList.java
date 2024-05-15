@@ -47,7 +47,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import warehouse.db.CRUDItems;
 import warehouse.db.CRUDListable;
 import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
@@ -268,10 +267,6 @@ public class ItemsList extends JPanel
 
             SwingUtilities.invokeLater(() -> {
                 int rowAtPoint = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
-                int modelRow = table.convertRowIndexToModel(rowAtPoint);
-                int itemId = (int) table.getModel().getValueAt(modelRow, 0);
-                int balance = CRUDItems.getBalance(itemId);
-                menuItemOutwardOfSelectedItem.setEnabled(balance > 0);
                 if (rowAtPoint > -1) {
                     table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
                 }
