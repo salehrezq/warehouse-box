@@ -128,9 +128,9 @@ public class OutwardDialog extends JDialog {
         this.outwardCRUDListeners.add(outwardCRUDListener);
     }
 
-    public void notifyCreated(Outward outward, ItemMeta relatedItemMeta) {
+    public void notifyCreated(Outward outward) {
         this.outwardCRUDListeners.forEach((outwardCRUDListener) -> {
-            outwardCRUDListener.created(outward, relatedItemMeta);
+            outwardCRUDListener.created(outward);
         });
     }
 
@@ -148,15 +148,15 @@ public class OutwardDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             BigDecimal quantity = new BigDecimal(tfQuantity.getText());
             Outward itemOutward = new Outward();
-            itemOutward.setItemId(itemMeta.getId());
+            itemOutward.setItem(itemMeta);
             itemOutward.setQuantity(quantity);
             itemOutward.setUsedFor(tfUsedFor.getText());
             itemOutward.setDate(selectedDate);
             Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
-            itemOutward.setRecipientId(recipient.getId());
+            itemOutward.setRecipient(recipient);
             Outward outward = CRUDOutwards.create(itemOutward);
             if (outward != null) {
-                notifyCreated(itemOutward, itemMeta);
+                notifyCreated(itemOutward);
                 OutwardDialog.this.dispose();
                 JOptionPane.showMessageDialog(
                         null,

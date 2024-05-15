@@ -23,7 +23,6 @@
  */
 package warehouse.panel.outwards;
 
-import warehouse.db.model.ItemMeta;
 import warehouse.db.model.Outward;
 
 /**
@@ -32,5 +31,5 @@ import warehouse.db.model.Outward;
  */
 public interface OutwardCRUDListener {
 
-    public void created(Outward outward, ItemMeta relatedItemMeta);
+    public void created(Outward outward);
 }

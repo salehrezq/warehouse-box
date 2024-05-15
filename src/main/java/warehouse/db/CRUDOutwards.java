@@ -32,8 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import warehouse.db.model.Item;
 import warehouse.db.model.Outward;
-import warehouse.db.model.OutwardMeta;
+import warehouse.db.model.QuantityUnit;
+import warehouse.db.model.Recipient;
 import warehouse.panel.outwards.SearchFilters;
 
 /**
@@ -49,9 +51,9 @@ public class CRUDOutwards {
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            p.setInt(1, outward.getItemId());
+            p.setInt(1, outward.getItem().getId());
             p.setBigDecimal(2, outward.getQuantity());
-            p.setInt(3, outward.getRecipientId());
+            p.setInt(3, outward.getRecipient().getId());
             p.setString(4, outward.getUsedFor());
             p.setObject(5, outward.getDate());
             p.executeUpdate();
@@ -70,41 +72,6 @@ public class CRUDOutwards {
             Connect.cleanUp();
         }
         return outward;
-    }
-
-    public static ArrayList<OutwardMeta> getAll() {
-
-        ArrayList<OutwardMeta> outwardMetas = new ArrayList<>();
-
-        try {
-            String sql = "SELECT o.id AS outward_id, o.item_id AS item_id,"
-                    + " o.quantity, u.name AS unit_name, r.name AS recipient, o.`for`,"
-                    + " o.date, i.name AS item_name, i.specification AS item_specs"
-                    + " FROM outwards AS o JOIN items AS i JOIN quantity_unit AS u JOIN recipients AS r"
-                    + " ON (o.item_id = i.id) AND (i.unit_id = u.id) AND (r.id = o.recipient_id)"
-                    + " ORDER BY o.date ASC, o.id ASC;";
-
-            con = Connect.getConnection();
-            PreparedStatement p;
-            p = con.prepareStatement(sql);
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                OutwardMeta outwardMeta = new OutwardMeta();
-                outwardMeta.setId(result.getInt("outward_id"));
-                outwardMeta.setItemId(result.getInt("item_id"));
-                outwardMeta.setQuantity(result.getBigDecimal("quantity"));
-                outwardMeta.setUnitName(result.getString("unit_name"));
-                outwardMeta.setRecipient(result.getString("recipient"));
-                outwardMeta.setUsedFor(result.getString("for"));
-                outwardMeta.setDate(result.getDate("date").toLocalDate());
-                outwardMeta.setItemName(result.getString("item_name"));
-                outwardMeta.setItemSpecification(result.getString("item_specs"));
-                outwardMetas.add(outwardMeta);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(CRUDOutwards.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return outwardMetas;
     }
 
     private static String formulateSearchFilters(SearchFilters searchFilters) {
@@ -171,11 +138,12 @@ public class CRUDOutwards {
         return preparedStatementWrapper;
     }
 
-    public static List<OutwardMeta> search(SearchFilters searchFilters, int LIMIT, int OFFSET) {
-        List<OutwardMeta> outwardsMeta = new ArrayList<>();
+    public static List<Outward> search(SearchFilters searchFilters, int LIMIT, int OFFSET) {
+        List<Outward> outwards = new ArrayList<>();
         try {
             String sql = "SELECT o.id AS outward_id, o.item_id AS item_id,"
-                    + " o.quantity, u.name AS unit_name, r.name AS recipient, o.`for`,"
+                    + " o.quantity, u.id AS qunit_id, u.name AS qunit_name,"
+                    + " r.id AS recipient_id, r.name AS recipient_name, o.`for`,"
                     + " o.date, i.name AS item_name, i.specification AS item_specs"
                     + " FROM outwards AS o JOIN items AS i JOIN quantity_unit AS u JOIN recipients AS r"
                     + " ON (o.item_id = i.id) AND (i.unit_id = u.id) AND (r.id = o.recipient_id)"
@@ -193,22 +161,30 @@ public class CRUDOutwards {
             System.out.println(p);
             ResultSet result = p.executeQuery();
             while (result.next()) {
-                OutwardMeta outwardMeta = new OutwardMeta();
-                outwardMeta.setId(result.getInt("outward_id"));
-                outwardMeta.setItemId(result.getInt("item_id"));
-                outwardMeta.setQuantity(result.getBigDecimal("quantity"));
-                outwardMeta.setUnitName(result.getString("unit_name"));
-                outwardMeta.setRecipient(result.getString("recipient"));
-                outwardMeta.setDate(result.getDate("date").toLocalDate());
-                outwardMeta.setUsedFor(result.getString("for"));
-                outwardMeta.setItemName(result.getString("item_name"));
-                outwardMeta.setItemSpecification(result.getString("item_specs"));
-                outwardsMeta.add(outwardMeta);
+                Outward outward = new Outward();
+                Item item = new Item();
+                item.setId(result.getInt("item_id"));
+                item.setName(result.getString("item_name"));
+                item.setSpecification(result.getString("item_specs"));
+                QuantityUnit quantityUnit = new QuantityUnit();
+                quantityUnit.setId(result.getInt("qunit_id"));
+                quantityUnit.setName(result.getString("qunit_name"));
+                item.setQuantityUnit(quantityUnit);
+                outward.setId(result.getInt("outward_id"));
+                outward.setItem(item);
+                outward.setQuantity(result.getBigDecimal("quantity"));
+                Recipient recipient = new Recipient();
+                recipient.setId(result.getInt("recipient_id"));
+                recipient.setName(result.getString("recipient_name"));
+                outward.setRecipient(recipient);
+                outward.setDate(result.getDate("date").toLocalDate());
+                outward.setUsedFor(result.getString("for"));
+                outwards.add(outward);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDOutwards.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return outwardsMeta;
+        return outwards;
     }
 
     public static int searchResultRowsCount(SearchFilters searchFilters) {

@@ -45,12 +45,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.table.DefaultTableModel;
-import warehouse.db.CRUDListable;
-import warehouse.db.model.ItemMeta;
 import warehouse.db.model.Outward;
-import warehouse.db.model.OutwardMeta;
-import warehouse.db.model.Recipient;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
 
@@ -64,7 +59,7 @@ public class OutwardsList extends JPanel
         ListableConsumer,
         ItemsSearchListener {
 
-    private DefaultTableModel model;
+    private OutwardTableModel model;
     private JTable table;
     private JScrollPane scrollTable;
     private Integer selectedModelRow;
@@ -82,13 +77,7 @@ public class OutwardsList extends JPanel
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
-        model = new DefaultTableModel(new String[]{"Outward code", "Item code", "Qty.", "Unit", "Recipient", "For", "Date", "Name", "Spcification"}, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                // Disable cells editing.
-                return false;
-            }
-        };
+        model = new OutwardTableModel();
 
         popupMenu = new JPopupMenu();
         popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
@@ -141,17 +130,8 @@ public class OutwardsList extends JPanel
     }
 
     @Override
-    public void created(Outward outward, ItemMeta relatedItemMeta) {
-        Recipient recipient = (Recipient) CRUDListable.getById(new Recipient(), outward.getRecipientId());
-        model.addRow(new Object[]{
-            outward.getId(),
-            outward.getItemId(),
-            outward.getQuantity(),
-            relatedItemMeta.getQuantityUnit().getName(),
-            recipient.getName(),
-            outward.getUsedFor(),
-            outward.getDate()
-        });
+    public void created(Outward outward) {
+        model.addOutward(outward);
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
@@ -167,7 +147,10 @@ public class OutwardsList extends JPanel
     @Override
     public void notifyOFFSET(int OFFSET) {
         if (OFFSET == 0) {
-            model.setRowCount(0);
+            model = new OutwardTableModel();
+            table.setModel(model);
+            table.removeColumn(table.getColumnModel().getColumn(8));
+            table.removeColumn(table.getColumnModel().getColumn(7));
             incrementedReturnedRowsCount = 0;
         }
     }
@@ -179,7 +162,7 @@ public class OutwardsList extends JPanel
     }
 
     @Override
-    public void notifySearchResult(List<OutwardMeta> outwardsMeta) {
+    public void notifySearchResult(List<Outward> outwards) {
         /**
          * To organize order after new item insert. After creating new items,
          * new rows added to the model at run time to reflect newly created
@@ -189,28 +172,18 @@ public class OutwardsList extends JPanel
          */
         if (model.getRowCount() > 0) {
             for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
-                model.removeRow(incrementedReturnedRowsCount);
+                model.removeOutward(incrementedReturnedRowsCount);
             }
         }
 
-        List<OutwardMeta> outwardsMetaRecords = outwardsMeta;
-        Object[] modelRow = new Object[9];
+        List<Outward> outwardsMetaRecords = outwards;
 
         int size = outwardsMetaRecords.size();
         incrementedReturnedRowsCount += size;
         rowIndex = incrementedReturnedRowsCount;
         for (int i = 0; i < size; i++) {
-            OutwardMeta outwardMeta = outwardsMetaRecords.get(i);
-            modelRow[0] = outwardMeta.getId();
-            modelRow[1] = outwardMeta.getItemId();
-            modelRow[2] = outwardMeta.getQuantity();
-            modelRow[3] = outwardMeta.getUnitName();
-            modelRow[4] = outwardMeta.getRecipient();
-            modelRow[5] = outwardMeta.getUsedFor();
-            modelRow[6] = outwardMeta.getDate();
-            modelRow[7] = outwardMeta.getItemName(); // will be hidden column
-            modelRow[8] = outwardMeta.getItemSpecification(); // will be hidden column
-            model.addRow(modelRow);
+            Outward outward = outwardsMetaRecords.get(i);
+            model.addOutward(outward);
         }
         btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
     }

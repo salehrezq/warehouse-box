@@ -24,7 +24,7 @@
 package warehouse.panel.outwards;
 
 import java.util.List;
-import warehouse.db.model.OutwardMeta;
+import warehouse.db.model.Outward;
 
 /**
  *
@@ -36,6 +36,6 @@ public interface ItemsSearchListener {
 
     public void notifySearchResultTotalRowsCount(int count);
 
-    public void notifySearchResult(List<OutwardMeta> data);
+    public void notifySearchResult(List<Outward> data);
 
 }

@@ -33,9 +33,9 @@ import java.time.LocalDate;
 public class Outward {
 
     private int id;
-    private int itemId;
+    private Item item;
     private BigDecimal quantity;
-    private int recipientId;
+    private Recipient recipient;
     private String usedFor;
     private LocalDate date;
 
@@ -47,12 +47,12 @@ public class Outward {
         this.id = id;
     }
 
-    public int getItemId() {
-        return itemId;
+    public Item getItem() {
+        return item;
     }
 
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
+    public void setItem(Item itemId) {
+        this.item = itemId;
     }
 
     public BigDecimal getQuantity() {
@@ -63,12 +63,12 @@ public class Outward {
         this.quantity = quantity;
     }
 
-    public int getRecipientId() {
-        return recipientId;
+    public Recipient getRecipient() {
+        return recipient;
     }
 
-    public void setRecipientId(int recipientId) {
-        this.recipientId = recipientId;
+    public void setRecipient(Recipient recipient) {
+        this.recipient = recipient;
     }
 
     public String getUsedFor() {
