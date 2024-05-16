@@ -47,7 +47,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import warehouse.db.CRUDListable;
 import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
 import warehouse.db.model.QuantityUnit;
@@ -77,7 +76,8 @@ public class ItemsList extends JPanel
     private JButton btnLoadMore;
     private int searchResultTotalRowsCount,
             incrementedReturnedRowsCount,
-            rowIndex;
+            rowIndex,
+            tableRow;
     private NameAndSpecDisplayFields nameAndSpecDisplayFields;
 
     public ItemsList() {
@@ -157,12 +157,12 @@ public class ItemsList extends JPanel
     @Override
     public void updated(Item updatedItem) {
         // "Code", "Name", "Specification", "Balance", "unit_id", "Unit"
-        QuantityUnit unit = (QuantityUnit) CRUDListable.getById(new QuantityUnit(), updatedItem.getQuantityUnit().getId());
-        model.setValueAt(updatedItem.getName(), selectedModelRow, 1);
-        model.setValueAt(updatedItem.getSpecification(), selectedModelRow, 2);
+        // QuantityUnit unit = (QuantityUnit) CRUDListable.getById(new QuantityUnit(), updatedItem.getQuantityUnit().getId());
+        table.setValueAt(updatedItem.getName(), tableRow, 1);
+        table.setValueAt(updatedItem.getSpecification(), tableRow, 2);
         // 3 is calculated value not relevant on the update here
-        model.setValueAt(unit.getId(), selectedModelRow, 4);
-        model.setValueAt(unit.getName(), selectedModelRow, 5);
+        table.setValueAt(updatedItem.getQuantityUnit().getId(), tableRow, 4);
+        table.setValueAt(updatedItem.getQuantityUnit().getName(), tableRow, 5);
     }
 
     @Override
@@ -288,7 +288,8 @@ public class ItemsList extends JPanel
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int modelRowIndex = table.convertRowIndexToModel(table.getSelectedRow());
+            tableRow = table.getSelectedRow();
+            int modelRowIndex = table.convertRowIndexToModel(tableRow);
             ItemMeta itemMeta = model.getItemMeta(modelRowIndex);
 
             Object source = e.getSource();
