@@ -66,7 +66,7 @@ public class InwardsList extends JPanel
     private ArrayList<RowIdSelectionListener> rowIdSelectionListeners;
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
-    private final JMenuItem menuItemAddOfSelectedItem;
+    private final JMenuItem menuInwardEdit;
     private JButton btnLoadMore;
     private int searchResultTotalRowsCount,
             incrementedReturnedRowsCount,
@@ -83,9 +83,9 @@ public class InwardsList extends JPanel
 
         popupMenu = new JPopupMenu();
         popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
-        menuItemAddOfSelectedItem = new JMenuItem("Inwards");
-        menuItemAddOfSelectedItem.addActionListener(new PopupMenuItemActionHandler());
-        popupMenu.add(menuItemAddOfSelectedItem);
+        menuInwardEdit = new JMenuItem("Inwards");
+        menuInwardEdit.addActionListener(new PopupMenuItemActionHandler());
+        popupMenu.add(menuInwardEdit);
 
         table = new JTable(model);
         table.addMouseListener(new ItemRowDoubleClickHandler());
