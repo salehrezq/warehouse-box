@@ -70,8 +70,10 @@ public class InwardsList extends JPanel
     private JButton btnLoadMore;
     private int searchResultTotalRowsCount,
             incrementedReturnedRowsCount,
-            rowIndex;
+            rowIndex,
+            tableRow;
     private NameAndSpecDisplayFields nameAndSpecDisplayFields;
+    private InwardDialog inwardDialog;
 
     public InwardsList() {
 
@@ -110,6 +112,8 @@ public class InwardsList extends JPanel
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
 
+        inwardDialog = new InwardDialog(null, "Update Inward", true);
+
         btnLoadMore = new JButton("Load more");
         btnLoadMore.setEnabled(false);
         add(btnLoadMore, BorderLayout.PAGE_END);
@@ -131,6 +135,13 @@ public class InwardsList extends JPanel
     @Override
     public void created(Inward inward) {
         model.addInward(inward);
+    }
+
+    @Override
+    public void updated(Inward inward) {
+        table.setValueAt(inward.getQuantity(), tableRow, 2);
+        table.setValueAt(inward.getSource(), tableRow, 4);
+        table.setValueAt(inward.getDate(), tableRow, 5);
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
@@ -266,6 +277,12 @@ public class InwardsList extends JPanel
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            tableRow = table.getSelectedRow();
+            int modelIndex = table.convertRowIndexToModel(tableRow);
+            Inward inward = model.getInward(modelIndex);
+            inwardDialog.setInwardToFormFields(inward);
+            inwardDialog.setVisible(true);
+
 //            int itemIdColumn = 0;
 //            int itemUnitColumn = 3;
 //            String itemUnit;

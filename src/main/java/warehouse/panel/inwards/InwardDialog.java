@@ -63,8 +63,9 @@ public class InwardDialog extends JDialog {
     private DatePickerSettings datePickerSettings;
     private LocalDate selectedDate;
     private DateChangeHandler dateChangeHandler;
-    private ArrayList<InwardCRUDListener> inwardCRUDListeners;
+    private static ArrayList<InwardCRUDListener> inwardCRUDListeners;
     private ItemMeta itemMeta;
+    private Inward inward;
 
     public InwardDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -110,6 +111,13 @@ public class InwardDialog extends JDialog {
         selectedDate = datePicker.getDate();
     }
 
+    protected void setInwardToFormFields(Inward inward) {
+        this.inward = inward;
+        tfQuantity.setText(inward.getQuantity().toPlainString());
+        formFieldSource.setPreviewSelected(inward.getSource());
+        datePicker.setDate(inward.getDate());
+    }
+
     public void setItemMeta(ItemMeta itemMeta) {
         this.itemMeta = itemMeta;
         lbQuantityUnit.setText(itemMeta.getQuantityUnit().getName());
@@ -125,6 +133,12 @@ public class InwardDialog extends JDialog {
         });
     }
 
+    public void notifyUpdated(Inward inward) {
+        this.inwardCRUDListeners.forEach((inwardCRUDListener) -> {
+            inwardCRUDListener.updated(inward);
+        });
+    }
+
     private class DateChangeHandler implements DateChangeListener {
 
         @Override
@@ -137,31 +151,55 @@ public class InwardDialog extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
-            Inward inward = new Inward();
-            inward.setItem(itemMeta);
-            inward.setQuantity(bigDecimal);
-            inward.setDate(selectedDate);
-            Source source = (Source) formFieldSource.getSelectedValue();
-            inward.setSource(source);
-            Inward inwardRetrieved = CRUDInwards.create(inward);
-            notifyCreated(inwardRetrieved);
-            if (inwardRetrieved != null) {
-                InwardDialog.this.dispose();
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Inward added successfully",
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
+            if (inward == null) {
+                BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
+                Inward inward = new Inward();
+                inward.setItem(itemMeta);
+                inward.setQuantity(bigDecimal);
+                inward.setDate(selectedDate);
+                Source source = (Source) formFieldSource.getSelectedValue();
+                inward.setSource(source);
+                Inward inwardRetrieved = CRUDInwards.create(inward);
+                notifyCreated(inwardRetrieved);
+                if (inwardRetrieved != null) {
+                    InwardDialog.this.dispose();
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Inward added successfully",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
 
+                } else {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Issue: Inward was not added",
+                            "Failure",
+                            JOptionPane.WARNING_MESSAGE);
+                }
             } else {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Issue: Inward was not added",
-                        "Failure",
-                        JOptionPane.WARNING_MESSAGE);
+                BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
+                inward.setQuantity(bigDecimal);
+                Source source = (Source) formFieldSource.getSelectedValue();
+                inward.setSource(source);
+                inward.setDate(selectedDate);
+                boolean update = CRUDInwards.update(inward);
+                if (update) {
+                    notifyUpdated(inward);
+                    InwardDialog.this.dispose();
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Inward updated successfully",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                } else {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Issue: Inward was not updated",
+                            "Failure",
+                            JOptionPane.WARNING_MESSAGE);
+                }
             }
         }
     }
-
 }
