@@ -73,7 +73,7 @@ public class InwardsList extends JPanel
             rowIndex,
             tableRow;
     private NameAndSpecDisplayFields nameAndSpecDisplayFields;
-    private InwardDialog inwardDialog;
+    private InwardDialog inwardEditDialog;
 
     public InwardsList() {
 
@@ -112,7 +112,7 @@ public class InwardsList extends JPanel
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
 
-        inwardDialog = new InwardDialog(null, "Update Inward", true);
+        inwardEditDialog = new InwardDialog(null, "Update Inward", true);
 
         btnLoadMore = new JButton("Load more");
         btnLoadMore.setEnabled(false);
@@ -280,8 +280,8 @@ public class InwardsList extends JPanel
             tableRow = table.getSelectedRow();
             int modelIndex = table.convertRowIndexToModel(tableRow);
             Inward inward = model.getInward(modelIndex);
-            inwardDialog.setInwardToFormFields(inward);
-            inwardDialog.setVisible(true);
+            inwardEditDialog.setInwardToFormFields(inward);
+            inwardEditDialog.setVisible(true);
 
 //            int itemIdColumn = 0;
 //            int itemUnitColumn = 3;

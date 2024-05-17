@@ -73,7 +73,7 @@ public class OutwardsList extends JPanel
             rowIndex,
             tableRow;
     private NameAndSpecDisplayFields nameAndSpecDisplayFields;
-    private OutwardDialog outwardDialog;
+    private OutwardDialog outwarEditdDialog;
 
     public OutwardsList() {
 
@@ -113,7 +113,7 @@ public class OutwardsList extends JPanel
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
 
-        outwardDialog = new OutwardDialog(null, "Update Outward", true);
+        outwarEditdDialog = new OutwardDialog(null, "Update Outward", true);
 
         btnLoadMore = new JButton("Load more");
         btnLoadMore.setEnabled(false);
@@ -280,8 +280,8 @@ public class OutwardsList extends JPanel
             tableRow = table.getSelectedRow();
             int modelIndex = table.convertRowIndexToModel(tableRow);
             Outward outward = model.getOutward(modelIndex);
-            outwardDialog.setOutwardToFormFields(outward);
-            outwardDialog.setVisible(true);
+            outwarEditdDialog.setOutwardToFormFields(outward);
+            outwarEditdDialog.setVisible(true);
         }
     }
 

@@ -70,8 +70,8 @@ public class ItemsList extends JPanel
     private final JMenuItem menuItemInwardsOfSelectedItem,
             menuItemOutwardOfSelectedItem,
             menuItemUpdateItem;
-    private InwardDialog inwardDialog;
-    private OutwardDialog outwardDialog;
+    private InwardDialog inwardCreateDialog;
+    private OutwardDialog outwardCreateDialog;
     private ItemCreateUpdateDialog updateItemDialog;
     private JButton btnLoadMore;
     private int searchResultTotalRowsCount,
@@ -117,8 +117,8 @@ public class ItemsList extends JPanel
         btnLoadMore.setEnabled(false);
         //  btnLoadMore.addActionListener(new LoadMoreHandler());
         add(btnLoadMore, BorderLayout.PAGE_END);
-        inwardDialog = new InwardDialog(null, "Inward", true);
-        outwardDialog = new OutwardDialog(null, "Outward", true);
+        inwardCreateDialog = new InwardDialog(null, "Inward", true);
+        outwardCreateDialog = new OutwardDialog(null, "Outward", true);
         updateItemDialog = new ItemCreateUpdateDialog(null, "Update item", true);
     }
 
@@ -130,12 +130,12 @@ public class ItemsList extends JPanel
         return btnLoadMore;
     }
 
-    public InwardDialog getInwardDialog() {
-        return this.inwardDialog;
+    public InwardDialog getInwardCreateDialog() {
+        return this.inwardCreateDialog;
     }
 
-    public OutwardDialog getOutwardDialog() {
-        return this.outwardDialog;
+    public OutwardDialog getOutwardCreateDialog() {
+        return this.outwardCreateDialog;
     }
 
     protected void setnameAndSpecDisplayFields(NameAndSpecDisplayFields nameAndSpecDisplayFields) {
@@ -294,11 +294,11 @@ public class ItemsList extends JPanel
 
             Object source = e.getSource();
             if (source == menuItemInwardsOfSelectedItem) {
-                inwardDialog.setItemMeta(itemMeta);
-                inwardDialog.setVisible(true);
+                inwardCreateDialog.setItemMeta(itemMeta);
+                inwardCreateDialog.setVisible(true);
             } else if (source == menuItemOutwardOfSelectedItem) {
-                outwardDialog.setItemMeta(itemMeta);
-                outwardDialog.setVisible(true);
+                outwardCreateDialog.setItemMeta(itemMeta);
+                outwardCreateDialog.setVisible(true);
             } else if (source == menuItemUpdateItem) {
                 updateItemDialog.setTfName(itemMeta.getName());
                 updateItemDialog.setTfSpecs(itemMeta.getSpecification());

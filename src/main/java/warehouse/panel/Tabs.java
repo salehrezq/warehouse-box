@@ -27,11 +27,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import warehouse.panel.inwards.InwardDialog;
 import warehouse.panel.inwards.InwardsTap;
 import warehouse.panel.items.ItemsList;
 import warehouse.panel.items.ItemsTab;
 import warehouse.panel.outwards.OutwardsTap;
 import warehouse.panel.items.ItemImage;
+import warehouse.panel.outwards.OutwardDialog;
 
 /**
  *
@@ -52,13 +54,11 @@ public class Tabs extends JPanel {
         inwardsTap = new InwardsTap();
         outwardsTap = new OutwardsTap();
 
-        ((ItemsList) itemsTab.getItemsList())
-                .getInwardDialog()
-                .addInwardCRUDListener(inwardsTap.getInwardsList());
+        InwardDialog inwardDialog = itemsTab.getItemsList().getInwardCreateDialog();
+        inwardDialog.addInwardCRUDListener(inwardsTap.getInwardsList());
 
-        ((ItemsList) itemsTab.getItemsList())
-                .getOutwardDialog()
-                .addOutwardCRUDListener(outwardsTap.getOutwardsList());
+        OutwardDialog outInwardDialog = itemsTab.getItemsList().getOutwardCreateDialog();
+        outInwardDialog.addOutwardCRUDListener(outwardsTap.getOutwardsList());
 
         tabs.add(itemsTab, "Items");
         tabs.add(inwardsTap, "Inwards");
