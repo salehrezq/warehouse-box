@@ -66,12 +66,14 @@ public class OutwardsList extends JPanel
     private ArrayList<RowIdSelectionListener> rowIdSelectionListeners;
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
-    private final JMenuItem menuItemAddOfSelectedItem;
+    private final JMenuItem menuOutwardEdit;
     private JButton btnLoadMore;
     private int searchResultTotalRowsCount,
             incrementedReturnedRowsCount,
-            rowIndex;
+            rowIndex,
+            tableRow;
     private NameAndSpecDisplayFields nameAndSpecDisplayFields;
+    private OutwardDialog outwardDialog;
 
     public OutwardsList() {
 
@@ -81,9 +83,9 @@ public class OutwardsList extends JPanel
 
         popupMenu = new JPopupMenu();
         popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
-        menuItemAddOfSelectedItem = new JMenuItem("Inwards");
-        menuItemAddOfSelectedItem.addActionListener(new PopupMenuItemActionHandler());
-        popupMenu.add(menuItemAddOfSelectedItem);
+        menuOutwardEdit = new JMenuItem("Edit");
+        menuOutwardEdit.addActionListener(new PopupMenuItemActionHandler());
+        popupMenu.add(menuOutwardEdit);
 
         table = new JTable(model);
         table.addMouseListener(new ItemRowDoubleClickHandler());
@@ -111,6 +113,8 @@ public class OutwardsList extends JPanel
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
 
+        outwardDialog = new OutwardDialog(null, "Update Outward", true);
+
         btnLoadMore = new JButton("Load more");
         btnLoadMore.setEnabled(false);
         add(btnLoadMore, BorderLayout.PAGE_END);
@@ -132,6 +136,14 @@ public class OutwardsList extends JPanel
     @Override
     public void created(Outward outward) {
         model.addOutward(outward);
+    }
+
+    @Override
+    public void updated(Outward outward) {
+        table.setValueAt(outward.getQuantity(), tableRow, 2);
+        table.setValueAt(outward.getRecipient(), tableRow, 4);
+        table.setValueAt(outward.getUsedFor(), tableRow, 5);
+        table.setValueAt(outward.getDate(), tableRow, 6);
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
@@ -265,19 +277,11 @@ public class OutwardsList extends JPanel
 
         @Override
         public void actionPerformed(ActionEvent e) {
-//            int itemIdColumn = 0;
-//            int itemUnitColumn = 3;
-//            String itemUnit;
-//            selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
-//            Object itemIdObj = table.getModel().getValueAt(selectedModelRow, itemIdColumn);
-//            itemUnit = (String) table.getModel().getValueAt(selectedModelRow, itemUnitColumn);
-//            System.out.println("unit " + itemUnit);
-//            int itemId = Integer.parseInt(itemIdObj.toString());
-//            AddItemsDialog addItemsDialog = new AddItemsDialog(null, "Add items", true);
-//            addItemsDialog.setItemId(itemId);
-//            addItemsDialog.setItemUnit(itemUnit);
-//            addItemsDialog.setVisible(true);
-            System.out.println("Placeholder to implement");
+            tableRow = table.getSelectedRow();
+            int modelIndex = table.convertRowIndexToModel(tableRow);
+            Outward outward = model.getOutward(modelIndex);
+            outwardDialog.setOutwardToFormFields(outward);
+            outwardDialog.setVisible(true);
         }
     }
 

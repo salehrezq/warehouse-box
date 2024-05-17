@@ -62,8 +62,9 @@ public class OutwardDialog extends JDialog {
     private DatePickerSettings datePickerSettings;
     private LocalDate selectedDate;
     private DateChangeHandler dateChangeHandler;
-    private ArrayList<OutwardCRUDListener> outwardCRUDListeners;
+    private static ArrayList<OutwardCRUDListener> outwardCRUDListeners;
     private ItemMeta itemMeta;
+    private Outward outward;
 
     public OutwardDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -117,6 +118,14 @@ public class OutwardDialog extends JDialog {
         selectedDate = datePicker.getDate();
     }
 
+    protected void setOutwardToFormFields(Outward outward) {
+        this.outward = outward;
+        tfQuantity.setText(outward.getQuantity().toPlainString());
+        formFieldRecipient.setPreviewSelected(outward.getRecipient());
+        tfUsedFor.setText(outward.getUsedFor());
+        datePicker.setDate(outward.getDate());
+    }
+
     public void setItemMeta(ItemMeta itemMeta) {
         this.itemMeta = itemMeta;
         lbQuantityUnit.setText(itemMeta.getQuantityUnit().getName());
@@ -125,12 +134,18 @@ public class OutwardDialog extends JDialog {
     }
 
     public void addOutwardCRUDListener(OutwardCRUDListener outwardCRUDListener) {
-        this.outwardCRUDListeners.add(outwardCRUDListener);
+        outwardCRUDListeners.add(outwardCRUDListener);
     }
 
     public void notifyCreated(Outward outward) {
-        this.outwardCRUDListeners.forEach((outwardCRUDListener) -> {
+        outwardCRUDListeners.forEach((outwardCRUDListener) -> {
             outwardCRUDListener.created(outward);
+        });
+    }
+
+    public void notifyUpdated(Outward outward) {
+        outwardCRUDListeners.forEach((outwardCRUDListener) -> {
+            outwardCRUDListener.updated(outward);
         });
     }
 
@@ -146,29 +161,54 @@ public class OutwardDialog extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            BigDecimal quantity = new BigDecimal(tfQuantity.getText());
-            Outward itemOutward = new Outward();
-            itemOutward.setItem(itemMeta);
-            itemOutward.setQuantity(quantity);
-            itemOutward.setUsedFor(tfUsedFor.getText());
-            itemOutward.setDate(selectedDate);
-            Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
-            itemOutward.setRecipient(recipient);
-            Outward outward = CRUDOutwards.create(itemOutward);
-            if (outward != null) {
-                notifyCreated(itemOutward);
-                OutwardDialog.this.dispose();
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Outward added successfully",
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
+            if (outward == null) {
+                BigDecimal quantity = new BigDecimal(tfQuantity.getText());
+                Outward itemOutward = new Outward();
+                itemOutward.setItem(itemMeta);
+                itemOutward.setQuantity(quantity);
+                itemOutward.setUsedFor(tfUsedFor.getText());
+                itemOutward.setDate(selectedDate);
+                Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
+                itemOutward.setRecipient(recipient);
+                Outward outward = CRUDOutwards.create(itemOutward);
+                if (outward != null) {
+                    notifyCreated(itemOutward);
+                    OutwardDialog.this.dispose();
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Outward added successfully",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Issue: Outward was not added",
+                            "Failure",
+                            JOptionPane.WARNING_MESSAGE);
+                }
             } else {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Issue: Outward was not added",
-                        "Failure",
-                        JOptionPane.WARNING_MESSAGE);
+                BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
+                outward.setQuantity(bigDecimal);
+                Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
+                outward.setRecipient(recipient);
+                outward.setUsedFor(tfUsedFor.getText());
+                outward.setDate(selectedDate);
+                boolean update = CRUDOutwards.update(outward);
+                if (update) {
+                    notifyUpdated(outward);
+                    OutwardDialog.this.dispose();
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Outward updated successfully",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Issue: Outward was not updated",
+                            "Failure",
+                            JOptionPane.WARNING_MESSAGE);
+                }
             }
         }
     }

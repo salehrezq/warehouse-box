@@ -32,4 +32,6 @@ import warehouse.db.model.Outward;
 public interface OutwardCRUDListener {
 
     public void created(Outward outward);
+
+    public void updated(Outward outward);
 }

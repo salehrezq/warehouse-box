@@ -210,4 +210,28 @@ public class CRUDOutwards {
         return searchResultRowsCount;
     }
 
+    public static boolean update(Outward outward) {
+        int update = 0;
+        String sql = "UPDATE outwards"
+                + " SET `quantity` = ?, `recipient_id` = ?, `for` = ?, `date` = ?"
+                + " WHERE `id` = ?";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setBigDecimal(1, outward.getQuantity());
+            p.setInt(2, outward.getRecipient().getId());
+            p.setString(3, outward.getUsedFor());
+            p.setObject(4, outward.getDate());
+            p.setInt(5, outward.getId());
+            System.out.println(sql);
+            update = p.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDOutwards.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return (update > 0);
+    }
+
 }
