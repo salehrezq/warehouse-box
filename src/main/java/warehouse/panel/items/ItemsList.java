@@ -47,10 +47,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import warehouse.db.model.Inward;
 import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
+import warehouse.db.model.Outward;
 import warehouse.db.model.QuantityUnit;
 import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
+import warehouse.panel.inwards.InwardCRUDListener;
+import warehouse.panel.outwards.OutwardCRUDListener;
 
 /**
  *
@@ -59,7 +63,9 @@ import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
 public class ItemsList extends JPanel
         implements
         ItemCRUDListener,
-        ItemsSearchListener {
+        ItemsSearchListener,
+        InwardCRUDListener,
+        OutwardCRUDListener {
 
     private ItemTableModel model;
     private JTable table;
@@ -213,6 +219,50 @@ public class ItemsList extends JPanel
         this.rowIdSelectionListeners.forEach((item) -> {
             item.selectedRowId(rowId);
         });
+    }
+
+    /**
+     * React on Inward create.
+     *
+     * @param inward
+     */
+    @Override
+    public void created(Inward inward) {
+        BigDecimal quantity = (BigDecimal) table.getValueAt(tableRow, 3);
+        quantity = quantity.add(inward.getQuantity());
+        table.setValueAt(quantity, tableRow, 3);
+    }
+
+    /**
+     * React on Inward update.
+     *
+     * @param inward
+     */
+    @Override
+    public void updated(Inward inward) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    /**
+     * React on Outward create.
+     *
+     * @param outward
+     */
+    @Override
+    public void created(Outward outward) {
+        BigDecimal quantity = (BigDecimal) table.getValueAt(tableRow, 3);
+        quantity = quantity.subtract(outward.getQuantity());
+        table.setValueAt(quantity, tableRow, 3);
+    }
+
+    /**
+     * React on Outward update.
+     *
+     * @param outward
+     */
+    @Override
+    public void updated(Outward outward) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     private class RowSelectionListener implements ListSelectionListener {
