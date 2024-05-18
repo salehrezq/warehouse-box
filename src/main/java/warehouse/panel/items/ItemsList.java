@@ -237,10 +237,24 @@ public class ItemsList extends JPanel
      * React on Inward update.
      *
      * @param inward
+     * @param oldQuantity
      */
     @Override
-    public void updated(Inward inward) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void updated(Inward inward, BigDecimal oldQuantity) {
+        ItemMeta itemMeta = model.getItemMetaById(inward.getItem().getId());
+        if (itemMeta != null) {
+            BigDecimal quantityDifference = inward.getQuantity().subtract(oldQuantity);
+            int compare = quantityDifference.compareTo(BigDecimal.ZERO);
+            BigDecimal updatedBalance = itemMeta.getBalance();
+            switch (compare) {
+                case 1:
+                    updatedBalance = updatedBalance.add(quantityDifference.abs());
+                    itemMeta.setBalance(updatedBalance);
+                case -1:
+                    updatedBalance = updatedBalance.subtract(quantityDifference.abs());
+                    itemMeta.setBalance(updatedBalance);
+            }
+        }
     }
 
     /**

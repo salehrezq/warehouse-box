@@ -144,4 +144,7 @@ public class ItemTableModel extends AbstractTableModel {
         fireTableRowsDeleted(row, row);
     }
 
+    public ItemMeta getItemMetaById(int id) {
+        return itemsMeta.stream().filter(itemMeta -> itemMeta.getId() == id).findFirst().orElse(null);
+    }
 }

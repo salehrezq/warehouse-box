@@ -133,9 +133,9 @@ public class InwardDialog extends JDialog {
         });
     }
 
-    public void notifyUpdated(Inward inward) {
+    public void notifyUpdated(Inward inward, BigDecimal oldQuantity) {
         this.inwardCRUDListeners.forEach((inwardCRUDListener) -> {
-            inwardCRUDListener.updated(inward);
+            inwardCRUDListener.updated(inward, oldQuantity);
         });
     }
 
@@ -177,6 +177,7 @@ public class InwardDialog extends JDialog {
                             JOptionPane.WARNING_MESSAGE);
                 }
             } else {
+                BigDecimal oldQuantity = inward.getQuantity();
                 BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
                 inward.setQuantity(bigDecimal);
                 Source source = (Source) formFieldSource.getSelectedValue();
@@ -184,7 +185,7 @@ public class InwardDialog extends JDialog {
                 inward.setDate(selectedDate);
                 boolean update = CRUDInwards.update(inward);
                 if (update) {
-                    notifyUpdated(inward);
+                    notifyUpdated(inward, oldQuantity);
                     InwardDialog.this.dispose();
                     JOptionPane.showMessageDialog(
                             null,
