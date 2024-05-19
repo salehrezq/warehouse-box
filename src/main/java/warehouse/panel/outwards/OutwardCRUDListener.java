@@ -23,6 +23,7 @@
  */
 package warehouse.panel.outwards;
 
+import java.math.BigDecimal;
 import warehouse.db.model.Outward;
 
 /**
@@ -33,5 +34,5 @@ public interface OutwardCRUDListener {
 
     public void created(Outward outward);
 
-    public void updated(Outward outward);
+    public void updated(Outward outward, BigDecimal oldQuantity);
 }

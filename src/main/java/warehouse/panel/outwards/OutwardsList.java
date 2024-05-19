@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListSelectionModel;
@@ -139,7 +140,7 @@ public class OutwardsList extends JPanel
     }
 
     @Override
-    public void updated(Outward outward) {
+    public void updated(Outward outward, BigDecimal oldQuantity) {
         table.setValueAt(outward.getQuantity(), tableRow, 2);
         table.setValueAt(outward.getRecipient(), tableRow, 4);
         table.setValueAt(outward.getUsedFor(), tableRow, 5);

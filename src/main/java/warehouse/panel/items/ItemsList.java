@@ -273,10 +273,24 @@ public class ItemsList extends JPanel
      * React on Outward update.
      *
      * @param outward
+     * @param oldQuantity
      */
     @Override
-    public void updated(Outward outward) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void updated(Outward outward, BigDecimal oldQuantity) {
+        ItemMeta itemMeta = model.getItemMetaById(outward.getItem().getId());
+        if (itemMeta != null) {
+            BigDecimal quantityDifference = outward.getQuantity().subtract(oldQuantity);
+            int compare = quantityDifference.compareTo(BigDecimal.ZERO);
+            BigDecimal updatedBalance = itemMeta.getBalance();
+            switch (compare) {
+                case 1:
+                    updatedBalance = updatedBalance.subtract(quantityDifference.abs());
+                    itemMeta.setBalance(updatedBalance);
+                case -1:
+                    updatedBalance = updatedBalance.add(quantityDifference.abs());
+                    itemMeta.setBalance(updatedBalance);
+            }
+        }
     }
 
     private class RowSelectionListener implements ListSelectionListener {

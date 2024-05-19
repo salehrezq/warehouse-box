@@ -143,9 +143,9 @@ public class OutwardDialog extends JDialog {
         });
     }
 
-    public void notifyUpdated(Outward outward) {
+    public void notifyUpdated(Outward outward, BigDecimal oldQuantity) {
         outwardCRUDListeners.forEach((outwardCRUDListener) -> {
-            outwardCRUDListener.updated(outward);
+            outwardCRUDListener.updated(outward, oldQuantity);
         });
     }
 
@@ -188,6 +188,7 @@ public class OutwardDialog extends JDialog {
                 }
             } else {
                 BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
+                BigDecimal oldQuantity = outward.getQuantity();
                 outward.setQuantity(bigDecimal);
                 Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
                 outward.setRecipient(recipient);
@@ -195,7 +196,7 @@ public class OutwardDialog extends JDialog {
                 outward.setDate(selectedDate);
                 boolean update = CRUDOutwards.update(outward);
                 if (update) {
-                    notifyUpdated(outward);
+                    notifyUpdated(outward, oldQuantity);
                     OutwardDialog.this.dispose();
                     JOptionPane.showMessageDialog(
                             null,
