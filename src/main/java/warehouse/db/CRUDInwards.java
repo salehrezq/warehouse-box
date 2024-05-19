@@ -230,4 +230,22 @@ public class CRUDInwards {
         return (update > 0);
     }
 
+    public static boolean delete(Inward inward) {
+        int delete = 0;
+        String sql = "DELETE FROM inwards WHERE id = ?";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setInt(1, inward.getId());
+            System.out.println(sql);
+            delete = p.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDInwards.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return (delete > 0);
+    }
+
 }

@@ -37,15 +37,18 @@ import java.util.List;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import warehouse.db.CRUDInwards;
 import warehouse.db.model.Inward;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
@@ -65,9 +68,11 @@ public class InwardsList extends JPanel
     private JScrollPane scrollTable;
     private Integer selectedModelRow;
     private ArrayList<RowIdSelectionListener> rowIdSelectionListeners;
+    private List<InwardDeleteListener> inwardDeleteListeners;
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
-    private final JMenuItem menuInwardEdit;
+    private final JMenuItem menuInwardEdit,
+            menuInwardDelete;
     private JButton btnLoadMore;
     private int searchResultTotalRowsCount,
             incrementedReturnedRowsCount,
@@ -80,6 +85,7 @@ public class InwardsList extends JPanel
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
+        inwardDeleteListeners = new ArrayList<>();
         model = new InwardTableModel();
 
         popupMenu = new JPopupMenu();
@@ -87,6 +93,11 @@ public class InwardsList extends JPanel
         menuInwardEdit = new JMenuItem("Edit...");
         menuInwardEdit.addActionListener(new PopupMenuItemActionHandler());
         popupMenu.add(menuInwardEdit);
+
+        menuInwardDelete = new JMenuItem("Delete");
+        menuInwardDelete.addActionListener(new PopupMenuItemActionHandler());
+        popupMenu.add(new JSeparator());
+        popupMenu.add(menuInwardDelete);
 
         table = new JTable(model);
         table.addMouseListener(new ItemRowDoubleClickHandler());
@@ -200,6 +211,16 @@ public class InwardsList extends JPanel
         btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
     }
 
+    public void addInwardDeleteListener(InwardDeleteListener inwardDeleteListener) {
+        this.inwardDeleteListeners.add(inwardDeleteListener);
+    }
+
+    public void notifyInwardDeleted(Inward inward) {
+        this.inwardDeleteListeners.forEach((inwardDeleteListener) -> {
+            inwardDeleteListener.deleted(inward);
+        });
+    }
+
     private class RowSelectionListener implements ListSelectionListener {
 
         @Override
@@ -273,22 +294,38 @@ public class InwardsList extends JPanel
             tableRow = table.getSelectedRow();
             int modelIndex = table.convertRowIndexToModel(tableRow);
             Inward inward = model.getInward(modelIndex);
-            inwardEditDialog.setInwardToFormFields(inward);
-            inwardEditDialog.setVisible(true);
 
-//            int itemIdColumn = 0;
-//            int itemUnitColumn = 3;
-//            String itemUnit;
-//            selectedModelRow = table.convertRowIndexToModel(table.getSelectedRow());
-//            Object itemIdObj = table.getModel().getValueAt(selectedModelRow, itemIdColumn);
-//            itemUnit = (String) table.getModel().getValueAt(selectedModelRow, itemUnitColumn);
-//            System.out.println("unit " + itemUnit);
-//            int itemId = Integer.parseInt(itemIdObj.toString());
-//            AddItemsDialog addItemsDialog = new AddItemsDialog(null, "Add items", true);
-//            addItemsDialog.setItemId(itemId);
-//            addItemsDialog.setItemUnit(itemUnit);
-//            addItemsDialog.setVisible(true);
-            System.out.println("Placeholder to implement");
+            JMenuItem source = (JMenuItem) e.getSource();
+            if (source == menuInwardEdit) {
+                inwardEditDialog.setInwardToFormFields(inward);
+                inwardEditDialog.setVisible(true);
+            } else if (source == menuInwardDelete) {
+                int reply = JOptionPane.showConfirmDialog(
+                        null,
+                        "Are you sure to delete this record?",
+                        "DELETE!",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE);
+                if (reply == JOptionPane.YES_OPTION) {
+                    boolean deleted = CRUDInwards.delete(inward);
+                    if (deleted) {
+                        model.removeInward(modelIndex);
+                        notifyInwardDeleted(inward);
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Inward deleted successfully",
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE);
+
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Issue: Inward was not deleted",
+                                "Failure",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
         }
     }
 
