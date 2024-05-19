@@ -84,7 +84,7 @@ public class InwardsList extends JPanel
 
         popupMenu = new JPopupMenu();
         popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
-        menuInwardEdit = new JMenuItem("Inwards");
+        menuInwardEdit = new JMenuItem("Edit...");
         menuInwardEdit.addActionListener(new PopupMenuItemActionHandler());
         popupMenu.add(menuInwardEdit);
 

@@ -84,7 +84,7 @@ public class OutwardsList extends JPanel
 
         popupMenu = new JPopupMenu();
         popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
-        menuOutwardEdit = new JMenuItem("Edit");
+        menuOutwardEdit = new JMenuItem("Edit...");
         menuOutwardEdit.addActionListener(new PopupMenuItemActionHandler());
         popupMenu.add(menuOutwardEdit);
 
