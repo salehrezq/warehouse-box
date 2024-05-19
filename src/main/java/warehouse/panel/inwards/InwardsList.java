@@ -213,21 +213,13 @@ public class InwardsList extends JPanel
                     System.out.println("row selected");
                     int viewRow = table.getSelectedRow();
                     if (viewRow > -1) {
-
-                        int itemIdColumnIndex = 0;
                         int itemNameColumnIndex = 6;
                         int itemSpecificationColumnIndex = 7;
-
                         selectedModelRow = table.convertRowIndexToModel(viewRow);
-                        Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
-                        Integer itemId = Integer.valueOf(itemIdObject.toString());
-                        System.out.println("Item ID " + itemId);
-                        notifySelectedRowId(itemId);
                         String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
                         String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
                         nameAndSpecDisplayFields.setTfItemNameText(itemNameObject);
                         nameAndSpecDisplayFields.setTfItemSpecificationsText(itemSpecificationObject);
-
                     }
                 }
             }
