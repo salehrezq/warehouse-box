@@ -23,6 +23,8 @@
  */
 package warehouse.panel.menus;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import warehouse.singularlisting.ListableConsumer;
 import warehouse.singularlisting.Listable;
 import java.awt.Frame;
@@ -50,7 +52,7 @@ import warehouse.db.CRUDListable;
  */
 public class ListableItemManage extends JDialog implements ListableConsumer {
 
-    private JPanel panel;
+    private JPanel container, panelSearch, panelList, panelCreate;
     private MigLayout mig;
     private JLabel label;
     private JTextField textField;
@@ -65,10 +67,15 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         super(owner, title, modal);
         thisListableItemManageClass = ListableItemManage.this;
         mig = new MigLayout("center center");
-        panel = new JPanel(mig);
+
+        panelSearch = new JPanel();
+        panelList = new JPanel(new BorderLayout());
+        panelCreate = new JPanel();
+        container = new JPanel(new BorderLayout());
+
         btnListener = new BtnListener();
         label = new JLabel();
-        textField = new JTextField(15);
+        textField = new JTextField(25);
         btnSubmit = new JButton("Submit");
         btnSubmit.addActionListener(btnListener);
         list = new List();
@@ -77,13 +84,20 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         btnClose = new JButton("Close X");
         btnClose.addActionListener(btnListener);
 
-        panel.add(label);
-        panel.add(textField);
-        panel.add(btnSubmit, "wrap");
-        panel.add(list.getListScrolledPane(), "span");
-        panel.add(btnClose);
-        add(panel);
-        pack();
+        panelSearch.add(label);
+        panelSearch.add(textField);
+        panelSearch.add(btnSubmit);
+
+        panelList.add(list.getListScrolledPane(), BorderLayout.CENTER);
+        panelList.add(new JButton("Load more"), BorderLayout.PAGE_END);
+        panelCreate.add(new JTextField(25));
+        panelCreate.add(new JButton("create"));
+
+        container.add(panelSearch, BorderLayout.PAGE_START);
+        container.add(panelList, BorderLayout.CENTER);
+        container.add(panelCreate, BorderLayout.PAGE_END);
+        add(container);
+        this.setMinimumSize(new Dimension(480, 350));
     }
 
     @Override
