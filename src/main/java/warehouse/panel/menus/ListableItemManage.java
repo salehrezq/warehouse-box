@@ -43,7 +43,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import net.miginfocom.swing.MigLayout;
 import warehouse.db.CRUDListable;
 
 /**
@@ -53,10 +52,9 @@ import warehouse.db.CRUDListable;
 public class ListableItemManage extends JDialog implements ListableConsumer {
 
     private JPanel container, panelSearch, panelList, panelCreate;
-    private MigLayout mig;
     private JLabel label;
-    private JTextField textField;
-    private JButton btnSubmit, btnClose;
+    private JTextField tfSearch, tfCreate;
+    private JButton btnSubmit, btnClose, btnCreate, btnLoadMore;
     private List list;
     private JList listing;
     private Listable listableImplementation;
@@ -65,18 +63,18 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
 
     public ListableItemManage(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
+
         thisListableItemManageClass = ListableItemManage.this;
-        mig = new MigLayout("center center");
 
         panelSearch = new JPanel();
         panelList = new JPanel(new BorderLayout());
         panelCreate = new JPanel();
         container = new JPanel(new BorderLayout());
-
         btnListener = new BtnListener();
+
         label = new JLabel();
-        textField = new JTextField(25);
-        btnSubmit = new JButton("Submit");
+        tfSearch = new JTextField(25);
+        btnSubmit = new JButton("Search");
         btnSubmit.addActionListener(btnListener);
         list = new List();
         listing = list.getJList();
@@ -85,13 +83,18 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         btnClose.addActionListener(btnListener);
 
         panelSearch.add(label);
-        panelSearch.add(textField);
+        panelSearch.add(tfSearch);
         panelSearch.add(btnSubmit);
 
+        btnLoadMore = new JButton("Load more");
         panelList.add(list.getListScrolledPane(), BorderLayout.CENTER);
-        panelList.add(new JButton("Load more"), BorderLayout.PAGE_END);
-        panelCreate.add(new JTextField(25));
-        panelCreate.add(new JButton("create"));
+        panelList.add(btnLoadMore, BorderLayout.PAGE_END);
+
+        tfCreate = new JTextField(25);
+        btnCreate = new JButton("Create");
+
+        panelCreate.add(tfCreate);
+        panelCreate.add(btnCreate);
 
         container.add(panelSearch, BorderLayout.PAGE_START);
         container.add(panelList, BorderLayout.CENTER);
@@ -120,10 +123,10 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
             if (source == btnSubmit) {
-                listableImplementation.setName(textField.getText());
+                listableImplementation.setName(tfSearch.getText());
                 if (CRUDListable.isExist(listableImplementation)) {
                     JOptionPane.showMessageDialog(thisListableItemManageClass,
-                            listableImplementation.getLabel() + " " + textField.getText() + " is already exist!.",
+                            listableImplementation.getLabel() + " " + tfSearch.getText() + " is already exist!.",
                             "Duplicate entry",
                             JOptionPane.ERROR_MESSAGE);
                     //ManageSourceLocationDialog.this.dispose();
@@ -131,10 +134,10 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
                     if (CRUDListable.create(listableImplementation) == 1) {
                         rePopulateUnitsList();
                         JOptionPane.showMessageDialog(thisListableItemManageClass,
-                                listableImplementation.getLabel() + " " + textField.getText() + " was added successfully.",
+                                listableImplementation.getLabel() + " " + tfSearch.getText() + " was added successfully.",
                                 "Success",
                                 JOptionPane.INFORMATION_MESSAGE);
-                        textField.setText(null);
+                        tfSearch.setText(null);
                     } else {
                         JOptionPane.showMessageDialog(thisListableItemManageClass,
                                 "Some problem happened; " + listableImplementation.getLabel() + " CANNOT be added!.",
