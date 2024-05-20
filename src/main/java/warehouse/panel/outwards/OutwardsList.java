@@ -37,15 +37,18 @@ import java.util.List;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import warehouse.db.CRUDOutwards;
 import warehouse.db.model.Outward;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
@@ -65,9 +68,11 @@ public class OutwardsList extends JPanel
     private JScrollPane scrollTable;
     private Integer selectedModelRow;
     private ArrayList<RowIdSelectionListener> rowIdSelectionListeners;
+    private List<OutwardDeleteListener> outwardDeleteListeners;
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
-    private final JMenuItem menuOutwardEdit;
+    private final JMenuItem menuOutwardEdit,
+            menuOutwardDelete;
     private JButton btnLoadMore;
     private int searchResultTotalRowsCount,
             incrementedReturnedRowsCount,
@@ -80,6 +85,7 @@ public class OutwardsList extends JPanel
 
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
+        outwardDeleteListeners = new ArrayList<>();
         model = new OutwardTableModel();
 
         popupMenu = new JPopupMenu();
@@ -87,6 +93,11 @@ public class OutwardsList extends JPanel
         menuOutwardEdit = new JMenuItem("Edit...");
         menuOutwardEdit.addActionListener(new PopupMenuItemActionHandler());
         popupMenu.add(menuOutwardEdit);
+
+        menuOutwardDelete = new JMenuItem("Delete");
+        menuOutwardDelete.addActionListener(new PopupMenuItemActionHandler());
+        popupMenu.add(new JSeparator());
+        popupMenu.add(menuOutwardDelete);
 
         table = new JTable(model);
         table.addMouseListener(new ItemRowDoubleClickHandler());
@@ -201,6 +212,16 @@ public class OutwardsList extends JPanel
         btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
     }
 
+    public void addOutwardDeleteListener(OutwardDeleteListener outwardDeleteListener) {
+        this.outwardDeleteListeners.add(outwardDeleteListener);
+    }
+
+    public void notifyOutwardDeleted(Outward outward) {
+        this.outwardDeleteListeners.forEach((outwardDeleteListener) -> {
+            outwardDeleteListener.deleted(outward);
+        });
+    }
+
     private class RowSelectionListener implements ListSelectionListener {
 
         @Override
@@ -274,8 +295,37 @@ public class OutwardsList extends JPanel
             tableRow = table.getSelectedRow();
             int modelIndex = table.convertRowIndexToModel(tableRow);
             Outward outward = model.getOutward(modelIndex);
-            outwarEditdDialog.setOutwardToFormFields(outward);
-            outwarEditdDialog.setVisible(true);
+            JMenuItem source = (JMenuItem) e.getSource();
+            if (source == menuOutwardEdit) {
+                outwarEditdDialog.setOutwardToFormFields(outward);
+                outwarEditdDialog.setVisible(true);
+            } else if (source == menuOutwardDelete) {
+                int reply = JOptionPane.showConfirmDialog(
+                        null,
+                        "Are you sure to delete this record?",
+                        "DELETE!",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE);
+                if (reply == JOptionPane.YES_OPTION) {
+                    boolean deleted = CRUDOutwards.delete(outward);
+                    if (deleted) {
+                        model.removeOutward(modelIndex);
+                        notifyOutwardDeleted(outward);
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Outward deleted successfully",
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE);
+
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Issue: Outward was not deleted",
+                                "Failure",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
         }
     }
 

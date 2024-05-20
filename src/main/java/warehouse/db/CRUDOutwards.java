@@ -234,4 +234,22 @@ public class CRUDOutwards {
         return (update > 0);
     }
 
+    public static boolean delete(Outward outward) {
+        int delete = 0;
+        String sql = "DELETE FROM outwards WHERE id = ?";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setInt(1, outward.getId());
+            System.out.println(sql);
+            delete = p.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDOutwards.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return (delete > 0);
+    }
+
 }

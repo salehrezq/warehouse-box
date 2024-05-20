@@ -63,6 +63,7 @@ public class Tabs extends JPanel {
         outInwardDialog.addOutwardCRUDListener(itemsTab.getItemsList());
 
         inwardsTap.getInwardsList().addInwardDeleteListener(itemsTab.getItemsList());
+        outwardsTap.getOutwardsList().addOutwardDeleteListener(itemsTab.getItemsList());
 
         tabs.add(itemsTab, "Items");
         tabs.add(inwardsTap, "Inwards");

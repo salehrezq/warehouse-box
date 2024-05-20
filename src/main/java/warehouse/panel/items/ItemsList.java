@@ -56,6 +56,7 @@ import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
 import warehouse.panel.inwards.InwardCRUDListener;
 import warehouse.panel.inwards.InwardDeleteListener;
 import warehouse.panel.outwards.OutwardCRUDListener;
+import warehouse.panel.outwards.OutwardDeleteListener;
 
 /**
  *
@@ -67,7 +68,8 @@ public class ItemsList extends JPanel
         ItemsSearchListener,
         InwardCRUDListener,
         OutwardCRUDListener,
-        InwardDeleteListener {
+        InwardDeleteListener,
+        OutwardDeleteListener {
 
     private ItemTableModel model;
     private JTable table;
@@ -300,6 +302,15 @@ public class ItemsList extends JPanel
         ItemMeta itemMeta = model.getItemMetaById(inward.getItem().getId());
         if (itemMeta != null) {
             BigDecimal updatedBalance = itemMeta.getBalance().subtract(inward.getQuantity());
+            itemMeta.setBalance(updatedBalance);
+        }
+    }
+
+    @Override
+    public void deleted(Outward outward) {
+        ItemMeta itemMeta = model.getItemMetaById(outward.getItem().getId());
+        if (itemMeta != null) {
+            BigDecimal updatedBalance = itemMeta.getBalance().add(outward.getQuantity());
             itemMeta.setBalance(updatedBalance);
         }
     }
