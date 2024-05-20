@@ -25,7 +25,6 @@ package warehouse.panel.menus;
 
 import warehouse.singularlisting.ListableConsumer;
 import warehouse.singularlisting.Listable;
-import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +32,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -48,7 +48,7 @@ import warehouse.db.CRUDListable;
  *
  * @author Saleh
  */
-public class ListableItemManage extends Dialog implements ListableConsumer {
+public class ListableItemManage extends JDialog implements ListableConsumer {
 
     private JPanel panel;
     private MigLayout mig;
