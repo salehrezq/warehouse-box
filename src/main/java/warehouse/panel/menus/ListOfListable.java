@@ -68,6 +68,10 @@ public class ListOfListable implements ListSelectionListener {
         listModel.addElement(listable);
     }
 
+    public Listable removeElement(int index) {
+        return (Listable) listModel.remove(index);
+    }
+
     public void removeAllElements() {
         listModel.removeAllElements();
     }

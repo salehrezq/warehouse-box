@@ -28,6 +28,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import warehouse.singularlisting.Listable;
@@ -117,6 +118,79 @@ public class CRUDListable {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
         }
         return exist;
+    }
+
+    private static String formulateSearchFilters(Listable listableImplementation, String query) {
+        System.out.println("listableImplementation " + listableImplementation.getDBEntityName());
+        String sqlFilter = "";
+        if (query.isBlank()) {
+            return sqlFilter;
+        }
+        sqlFilter = " WHERE";
+        sqlFilter += " `" + listableImplementation.getDBAttributeName() + "`";
+        sqlFilter += " LIKE ?";
+        return sqlFilter;
+    }
+
+    private static PreparedStatementWrapper formulateSearchPreparedStatement(String query, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
+        PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
+        if (query.isBlank()) {
+            return preparedStatementWrapper;
+        }
+        p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + query + "%");
+        return preparedStatementWrapper;
+    }
+
+    public static int searchResultRowsCount(Listable listableImplementation, String query) {
+        int searchResultRowsCount = 0;
+        try {
+            String sql = "SELECT COUNT(id) AS search_result_rows_count"
+                    + " FROM " + "`" + listableImplementation.getDBEntityName() + "`"
+                    + formulateSearchFilters(listableImplementation, query);
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            formulateSearchPreparedStatement(query, new PreparedStatementWrapper(p));
+            System.out.println(p);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                searchResultRowsCount = result.getInt("search_result_rows_count");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return searchResultRowsCount;
+    }
+
+    public static List<Listable> search(Listable listableImplementation, String query, int LIMIT, int OFFSET) {
+        List<Listable> listables = new ArrayList<>();
+        try {
+            String sql = "SELECT *"
+                    + " FROM " + "`" + listableImplementation.getDBEntityName() + "`"
+                    + formulateSearchFilters(listableImplementation, query)
+                    + " ORDER BY " + "`" + listableImplementation.getDBAttributeName() + "`" + " ASC"
+                    + " LIMIT ? OFFSET ?";
+
+            con = Connect.getConnection();
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            PreparedStatementWrapper preparedStatementWrapper
+                    = formulateSearchPreparedStatement(query, new PreparedStatementWrapper(p));
+            int parameterIndex = preparedStatementWrapper.getParameterIndex();
+            p.setInt(++parameterIndex, LIMIT);
+            p.setInt(++parameterIndex, OFFSET);
+            System.out.println(p);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                Listable listableInstance = listableImplementation.getNewInstance();
+                listableInstance.setId(result.getInt("id"));
+                listableInstance.setName(result.getString(listableImplementation.getDBAttributeName()));
+                listables.add(listableInstance);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return listables;
     }
 
     public static ArrayList<Listable> getSearch(Listable listableImplementation, String str) {

@@ -98,15 +98,12 @@ public class Menu {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
             if (source == menuItemMangeQuantityUnit) {
-                manageQuantityUnitDialog.rePopulateUnitsList();
                 manageQuantityUnitDialog.setVisible(true);
             } else if (source == menuCreateItem) {
                 createItemDialog.setVisible(true);
             } else if (source == menuItemMangeSources) {
-                manageSourceDialog.rePopulateUnitsList();
                 manageSourceDialog.setVisible(true);
             } else if (source == menuItemManageRecipients) {
-                manageRecipientDialog.rePopulateUnitsList();
                 manageRecipientDialog.setVisible(true);
             }
         }

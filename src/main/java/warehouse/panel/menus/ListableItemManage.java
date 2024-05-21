@@ -33,6 +33,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -54,15 +55,21 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
     private JPanel container, panelSearch, panelList, panelCreate;
     private JLabel label;
     private JTextField tfSearch, tfCreate;
-    private JButton btnSubmit, btnClose, btnCreate, btnLoadMore;
-    private List list;
+    private JButton btnSearch, btnClose, btnSubmit, btnLoadMore;
+    private ListOfListable listOfListable;
     private JList listing;
     private Listable listableImplementation;
-    private ActionListener btnListener;
+    // private ActionListener btnListener;
     private ListableItemManage thisListableItemManageClass;
+    private int searchResultTotalRowsCount, incrementedReturnedRowsCount, rowIndex;
+    private static int LIMIT,
+            OFFSET;
+    private String searchQueryImmutableCopy;
 
     public ListableItemManage(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
+
+        LIMIT = 1;
 
         thisListableItemManageClass = ListableItemManage.this;
 
@@ -70,31 +77,33 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         panelList = new JPanel(new BorderLayout());
         panelCreate = new JPanel();
         container = new JPanel(new BorderLayout());
-        btnListener = new BtnListener();
+        //  btnListener = new BtnListener();
 
         label = new JLabel();
         tfSearch = new JTextField(25);
-        btnSubmit = new JButton("Search");
-        btnSubmit.addActionListener(btnListener);
-        list = new List();
-        listing = list.getJList();
+        btnSearch = new JButton("Search");
+        btnSearch.addActionListener(new BtnSearchHandler());
+        listOfListable = new ListOfListable();
+        listing = listOfListable.getJList();
         listing.addMouseListener(new MouseJListHandler());
         btnClose = new JButton("Close X");
-        btnClose.addActionListener(btnListener);
+        //  btnClose.addActionListener(btnListener);
 
         panelSearch.add(label);
         panelSearch.add(tfSearch);
-        panelSearch.add(btnSubmit);
+        panelSearch.add(btnSearch);
 
         btnLoadMore = new JButton("Load more");
-        panelList.add(list.getListScrolledPane(), BorderLayout.CENTER);
+        btnLoadMore.setEnabled(false);
+        btnLoadMore.addActionListener(new BtnLoadMoreHandler());
+        panelList.add(listOfListable.getListScrolledPane(), BorderLayout.CENTER);
         panelList.add(btnLoadMore, BorderLayout.PAGE_END);
 
         tfCreate = new JTextField(25);
-        btnCreate = new JButton("Create");
+        btnSubmit = new JButton("Create");
 
         panelCreate.add(tfCreate);
-        panelCreate.add(btnCreate);
+        panelCreate.add(btnSubmit);
 
         container.add(panelSearch, BorderLayout.PAGE_START);
         container.add(panelList, BorderLayout.CENTER);
@@ -106,15 +115,64 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
     @Override
     public void setListableImpl(Listable listable) {
         this.listableImplementation = listable;
-        label.setText(listable.getLabel());
     }
 
     public void rePopulateUnitsList() {
-        list.removeAllElements();
+        listOfListable.removeAllElements();
         ArrayList<Listable> listables = CRUDListable.getAll(listableImplementation);
         listables.forEach(listableItem -> {
-            list.addElement(listableItem);
+            listOfListable.addElement(listableItem);
         });
+    }
+
+    private class BtnSearchHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            searchQueryImmutableCopy = tfSearch.getText();
+            searchResultTotalRowsCount = CRUDListable.searchResultRowsCount(listableImplementation, tfSearch.getText());
+            System.out.println("searchResultTotalRowsCount " + searchResultTotalRowsCount);
+            System.out.println("is limit bigger or equal to search result? " + (LIMIT >= searchResultTotalRowsCount));
+            btnLoadMore.setEnabled(!(LIMIT >= searchResultTotalRowsCount));
+            listOfListable.removeAllElements();
+            OFFSET = 0;
+            incrementedReturnedRowsCount = 0;
+            List<Listable> listables = CRUDListable.search(listableImplementation, tfSearch.getText(), LIMIT, OFFSET);
+            incrementedReturnedRowsCount += listables.size();
+            rowIndex = incrementedReturnedRowsCount;
+            listables.forEach(listable -> {
+                listOfListable.addElement(listable);
+            });
+        }
+    }
+
+    private class BtnLoadMoreHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if (listing.getModel().getSize() > 0) {
+                for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
+                    listOfListable.removeElement(incrementedReturnedRowsCount);
+                }
+            }
+            OFFSET += LIMIT;
+            List<Listable> listables = CRUDListable.search(listableImplementation, searchQueryImmutableCopy, LIMIT, OFFSET);
+            incrementedReturnedRowsCount += listables.size();
+            rowIndex = incrementedReturnedRowsCount;
+            listables.forEach(listable -> {
+                listOfListable.addElement(listable);
+            });
+            btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
+        }
+    }
+
+    private class BtnSubmit implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            rowIndex++;
+        }
     }
 
     private class BtnListener implements ActionListener {
@@ -122,7 +180,7 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         @Override
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
-            if (source == btnSubmit) {
+            if (source == btnSearch) {
                 listableImplementation.setName(tfSearch.getText());
                 if (CRUDListable.isExist(listableImplementation)) {
                     JOptionPane.showMessageDialog(thisListableItemManageClass,
