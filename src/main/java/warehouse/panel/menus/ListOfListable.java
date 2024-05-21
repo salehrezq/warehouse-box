@@ -38,13 +38,13 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author Saleh
  */
-public class List implements ListSelectionListener {
+public class ListOfListable implements ListSelectionListener {
 
     private JList list;
     private DefaultListModel listModel;
     private JScrollPane scrollPane;
 
-    public List() {
+    public ListOfListable() {
         list = new JList();
         list.setCellRenderer(new ListCellQuantityUnitRenderer());
         listModel = new DefaultListModel();
