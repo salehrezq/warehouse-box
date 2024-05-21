@@ -32,7 +32,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -101,6 +100,7 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
 
         tfCreate = new JTextField(25);
         btnSubmit = new JButton("Create");
+        btnSubmit.addActionListener(new BtnSubmit());
 
         panelCreate.add(tfCreate);
         panelCreate.add(btnSubmit);
@@ -117,22 +117,12 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         this.listableImplementation = listable;
     }
 
-    public void rePopulateUnitsList() {
-        listOfListable.removeAllElements();
-        ArrayList<Listable> listables = CRUDListable.getAll(listableImplementation);
-        listables.forEach(listableItem -> {
-            listOfListable.addElement(listableItem);
-        });
-    }
-
     private class BtnSearchHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             searchQueryImmutableCopy = tfSearch.getText();
             searchResultTotalRowsCount = CRUDListable.searchResultRowsCount(listableImplementation, tfSearch.getText());
-            System.out.println("searchResultTotalRowsCount " + searchResultTotalRowsCount);
-            System.out.println("is limit bigger or equal to search result? " + (LIMIT >= searchResultTotalRowsCount));
             btnLoadMore.setEnabled(!(LIMIT >= searchResultTotalRowsCount));
             listOfListable.removeAllElements();
             OFFSET = 0;
@@ -150,7 +140,13 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            /**
+             * To organize order after new listable insert. After creating new
+             * listables, new rows added to the model at run time to reflect
+             * newly created items. However these rows are off order. So here we
+             * remove them, so that they will be fetched through the following
+             * search requests.
+             */
             if (listing.getModel().getSize() > 0) {
                 for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
                     listOfListable.removeElement(incrementedReturnedRowsCount);
@@ -171,40 +167,28 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            rowIndex++;
-        }
-    }
-
-    private class BtnListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object source = e.getSource();
-            if (source == btnSearch) {
-                listableImplementation.setName(tfSearch.getText());
-                if (CRUDListable.isExist(listableImplementation)) {
+            listableImplementation.setName(tfCreate.getText());
+            if (CRUDListable.isExist(listableImplementation)) {
+                JOptionPane.showMessageDialog(thisListableItemManageClass,
+                        listableImplementation.getLabel() + " " + tfCreate.getText() + " is already exist!.",
+                        "Duplicate entry",
+                        JOptionPane.ERROR_MESSAGE);
+                //ManageSourceLocationDialog.this.dispose();
+            } else {
+                if (CRUDListable.create(listableImplementation) == 1) {
+                    listOfListable.addElement(listableImplementation);
+                    rowIndex++;
                     JOptionPane.showMessageDialog(thisListableItemManageClass,
-                            listableImplementation.getLabel() + " " + tfSearch.getText() + " is already exist!.",
-                            "Duplicate entry",
-                            JOptionPane.ERROR_MESSAGE);
-                    //ManageSourceLocationDialog.this.dispose();
+                            listableImplementation.getLabel() + " " + tfCreate.getText() + " was added successfully.",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    tfCreate.setText(null);
                 } else {
-                    if (CRUDListable.create(listableImplementation) == 1) {
-                        rePopulateUnitsList();
-                        JOptionPane.showMessageDialog(thisListableItemManageClass,
-                                listableImplementation.getLabel() + " " + tfSearch.getText() + " was added successfully.",
-                                "Success",
-                                JOptionPane.INFORMATION_MESSAGE);
-                        tfSearch.setText(null);
-                    } else {
-                        JOptionPane.showMessageDialog(thisListableItemManageClass,
-                                "Some problem happened; " + listableImplementation.getLabel() + " CANNOT be added!.",
-                                "Failure",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
+                    JOptionPane.showMessageDialog(thisListableItemManageClass,
+                            "Some problem happened; " + listableImplementation.getLabel() + " CANNOT be added!.",
+                            "Failure",
+                            JOptionPane.ERROR_MESSAGE);
                 }
-            } else if (source == btnClose) {
-                thisListableItemManageClass.dispose();
             }
         }
     }
