@@ -182,17 +182,18 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
                         JOptionPane.ERROR_MESSAGE);
                 //ManageSourceLocationDialog.this.dispose();
             } else {
-                if (CRUDListable.create(listableImplementation) == 1) {
-                    listOfListable.addElement(listableImplementation);
+                Listable createdListable = CRUDListable.create(listableImplementation);
+                if (createdListable.getId() > 0) {
+                    listOfListable.addElement(createdListable);
                     rowIndex++;
                     JOptionPane.showMessageDialog(thisListableItemManageClass,
-                            listableImplementation.getLabel() + " " + tfCreate.getText() + " was added successfully.",
+                            createdListable.getLabel() + " " + tfCreate.getText() + " was added successfully.",
                             "Success",
                             JOptionPane.INFORMATION_MESSAGE);
                     tfCreate.setText(null);
                 } else {
                     JOptionPane.showMessageDialog(thisListableItemManageClass,
-                            "Some problem happened; " + listableImplementation.getLabel() + " CANNOT be added!.",
+                            "Some problem happened; " + createdListable.getLabel() + " CANNOT be added!.",
                             "Failure",
                             JOptionPane.ERROR_MESSAGE);
                 }
