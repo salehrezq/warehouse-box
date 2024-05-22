@@ -23,6 +23,8 @@
  */
 package warehouse.singularlisting;
 
+import java.util.Map;
+
 /**
  *
  * @author Saleh
@@ -30,6 +32,8 @@ package warehouse.singularlisting;
 public interface Listable {
 
     public void setId(int id);
+
+    public int getId();
 
     public void setName(String name);
 
@@ -42,4 +46,7 @@ public interface Listable {
     public String getDBAttributeName();
 
     public Listable getNewInstance();
+
+    public Map getConsumer();
+
 }

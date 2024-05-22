@@ -23,6 +23,8 @@
  */
 package warehouse.db.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import warehouse.singularlisting.Listable;
 
 /**
@@ -36,7 +38,9 @@ public class QuantityUnit implements Listable {
     private final String strLabel = "Quantity_unit";
     private final String dbEntityName = "quantity_unit";
     private final String dbAttributeName = "name";
+    private Map consumer;
 
+    @Override
     public int getId() {
         return id;
     }
@@ -74,6 +78,38 @@ public class QuantityUnit implements Listable {
     @Override
     public Listable getNewInstance() {
         return new QuantityUnit();
+    }
+
+    public class Consumer {
+
+        public static final String table = "items";
+        public static final String column = "unit_id";
+
+        public static String getTable() {
+            return table;
+        }
+
+        public static String getColumn() {
+            return column;
+        }
+    }
+
+    /**
+     * Map that has information about the database relation/table that make use
+     * of this relation model.That table has this model's id as foreign key.
+     *
+     * @return Map
+     */
+    @Override
+    public Map getConsumer() {
+        if (consumer != null) {
+            return consumer;
+        } else {
+            consumer = new HashMap<String, String>();
+            consumer.put("table", "items");
+            consumer.put("column", "unit_id");
+            return consumer;
+        }
     }
 
 }

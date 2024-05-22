@@ -64,13 +64,20 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
     private static int LIMIT,
             OFFSET;
     private String searchQueryImmutableCopy;
+    private final JPopupMenu popupMenu;
+    private final JMenuItem menuListableRemove;
 
     public ListableItemManage(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
 
-        LIMIT = 1;
+        LIMIT = 3;
 
         thisListableItemManageClass = ListableItemManage.this;
+        popupMenu = new JPopupMenu();
+        popupMenu.addMouseListener(new MouseJListHandler());
+        menuListableRemove = new JMenuItem("Remove");
+        menuListableRemove.addActionListener(new PopupMenuListableHandler());
+        popupMenu.add(menuListableRemove);
 
         panelSearch = new JPanel();
         panelList = new JPanel(new BorderLayout());
@@ -199,23 +206,50 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         public void mousePressed(MouseEvent e) {
             if (SwingUtilities.isRightMouseButton(e)) {
                 listing.setSelectedIndex(listing.locationToIndex(e.getPoint()));
-
-                JPopupMenu menu = new JPopupMenu();
-                JMenuItem itemRemove = new JMenuItem("Remove");
-                itemRemove.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        // This could probably be improved, but assuming you
-                        // also keep the values in an ArrayList, you can 
-                        // remove the element with this:
-                        //array_list.remove(listbox.getSelectedValue());
-                        //listbox.setListData((String[]) array_list.toArray(new String[array_list.size()]));
-                        System.out.println("Remove the element in position " + listing.getSelectedValue());
-                    }
-                });
-                menu.add(itemRemove);
-                menu.show(listing, e.getPoint().x, e.getPoint().y);
+                popupMenu.show(listing, e.getPoint().x, e.getPoint().y);
             }
         }
+    }
 
+    private class PopupMenuListableHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("selected value " + listing.getSelectedValue() + " at selected index " + listing.getSelectedIndex());
+            Listable listable = (Listable) listing.getSelectedValue();
+            boolean isInUse = CRUDListable.isListableInUse(listable);
+            if (isInUse) {
+                JOptionPane.showMessageDialog(
+                        thisListableItemManageClass,
+                        listableImplementation.getLabel() + " cannot be deleted because it is in use.",
+                        "In use!",
+                        JOptionPane.WARNING_MESSAGE);
+            } else {
+                int reply = JOptionPane.showConfirmDialog(
+                        null,
+                        "Are you sure to delete this " + listableImplementation.getLabel(),
+                        "DELETE!",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE);
+                if (reply == JOptionPane.YES_OPTION) {
+                    boolean deleted = CRUDListable.delete(listable);
+                    if (deleted) {
+                        listOfListable.removeElement(listing.getSelectedIndex());
+                        // notifyOutwardDeleted(outward);
+                        JOptionPane.showMessageDialog(
+                                null,
+                                listableImplementation.getLabel() + " deleted successfully",
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Issue: " + listableImplementation.getLabel() + " was not deleted",
+                                "Failure",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
+        }
     }
 }

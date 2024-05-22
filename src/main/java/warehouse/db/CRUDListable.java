@@ -214,4 +214,46 @@ public class CRUDListable {
         return listables;
     }
 
+    public static boolean isListableInUse(Listable listableImplementation) {
+        boolean isUsed = false;
+        String sql = "SELECT id FROM " + "`" + listableImplementation.getConsumer().get("table") + "`"
+                + " WHERE " + "`" + listableImplementation.getConsumer().get("column") + "` = ?"
+                + " LIMIT 1";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setInt(1, listableImplementation.getId());
+            System.out.println(sql);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                isUsed = true;
+            }
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return isUsed;
+    }
+
+    public static boolean delete(Listable listableImplementation) {
+        int delete = 0;
+        String sql = "DELETE FROM " + "`" + listableImplementation.getDBEntityName() + "`"
+                + " WHERE `id` = ?";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setInt(1, listableImplementation.getId());
+            System.out.println(p);
+            delete = p.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return (delete > 0);
+    }
+
 }

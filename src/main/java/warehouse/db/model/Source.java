@@ -23,6 +23,8 @@
  */
 package warehouse.db.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import warehouse.singularlisting.Listable;
 
 /**
@@ -36,12 +38,14 @@ public class Source implements Listable {
     private final String strLabel = "Source";
     private final String dbEntityName = "source";
     private final String dbAttributeName = "information";
+    private Map consumer;
 
     @Override
     public void setId(int id) {
         this.id = id;
     }
 
+    @Override
     public int getId() {
         return id;
     }
@@ -76,4 +80,19 @@ public class Source implements Listable {
         return new Source();
     }
 
+    /**
+     * Map that has information about the database relation/table that make use
+     * of this relation model. That table has this model's id as foreign key.
+     */
+    @Override
+    public Map getConsumer() {
+        if (consumer != null) {
+            return consumer;
+        } else {
+            consumer = new HashMap<String, String>();
+            consumer.put("table", "inwards");
+            consumer.put("column", "source_id");
+            return consumer;
+        }
+    }
 }
