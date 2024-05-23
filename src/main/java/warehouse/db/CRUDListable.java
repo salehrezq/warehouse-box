@@ -27,7 +27,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -42,27 +41,21 @@ public class CRUDListable {
 
     private static Connection con;
 
-    public static Listable create(Listable listable) {
+    public static boolean create(Listable listable) {
+        int insert = 0;
         String sql = "INSERT INTO "
                 + listable.getDBEntityName()
                 + " (`" + listable.getDBAttributeName() + "`) VALUES (?)";
         con = Connect.getConnection();
         try {
-            PreparedStatement p = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement p = con.prepareStatement(sql);
             p.setString(1, listable.getName());
-            p.executeUpdate();
-            try (ResultSet generatedKeys = p.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    listable.setId(generatedKeys.getInt(1));
-                } else {
-                    throw new SQLException("Creating " + listable.getDBEntityName() + " failed, no ID obtained.");
-                }
-            }
+            insert = p.executeUpdate();
             con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return listable;
+        return insert > 0;
     }
 
     public static ArrayList<Listable> getAll(Listable listableImplementation) {

@@ -60,7 +60,7 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
     private Listable listableImplementation;
     // private ActionListener btnListener;
     private ListableItemManage thisListableItemManageClass;
-    private int searchResultTotalRowsCount, incrementedReturnedRowsCount, rowIndex;
+    private int searchResultTotalRowsCount, incrementedReturnedRowsCount;
     private static int LIMIT,
             OFFSET;
     private String searchQueryImmutableCopy;
@@ -136,7 +136,6 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
             incrementedReturnedRowsCount = 0;
             List<Listable> listables = CRUDListable.search(listableImplementation, tfSearch.getText(), LIMIT, OFFSET);
             incrementedReturnedRowsCount += listables.size();
-            rowIndex = incrementedReturnedRowsCount;
             listables.forEach(listable -> {
                 listOfListable.addElement(listable);
             });
@@ -147,22 +146,9 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            /**
-             * To organize order after new listable insert. After creating new
-             * listables, new rows added to the model at run time to reflect
-             * newly created items. However these rows are off order. So here we
-             * remove them, so that they will be fetched through the following
-             * search requests.
-             */
-            if (listing.getModel().getSize() > 0) {
-                for (int i = incrementedReturnedRowsCount + 1; i <= rowIndex; i++) {
-                    listOfListable.removeElement(incrementedReturnedRowsCount);
-                }
-            }
             OFFSET += LIMIT;
             List<Listable> listables = CRUDListable.search(listableImplementation, searchQueryImmutableCopy, LIMIT, OFFSET);
             incrementedReturnedRowsCount += listables.size();
-            rowIndex = incrementedReturnedRowsCount;
             listables.forEach(listable -> {
                 listOfListable.addElement(listable);
             });
@@ -182,18 +168,17 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
                         JOptionPane.ERROR_MESSAGE);
                 //ManageSourceLocationDialog.this.dispose();
             } else {
-                Listable createdListable = CRUDListable.create(listableImplementation);
-                if (createdListable.getId() > 0) {
-                    listOfListable.addElement(createdListable);
-                    rowIndex++;
+                boolean created = CRUDListable.create(listableImplementation);
+                if (created) {
                     JOptionPane.showMessageDialog(thisListableItemManageClass,
-                            createdListable.getLabel() + " " + tfCreate.getText() + " was added successfully.",
+                            listableImplementation.getLabel() + " " + tfCreate.getText() + " "
+                            + "was added successfully. You can find it on a next search.",
                             "Success",
                             JOptionPane.INFORMATION_MESSAGE);
                     tfCreate.setText(null);
                 } else {
                     JOptionPane.showMessageDialog(thisListableItemManageClass,
-                            "Some problem happened; " + createdListable.getLabel() + " CANNOT be added!.",
+                            "Some problem happened; " + listableImplementation.getLabel() + " CANNOT be added!.",
                             "Failure",
                             JOptionPane.ERROR_MESSAGE);
                 }
