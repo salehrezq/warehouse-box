@@ -38,6 +38,7 @@ import java.util.List;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -47,6 +48,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import warehouse.db.CRUDItems;
 import warehouse.db.model.Inward;
 import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
@@ -79,7 +81,8 @@ public class ItemsList extends JPanel
     private final JPopupMenu popupMenu;
     private final JMenuItem menuItemInwardsOfSelectedItem,
             menuItemOutwardOfSelectedItem,
-            menuItemUpdateItem;
+            menuItemUpdateItem,
+            menuItemDeleteItem;
     private InwardDialog inwardCreateDialog;
     private OutwardDialog outwardCreateDialog;
     private ItemCreateUpdateDialog updateItemDialog;
@@ -89,6 +92,7 @@ public class ItemsList extends JPanel
             rowIndex,
             tableRow;
     private NameAndSpecDisplayFields nameAndSpecDisplayFields;
+    private PopupMenuItemActionHandler popupMenuItemActionHandler;
 
     public ItemsList() {
 
@@ -96,18 +100,23 @@ public class ItemsList extends JPanel
         rowIdSelectionListeners = new ArrayList<>();
         model = new ItemTableModel();
 
+        popupMenuItemActionHandler = new PopupMenuItemActionHandler();
         popupMenu = new JPopupMenu();
         popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
         menuItemInwardsOfSelectedItem = new JMenuItem("Inwards");
-        menuItemInwardsOfSelectedItem.addActionListener(new PopupMenuItemActionHandler());
+        menuItemInwardsOfSelectedItem.addActionListener(popupMenuItemActionHandler);
         menuItemOutwardOfSelectedItem = new JMenuItem("Outwards");
-        menuItemOutwardOfSelectedItem.addActionListener(new PopupMenuItemActionHandler());
+        menuItemOutwardOfSelectedItem.addActionListener(popupMenuItemActionHandler);
         menuItemUpdateItem = new JMenuItem("Edit item");
-        menuItemUpdateItem.addActionListener(new PopupMenuItemActionHandler());
+        menuItemUpdateItem.addActionListener(popupMenuItemActionHandler);
+        menuItemDeleteItem = new JMenuItem("Delete");
+        menuItemDeleteItem.addActionListener(popupMenuItemActionHandler);
         popupMenu.add(menuItemInwardsOfSelectedItem);
         popupMenu.add(menuItemOutwardOfSelectedItem);
         popupMenu.addSeparator();
         popupMenu.add(menuItemUpdateItem);
+        popupMenu.addSeparator();
+        popupMenu.add(menuItemDeleteItem);
 
         table = new JTable(model);
         table.addMouseListener(new ItemRowDoubleClickHandler());
@@ -410,6 +419,38 @@ public class ItemsList extends JPanel
                 updateItemDialog.setUnitName(quantityUnit);
                 updateItemDialog.setItemImages(itemMeta.getId());
                 updateItemDialog.setVisible(true);
+            } else if (source == menuItemDeleteItem) {
+                boolean isInUse = CRUDItems.isInUse(itemMeta);
+                if (isInUse) {
+                    JOptionPane.showMessageDialog(null,
+                            "Item cannot be deleted because it is in use.",
+                            "In use!",
+                            JOptionPane.WARNING_MESSAGE);
+                } else {
+                    int reply = JOptionPane.showConfirmDialog(
+                            null,
+                            "Are you sure to delete this item?",
+                            "DELETE!",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        boolean deleted = CRUDItems.delete(itemMeta);
+                        if (deleted) {
+                            model.removeItemMeta(modelRowIndex);
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Item has been deleted successfully",
+                                    "Success",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Issue: item was not deleted",
+                                    "Failure",
+                                    JOptionPane.WARNING_MESSAGE);
+                        }
+                    }
+                }
             }
         }
     }

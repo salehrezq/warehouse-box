@@ -330,4 +330,48 @@ public class CRUDItems {
         }
         return img;
     }
+
+    public static boolean isInUse(ItemMeta itemMeta) {
+        boolean isUsed = false;
+
+        String sql = "SELECT it.id"
+                + " FROM items it JOIN inwards i JOIN outwards o"
+                + " WHERE (it.id = ?) AND ((it.id = i.item_id) OR (it.id = o.item_id))"
+                + " LIMIT 1";
+
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setInt(1, itemMeta.getId());
+            System.out.println(sql);
+            ResultSet result = p.executeQuery();
+            while (result.next()) {
+                isUsed = true;
+            }
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return isUsed;
+    }
+
+    public static boolean delete(ItemMeta itemMeta) {
+        int delete = 0;
+        String sql = "DELETE FROM items WHERE `id` = ?";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setInt(1, itemMeta.getId());
+            System.out.println(p);
+            delete = p.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return (delete > 0);
+    }
 }
