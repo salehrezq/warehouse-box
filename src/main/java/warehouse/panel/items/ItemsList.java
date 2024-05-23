@@ -397,10 +397,7 @@ public class ItemsList extends JPanel
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            tableRow = table.getSelectedRow();
-            int modelRowIndex = table.convertRowIndexToModel(tableRow);
-            ItemMeta itemMeta = model.getItemMeta(modelRowIndex);
-
+            ItemMeta itemMeta = model.getItemMeta(selectedModelRow);
             Object source = e.getSource();
             if (source == menuItemInwardsOfSelectedItem) {
                 inwardCreateDialog.setItemMeta(itemMeta);
@@ -436,7 +433,7 @@ public class ItemsList extends JPanel
                     if (reply == JOptionPane.YES_OPTION) {
                         boolean deleted = CRUDItems.delete(itemMeta);
                         if (deleted) {
-                            model.removeItemMeta(modelRowIndex);
+                            model.removeItemMeta(selectedModelRow);
                             JOptionPane.showMessageDialog(
                                     null,
                                     "Item has been deleted successfully",
