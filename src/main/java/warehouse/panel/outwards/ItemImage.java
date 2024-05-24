@@ -91,7 +91,6 @@ public class ItemImage implements RowIdSelectionListener {
     public void selectedRowId(int rowId) {
         List<Image> images = CRUDImages.getImagesByItemId(rowId);
         int imagesCount = images.size();
-        System.out.println("imagesCount " + imagesCount);
         int spinnerValue = 0;
         if (imagesCount > 0) {
             for (Image image : images) {

@@ -201,7 +201,6 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("selected value " + listing.getSelectedValue() + " at selected index " + listing.getSelectedIndex());
             Listable listable = (Listable) listing.getSelectedValue();
             boolean isInUse = CRUDListable.isListableInUse(listable);
             if (isInUse) {

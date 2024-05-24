@@ -93,7 +93,6 @@ public class ItemImage
     private void setImagesOfSelectedItem(int itemId) {
         List<Image> images = CRUDImages.getImagesByItemId(itemId);
         int imagesCount = images.size();
-        System.out.println("imagesCount " + imagesCount);
         int spinnerValue = 0;
         if (imagesCount > 0) {
             for (Image image : images) {

@@ -121,7 +121,6 @@ public class CRUDListable {
     }
 
     private static String formulateSearchFilters(Listable listableImplementation, String query) {
-        System.out.println("listableImplementation " + listableImplementation.getDBEntityName());
         String sqlFilter = "";
         if (query.isBlank()) {
             return sqlFilter;
@@ -151,7 +150,6 @@ public class CRUDListable {
             PreparedStatement p;
             p = con.prepareStatement(sql);
             formulateSearchPreparedStatement(query, new PreparedStatementWrapper(p));
-            System.out.println(p);
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 searchResultRowsCount = result.getInt("search_result_rows_count");
@@ -179,7 +177,6 @@ public class CRUDListable {
             int parameterIndex = preparedStatementWrapper.getParameterIndex();
             p.setInt(++parameterIndex, LIMIT);
             p.setInt(++parameterIndex, OFFSET);
-            System.out.println(p);
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 Listable listableInstance = listableImplementation.getNewInstance();
@@ -223,7 +220,6 @@ public class CRUDListable {
         try {
             PreparedStatement p = con.prepareStatement(sql);
             p.setInt(1, listableImplementation.getId());
-            System.out.println(sql);
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 isUsed = true;
@@ -245,7 +241,6 @@ public class CRUDListable {
         try {
             PreparedStatement p = con.prepareStatement(sql);
             p.setInt(1, listableImplementation.getId());
-            System.out.println(p);
             delete = p.executeUpdate();
             con.commit();
         } catch (SQLException ex) {

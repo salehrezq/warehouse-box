@@ -156,7 +156,6 @@ public class CRUDInwards {
             int parameterIndex = preparedStatementWrapper.getParameterIndex();
             p.setInt(++parameterIndex, LIMIT);
             p.setInt(++parameterIndex, OFFSET);
-            System.out.println(p);
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 Inward inward = new Inward();
@@ -196,7 +195,6 @@ public class CRUDInwards {
             PreparedStatement p;
             p = con.prepareStatement(sql);
             formulateSearchPreparedStatement(searchFilters, new PreparedStatementWrapper(p));
-            System.out.println(p);
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 searchResultRowsCount = result.getInt("search_result_rows_count");
@@ -219,7 +217,6 @@ public class CRUDInwards {
             p.setInt(2, inward.getSource().getId());
             p.setObject(3, inward.getDate());
             p.setInt(4, inward.getId());
-            System.out.println(sql);
             update = p.executeUpdate();
             con.commit();
         } catch (SQLException ex) {
@@ -237,7 +234,6 @@ public class CRUDInwards {
         try {
             PreparedStatement p = con.prepareStatement(sql);
             p.setInt(1, inward.getId());
-            System.out.println(sql);
             delete = p.executeUpdate();
             con.commit();
         } catch (SQLException ex) {

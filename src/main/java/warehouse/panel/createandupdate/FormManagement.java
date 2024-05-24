@@ -150,11 +150,6 @@ public class FormManagement extends JPanel {
                     }
                 });
 
-                System.out.println(item.getId());
-                System.out.println(item.getName());
-                System.out.println(item.getSpecification());
-                System.out.println(item.getQuantityUnit());
-
                 boolean isItemUpdate = false;
                 boolean isItemImagesUpdate = false;
                 boolean isItemImagesCreate = false;
@@ -163,8 +158,6 @@ public class FormManagement extends JPanel {
                 if (isUpdateOperation) {
                     // Is update operation
                     isItemUpdate = CRUDItems.update(item);
-                    System.out.println(isItemUpdate ? "Updated" : "Not updated");
-
                     // Images which were deselected during form update process.
                     List<Image> deselectedImages = imagesRetrievedFromDB.stream()
                             .filter(deslectedImage -> !images.contains(deslectedImage))
@@ -211,12 +204,10 @@ public class FormManagement extends JPanel {
                             || isItemImagesUpdate
                             || isItemsImagesDelete;
 
-                    System.out.println(anyItemRelevantUpdate ? "update true" : "no update");
                     notifyUpdated(anyItemRelevantUpdate ? item : null);
                 } else {
                     // Is create operation
                     Item createdItem = CRUDItems.create(item);
-                    System.out.println("Newly created Item id " + createdItem.getId());
                     int idOfCreatedItem = createdItem.getId();
                     boolean isCreated = idOfCreatedItem > 0;
                     if (isCreated) {

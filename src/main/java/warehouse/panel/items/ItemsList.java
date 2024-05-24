@@ -334,7 +334,6 @@ public class ItemsList extends JPanel
                     // Table row de-selection occurred
                     System.out.println("row de-selected");
                 } else {
-                    System.out.println("row selected");
                     int viewRow = table.getSelectedRow();
                     if (viewRow > -1) {
 
@@ -363,7 +362,6 @@ public class ItemsList extends JPanel
                 selectedModelRow = table.convertRowIndexToModel(viewRow);
                 Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
                 Integer itemId = Integer.parseInt(itemIdObject.toString());
-                System.out.println("Item ID " + itemId);
                 notifySelectedRowId(itemId);
             }
         }

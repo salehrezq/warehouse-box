@@ -236,7 +236,6 @@ public class CRUDItems {
             int parameterIndex = preparedStatementWrapper.getParameterIndex();
             p.setInt(++parameterIndex, LIMIT);
             p.setInt(++parameterIndex, OFFSET);
-            System.out.println(p);
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 ItemMeta itemMeta = new ItemMeta();
@@ -267,7 +266,6 @@ public class CRUDItems {
             PreparedStatement p;
             p = con.prepareStatement(sql);
             formulateSearchPreparedStatement(searchFilters, new PreparedStatementWrapper(p));
-            System.out.println(p);
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 searchResultRowsCount = result.getInt("search_result_rows_count");
@@ -302,7 +300,6 @@ public class CRUDItems {
                 + " WHERE id = ?";
         con = Connect.getConnection();
         try {
-            System.out.println(sql);
             PreparedStatement p = con.prepareStatement(sql);
             p.setString(1, item.getName());
             p.setString(2, item.getSpecification());
@@ -343,7 +340,6 @@ public class CRUDItems {
         try {
             PreparedStatement p = con.prepareStatement(sql);
             p.setInt(1, itemMeta.getId());
-            System.out.println(sql);
             ResultSet result = p.executeQuery();
             while (result.next()) {
                 isUsed = true;
@@ -364,7 +360,6 @@ public class CRUDItems {
         try {
             PreparedStatement p = con.prepareStatement(sql);
             p.setInt(1, itemMeta.getId());
-            System.out.println(p);
             delete = p.executeUpdate();
             con.commit();
         } catch (SQLException ex) {

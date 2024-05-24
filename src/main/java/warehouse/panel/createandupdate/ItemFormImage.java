@@ -117,7 +117,6 @@ public class ItemFormImage implements
         int spinnerValue = 0;
         if (imagesCount > 0) {
             for (Image image : images) {
-                System.out.println((image.getImageFile() == null) ? "No file" : "file");
                 imagesMap.put(image.getOrder(), image);
                 if (image.isDefaultImage()) {
                     scalableImageContainer.setBufferedImage(image.getBufferedImage());
@@ -125,7 +124,6 @@ public class ItemFormImage implements
                     spinnerValueOnSpinning = spinnerValue;
                 }
             }
-            System.out.println("-------------------");
         } else {
             spinnerValueOnSpinning = 0;
             imagesMap.clear();

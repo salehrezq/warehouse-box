@@ -157,7 +157,6 @@ public class ItemsSearchLogic {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("SearchHandler");
             previousSearchQuery = searchQuery;
             searchQuery = tfSearchQuery.getText();
             searchFilters.setSearchQuery(searchQuery);
@@ -201,7 +200,6 @@ public class ItemsSearchLogic {
 
     private void tfSearchQueryCodeChecker() {
         if (isCodeChecked) {
-            System.out.println("isCodeChecked " + isCodeChecked);
             if (pattern.matcher(tfSearchQuery.getText()).matches()) {
                 tfSearchQuery.setBackground(Color.WHITE);
             } else {
