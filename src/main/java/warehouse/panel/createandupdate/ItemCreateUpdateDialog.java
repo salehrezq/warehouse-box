@@ -23,6 +23,7 @@
  */
 package warehouse.panel.createandupdate;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -50,7 +51,7 @@ public class ItemCreateUpdateDialog extends JDialog implements ItemCRUDListener 
         formManagement.addNavigationListener(itemForm);
         itemFormTextFields = itemForm.getItemFormTextFields();
         add(itemForm);
-        pack();
+        this.setMinimumSize(new Dimension(520, 520));
         this.addWindowListener(new ClosingWindowHandler());
     }
 

@@ -117,6 +117,10 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
         tfSearch.setText("");
     }
 
+    public void setListablePreferredSize(int with, int height) {
+        listOfListable.setPreferredSize(with, height);
+    }
+
     private class BtnSearchHandler implements ActionListener {
 
         @Override

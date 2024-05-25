@@ -53,7 +53,6 @@ public class ListOfListable implements ListSelectionListener {
         list.setSelectedIndex(0);
         list.setVisibleRowCount(5);
         scrollPane = new JScrollPane(list);
-        scrollPane.setPreferredSize(new Dimension(350, 100));
     }
 
     public Component getListScrolledPane() {
@@ -78,6 +77,10 @@ public class ListOfListable implements ListSelectionListener {
 
     public void selectResposivity() {
         list.addListSelectionListener(this);
+    }
+
+    protected void setPreferredSize(int with, int height) {
+        scrollPane.setPreferredSize(new Dimension(with, height));
     }
 
     protected void setPreviewSelected(Listable listable) {

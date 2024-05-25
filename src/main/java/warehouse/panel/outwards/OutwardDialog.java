@@ -41,6 +41,7 @@ import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
+import java.awt.Dimension;
 import java.util.Locale;
 import warehouse.db.CRUDOutwards;
 import warehouse.db.model.ItemMeta;
@@ -83,6 +84,7 @@ public class OutwardDialog extends JDialog {
 
         formFieldRecipient = new ListableItemForm();
         formFieldRecipient.setListableImpl(new Recipient());
+        formFieldRecipient.setListablePreferredSize(300, 300);
 
         lbDate = new JLabel("Date");
         datePicker = new DatePicker();
@@ -104,7 +106,7 @@ public class OutwardDialog extends JDialog {
         container.add(datePicker, "span 3, wrap");
         container.add(btnSubmit, "span 4, center, gapy 10");
         add(container);
-        pack();
+        this.setMinimumSize(new Dimension(520, 540));
     }
 
     private void setupDateField(com.github.lgooddatepicker.components.DatePicker datePicker) {
