@@ -336,10 +336,9 @@ public class ItemsList extends JPanel
                 } else {
                     int viewRow = table.getSelectedRow();
                     if (viewRow > -1) {
-
+                        tableRow = table.getSelectedRow();
                         int itemNameColumnIndex = 1;
                         int itemSpecificationColumnIndex = 2;
-
                         selectedModelRow = table.convertRowIndexToModel(viewRow);
                         String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
                         String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
