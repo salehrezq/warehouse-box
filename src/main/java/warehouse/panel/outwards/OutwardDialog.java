@@ -176,7 +176,7 @@ public class OutwardDialog extends JDialog {
                     OutwardDialog.this.dispose();
                     JOptionPane.showMessageDialog(
                             null,
-                            "Outward added successfully",
+                            "Outward created successfully. You can find it on a next search",
                             "Success",
                             JOptionPane.INFORMATION_MESSAGE);
                 } else {

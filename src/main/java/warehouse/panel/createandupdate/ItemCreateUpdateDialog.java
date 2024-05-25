@@ -109,7 +109,7 @@ public class ItemCreateUpdateDialog extends JDialog implements ItemCRUDListener 
             this.dispose();
             JOptionPane.showMessageDialog(
                     null,
-                    "Item created successfully",
+                    "Item created successfully. You can find it on a next search",
                     "Created",
                     JOptionPane.INFORMATION_MESSAGE);
         } else {

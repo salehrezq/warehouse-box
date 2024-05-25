@@ -165,7 +165,7 @@ public class InwardDialog extends JDialog {
                     InwardDialog.this.dispose();
                     JOptionPane.showMessageDialog(
                             null,
-                            "Inward added successfully",
+                            "Inward created successfully. You can find it on a next search",
                             "Success",
                             JOptionPane.INFORMATION_MESSAGE);
 
