@@ -36,7 +36,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
-import warehouse.singularlisting.SingularAttributedListForm;
+import warehouse.singularlisting.ListableItemForm;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
@@ -55,7 +55,7 @@ public class InwardDialog extends JDialog {
 
     private JPanel container;
     private JTextField tfQuantity;
-    private SingularAttributedListForm formFieldSource;
+    private ListableItemForm formFieldSource;
     private JLabel lbQuantity, lbQuantityUnit, lbSource, lbDate;
     private int itemId;
     private JButton btnSubmit;
@@ -77,9 +77,8 @@ public class InwardDialog extends JDialog {
         lbQuantity = new JLabel("Quantity");
         tfQuantity = new JTextField(5);
 
-        formFieldSource = new SingularAttributedListForm();
+        formFieldSource = new ListableItemForm();
         formFieldSource.setListableImpl(new Source());
-        formFieldSource.setListDimentions(300, 300);
 
         lbDate = new JLabel("Date");
         datePicker = new DatePicker();

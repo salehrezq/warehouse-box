@@ -23,6 +23,7 @@
  */
 package warehouse.singularlisting;
 
+import warehouse.singularlisting.Listable;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.DefaultListCellRenderer;
@@ -37,13 +38,13 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author Saleh
  */
-public class ListS implements ListSelectionListener {
+public class ListOfListable implements ListSelectionListener {
 
     private JList list;
     private DefaultListModel listModel;
     private JScrollPane scrollPane;
 
-    public ListS() {
+    public ListOfListable() {
         list = new JList();
         list.setCellRenderer(new ListCellQuantityUnitRenderer());
         listModel = new DefaultListModel();
@@ -52,18 +53,31 @@ public class ListS implements ListSelectionListener {
         list.setSelectedIndex(0);
         list.setVisibleRowCount(5);
         scrollPane = new JScrollPane(list);
+        scrollPane.setPreferredSize(new Dimension(350, 100));
     }
 
-    public Component getList() {
+    public Component getListScrolledPane() {
         return scrollPane;
+    }
+
+    public JList getJList() {
+        return this.list;
     }
 
     public void addElement(Listable listable) {
         listModel.addElement(listable);
     }
 
+    public Listable removeElement(int index) {
+        return (Listable) listModel.remove(index);
+    }
+
     public void removeAllElements() {
         listModel.removeAllElements();
+    }
+
+    public void selectResposivity() {
+        list.addListSelectionListener(this);
     }
 
     protected void setPreviewSelected(Listable listable) {
@@ -73,16 +87,8 @@ public class ListS implements ListSelectionListener {
         list.getSelectionModel().setSelectionInterval(0, 0);
     }
 
-    public void selectResposivity() {
-        list.addListSelectionListener(this);
-    }
-
     public Listable getSelectedValue() {
         return (Listable) list.getSelectedValue();
-    }
-
-    public void setSize(int width, int height) {
-        scrollPane.setPreferredSize(new Dimension(width, height));
     }
 
     @Override
@@ -104,7 +110,6 @@ public class ListS implements ListSelectionListener {
                     index,
                     isSelected,
                     cellHasFocus);
-
             if (item != null && (item instanceof Listable)) {
                 Listable listable = (Listable) item;
                 setText(listable.getName());

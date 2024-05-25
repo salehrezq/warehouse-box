@@ -29,8 +29,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
-import warehouse.singularlisting.SingularAttributedListForm;
 import warehouse.db.model.QuantityUnit;
+import warehouse.singularlisting.ListableItemForm;
 
 /**
  *
@@ -40,7 +40,7 @@ public class ItemFormTextFields extends JPanel implements Collectable {
 
     private JTextField tfName, tfSpecs;
     private JLabel lbName, lbSpecs;
-    private SingularAttributedListForm itemFormQuantityUnit;
+    private ListableItemForm itemFormQuantityUnit;
     private Map data;
     private int itemIdForUpdate;
 
@@ -55,9 +55,8 @@ public class ItemFormTextFields extends JPanel implements Collectable {
         tfName = new JTextField(40);
         tfSpecs = new JTextField(40);
 
-        itemFormQuantityUnit = new SingularAttributedListForm();
+        itemFormQuantityUnit = new ListableItemForm();
         itemFormQuantityUnit.setListableImpl(new QuantityUnit());
-        itemFormQuantityUnit.setListDimentions(250, 250);
 
         add(lbName);
         add(tfName, "wrap");
