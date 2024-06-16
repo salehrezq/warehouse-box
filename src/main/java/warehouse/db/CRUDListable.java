@@ -101,15 +101,43 @@ public class CRUDListable {
     }
 
     public static boolean isExist(Listable listable) {
+        System.out.println("listable name " + listable.getName());
         boolean exist = false;
         String tempAttibuteAlais = "is_" + listable.getDBEntityName() + "_exist";
-        String sql = "SELECT EXISTS(SELECT * FROM " + listable.getDBEntityName()
-                + " WHERE `" + listable.getDBAttributeName()
-                + "` = ?) AS " + tempAttibuteAlais;
+        System.out.println("tempAttibuteAlais " + tempAttibuteAlais);
+        String sql = "SELECT EXISTS(SELECT " + "`" + listable.getDBAttributeName() + "`"
+                + " FROM " + "`" + listable.getDBEntityName() + "`"
+                + " WHERE (" + "`" + listable.getDBAttributeName() + "` = ?))"
+                + " AS " + tempAttibuteAlais;
         con = Connect.getConnection();
         try {
             PreparedStatement isExistStatement = con.prepareStatement(sql);
+            System.out.println(isExistStatement);
             isExistStatement.setString(1, listable.getName());
+            ResultSet result = isExistStatement.executeQuery();
+            if (result.next()) {
+                exist = result.getInt(tempAttibuteAlais) == 1;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return exist;
+    }
+
+    public static boolean isExistExceptThis(Listable listable) {
+        boolean exist = false;
+        String tempAttibuteAlais = "is_" + listable.getDBEntityName() + "_exist";
+        String sql = "SELECT EXISTS(SELECT " + "`" + listable.getDBAttributeName() + "`"
+                + " FROM " + "`" + listable.getDBEntityName() + "`"
+                + " WHERE (" + "`" + listable.getDBAttributeName() + "` = ? AND `id` NOT IN (?)))"
+                + " AS " + tempAttibuteAlais;
+
+        con = Connect.getConnection();
+        System.out.println(sql);
+        try {
+            PreparedStatement isExistStatement = con.prepareStatement(sql);
+            isExistStatement.setString(1, listable.getName());
+            isExistStatement.setInt(2, listable.getId());
             ResultSet result = isExistStatement.executeQuery();
             if (result.next()) {
                 exist = result.getInt(tempAttibuteAlais) == 1;
@@ -209,6 +237,26 @@ public class CRUDListable {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
         }
         return listables;
+    }
+
+    public static boolean update(Listable listable) {
+        int update = 0;
+        String sql = "UPDATE " + "`" + listable.getDBEntityName() + "`"
+                + " SET " + "`" + listable.getDBAttributeName() + "`" + " = ?"
+                + " WHERE `id` = ?";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setString(1, listable.getName());
+            p.setInt(2, listable.getId());
+            update = p.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return (update > 0);
     }
 
     public static boolean isListableInUse(Listable listableImplementation) {

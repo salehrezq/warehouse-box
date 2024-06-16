@@ -66,17 +66,28 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
     private String searchQueryImmutableCopy;
     private final JPopupMenu popupMenu;
     private final JMenuItem menuListableRemove;
+    private final JMenuItem menuListableEdit;
+    private ListableItemEditDialog listableItemEditDialog;
+    private PopupMenuListableHandler popupMenuListableHandler;
+    private Listable listable;
 
     public ListableItemManage(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
 
         LIMIT = 3;
 
+        popupMenuListableHandler = new PopupMenuListableHandler();
         thisListableItemManageClass = ListableItemManage.this;
+        listableItemEditDialog = new ListableItemEditDialog(null, "Edit", true);
         popupMenu = new JPopupMenu();
         popupMenu.addMouseListener(new MouseJListHandler());
+        menuListableEdit = new JMenuItem("Edit");
+        menuListableEdit.addActionListener(popupMenuListableHandler);
         menuListableRemove = new JMenuItem("Remove");
-        menuListableRemove.addActionListener(new PopupMenuListableHandler());
+        menuListableRemove.addActionListener(popupMenuListableHandler);
+
+        popupMenu.add(menuListableEdit);
+        popupMenu.addSeparator();
         popupMenu.add(menuListableRemove);
 
         panelSearch = new JPanel();
@@ -201,39 +212,45 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Listable listable = (Listable) listing.getSelectedValue();
-            boolean isInUse = CRUDListable.isListableInUse(listable);
-            if (isInUse) {
-                JOptionPane.showMessageDialog(
-                        thisListableItemManageClass,
-                        listableImplementation.getLabel() + " cannot be deleted because it is in use.",
-                        "In use!",
-                        JOptionPane.WARNING_MESSAGE);
-            } else {
-                int reply = JOptionPane.showConfirmDialog(
-                        null,
-                        "Are you sure to delete this " + listableImplementation.getLabel(),
-                        "DELETE!",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.WARNING_MESSAGE);
-                if (reply == JOptionPane.YES_OPTION) {
-                    boolean deleted = CRUDListable.delete(listable);
-                    if (deleted) {
-                        listOfListable.removeElement(listing.getSelectedIndex());
-                        // notifyOutwardDeleted(outward);
-                        JOptionPane.showMessageDialog(
-                                null,
-                                listableImplementation.getLabel() + " deleted successfully",
-                                "Success",
-                                JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        JOptionPane.showMessageDialog(
-                                null,
-                                "Issue: " + listableImplementation.getLabel() + " was not deleted",
-                                "Failure",
-                                JOptionPane.WARNING_MESSAGE);
+            JMenuItem source = (JMenuItem) e.getSource();
+            listable = (Listable) listing.getSelectedValue();
+            if (source == menuListableRemove) {
+                boolean isInUse = CRUDListable.isListableInUse(listable);
+                if (isInUse) {
+                    JOptionPane.showMessageDialog(
+                            thisListableItemManageClass,
+                            listableImplementation.getLabel() + " cannot be deleted because it is in use.",
+                            "In use!",
+                            JOptionPane.WARNING_MESSAGE);
+                } else {
+                    int reply = JOptionPane.showConfirmDialog(
+                            null,
+                            "Are you sure to delete this " + listableImplementation.getLabel(),
+                            "DELETE!",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        boolean deleted = CRUDListable.delete(listable);
+                        if (deleted) {
+                            listOfListable.removeElement(listing.getSelectedIndex());
+                            // notifyOutwardDeleted(outward);
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    listableImplementation.getLabel() + " deleted successfully",
+                                    "Success",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Issue: " + listableImplementation.getLabel() + " was not deleted",
+                                    "Failure",
+                                    JOptionPane.WARNING_MESSAGE);
+                        }
                     }
                 }
+            } else if (source == menuListableEdit) {
+                listableItemEditDialog.setTfListableText(listable);
+                listableItemEditDialog.setVisible(true);
             }
         }
     }
