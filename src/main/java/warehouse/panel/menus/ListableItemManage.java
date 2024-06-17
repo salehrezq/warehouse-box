@@ -171,6 +171,13 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (tfCreate.getText().isBlank()) {
+                JOptionPane.showMessageDialog(thisListableItemManageClass,
+                        "Must provide name for " + listableImplementation.getLabel() + ".",
+                        "Empty!",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             listableImplementation.setName(tfCreate.getText());
             if (CRUDListable.isExist(listableImplementation)) {
                 JOptionPane.showMessageDialog(thisListableItemManageClass,
