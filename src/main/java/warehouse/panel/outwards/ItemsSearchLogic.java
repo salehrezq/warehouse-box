@@ -29,6 +29,7 @@ import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -61,6 +62,7 @@ public class ItemsSearchLogic {
     private MatchDigitsOnlyHandler matchDigitsOnly;
     private final Pattern pattern = Pattern.compile("\\d+");
     private DateRange dateRange;
+    private LocalDate oldDateStart, oldDateEnd;
     private DateChangeHandler dateChangeHandler;
     private CheckBoxHandler checkBoxHandler;
 
@@ -114,6 +116,8 @@ public class ItemsSearchLogic {
         this.dateRange.getDatePickerStart().addDateChangeListener(dateChangeHandler);
         this.dateRange.getDatePickerEnd().addDateChangeListener(dateChangeHandler);
         this.dateRange.getCheckDateFilter().addActionListener(checkBoxHandler);
+        oldDateStart = dateRange.getDatePickerStart().getDate();
+        oldDateEnd = dateRange.getDatePickerEnd().getDate();
         searchFilters.setDateRangeStart(dateRange.getDatePickerStart().getDate());
         searchFilters.setDateRangeEnd(dateRange.getDatePickerEnd().getDate());
     }
@@ -283,6 +287,29 @@ public class ItemsSearchLogic {
         @Override
         public void dateChanged(DateChangeEvent event) {
             DatePicker datePicker = (DatePicker) event.getSource();
+
+            if (datePicker == dateRange.getDatePickerStart()) {
+                if (dateRange.getDatePickerStart().getDate().isAfter(dateRange.getDatePickerEnd().getDate())) {
+                    dateRange.getDatePickerStart().setDate(oldDateStart);
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Start date must be before end date.",
+                            "Date range is wrong!",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } else if (datePicker == dateRange.getDatePickerEnd()) {
+                if (dateRange.getDatePickerEnd().getDate().isBefore(dateRange.getDatePickerStart().getDate())) {
+                    dateRange.getDatePickerEnd().setDate(oldDateEnd);
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "End date must be after start date.",
+                            "Date range is wrong!",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            oldDateStart = dateRange.getDatePickerStart().getDate();
+            oldDateEnd = dateRange.getDatePickerEnd().getDate();
+
             if (datePicker == dateRange.getDatePickerStart()) {
                 searchFilters.setDateRangeStart(datePicker.getDate());
             }
