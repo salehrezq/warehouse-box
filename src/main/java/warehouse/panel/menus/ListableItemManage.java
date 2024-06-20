@@ -135,6 +135,10 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         this.listableImplementation = listable;
     }
 
+    public ListableItemEditDialog getListableItemEditDialog() {
+        return listableItemEditDialog;
+    }
+
     private class BtnSearchHandler implements ActionListener {
 
         @Override

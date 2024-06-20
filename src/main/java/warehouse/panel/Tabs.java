@@ -28,12 +28,14 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import warehouse.panel.inwards.InwardDialog;
+import warehouse.panel.inwards.InwardsList;
 import warehouse.panel.inwards.InwardsTap;
 import warehouse.panel.items.ItemsList;
 import warehouse.panel.items.ItemsTab;
 import warehouse.panel.outwards.OutwardsTap;
 import warehouse.panel.items.ItemImage;
 import warehouse.panel.outwards.OutwardDialog;
+import warehouse.panel.outwards.OutwardsList;
 
 /**
  *
@@ -78,5 +80,13 @@ public class Tabs extends JPanel {
 
     public ItemImage getItemImage() {
         return itemsTab.getItemImage();
+    }
+
+    public InwardsList getInwardsList() {
+        return inwardsTap.getInwardsList();
+    }
+
+    public OutwardsList getOutwardsList() {
+        return outwardsTap.getOutwardsList();
     }
 }

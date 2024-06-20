@@ -34,6 +34,7 @@ import warehouse.db.model.QuantityUnit;
 import warehouse.db.model.Recipient;
 import warehouse.db.model.Source;
 import warehouse.panel.createandupdate.FormManagement;
+import warehouse.singularlisting.Listable;
 
 /**
  *
@@ -70,6 +71,7 @@ public class Menu {
         createItemDialog = new ItemCreateUpdateDialog(target, "Create Item", true);
         manageQuantityUnitDialog = new ListableItemManage(target, "Manage units", true);
         manageQuantityUnitDialog.setListableImpl(new QuantityUnit());
+        //manageQuantityUnitDialog.get
         manageSourceDialog = new ListableItemManage(target, "Manage Sources", true);
         manageSourceDialog.setListableImpl(new Source());
         manageRecipientDialog = new ListableItemManage(target, "Manage Recipients", true);
@@ -90,6 +92,18 @@ public class Menu {
 
     public FormManagement getFormManagement() {
         return createItemDialog.getFormManagement();
+    }
+
+    public ListableItemManage getListableItemManage(Listable listable) {
+        ListableItemManage listableItemManage = null;
+        if (listable instanceof QuantityUnit) {
+            listableItemManage = manageQuantityUnitDialog;
+        } else if (listable instanceof Source) {
+            listableItemManage = manageSourceDialog;
+        } else if (listable instanceof Recipient) {
+            listableItemManage = manageRecipientDialog;
+        }
+        return listableItemManage;
     }
 
     private class MenuItemsListener implements ActionListener {

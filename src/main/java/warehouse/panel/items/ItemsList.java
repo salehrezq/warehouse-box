@@ -57,8 +57,10 @@ import warehouse.db.model.QuantityUnit;
 import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
 import warehouse.panel.inwards.InwardCRUDListener;
 import warehouse.panel.inwards.InwardDeleteListener;
+import warehouse.panel.menus.ListableUpdateListener;
 import warehouse.panel.outwards.OutwardCRUDListener;
 import warehouse.panel.outwards.OutwardDeleteListener;
+import warehouse.singularlisting.Listable;
 
 /**
  *
@@ -71,7 +73,8 @@ public class ItemsList extends JPanel
         InwardCRUDListener,
         OutwardCRUDListener,
         InwardDeleteListener,
-        OutwardDeleteListener {
+        OutwardDeleteListener,
+        ListableUpdateListener {
 
     private ItemTableModel model;
     private JTable table;
@@ -321,6 +324,23 @@ public class ItemsList extends JPanel
         if (itemMeta != null) {
             BigDecimal updatedBalance = itemMeta.getBalance().add(outward.getQuantity());
             itemMeta.setBalance(updatedBalance);
+        }
+    }
+
+    @Override
+    public void listableUpdated(Listable listable, String oldlistableName) {
+        String dbEntityName = listable.getDBEntityName();
+        Integer column = null;
+        if (dbEntityName.equals("quantity_unit")) {
+            column = 4;
+        }
+        if (column != null && column == 4) {
+            for (int row = 0; row < model.getRowCount(); row++) {
+                String quantityUnit = (String) table.getValueAt(row, column);
+                if (quantityUnit.equals(oldlistableName)) {
+                    table.setValueAt(listable, row, column);
+                }
+            }
         }
     }
 

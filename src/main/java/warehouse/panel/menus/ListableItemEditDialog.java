@@ -27,6 +27,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import warehouse.db.CRUDListable;
 import warehouse.singularlisting.Listable;
 
@@ -42,10 +43,12 @@ public class ListableItemEditDialog extends JDialog {
     private BtnHandler btnHandler;
     private String oldText;
     private Listable listable;
+    private static ArrayList<ListableUpdateListener> listableUpdateListeners;
 
     public ListableItemEditDialog(JFrame owner, String title, boolean modal) {
         super(owner, title, modal);
 
+        listableUpdateListeners = new ArrayList<>();
         // Initialize the text field
         tfListableText = new JTextField(20);
 
@@ -67,6 +70,16 @@ public class ListableItemEditDialog extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
         pack();
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    }
+
+    public void addListableUpdateListener(ListableUpdateListener listableUpdateListener) {
+        listableUpdateListeners.add(listableUpdateListener);
+    }
+
+    public void notifyListableUpdate(Listable listable, String oldlistableName) {
+        listableUpdateListeners.forEach((listableUpdateListener) -> {
+            listableUpdateListener.listableUpdated(listable, oldlistableName);
+        });
     }
 
     protected void setTfListableText(Listable listable) {
@@ -96,6 +109,7 @@ public class ListableItemEditDialog extends JDialog {
                     } else {
                         boolean updated = CRUDListable.update(listable);
                         if (updated) {
+                            notifyListableUpdate(listable, oldText);
                             JOptionPane.showMessageDialog(
                                     null,
                                     listable.getLabel() + " updated successfully",

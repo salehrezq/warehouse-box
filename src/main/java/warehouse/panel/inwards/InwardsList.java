@@ -50,6 +50,9 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import warehouse.db.CRUDInwards;
 import warehouse.db.model.Inward;
+import warehouse.db.model.Item;
+import warehouse.db.model.QuantityUnit;
+import warehouse.panel.menus.ListableUpdateListener;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
 
@@ -61,7 +64,8 @@ public class InwardsList extends JPanel
         implements
         InwardCRUDListener,
         ListableConsumer,
-        ItemsSearchListener {
+        ItemsSearchListener,
+        ListableUpdateListener {
 
     private InwardTableModel model;
     private JTable table;
@@ -219,6 +223,36 @@ public class InwardsList extends JPanel
         this.inwardDeleteListeners.forEach((inwardDeleteListener) -> {
             inwardDeleteListener.deleted(inward);
         });
+    }
+
+    @Override
+    public void listableUpdated(Listable listable, String oldlistableName) {
+        String dbEntityName = listable.getDBEntityName();
+        Integer column = null;
+        if (dbEntityName.equals("quantity_unit")) {
+            column = 3;
+        } else if (dbEntityName.equals("source")) {
+            column = 4;
+        }
+        if (column != null) {
+            if (column == 3) {
+                for (int row = 0; row < model.getRowCount(); row++) {
+                    String quantityUnit = (String) table.getValueAt(row, column);
+                    if (quantityUnit.equals(oldlistableName)) {
+                        Item item = model.getInward(row).getItem();
+                        item.setQuantityUnit((QuantityUnit) listable);
+                        table.setValueAt(item, row, column);
+                    }
+                }
+            } else if (column == 4) {
+                for (int row = 0; row < model.getRowCount(); row++) {
+                    String source = (String) table.getValueAt(row, column);
+                    if (source.equals(oldlistableName)) {
+                        table.setValueAt(listable, row, column);
+                    }
+                }
+            }
+        }
     }
 
     private class RowSelectionListener implements ListSelectionListener {

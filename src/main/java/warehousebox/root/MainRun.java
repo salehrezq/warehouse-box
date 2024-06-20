@@ -24,10 +24,15 @@
 package warehousebox.root;
 
 import javax.swing.JFrame;
+import warehouse.db.model.QuantityUnit;
+import warehouse.db.model.Recipient;
+import warehouse.db.model.Source;
 import warehouse.panel.menus.Menu;
 import warehouse.panel.Tabs;
 import warehouse.panel.createandupdate.FormManagement;
 import warehouse.panel.items.ItemImage;
+import warehouse.panel.menus.ListableItemEditDialog;
+import warehouse.panel.menus.ListableItemManage;
 
 /**
  *
@@ -60,6 +65,20 @@ public class MainRun {
         ItemImage itemImage = tabs.getItemImage();
         FormManagement updateFormManagment = tabs.getItemsList().getUpdateItemDialog().getFormManagement();
         updateFormManagment.addItemCRUDListener(itemImage);
+
+        ListableItemManage listableItemManageDialogeQuantityUnit = menu.getListableItemManage(new QuantityUnit());
+        ListableItemEditDialog editDialogeForQuantityUnit = listableItemManageDialogeQuantityUnit.getListableItemEditDialog();
+        editDialogeForQuantityUnit.addListableUpdateListener(tabs.getItemsList());
+        editDialogeForQuantityUnit.addListableUpdateListener(tabs.getInwardsList());
+        editDialogeForQuantityUnit.addListableUpdateListener(tabs.getOutwardsList());
+
+        ListableItemManage listableItemManageDialogeSource = menu.getListableItemManage(new Source());
+        ListableItemEditDialog editDialogeForSource = listableItemManageDialogeSource.getListableItemEditDialog();
+        editDialogeForSource.addListableUpdateListener(tabs.getInwardsList());
+
+        ListableItemManage listableItemManageDialogeRecipient = menu.getListableItemManage(new Recipient());
+        ListableItemEditDialog editDialogeForRecipient = listableItemManageDialogeRecipient.getListableItemEditDialog();
+        editDialogeForRecipient.addListableUpdateListener(tabs.getOutwardsList());
     }
 
     public static void main(String[] args) {
