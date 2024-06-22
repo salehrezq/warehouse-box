@@ -23,6 +23,7 @@
  */
 package warehouse.singularlisting;
 
+import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -30,12 +31,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import utility.scrollbarthin.ScrollBarThin;
 import warehouse.db.CRUDListable;
 
 /**
@@ -47,6 +50,7 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
     private JPanel container, panelSearch, panelList;
     private JLabel label;
     private JTextField tfSearch;
+    private ScrollBarThin scrollBarThinTfSearch;
     private JButton btnSearch, btnLoadMore;
     private ListOfListable listOfListable;
     private JList listing;
@@ -71,7 +75,14 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
         //  btnListener = new BtnListener();
 
         label = new JLabel();
+        // Setup Text field search:
         tfSearch = new JTextField(25);
+        scrollBarThinTfSearch = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarThinTfSearch.setModel(tfSearch.getHorizontalVisibility());
+        Box boxSearchField = Box.createVerticalBox();
+        boxSearchField.add(tfSearch);
+        boxSearchField.add(scrollBarThinTfSearch);
+        // Button search
         btnSearch = new JButton("Search");
         btnSearch.addActionListener(new BtnSearchHandler());
         listOfListable = new ListOfListable();
@@ -80,7 +91,7 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
         //  btnClose.addActionListener(btnListener);
 
         panelSearch.add(label);
-        panelSearch.add(tfSearch);
+        panelSearch.add(boxSearchField);
         panelSearch.add(btnSearch);
 
         btnLoadMore = new JButton("Load more");

@@ -23,12 +23,15 @@
  */
 package warehouse.panel.createandupdate;
 
+import java.awt.Adjustable;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
+import utility.scrollbarthin.ScrollBarThin;
 import warehouse.db.model.QuantityUnit;
 import warehouse.singularlisting.ListableItemForm;
 
@@ -39,6 +42,7 @@ import warehouse.singularlisting.ListableItemForm;
 public class ItemFormTextFields extends JPanel implements Collectable {
 
     private JTextField tfName, tfSpecs;
+    private ScrollBarThin scrollBarThinTfName, scrollBarThinTfSpecs;
     private JLabel lbName, lbSpecs;
     private ListableItemForm itemFormQuantityUnit;
     private Map data;
@@ -51,18 +55,29 @@ public class ItemFormTextFields extends JPanel implements Collectable {
 
         lbName = new JLabel("Name");
         lbSpecs = new JLabel("Specs");
-
+        // Setup Text field name
         tfName = new JTextField(40);
+        scrollBarThinTfName = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarThinTfName.setModel(tfName.getHorizontalVisibility());
+        Box boxNameField = Box.createVerticalBox();
+        boxNameField.add(tfName);
+        boxNameField.add(scrollBarThinTfName);
+        // Setup Text field specs
         tfSpecs = new JTextField(40);
+        scrollBarThinTfSpecs = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarThinTfSpecs.setModel(tfSpecs.getHorizontalVisibility());
+        Box boxSpecsField = Box.createVerticalBox();
+        boxSpecsField.add(tfSpecs);
+        boxSpecsField.add(scrollBarThinTfSpecs);
 
         itemFormQuantityUnit = new ListableItemForm();
         itemFormQuantityUnit.setListableImpl(new QuantityUnit());
         itemFormQuantityUnit.setListablePreferredSize(300, 300);
 
         add(lbName);
-        add(tfName, "wrap");
+        add(boxNameField, "wrap");
         add(lbSpecs);
-        add(tfSpecs, "wrap");
+        add(boxSpecsField, "wrap");
         add(itemFormQuantityUnit, "center, span 2");
     }
 

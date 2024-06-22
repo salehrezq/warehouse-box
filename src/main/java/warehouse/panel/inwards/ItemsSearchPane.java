@@ -23,11 +23,13 @@
  */
 package warehouse.panel.inwards;
 
+import java.awt.Adjustable;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import utility.scrollbarthin.ScrollBarThin;
 
 /**
  *
@@ -37,6 +39,7 @@ public class ItemsSearchPane {
 
     private JPanel container;
     private JTextField tfSearchQuery;
+    private ScrollBarThin scrollBarThinTfSearchQuery;
     private JButton btnSearchQuery;
     private JCheckBox checkCodeFilter,
             checkNameFilter,
@@ -46,9 +49,15 @@ public class ItemsSearchPane {
     public ItemsSearchPane() {
         container = new JPanel();
 
+        // Setup Text field search query:
         tfSearchQuery = new JTextField(35);
+        scrollBarThinTfSearchQuery = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarThinTfSearchQuery.setModel(tfSearchQuery.getHorizontalVisibility());
+        Box boxSearchQueryField = Box.createVerticalBox();
+        boxSearchQueryField.add(tfSearchQuery);
+        boxSearchQueryField.add(scrollBarThinTfSearchQuery);
+        // --
         btnSearchQuery = new JButton("Search");
-
         checkCodeFilter = new JCheckBox("Code");
         checkNameFilter = new JCheckBox("Name");
         checkSpecificationFilter = new JCheckBox("Specification");
@@ -56,7 +65,7 @@ public class ItemsSearchPane {
         dateRange = new DateRange();
 
         Box boxSearch = Box.createHorizontalBox();
-        boxSearch.add(tfSearchQuery);
+        boxSearch.add(boxSearchQueryField);
         boxSearch.add(btnSearchQuery);
         Box boxFilters = Box.createHorizontalBox();
         boxFilters.add(checkCodeFilter);

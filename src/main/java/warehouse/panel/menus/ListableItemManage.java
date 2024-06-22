@@ -23,6 +23,7 @@
  */
 package warehouse.panel.menus;
 
+import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import warehouse.singularlisting.ListableConsumer;
@@ -33,6 +34,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -43,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import utility.scrollbarthin.ScrollBarThin;
 import warehouse.db.CRUDListable;
 
 /**
@@ -54,6 +57,7 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
     private JPanel container, panelSearch, panelList, panelCreate;
     private JLabel label;
     private JTextField tfSearch, tfCreate;
+    private ScrollBarThin scrollBarThinTfSearch, scrollBarThinTfCreate;
     private JButton btnSearch, btnClose, btnSubmit, btnLoadMore;
     private ListOfListable listOfListable;
     private JList listing;
@@ -97,7 +101,14 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         //  btnListener = new BtnListener();
 
         label = new JLabel();
+        // Setup Text field search:
         tfSearch = new JTextField(25);
+        scrollBarThinTfSearch = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarThinTfSearch.setModel(tfSearch.getHorizontalVisibility());
+        Box boxSearchField = Box.createVerticalBox();
+        boxSearchField.add(tfSearch);
+        boxSearchField.add(scrollBarThinTfSearch);
+
         btnSearch = new JButton("Search");
         btnSearch.addActionListener(new BtnSearchHandler());
         listOfListable = new ListOfListable();
@@ -107,7 +118,7 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         //  btnClose.addActionListener(btnListener);
 
         panelSearch.add(label);
-        panelSearch.add(tfSearch);
+        panelSearch.add(boxSearchField);
         panelSearch.add(btnSearch);
 
         btnLoadMore = new JButton("Load more");
@@ -115,12 +126,18 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         btnLoadMore.addActionListener(new BtnLoadMoreHandler());
         panelList.add(listOfListable.getListScrolledPane(), BorderLayout.CENTER);
         panelList.add(btnLoadMore, BorderLayout.PAGE_END);
-
+        // Setup Text field create:
         tfCreate = new JTextField(25);
+        scrollBarThinTfCreate = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarThinTfCreate.setModel(tfCreate.getHorizontalVisibility());
+        Box boxCreateField = Box.createVerticalBox();
+        boxCreateField.add(tfCreate);
+        boxCreateField.add(scrollBarThinTfCreate);
+
         btnSubmit = new JButton("Create");
         btnSubmit.addActionListener(new BtnSubmit());
 
-        panelCreate.add(tfCreate);
+        panelCreate.add(boxCreateField);
         panelCreate.add(btnSubmit);
 
         container.add(panelSearch, BorderLayout.PAGE_START);
