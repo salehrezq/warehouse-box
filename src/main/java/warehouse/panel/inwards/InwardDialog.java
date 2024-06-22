@@ -57,7 +57,7 @@ public class InwardDialog extends JDialog {
     private JPanel container;
     private JTextField tfQuantity;
     private ListableItemForm formFieldSource;
-    private JLabel lbQuantity, lbQuantityUnit, lbSource, lbDate;
+    private JLabel lbQuantity, lbQuantityUnit, lbBalance, lbDate;
     private int itemId;
     private JButton btnSubmit;
     private DatePicker datePicker;
@@ -78,6 +78,8 @@ public class InwardDialog extends JDialog {
         lbQuantity = new JLabel("Quantity");
         tfQuantity = new JTextField(5);
 
+        lbBalance = new JLabel();
+
         formFieldSource = new ListableItemForm();
         formFieldSource.setListableImpl(new Source());
         formFieldSource.setListablePreferredSize(300, 300);
@@ -93,11 +95,12 @@ public class InwardDialog extends JDialog {
 
         container.add(lbQuantity);
         container.add(tfQuantity, "grow");
-        container.add(lbQuantityUnit, "wrap");
-        container.add(formFieldSource, "span 3,wrap");
+        container.add(lbQuantityUnit);
+        container.add(lbBalance, "wrap");
+        container.add(formFieldSource, "span 4,wrap");
         container.add(lbDate);
-        container.add(datePicker, "span 2, wrap");
-        container.add(btnSubmit, "span 3, center, gapy 10");
+        container.add(datePicker, "span 3, wrap");
+        container.add(btnSubmit, "span 4, center, gapy 10");
         add(container);
         this.setMinimumSize(new Dimension(520, 520));
     }
@@ -122,6 +125,8 @@ public class InwardDialog extends JDialog {
     public void setItemMeta(ItemMeta itemMeta) {
         this.itemMeta = itemMeta;
         lbQuantityUnit.setText(itemMeta.getQuantityUnit().getName());
+        BigDecimal balance = itemMeta.getBalance();
+        lbBalance.setText(" | Balance: " + balance.toPlainString());
     }
 
     public void addInwardCRUDListener(InwardCRUDListener inwardCRUDListener) {

@@ -96,7 +96,7 @@ public class OutwardDialog extends JDialog {
         btnSubmit.addActionListener(new BtnSubmitHandler());
 
         container.add(lbQuantity);
-        container.add(tfQuantity);
+        container.add(tfQuantity, "grow");
         container.add(lbQuantityUnit);
         container.add(lbBalance, "wrap");
         container.add(lbUsedFor);
