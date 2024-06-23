@@ -119,7 +119,7 @@ public class ItemFormImage implements
             for (Image image : images) {
                 imagesMap.put(image.getOrder(), image);
                 if (image.isDefaultImage()) {
-                    scalableImageContainer.setBufferedImage(image.getBufferedImage());
+                    scalableImageContainer.setImage(image);
                     spinnerValue = image.getOrder();
                     spinnerValueOnSpinning = spinnerValue;
                 }
@@ -127,7 +127,7 @@ public class ItemFormImage implements
         } else {
             spinnerValueOnSpinning = 0;
             imagesMap.clear();
-            scalableImageContainer.setBufferedImage(null);
+            scalableImageContainer.setImage(null);
         }
         spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
     }
@@ -163,7 +163,7 @@ public class ItemFormImage implements
     public void clearFields() {
         spinnerValueOnSpinning = 0;
         imagesMap.clear();
-        scalableImageContainer.setBufferedImage(null);
+        scalableImageContainer.setImage(null);
         spinnerH.setModel(0, 0, 0, 1);
     }
 
@@ -190,7 +190,7 @@ public class ItemFormImage implements
                 Renderer renderer = (Renderer) spinner.getValue();
                 spinnerValueOnSpinning = renderer.getValue();
                 Image image = imagesMap.get(spinnerValueOnSpinning);
-                scalableImageContainer.setBufferedImage(image.getBufferedImage());
+                scalableImageContainer.setImage(image);
             }
         }
     }

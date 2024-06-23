@@ -32,6 +32,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import warehouse.db.model.Image;
 
 /**
  *
@@ -42,7 +43,7 @@ public class ScrollableScalableImageContainer {
     private JScrollPane scrollableContainer;
     private JLabel lbImage;
     double scale = 0.1;
-    public BufferedImage image;
+    public BufferedImage bufferedImage;
     private MouseWheelMovedHandler mouseWheelMovedHandler;
 
     public ScrollableScalableImageContainer() {
@@ -55,13 +56,13 @@ public class ScrollableScalableImageContainer {
         scrollableContainer.addMouseWheelListener(mouseWheelMovedHandler);
     }
 
-    public void setBufferedImage(BufferedImage image) {
-        this.image = image;
-        setImage(image);
+    public void setImage(Image image) {
+        bufferedImage = image.getBufferedImage();
+        setImageIcone(bufferedImage);
         paintImage();
     }
 
-    private void setImage(BufferedImage image) {
+    private void setImageIcone(BufferedImage image) {
         if (image == null) {
             lbImage.setIcon(null);
             return;
@@ -74,16 +75,16 @@ public class ScrollableScalableImageContainer {
     }
 
     public void paintImage() {
-        if (image == null) {
-            setImage(null);
+        if (bufferedImage == null) {
+            setImageIcone(null);
             return;
         }
-        int imageWidth = image.getWidth();
-        int imageHeight = image.getHeight();
+        int imageWidth = bufferedImage.getWidth();
+        int imageHeight = bufferedImage.getHeight();
         BufferedImage bi = new BufferedImage(
                 (int) (imageWidth * scale),
                 (int) (imageHeight * scale),
-                image.getType());
+                bufferedImage.getType());
         Graphics2D g2 = bi.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -91,8 +92,8 @@ public class ScrollableScalableImageContainer {
 //                RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         AffineTransform at = AffineTransform.getTranslateInstance(0, 0);
         at.scale(scale, scale);
-        g2.drawRenderedImage(image, at);
-        setImage(bi);
+        g2.drawRenderedImage(bufferedImage, at);
+        setImageIcone(bi);
     }
 
     private class MouseWheelMovedHandler implements MouseWheelListener {
