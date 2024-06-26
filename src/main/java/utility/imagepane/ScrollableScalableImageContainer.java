@@ -25,13 +25,20 @@ package utility.imagepane;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import warehouse.db.model.Image;
 
 /**
@@ -43,8 +50,13 @@ public class ScrollableScalableImageContainer {
     private JScrollPane scrollableContainer;
     private JLabel lbImage;
     double scale = 0.1;
+    private Image image;
     public BufferedImage bufferedImage;
     private MouseWheelMovedHandler mouseWheelMovedHandler;
+    private KeyStroke keyStrokeCTRLRelease;
+    private ActionMap actionMap;
+    private InputMap inputMap;
+    private ImageScaleSaveHandler imageScaleSaveHandler;
 
     public ScrollableScalableImageContainer() {
         lbImage = new JLabel();
@@ -54,9 +66,16 @@ public class ScrollableScalableImageContainer {
         scrollableContainer.setViewportView(lbImage);
         mouseWheelMovedHandler = new MouseWheelMovedHandler();
         scrollableContainer.addMouseWheelListener(mouseWheelMovedHandler);
+        keyStrokeCTRLRelease = KeyStroke.getKeyStroke(KeyEvent.VK_CONTROL, 0, true);
+        inputMap = lbImage.getInputMap(JComponent.WHEN_FOCUSED);
+        actionMap = lbImage.getActionMap();
+        inputMap.put(keyStrokeCTRLRelease, keyStrokeCTRLRelease.toString());
+        imageScaleSaveHandler = new ImageScaleSaveHandler();
+        actionMap.put(keyStrokeCTRLRelease.toString(), imageScaleSaveHandler);
     }
 
     public void setImage(Image image) {
+        this.image = image;
         bufferedImage = image.getBufferedImage();
         setImageIcone(bufferedImage);
         paintImage();
@@ -101,6 +120,7 @@ public class ScrollableScalableImageContainer {
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
             if (e.isControlDown()) {
+                lbImage.requestFocus();
                 if (e.getWheelRotation() < 0) {
                     if (scale < 1.5) {
                         scale += 0.01;
@@ -110,7 +130,16 @@ public class ScrollableScalableImageContainer {
                     scale -= 0.01;
                     paintImage();
                 }
+                System.out.println("scale " + scale);
             }
+        }
+    }
+
+    private class ImageScaleSaveHandler extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("saved scale " + scale);
         }
     }
 }
