@@ -129,8 +129,10 @@ public class ScrollableScalableImageContainer {
 
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
+            JScrollPane scrollPane = (JScrollPane) e.getSource();
             if (e.isControlDown()) {
                 lbImage.requestFocus();
+                scrollPane.setWheelScrollingEnabled(false);
                 if (e.getWheelRotation() < 0) {
                     // up
                     if (scale.compareTo(upper) == -1) {
@@ -144,6 +146,8 @@ public class ScrollableScalableImageContainer {
                         paintImage();
                     }
                 }
+            } else {
+                scrollPane.setWheelScrollingEnabled(true);
             }
         }
     }
