@@ -31,6 +31,8 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
@@ -49,7 +51,7 @@ public class ScrollableScalableImageContainer {
 
     private JScrollPane scrollableContainer;
     private JLabel lbImage;
-    double scale = 0.1;
+    BigDecimal scale, increment, upper, lower;
     private Image image;
     public BufferedImage bufferedImage;
     private MouseWheelMovedHandler mouseWheelMovedHandler;
@@ -59,6 +61,10 @@ public class ScrollableScalableImageContainer {
     private ImageScaleSaveHandler imageScaleSaveHandler;
 
     public ScrollableScalableImageContainer() {
+        scale = new BigDecimal("0.5");
+        increment = new BigDecimal("0.05");
+        upper = new BigDecimal("1.5");
+        lower = new BigDecimal("0.05");
         lbImage = new JLabel();
         lbImage.setHorizontalAlignment(JLabel.CENTER);
         lbImage.setVerticalAlignment(JLabel.CENTER);
@@ -93,6 +99,10 @@ public class ScrollableScalableImageContainer {
         return scrollableContainer;
     }
 
+    private int multiplay(int value, BigDecimal scale) {
+        return scale.multiply(new BigDecimal(value)).setScale(2, RoundingMode.HALF_UP).intValue();
+    }
+
     public void paintImage() {
         if (bufferedImage == null) {
             setImageIcone(null);
@@ -101,8 +111,8 @@ public class ScrollableScalableImageContainer {
         int imageWidth = bufferedImage.getWidth();
         int imageHeight = bufferedImage.getHeight();
         BufferedImage bi = new BufferedImage(
-                (int) (imageWidth * scale),
-                (int) (imageHeight * scale),
+                (int) (multiplay(imageWidth, scale)),
+                (int) (multiplay(imageHeight, scale)),
                 bufferedImage.getType());
         Graphics2D g2 = bi.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -110,7 +120,7 @@ public class ScrollableScalableImageContainer {
 //          g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 //                RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         AffineTransform at = AffineTransform.getTranslateInstance(0, 0);
-        at.scale(scale, scale);
+        at.scale(scale.doubleValue(), scale.doubleValue());
         g2.drawRenderedImage(bufferedImage, at);
         setImageIcone(bi);
     }
@@ -122,15 +132,18 @@ public class ScrollableScalableImageContainer {
             if (e.isControlDown()) {
                 lbImage.requestFocus();
                 if (e.getWheelRotation() < 0) {
-                    if (scale < 1.5) {
-                        scale += 0.01;
+                    // up
+                    if (scale.compareTo(upper) == -1) {
+                        scale = scale.add(increment);
                         paintImage();
                     }
-                } else if (scale > 0.03) {
-                    scale -= 0.01;
-                    paintImage();
+                } else {
+                    //down
+                    if (scale.compareTo(lower) == 1) {
+                        scale = scale.subtract(increment);
+                        paintImage();
+                    }
                 }
-                System.out.println("scale " + scale);
             }
         }
     }
