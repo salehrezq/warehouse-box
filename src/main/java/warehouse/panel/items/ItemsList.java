@@ -183,8 +183,7 @@ public class ItemsList extends JPanel
         table.setValueAt(updatedItem.getName(), tableRow, 1);
         table.setValueAt(updatedItem.getSpecification(), tableRow, 2);
         // 3 is calculated value not relevant on the update here
-        table.setValueAt(updatedItem.getQuantityUnit().getId(), tableRow, 4);
-        table.setValueAt(updatedItem.getQuantityUnit().getName(), tableRow, 5);
+        table.setValueAt(updatedItem.getQuantityUnit(), tableRow, 4);
     }
 
     @Override
