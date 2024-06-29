@@ -126,6 +126,27 @@ public class CRUDImages {
         return patchArray.length;
     }
 
+    public static boolean updateScale(Image image) {
+        System.out.println();
+        int update = 0;
+        String sql = "UPDATE images"
+                + " SET scale = ?"
+                + " WHERE id = ?";
+        con = Connect.getConnection();
+        try {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setBigDecimal(1, image.getScale());
+            p.setInt(2, image.getId());
+            update = p.executeUpdate();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDImages.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.cleanUp();
+        }
+        return (update > 0);
+    }
+
     public static int delete(List<Image> images) {
         int[] patchArray = null;
         String sql = "DELETE FROM images WHERE `id` = ?";

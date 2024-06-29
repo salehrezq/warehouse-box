@@ -41,6 +41,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import warehouse.db.CRUDImages;
 import warehouse.db.model.Image;
 
 /**
@@ -61,7 +62,6 @@ public class ScrollableScalableImageContainer {
     private ImageScaleSaveHandler imageScaleSaveHandler;
 
     public ScrollableScalableImageContainer() {
-        scale = new BigDecimal("0.5");
         increment = new BigDecimal("0.05");
         upper = new BigDecimal("1.5");
         lower = new BigDecimal("0.05");
@@ -82,6 +82,7 @@ public class ScrollableScalableImageContainer {
 
     public void setImage(Image image) {
         this.image = image;
+        scale = image.getScale();
         bufferedImage = image.getBufferedImage();
         setImageIcone(bufferedImage);
         paintImage();
@@ -156,6 +157,8 @@ public class ScrollableScalableImageContainer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            image.setScale(scale);
+            CRUDImages.updateScale(image);
             System.out.println("saved scale " + scale);
         }
     }
