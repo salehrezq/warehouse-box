@@ -100,7 +100,7 @@ public class ScrollableScalableImageContainer {
         return scrollableContainer;
     }
 
-    private int multiplay(int value, BigDecimal scale) {
+    private int multiply(int value, BigDecimal scale) {
         return scale.multiply(new BigDecimal(value)).setScale(2, RoundingMode.HALF_UP).intValue();
     }
 
@@ -112,8 +112,8 @@ public class ScrollableScalableImageContainer {
         int imageWidth = bufferedImage.getWidth();
         int imageHeight = bufferedImage.getHeight();
         BufferedImage bi = new BufferedImage(
-                (int) (multiplay(imageWidth, scale)),
-                (int) (multiplay(imageHeight, scale)),
+                (int) (multiply(imageWidth, scale)),
+                (int) (multiply(imageHeight, scale)),
                 bufferedImage.getType());
         Graphics2D g2 = bi.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
