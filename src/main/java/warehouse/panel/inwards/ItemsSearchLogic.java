@@ -29,12 +29,15 @@ import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -57,6 +60,7 @@ public class ItemsSearchLogic {
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
+    private JLabel btnSourceFilter;
     private SearchFilters searchFilters, searchFiltersImmutableCopy;
     boolean isCodeChecked;
     private MatchDigitsOnlyHandler matchDigitsOnly;
@@ -108,6 +112,11 @@ public class ItemsSearchLogic {
         this.checkSpecificationFilter = checkSpecificationFilter;
         this.checkSpecificationFilter.setSelected(true);
         this.checkSpecificationFilter.addActionListener(new CheckBoxHandler());
+    }
+
+    protected void setBtnSourceFilter(JLabel btnSourceFilter) {
+        this.btnSourceFilter = btnSourceFilter;
+        this.btnSourceFilter.addMouseListener(new MouseEventsHandler());
     }
 
     protected void setDateRangeFilter(DateRange dateRange) {
@@ -319,4 +328,35 @@ public class ItemsSearchLogic {
         }
     }
 
+    private class MouseEventsHandler extends MouseAdapter {
+
+        private boolean hovered = false;
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            System.out.println("Mouse clicked source");
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            btnSourceFilter.setBackground(ItemsSearchPane.colorBtnSourcePressed);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            btnSourceFilter.setBackground((hovered) ? ItemsSearchPane.colorBtnSourceHover : ItemsSearchPane.colorBtnSourceNormal);
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            hovered = true;
+            btnSourceFilter.setBackground(ItemsSearchPane.colorBtnSourceHover);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            hovered = false;
+            btnSourceFilter.setBackground(ItemsSearchPane.colorBtnSourceNormal);
+        }
+    }
 }

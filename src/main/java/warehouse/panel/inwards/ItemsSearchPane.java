@@ -24,9 +24,12 @@
 package warehouse.panel.inwards;
 
 import java.awt.Adjustable;
+import java.awt.Color;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import utility.scrollbarthin.ScrollBarThin;
@@ -44,7 +47,11 @@ public class ItemsSearchPane {
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
+    private JLabel btnSourceFilter;
     private DateRange dateRange;
+    public final static Color colorBtnSourceNormal = new Color(247, 247, 247);
+    public final static Color colorBtnSourceHover = new Color(233, 233, 233);
+    public final static Color colorBtnSourcePressed = new Color(200, 200, 200);
 
     public ItemsSearchPane() {
         container = new JPanel();
@@ -61,6 +68,11 @@ public class ItemsSearchPane {
         checkCodeFilter = new JCheckBox("Code");
         checkNameFilter = new JCheckBox("Name");
         checkSpecificationFilter = new JCheckBox("Specification");
+        btnSourceFilter = new JLabel("Source...");
+        btnSourceFilter.setOpaque(true);
+        btnSourceFilter.setForeground(Color.BLACK);
+        btnSourceFilter.setBackground(colorBtnSourceNormal);
+        btnSourceFilter.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2));
 
         dateRange = new DateRange();
 
@@ -73,6 +85,8 @@ public class ItemsSearchPane {
         boxFilters.add(checkNameFilter);
         boxFilters.add(Box.createHorizontalStrut(5));
         boxFilters.add(checkSpecificationFilter);
+        boxFilters.add(Box.createHorizontalStrut(5));
+        boxFilters.add(btnSourceFilter);
         Box boxContainer = Box.createVerticalBox();
         boxContainer.add(boxSearch);
         boxContainer.add(boxFilters);
@@ -102,6 +116,10 @@ public class ItemsSearchPane {
 
     protected JCheckBox getCheckSpecificationFilter() {
         return checkSpecificationFilter;
+    }
+
+    protected JLabel getBtnSourceFilter() {
+        return btnSourceFilter;
     }
 
     protected DateRange getDateRange() {
