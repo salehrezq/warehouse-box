@@ -68,7 +68,7 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
         LIMIT = 3;
 
         thisListableItemManageClass = ListableItemForm.this;
-
+        setLayout(new BorderLayout());
         panelSearch = new JPanel();
         panelList = new JPanel(new BorderLayout());
         container = new JPanel(new BorderLayout());
@@ -102,7 +102,7 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
 
         container.add(panelSearch, BorderLayout.PAGE_START);
         container.add(panelList, BorderLayout.CENTER);
-        add(container);
+        add(container, BorderLayout.CENTER);
         this.setMinimumSize(new Dimension(480, 350));
     }
 

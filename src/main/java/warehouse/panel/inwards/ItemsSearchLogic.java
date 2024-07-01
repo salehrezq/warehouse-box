@@ -61,6 +61,7 @@ public class ItemsSearchLogic {
             checkNameFilter,
             checkSpecificationFilter;
     private JLabel btnSourceFilter;
+    private SourceFilterDialog sourceFilterDialog;
     private SearchFilters searchFilters, searchFiltersImmutableCopy;
     boolean isCodeChecked;
     private MatchDigitsOnlyHandler matchDigitsOnly;
@@ -71,6 +72,7 @@ public class ItemsSearchLogic {
     private CheckBoxHandler checkBoxHandler;
 
     public ItemsSearchLogic() {
+        sourceFilterDialog = new SourceFilterDialog();
         itemsSearchListeners = new ArrayList<>();
         searchFilters = new SearchFilters();
         checkBoxHandler = new CheckBoxHandler();
@@ -334,7 +336,7 @@ public class ItemsSearchLogic {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            System.out.println("Mouse clicked source");
+            sourceFilterDialog.setVisible(true);
         }
 
         @Override
