@@ -27,7 +27,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JDialog;
 import warehouse.db.model.Source;
-import warehouse.singularlisting.ListableItemForm;
+import warehouse.singularlisting.ListableItemFormForFilters;
 
 /**
  *
@@ -35,13 +35,17 @@ import warehouse.singularlisting.ListableItemForm;
  */
 public class SourceFilterDialog extends JDialog {
 
-    private ListableItemForm formFieldSourceFilter;
+    private ListableItemFormForFilters formListableItemFormClearSelection;
 
     public SourceFilterDialog() {
         setLayout(new BorderLayout());
-        formFieldSourceFilter = new ListableItemForm();
-        formFieldSourceFilter.setListableImpl(new Source());
-        add(formFieldSourceFilter, BorderLayout.CENTER);
+        formListableItemFormClearSelection = new ListableItemFormForFilters();
+        formListableItemFormClearSelection.setListableImpl(new Source());
+        add(formListableItemFormClearSelection, BorderLayout.CENTER);
         this.setMinimumSize(new Dimension(400, 400));
+    }
+
+    public void setDialogeToListableItemFormForFilters() {
+        formListableItemFormClearSelection.setDialoge(this);
     }
 }

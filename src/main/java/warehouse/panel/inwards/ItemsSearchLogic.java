@@ -73,6 +73,7 @@ public class ItemsSearchLogic {
 
     public ItemsSearchLogic() {
         sourceFilterDialog = new SourceFilterDialog();
+        sourceFilterDialog.setDialogeToListableItemFormForFilters();
         itemsSearchListeners = new ArrayList<>();
         searchFilters = new SearchFilters();
         checkBoxHandler = new CheckBoxHandler();
