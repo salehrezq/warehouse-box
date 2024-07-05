@@ -21,36 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehouse.panel.inwards;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import javax.swing.JDialog;
-import warehouse.db.model.Source;
-import warehouse.singularlisting.ListableItemFormForFilters;
+package warehouse.singularlisting;
 
 /**
  *
  * @author Saleh
  */
-public class SourceFilterDialog extends JDialog {
+public interface ListableItemFormForFiltersListener {
 
-    private ListableItemFormForFilters formListableItemFormClearSelection;
-
-    public SourceFilterDialog() {
-        setLayout(new BorderLayout());
-        formListableItemFormClearSelection = new ListableItemFormForFilters();
-        formListableItemFormClearSelection.setListableImpl(new Source());
-        add(formListableItemFormClearSelection, BorderLayout.CENTER);
-        this.setMinimumSize(new Dimension(400, 400));
-    }
-
-    protected void setDialogeToListableItemFormForFilters() {
-        formListableItemFormClearSelection.setDialoge(this);
-    }
-
-    protected ListableItemFormForFilters getListableItemFormForFilters() {
-        return formListableItemFormClearSelection;
-    }
-
+    public void selectedListable(Listable listable);
 }

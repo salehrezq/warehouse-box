@@ -41,8 +41,8 @@ import utility.scrollbarthin.ScrollBarThin;
 public class ItemsSearchPane {
 
     private JPanel container;
-    private JTextField tfSearchQuery;
-    private ScrollBarThin scrollBarThinTfSearchQuery;
+    private JTextField tfSearchQuery, tfSourceFilter;
+    private ScrollBarThin scrollBarThinTfSearchQuery, scrollBarThinTfSourceFilter;
     private JButton btnSearchQuery;
     private JCheckBox checkCodeFilter,
             checkNameFilter,
@@ -52,6 +52,7 @@ public class ItemsSearchPane {
     public final static Color colorBtnSourceNormal = new Color(247, 247, 247);
     public final static Color colorBtnSourceHover = new Color(233, 233, 233);
     public final static Color colorBtnSourcePressed = new Color(200, 200, 200);
+    private final Color colorTextField = new Color(84, 84, 84);
 
     public ItemsSearchPane() {
         container = new JPanel();
@@ -73,6 +74,14 @@ public class ItemsSearchPane {
         btnSourceFilter.setForeground(Color.BLACK);
         btnSourceFilter.setBackground(colorBtnSourceNormal);
         btnSourceFilter.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2));
+        tfSourceFilter = new JTextField(5);
+        tfSourceFilter.setEditable(false);
+        tfSourceFilter.setDisabledTextColor(colorTextField);
+        scrollBarThinTfSourceFilter = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarThinTfSourceFilter.setModel(tfSourceFilter.getHorizontalVisibility());
+        Box boxSourceFilterField = Box.createVerticalBox();
+        boxSourceFilterField.add(tfSourceFilter);
+        boxSourceFilterField.add(scrollBarThinTfSourceFilter);
 
         dateRange = new DateRange();
 
@@ -87,6 +96,8 @@ public class ItemsSearchPane {
         boxFilters.add(checkSpecificationFilter);
         boxFilters.add(Box.createHorizontalStrut(5));
         boxFilters.add(btnSourceFilter);
+        boxFilters.add(Box.createHorizontalStrut(2));
+        boxFilters.add(boxSourceFilterField);
         Box boxContainer = Box.createVerticalBox();
         boxContainer.add(boxSearch);
         boxContainer.add(boxFilters);
@@ -120,6 +131,10 @@ public class ItemsSearchPane {
 
     protected JLabel getBtnSourceFilter() {
         return btnSourceFilter;
+    }
+
+    protected JTextField getTfSourceFilter() {
+        return tfSourceFilter;
     }
 
     protected DateRange getDateRange() {

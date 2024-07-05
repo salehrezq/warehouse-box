@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -65,10 +66,12 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
             OFFSET;
     private String searchQueryImmutableCopy;
     private JDialog dialoge;
+    private ArrayList<ListableItemFormForFiltersListener> listableItemFormForFiltersListeners;
 
     public ListableItemFormForFilters() {
         //   super(owner, title, modal);
 
+        listableItemFormForFiltersListeners = new ArrayList<>();
         LIMIT = 3;
 
         thisListableItemManageClass = ListableItemFormForFilters.this;
@@ -161,6 +164,16 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         listOfListable.setPreferredSize(with, height);
     }
 
+    public void addListableItemFormForFiltersListener(ListableItemFormForFiltersListener listableItemFormForFiltersListener) {
+        this.listableItemFormForFiltersListeners.add(listableItemFormForFiltersListener);
+    }
+
+    public void notifySelectedListable(Listable listable) {
+        this.listableItemFormForFiltersListeners.forEach((listableItemFormForFiltersListener) -> {
+            listableItemFormForFiltersListener.selectedListable(listable);
+        });
+    }
+
     private class BtnSearchHandler implements ActionListener {
 
         @Override
@@ -205,6 +218,7 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            notifySelectedListable(listOfListable.getSelectedValue());
             dialoge.setVisible(false);
         }
     }

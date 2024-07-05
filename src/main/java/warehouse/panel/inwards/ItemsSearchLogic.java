@@ -43,18 +43,21 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import warehouse.db.CRUDInwards;
+import warehouse.singularlisting.Listable;
+import warehouse.singularlisting.ListableItemFormForFilters;
+import warehouse.singularlisting.ListableItemFormForFiltersListener;
 
 /**
  *
  * @author Saleh
  */
-public class ItemsSearchLogic {
+public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
     private List<ItemsSearchListener> itemsSearchListeners;
     private String searchQuery, previousSearchQuery;
     private static int LIMIT,
             OFFSET;
-    private JTextField tfSearchQuery;
+    private JTextField tfSearchQuery, tfSourceFilter;
     private JButton btnSearch;
     private JButton btnLoadMore;
     private JCheckBox checkCodeFilter,
@@ -84,10 +87,18 @@ public class ItemsSearchLogic {
         searchFilters.enableDateRangeFilter(false);
     }
 
+    protected ListableItemFormForFilters getListableItemFormForFilters() {
+        return sourceFilterDialog.getListableItemFormForFilters();
+    }
+
     protected void setTfSearchQuery(JTextField tfSearchQuery) {
         this.tfSearchQuery = tfSearchQuery;
         isCodeChecked = false;
         this.tfSearchQuery.getDocument().addDocumentListener(matchDigitsOnly);
+    }
+
+    protected void setTfSourceFilter(JTextField tfSourceFilter) {
+        this.tfSourceFilter = tfSourceFilter;
     }
 
     protected void setBtnSearch(JButton btnSearch) {
@@ -167,6 +178,15 @@ public class ItemsSearchLogic {
         this.itemsSearchListeners.forEach((itemsSearchListener) -> {
             itemsSearchListener.notifySearchResult(data);
         });
+    }
+
+    @Override
+    public void selectedListable(Listable listable) {
+        if (listable != null) {
+            tfSourceFilter.setText(listable.getName());
+        } else {
+            tfSourceFilter.setText(null);
+        }
     }
 
     private class SearchHandler implements ActionListener {
