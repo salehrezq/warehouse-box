@@ -81,9 +81,9 @@ public class CRUDInwards {
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
 
-        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isDateRangeFilter;
+        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter;
 
-        if (((!isAnyFilterOn || isSearchisQueryBlank)) && !isDateRangeFilter) {
+        if ((!isAnyFilterOn || isSearchisQueryBlank) && !isDateRangeFilter) {
             sqlFilter = "";
             return sqlFilter;
         }
@@ -116,7 +116,7 @@ public class CRUDInwards {
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isDateRangeFilter;
+        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter;
 
         if ((!isAnyFilterOn || searchQuery.isBlank()) && !isDateRangeFilter) {
             return preparedStatementWrapper;
