@@ -35,22 +35,22 @@ import warehouse.singularlisting.ListableItemFormForFilters;
  */
 public class SourceFilterDialog extends JDialog {
 
-    private ListableItemFormForFilters formListableItemFormClearSelection;
+    private ListableItemFormForFilters listableItemFormForFilters;
 
     public SourceFilterDialog() {
         setLayout(new BorderLayout());
-        formListableItemFormClearSelection = new ListableItemFormForFilters();
-        formListableItemFormClearSelection.setListableImpl(new Source());
-        add(formListableItemFormClearSelection, BorderLayout.CENTER);
+        listableItemFormForFilters = new ListableItemFormForFilters();
+        listableItemFormForFilters.setListableImpl(new Source());
+        add(listableItemFormForFilters, BorderLayout.CENTER);
         this.setMinimumSize(new Dimension(400, 400));
     }
 
     protected void setDialogeToListableItemFormForFilters() {
-        formListableItemFormClearSelection.setDialoge(this);
+        listableItemFormForFilters.setDialoge(this);
     }
 
     protected ListableItemFormForFilters getListableItemFormForFilters() {
-        return formListableItemFormClearSelection;
+        return listableItemFormForFilters;
     }
 
 }
