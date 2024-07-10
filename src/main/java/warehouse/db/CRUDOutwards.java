@@ -80,16 +80,22 @@ public class CRUDOutwards {
         boolean isCodeFilter = searchFilters.isCodeFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
+        boolean isRecipientFilter = searchFilters.isRecipientFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
+        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isRecipientFilter;
 
-        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter;
-
-        if (((!isAnyFilterOn || isSearchisQueryBlank)) && !isDateRangeFilter) {
+        if ((!isAnyFilterOn || isSearchisQueryBlank) && !(isDateRangeFilter || isRecipientFilter)) {
             sqlFilter = "";
             return sqlFilter;
         }
         if (isDateRangeFilter) {
             sqlFilter += " (date >= ? AND date <= ?)";
+            if (isCodeFilter || isNameFilter || isSpecificationFilter || isRecipientFilter) {
+                sqlFilter += " AND";
+            }
+        }
+        if (isRecipientFilter) {
+            sqlFilter += " recipient_id = ?";
             if (isCodeFilter || isNameFilter || isSpecificationFilter) {
                 sqlFilter += " AND";
             }
@@ -114,17 +120,21 @@ public class CRUDOutwards {
         boolean isCodeFilter = searchFilters.isCodeFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
+        boolean isRecipientFilter = searchFilters.isRecipientFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter;
+        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isRecipientFilter;
 
-        if ((!isAnyFilterOn || searchQuery.isBlank()) && !isDateRangeFilter) {
+        if ((!isAnyFilterOn || searchQuery.isBlank()) && !(isDateRangeFilter || isRecipientFilter)) {
             return preparedStatementWrapper;
         }
         if (isDateRangeFilter) {
             p.setObject(preparedStatementWrapper.incrementParameterIndex(), searchFilters.getDateRangeStart());
             p.setObject(preparedStatementWrapper.incrementParameterIndex(), searchFilters.getDateRangeEnd());
+        }
+        if (isRecipientFilter) {
+            p.setInt(preparedStatementWrapper.incrementParameterIndex(), searchFilters.getRecipient().getId());
         }
         if (isCodeFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));

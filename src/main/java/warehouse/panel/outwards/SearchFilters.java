@@ -24,6 +24,7 @@
 package warehouse.panel.outwards;
 
 import java.time.LocalDate;
+import warehouse.db.model.Recipient;
 
 /**
  *
@@ -35,6 +36,7 @@ public class SearchFilters {
     private boolean codeFilter;
     private boolean nameFilter;
     private boolean specificationFilter;
+    private Recipient recipient;
     // Date range
     private boolean enableDateRangeFilter;
     private LocalDate dateRangeStart;
@@ -53,6 +55,7 @@ public class SearchFilters {
         this.codeFilter = searchFilters.codeFilter;
         this.nameFilter = searchFilters.nameFilter;
         this.specificationFilter = searchFilters.specificationFilter;
+        this.recipient = searchFilters.recipient;
         this.enableDateRangeFilter = searchFilters.enableDateRangeFilter;
         this.dateRangeStart = searchFilters.dateRangeStart;
         this.dateRangeEnd = searchFilters.dateRangeEnd;
@@ -88,6 +91,18 @@ public class SearchFilters {
 
     public void setSpecificationFilter(boolean specificationFilter) {
         this.specificationFilter = specificationFilter;
+    }
+
+    public boolean isRecipientFilter() {
+        return !(recipient == null || recipient.getId() < 1);
+    }
+
+    protected void setRecipient(Recipient recipient) {
+        this.recipient = recipient;
+    }
+
+    public Recipient getRecipient() {
+        return recipient;
     }
 
     public boolean isEnabledDateRangeFilter() {

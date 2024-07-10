@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import warehouse.db.model.QuantityUnit;
+import warehouse.singularlisting.ListableItemFormForFilters;
 
 /**
  *
@@ -65,8 +66,13 @@ public class OutwardsTap extends JPanel {
         outwardsSearchLogic.setCheckCodeFilter(outwardsSearchPane.getCheckCodeFilter());
         outwardsSearchLogic.setCheckNameFilter(outwardsSearchPane.getCheckNameFilter());
         outwardsSearchLogic.setCheckSpecificationFilter(outwardsSearchPane.getCheckSpecificationFilter());
+        outwardsSearchLogic.setBtnRecipientFilter(outwardsSearchPane.getBtnRecipientFilter());
+        outwardsSearchLogic.setTfRecipientFilter(outwardsSearchPane.getTfRecipientFilter());
         outwardsSearchLogic.setBtnLoadMore(outwardsList.getBtnLoadMore());
         outwardsSearchLogic.setDateRangeFilter(outwardsSearchPane.getDateRange());
+        ListableItemFormForFilters listableItemFormForFilters = outwardsSearchLogic.getListableItemFormForFilters();
+        listableItemFormForFilters.addListableItemFormForFiltersListener(outwardsSearchLogic);
+
         ItemsSearchLogic.setResultsPageLimit(3);
         itemsImages = new ItemImage();
         outwardsList.addRowIdSelectionListener(itemsImages);

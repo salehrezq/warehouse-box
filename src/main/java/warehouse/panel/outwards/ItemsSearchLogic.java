@@ -29,34 +29,43 @@ import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import warehouse.db.CRUDOutwards;
+import warehouse.db.model.Recipient;
+import warehouse.singularlisting.Listable;
+import warehouse.singularlisting.ListableItemFormForFilters;
+import warehouse.singularlisting.ListableItemFormForFiltersListener;
 
 /**
  *
  * @author Saleh
  */
-public class ItemsSearchLogic {
+public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
     private List<ItemsSearchListener> itemsSearchListeners;
     private String searchQuery, previousSearchQuery;
     private static int LIMIT,
             OFFSET;
-    private JTextField tfSearchQuery;
+    private JTextField tfSearchQuery, tfRecipientFilter;
     private JButton btnSearch;
     private JButton btnLoadMore;
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
+    private JLabel btnRecipientFilter;
+    private RecipientFilterDialog recipientFilterDialog;
     private SearchFilters searchFilters, searchFiltersImmutableCopy;
     boolean isCodeChecked;
     private MatchDigitsOnlyHandler matchDigitsOnly;
@@ -67,6 +76,8 @@ public class ItemsSearchLogic {
     private CheckBoxHandler checkBoxHandler;
 
     public ItemsSearchLogic() {
+        recipientFilterDialog = new RecipientFilterDialog();
+        recipientFilterDialog.setDialogeToListableItemFormForFilters();
         itemsSearchListeners = new ArrayList<>();
         searchFilters = new SearchFilters();
         checkBoxHandler = new CheckBoxHandler();
@@ -77,10 +88,18 @@ public class ItemsSearchLogic {
         searchFilters.enableDateRangeFilter(false);
     }
 
+    protected ListableItemFormForFilters getListableItemFormForFilters() {
+        return recipientFilterDialog.getListableItemFormForFilters();
+    }
+
     protected void setTfSearchQuery(JTextField tfSearchQuery) {
         this.tfSearchQuery = tfSearchQuery;
         isCodeChecked = false;
         this.tfSearchQuery.getDocument().addDocumentListener(matchDigitsOnly);
+    }
+
+    protected void setTfRecipientFilter(JTextField tfRecipientFilter) {
+        this.tfRecipientFilter = tfRecipientFilter;
     }
 
     protected void setBtnSearch(JButton btnSearch) {
@@ -108,6 +127,11 @@ public class ItemsSearchLogic {
         this.checkSpecificationFilter = checkSpecificationFilter;
         this.checkSpecificationFilter.setSelected(true);
         this.checkSpecificationFilter.addActionListener(checkBoxHandler);
+    }
+
+    protected void setBtnRecipientFilter(JLabel btnRecipientFilter) {
+        this.btnRecipientFilter = btnRecipientFilter;
+        this.btnRecipientFilter.addMouseListener(new MouseEventsHandler());
     }
 
     protected void setDateRangeFilter(DateRange dateRange) {
@@ -155,6 +179,17 @@ public class ItemsSearchLogic {
         this.itemsSearchListeners.forEach((itemsSearchListener) -> {
             itemsSearchListener.notifySearchResult(data);
         });
+    }
+
+    @Override
+    public void selectedListable(Listable listable) {
+        if (listable != null) {
+            tfRecipientFilter.setText(listable.getName());
+            searchFilters.setRecipient((Recipient) listable);
+        } else {
+            tfRecipientFilter.setText(null);
+            searchFilters.setRecipient(null);
+        }
     }
 
     private class SearchHandler implements ActionListener {
@@ -316,6 +351,38 @@ public class ItemsSearchLogic {
             if (datePicker == dateRange.getDatePickerEnd()) {
                 searchFilters.setDateRangeEnd(datePicker.getDate());
             }
+        }
+    }
+
+    private class MouseEventsHandler extends MouseAdapter {
+
+        private boolean hovered = false;
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            recipientFilterDialog.setVisible(true);
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            btnRecipientFilter.setBackground(ItemsSearchPane.colorBtnSourcePressed);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            btnRecipientFilter.setBackground((hovered) ? ItemsSearchPane.colorBtnSourceHover : ItemsSearchPane.colorBtnSourceNormal);
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            hovered = true;
+            btnRecipientFilter.setBackground(ItemsSearchPane.colorBtnSourceHover);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            hovered = false;
+            btnRecipientFilter.setBackground(ItemsSearchPane.colorBtnSourceNormal);
         }
     }
 }

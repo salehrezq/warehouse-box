@@ -24,9 +24,12 @@
 package warehouse.panel.outwards;
 
 import java.awt.Adjustable;
+import java.awt.Color;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import utility.scrollbarthin.ScrollBarThin;
@@ -38,13 +41,18 @@ import utility.scrollbarthin.ScrollBarThin;
 public class ItemsSearchPane {
 
     private JPanel container;
-    private JTextField tfSearchQuery;
-    private ScrollBarThin scrollBarThinTfSearchQuery;
+    private JTextField tfSearchQuery, tfRecipientFilter;
+    private ScrollBarThin scrollBarThinTfSearchQuery, scrollBarThinTfRecipientFilter;
     private JButton btnSearchQuery;
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
+    private JLabel btnRecipientFilter;
     private DateRange dateRange;
+    public final static Color colorBtnSourceNormal = new Color(247, 247, 247);
+    public final static Color colorBtnSourceHover = new Color(233, 233, 233);
+    public final static Color colorBtnSourcePressed = new Color(200, 200, 200);
+    private final Color colorTextField = new Color(84, 84, 84);
 
     public ItemsSearchPane() {
         container = new JPanel();
@@ -62,6 +70,20 @@ public class ItemsSearchPane {
         checkNameFilter = new JCheckBox("Name");
         checkSpecificationFilter = new JCheckBox("Specification");
 
+        btnRecipientFilter = new JLabel("Recipient...");
+        btnRecipientFilter.setOpaque(true);
+        btnRecipientFilter.setForeground(Color.BLACK);
+        btnRecipientFilter.setBackground(colorBtnSourceNormal);
+        btnRecipientFilter.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2));
+        tfRecipientFilter = new JTextField(5);
+        tfRecipientFilter.setEditable(false);
+        tfRecipientFilter.setDisabledTextColor(colorTextField);
+        scrollBarThinTfRecipientFilter = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarThinTfRecipientFilter.setModel(tfRecipientFilter.getHorizontalVisibility());
+        Box boxRecipientFilterField = Box.createVerticalBox();
+        boxRecipientFilterField.add(tfRecipientFilter);
+        boxRecipientFilterField.add(scrollBarThinTfRecipientFilter);
+
         dateRange = new DateRange();
 
         Box boxSearch = Box.createHorizontalBox();
@@ -73,6 +95,9 @@ public class ItemsSearchPane {
         boxFilters.add(checkNameFilter);
         boxFilters.add(Box.createHorizontalStrut(5));
         boxFilters.add(checkSpecificationFilter);
+        boxFilters.add(btnRecipientFilter);
+        boxFilters.add(Box.createHorizontalStrut(2));
+        boxFilters.add(boxRecipientFilterField);
         Box boxContainer = Box.createVerticalBox();
         boxContainer.add(boxSearch);
         boxContainer.add(boxFilters);
@@ -102,6 +127,14 @@ public class ItemsSearchPane {
 
     protected JCheckBox getCheckSpecificationFilter() {
         return checkSpecificationFilter;
+    }
+
+    protected JLabel getBtnRecipientFilter() {
+        return btnRecipientFilter;
+    }
+
+    protected JTextField getTfRecipientFilter() {
+        return tfRecipientFilter;
     }
 
     protected DateRange getDateRange() {
