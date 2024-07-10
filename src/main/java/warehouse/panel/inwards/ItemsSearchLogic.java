@@ -43,6 +43,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import warehouse.db.CRUDInwards;
+import warehouse.db.model.Source;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableItemFormForFilters;
 import warehouse.singularlisting.ListableItemFormForFiltersListener;
@@ -184,8 +185,10 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     public void selectedListable(Listable listable) {
         if (listable != null) {
             tfSourceFilter.setText(listable.getName());
+            searchFilters.setSource((Source) listable);
         } else {
             tfSourceFilter.setText(null);
+            searchFilters.setSource(null);
         }
     }
 

@@ -24,6 +24,7 @@
 package warehouse.panel.inwards;
 
 import java.time.LocalDate;
+import warehouse.db.model.Source;
 
 /**
  *
@@ -35,6 +36,7 @@ public class SearchFilters {
     private boolean codeFilter;
     private boolean nameFilter;
     private boolean specificationFilter;
+    private Source source;
     // Date range
     private boolean enableDateRangeFilter;
     private LocalDate dateRangeStart;
@@ -53,6 +55,7 @@ public class SearchFilters {
         this.codeFilter = searchFilters.codeFilter;
         this.nameFilter = searchFilters.nameFilter;
         this.specificationFilter = searchFilters.specificationFilter;
+        this.source = searchFilters.source;
         this.enableDateRangeFilter = searchFilters.enableDateRangeFilter;
         this.dateRangeStart = searchFilters.dateRangeStart;
         this.dateRangeEnd = searchFilters.dateRangeEnd;
@@ -88,6 +91,18 @@ public class SearchFilters {
 
     public void setSpecificationFilter(boolean specificationFilter) {
         this.specificationFilter = specificationFilter;
+    }
+
+    public boolean isSourceFilter() {
+        return !(source == null || source.getId() < 1);
+    }
+
+    protected void setSource(Source source) {
+        this.source = source;
+    }
+
+    public Source getSource() {
+        return source;
     }
 
     public boolean isEnabledDateRangeFilter() {
