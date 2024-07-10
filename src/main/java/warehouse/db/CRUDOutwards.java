@@ -82,7 +82,7 @@ public class CRUDOutwards {
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
 
-        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isDateRangeFilter;
+        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter;
 
         if (((!isAnyFilterOn || isSearchisQueryBlank)) && !isDateRangeFilter) {
             sqlFilter = "";
@@ -117,7 +117,7 @@ public class CRUDOutwards {
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isDateRangeFilter;
+        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter;
 
         if ((!isAnyFilterOn || searchQuery.isBlank()) && !isDateRangeFilter) {
             return preparedStatementWrapper;
