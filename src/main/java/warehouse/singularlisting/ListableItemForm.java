@@ -124,8 +124,10 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
         return this.listOfListable.getSelectedValue();
     }
 
-    public void clearFields() {
+    public void resetFields() {
         tfSearch.setText("");
+        btnLoadMore.setEnabled(false);
+        listOfListable.removeAllElements();
     }
 
     public void setListablePreferredSize(int with, int height) {

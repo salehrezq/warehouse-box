@@ -109,9 +109,9 @@ public class ItemFormTextFields extends JPanel implements Collectable {
         return data;
     }
 
-    public void clearFields() {
+    public void resetFields() {
         tfName.setText("");
         tfSpecs.setText("");
-        itemFormQuantityUnit.clearFields();
+        itemFormQuantityUnit.resetFields();
     }
 }

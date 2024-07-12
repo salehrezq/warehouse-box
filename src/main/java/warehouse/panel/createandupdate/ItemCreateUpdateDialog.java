@@ -49,6 +49,7 @@ public class ItemCreateUpdateDialog extends JDialog implements ItemCRUDListener 
         formManagement = itemForm.getFormManagement();
         formManagement.addItemCRUDListener(ItemCreateUpdateDialog.this);
         formManagement.addNavigationListener(itemForm);
+        formManagement.setItemForm(itemForm);
         itemFormTextFields = itemForm.getItemFormTextFields();
         add(itemForm);
         this.setMinimumSize(new Dimension(520, 520));
@@ -144,7 +145,9 @@ public class ItemCreateUpdateDialog extends JDialog implements ItemCRUDListener 
 
         @Override
         public void windowClosing(WindowEvent e) {
-            itemForm.clearFields();
+            itemForm.resetFields();
+            itemForm.first();
+            formManagement.resetFormNavigation();
         }
     }
 

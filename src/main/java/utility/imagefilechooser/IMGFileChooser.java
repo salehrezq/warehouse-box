@@ -70,6 +70,13 @@ public class IMGFileChooser implements
         filesSelectionLimitListeners = new ArrayList<>();
     }
 
+    public void resetFields() {
+        imagesSelectedByUser.clear();
+        filesChosenByUser.clear();
+        incrementedFilesSelecionLength = 0;
+        previousIncrementedFilesSelecionLength = 0;
+    }
+
     public void setParentComponent(Component parent) {
         this.parent = parent;
     }

@@ -47,6 +47,7 @@ public class ItemForm extends JPanel implements Navigatable {
     private FormManagement formManagement;
     private ArrayList<Collectable> collectables;
     private BoxLayout boxLayout;
+    private IMGFileChooser iMGFileChooser;
 
     public ItemForm() {
         collectables = new ArrayList<>();
@@ -70,7 +71,7 @@ public class ItemForm extends JPanel implements Navigatable {
     }
 
     private void linkListenersToChangeProviders(ItemFormImage itemFormImage) {
-        IMGFileChooser iMGFileChooser = itemFormImage.getIMGFileChooser();
+        iMGFileChooser = itemFormImage.getIMGFileChooser();
         iMGFileChooser.addImageSelectedListener(itemFormImage);
         iMGFileChooser.addFilesSelectionLimitListener(itemFormImage);
         itemFormImage.addImageRemovedListener(iMGFileChooser);
@@ -89,6 +90,11 @@ public class ItemForm extends JPanel implements Navigatable {
     }
 
     @Override
+    public void first() {
+        cardLayout.first(panelCards);
+    }
+
+    @Override
     public void next() {
         cardLayout.next(panelCards);
     }
@@ -98,9 +104,10 @@ public class ItemForm extends JPanel implements Navigatable {
         cardLayout.previous(panelCards);
     }
 
-    public void clearFields() {
-        itemFormTextFields.clearFields();
-        itemFormImage.clearFields();
+    public void resetFields() {
+        itemFormTextFields.resetFields();
+        itemFormImage.resetFields();
+        iMGFileChooser.resetFields();
     }
 
 }

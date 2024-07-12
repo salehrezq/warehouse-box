@@ -29,6 +29,8 @@ package warehouse.panel.createandupdate;
  */
 public interface Navigatable {
 
+    public void first();
+
     public void next();
 
     public void previous();

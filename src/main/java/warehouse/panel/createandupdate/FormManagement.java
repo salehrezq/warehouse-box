@@ -51,6 +51,7 @@ public class FormManagement extends JPanel {
     private int navigateTracker;
     private ArrayList<Collectable> collectables;
     private List<ItemCRUDListener> itemCRUDListeners;
+    private ItemForm itemForm;
 
     public FormManagement(ArrayList<Collectable> collectables) {
 
@@ -78,6 +79,20 @@ public class FormManagement extends JPanel {
 
     public void addNavigationListener(Navigatable navigatable) {
         this.navigatables.add(navigatable);
+    }
+
+    protected void setItemForm(ItemForm itemForm) {
+        this.itemForm = itemForm;
+    }
+
+    /**
+     * Reset the form navigation controls.
+     */
+    protected void resetFormNavigation() {
+        navigateTracker = 0;
+        btnPrevious.setEnabled(false);
+        btnNext.setEnabled(true);
+        btnSubmit.setEnabled(false);
     }
 
     public void notifyNext() {
@@ -218,6 +233,10 @@ public class FormManagement extends JPanel {
                     }
                     notifyCreated(isCreated ? createdItem : null);
                 }
+                // After submit, reset fields.
+                itemForm.resetFields();
+                itemForm.first();
+                navigateTracker = 0;
             }
             btnPrevious.setEnabled(navigateTracker > 0);
             btnNext.setEnabled(navigateTracker < formLastStep);

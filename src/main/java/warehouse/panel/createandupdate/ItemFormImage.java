@@ -160,7 +160,7 @@ public class ItemFormImage implements
         btnBrowse.setEnabled(true);
     }
 
-    public void clearFields() {
+    public void resetFields() {
         spinnerValueOnSpinning = 0;
         imagesMap.clear();
         scalableImageContainer.setImage(null);
