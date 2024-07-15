@@ -26,8 +26,11 @@ package warehouse.panel.items;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -58,14 +61,21 @@ public class ItemsSearchLogic {
     boolean isCodeChecked;
     private MatchDigitsOnlyHandler matchDigitsOnly;
     private final Pattern pattern = Pattern.compile("\\d+");
+    private Preferences prefs;
+    private static final String PREFS_CODE_FILTER = "checkCodeFilter";
+    private static final String PREFS_NAME_FILTER = "checkNameFilter";
+    private static final String PREFS_SPECIFICATION_FILTER = "checkSpecificationFilter";
+    private CheckBoxFiltersHandler checkBoxFiltersHandler;
 
     public ItemsSearchLogic() {
+        checkBoxFiltersHandler = new CheckBoxFiltersHandler();
         itemsSearchListeners = new ArrayList<>();
         searchFilters = new SearchFilters();
         matchDigitsOnly = new MatchDigitsOnlyHandler();
         searchFilters.setCodeFilter(false);
         searchFilters.setNameFilter(true);
         searchFilters.setSpecificationFilter(true);
+        prefs = Preferences.userRoot().node(getClass().getName());
     }
 
     protected void setTfSearchQuery(JTextField tfSearchQuery) {
@@ -84,21 +94,18 @@ public class ItemsSearchLogic {
         this.btnLoadMore.addActionListener(new LoadMoreHandler());
     }
 
-    protected void setCheckCodeFilter(JCheckBox checkCodeFilter) {
-        this.checkCodeFilter = checkCodeFilter;
-        this.checkCodeFilter.addActionListener(new CheckBoxHandler());
-    }
+    protected void setCheckFilters(JCheckBox... checks) {
+        checkCodeFilter = checks[0];
+        checkNameFilter = checks[1];
+        checkSpecificationFilter = checks[2];
 
-    protected void setCheckNameFilter(JCheckBox checkNameFilter) {
-        this.checkNameFilter = checkNameFilter;
-        this.checkNameFilter.setSelected(true);
-        this.checkNameFilter.addActionListener(new CheckBoxHandler());
-    }
+        checkCodeFilter.addItemListener(checkBoxFiltersHandler);
+        checkNameFilter.addItemListener(checkBoxFiltersHandler);
+        checkSpecificationFilter.addItemListener(checkBoxFiltersHandler);
 
-    protected void setCheckSpecificationFilter(JCheckBox checkSpecificationFilter) {
-        this.checkSpecificationFilter = checkSpecificationFilter;
-        this.checkSpecificationFilter.setSelected(true);
-        this.checkSpecificationFilter.addActionListener(new CheckBoxHandler());
+        this.checkNameFilter.setSelected(prefs.getBoolean(PREFS_NAME_FILTER, false));
+        this.checkSpecificationFilter.setSelected(prefs.getBoolean(PREFS_SPECIFICATION_FILTER, false));
+        this.checkCodeFilter.setSelected(prefs.getBoolean(PREFS_CODE_FILTER, false));
     }
 
     public static void setResultsPageLimit(int pageLimit) {
@@ -196,10 +203,10 @@ public class ItemsSearchLogic {
         }
     }
 
-    private class CheckBoxHandler implements ActionListener {
+    private class CheckBoxFiltersHandler implements ItemListener {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void itemStateChanged(ItemEvent e) {
             JCheckBox source = (JCheckBox) e.getSource();
 
             boolean isAnyChecked = checkCodeFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
@@ -235,6 +242,10 @@ public class ItemsSearchLogic {
             }
             isCodeChecked = checkCodeFilter.isSelected();
             tfSearchQueryCodeChecker();
+
+            prefs.putBoolean(PREFS_CODE_FILTER, checkCodeFilter.isSelected());
+            prefs.putBoolean(PREFS_NAME_FILTER, checkNameFilter.isSelected());
+            prefs.putBoolean(PREFS_SPECIFICATION_FILTER, checkSpecificationFilter.isSelected());
         }
     }
 
