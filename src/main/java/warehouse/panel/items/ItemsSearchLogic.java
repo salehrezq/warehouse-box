@@ -26,8 +26,6 @@ package warehouse.panel.items;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -99,13 +97,15 @@ public class ItemsSearchLogic {
         checkNameFilter = checks[1];
         checkSpecificationFilter = checks[2];
 
-        checkCodeFilter.addItemListener(checkBoxFiltersHandler);
-        checkNameFilter.addItemListener(checkBoxFiltersHandler);
-        checkSpecificationFilter.addItemListener(checkBoxFiltersHandler);
+        checkCodeFilter.addActionListener(checkBoxFiltersHandler);
+        checkNameFilter.addActionListener(checkBoxFiltersHandler);
+        checkSpecificationFilter.addActionListener(checkBoxFiltersHandler);
 
+        this.checkCodeFilter.setSelected(prefs.getBoolean(PREFS_CODE_FILTER, false));
         this.checkNameFilter.setSelected(prefs.getBoolean(PREFS_NAME_FILTER, false));
         this.checkSpecificationFilter.setSelected(prefs.getBoolean(PREFS_SPECIFICATION_FILTER, false));
-        this.checkCodeFilter.setSelected(prefs.getBoolean(PREFS_CODE_FILTER, false));
+
+        initializeFiltersReactToRetrievedPreferences();
     }
 
     public static void setResultsPageLimit(int pageLimit) {
@@ -203,46 +203,61 @@ public class ItemsSearchLogic {
         }
     }
 
-    private class CheckBoxFiltersHandler implements ItemListener {
+    private void initializeFiltersReactToRetrievedPreferences() {
+        checkBoxcodeFilterReact();
+        checkBoxesNameAndSpecificationFiltersReact();
+        checkBoxFiltersAlwaysInvoke();
+    }
+
+    private void checkBoxcodeFilterReact() {
+        boolean isCodeSelected = checkCodeFilter.isSelected();
+        checkNameFilter.setEnabled(!isCodeSelected);
+        checkSpecificationFilter.setEnabled(!isCodeSelected);
+        searchFilters.setCodeFilter(isCodeSelected);
+        if (checkCodeFilter.isSelected()) {
+            checkNameFilter.setSelected(false);
+            checkSpecificationFilter.setSelected(false);
+            searchFilters.setNameFilter(false);
+            searchFilters.setSpecificationFilter(false);
+        }
+    }
+
+    private void checkBoxesNameAndSpecificationFiltersReact() {
+        boolean isNameORSpecificationSelected = (checkNameFilter.isSelected() || checkSpecificationFilter.isSelected());
+        boolean isNameANDSpecificationBothDeselected = !checkNameFilter.isSelected() && !checkSpecificationFilter.isSelected();
+        if (isNameORSpecificationSelected) {
+            checkCodeFilter.setEnabled(false);
+            checkCodeFilter.setSelected(false);
+            searchFilters.setCodeFilter(false);
+        }
+        if (isNameANDSpecificationBothDeselected) {
+            checkCodeFilter.setEnabled(true);
+        }
+        searchFilters.setNameFilter(checkNameFilter.isSelected());
+        searchFilters.setSpecificationFilter(checkSpecificationFilter.isSelected());
+    }
+
+    private void checkBoxFiltersAlwaysInvoke() {
+        boolean isAnyChecked = checkCodeFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
+        btnSearch.setText(isAnyChecked ? "Search" : "Get all");
+        tfSearchQuery.setEnabled(isAnyChecked);
+        isCodeChecked = checkCodeFilter.isSelected();
+        tfSearchQueryCodeChecker();
+    }
+
+    private class CheckBoxFiltersHandler implements ActionListener {
 
         @Override
-        public void itemStateChanged(ItemEvent e) {
+        public void actionPerformed(ActionEvent e) {
             JCheckBox source = (JCheckBox) e.getSource();
-
-            boolean isAnyChecked = checkCodeFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
-            btnSearch.setText(isAnyChecked ? "Search" : "Get all");
-            tfSearchQuery.setEnabled(isAnyChecked);
-
             if (source == checkCodeFilter) {
-                boolean isCodeSelected = checkCodeFilter.isSelected();
-                checkNameFilter.setEnabled(!isCodeSelected);
-                checkSpecificationFilter.setEnabled(!isCodeSelected);
-                searchFilters.setCodeFilter(isCodeSelected);
-                if (checkCodeFilter.isSelected()) {
-                    checkNameFilter.setSelected(false);
-                    checkSpecificationFilter.setSelected(false);
-                    searchFilters.setNameFilter(false);
-                    searchFilters.setSpecificationFilter(false);
-                }
+                checkBoxcodeFilterReact();
             } else {
                 if (source == checkNameFilter || source == checkSpecificationFilter) {
-                    boolean isNameORSpecificationSelected = (checkNameFilter.isSelected() || checkSpecificationFilter.isSelected());
-                    boolean isNameANDSpecificationBothDeselected = !checkNameFilter.isSelected() && !checkSpecificationFilter.isSelected();
-                    if (isNameORSpecificationSelected) {
-                        checkCodeFilter.setEnabled(false);
-                        checkCodeFilter.setSelected(false);
-                        searchFilters.setCodeFilter(false);
-                    }
-                    if (isNameANDSpecificationBothDeselected) {
-                        checkCodeFilter.setEnabled(true);
-                    }
-                    searchFilters.setNameFilter(checkNameFilter.isSelected());
-                    searchFilters.setSpecificationFilter(checkSpecificationFilter.isSelected());
+                    checkBoxesNameAndSpecificationFiltersReact();
                 }
             }
-            isCodeChecked = checkCodeFilter.isSelected();
-            tfSearchQueryCodeChecker();
-
+            checkBoxFiltersAlwaysInvoke();
             prefs.putBoolean(PREFS_CODE_FILTER, checkCodeFilter.isSelected());
             prefs.putBoolean(PREFS_NAME_FILTER, checkNameFilter.isSelected());
             prefs.putBoolean(PREFS_SPECIFICATION_FILTER, checkSpecificationFilter.isSelected());
