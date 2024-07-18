@@ -64,13 +64,15 @@ public class InwardsTap extends JPanel {
         inwardsSearchLogic.addItemSearchListener(inwardsList);
         inwardsSearchLogic.setTfSearchQuery(inwardsSearchPane.getTfSearchQuery());
         inwardsSearchLogic.setBtnSearch(inwardsSearchPane.getBtnSearchQuery());
-        inwardsSearchLogic.setCheckCodeFilter(inwardsSearchPane.getCheckCodeFilter());
-        inwardsSearchLogic.setCheckNameFilter(inwardsSearchPane.getCheckNameFilter());
-        inwardsSearchLogic.setCheckSpecificationFilter(inwardsSearchPane.getCheckSpecificationFilter());
+        inwardsSearchLogic.setCheckFilters(
+                inwardsSearchPane.getCheckCodeFilter(),
+                inwardsSearchPane.getCheckNameFilter(),
+                inwardsSearchPane.getCheckSpecificationFilter());
         inwardsSearchLogic.setBtnSourceFilter(inwardsSearchPane.getBtnSourceFilter());
         inwardsSearchLogic.setTfSourceFilter(inwardsSearchPane.getTfSourceFilter());
         inwardsSearchLogic.setBtnLoadMore(inwardsList.getBtnLoadMore());
         inwardsSearchLogic.setDateRangeFilter(inwardsSearchPane.getDateRange());
+        inwardsSearchLogic.initializeFiltersReactToRetrievedPreferences();
         ListableItemFormForFilters listableItemFormForFilters = inwardsSearchLogic.getListableItemFormForFilters();
         listableItemFormForFilters.addListableItemFormForFiltersListener(inwardsSearchLogic);
 

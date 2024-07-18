@@ -34,6 +34,7 @@ import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -73,19 +74,27 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private DateRange dateRange;
     private LocalDate oldDateStart, oldDateEnd;
     private DateChangeHandler dateChangeHandler;
-    private CheckBoxHandler checkBoxHandler;
+    private CheckBoxFiltersHandler checkBoxFiltersHandler;
+    private static final String PREFS_CODE_FILTER = "checkCodeFilter";
+    private static final String PREFS_NAME_FILTER = "checkNameFilter";
+    private static final String PREFS_SPECIFICATION_FILTER = "checkSpecificationFilter";
+    private static final String PREFS_DATE_RANGE_FILTER = "checkDateRangeFilter";
+    private static final String PREFS_DATE_START_FILTER = "checkDateStartFilter";
+    private static final String PREFS_DATE_END_FILTER = "checkDateEndFilter";
+    private Preferences prefs;
 
     public ItemsSearchLogic() {
         sourceFilterDialog = new SourceFilterDialog();
         sourceFilterDialog.setDialogeToListableItemFormForFilters();
         itemsSearchListeners = new ArrayList<>();
         searchFilters = new SearchFilters();
-        checkBoxHandler = new CheckBoxHandler();
+        checkBoxFiltersHandler = new CheckBoxFiltersHandler();
         matchDigitsOnly = new MatchDigitsOnlyHandler();
         searchFilters.setCodeFilter(false);
         searchFilters.setNameFilter(true);
         searchFilters.setSpecificationFilter(true);
         searchFilters.enableDateRangeFilter(false);
+        prefs = Preferences.userRoot().node(getClass().getName());
     }
 
     protected ListableItemFormForFilters getListableItemFormForFilters() {
@@ -112,21 +121,18 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         this.btnLoadMore.addActionListener(new LoadMoreHandler());
     }
 
-    protected void setCheckCodeFilter(JCheckBox checkCodeFilter) {
-        this.checkCodeFilter = checkCodeFilter;
-        this.checkCodeFilter.addActionListener(new CheckBoxHandler());
-    }
+    protected void setCheckFilters(JCheckBox... checkfilters) {
+        checkCodeFilter = checkfilters[0];
+        checkNameFilter = checkfilters[1];
+        checkSpecificationFilter = checkfilters[2];
 
-    protected void setCheckNameFilter(JCheckBox checkNameFilter) {
-        this.checkNameFilter = checkNameFilter;
-        this.checkNameFilter.setSelected(true);
-        this.checkNameFilter.addActionListener(new CheckBoxHandler());
-    }
+        checkCodeFilter.addActionListener(checkBoxFiltersHandler);
+        checkNameFilter.addActionListener(checkBoxFiltersHandler);
+        checkSpecificationFilter.addActionListener(checkBoxFiltersHandler);
 
-    protected void setCheckSpecificationFilter(JCheckBox checkSpecificationFilter) {
-        this.checkSpecificationFilter = checkSpecificationFilter;
-        this.checkSpecificationFilter.setSelected(true);
-        this.checkSpecificationFilter.addActionListener(new CheckBoxHandler());
+        this.checkCodeFilter.setSelected(prefs.getBoolean(PREFS_CODE_FILTER, false));
+        this.checkNameFilter.setSelected(prefs.getBoolean(PREFS_NAME_FILTER, false));
+        this.checkSpecificationFilter.setSelected(prefs.getBoolean(PREFS_SPECIFICATION_FILTER, false));
     }
 
     protected void setBtnSourceFilter(JLabel btnSourceFilter) {
@@ -136,10 +142,16 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
     protected void setDateRangeFilter(DateRange dateRange) {
         this.dateRange = dateRange;
+
+        this.dateRange.getCheckDateFilter().setSelected(prefs.getBoolean(PREFS_DATE_RANGE_FILTER, false));
+        this.dateRange.getDatePickerStart().setDate(LocalDate.parse(prefs.get(PREFS_DATE_START_FILTER, this.dateRange.getTodayDate().toString())));
+        this.dateRange.getDatePickerEnd().setDate(LocalDate.parse(prefs.get(PREFS_DATE_END_FILTER, this.dateRange.getTodayDate().toString())));
+
         dateChangeHandler = new DateChangeHandler();
         this.dateRange.getDatePickerStart().addDateChangeListener(dateChangeHandler);
         this.dateRange.getDatePickerEnd().addDateChangeListener(dateChangeHandler);
-        this.dateRange.getCheckDateFilter().addActionListener(checkBoxHandler);
+        this.dateRange.getCheckDateFilter().addActionListener(checkBoxFiltersHandler);
+
         oldDateStart = dateRange.getDatePickerStart().getDate();
         oldDateEnd = dateRange.getDatePickerEnd().getDate();
         searchFilters.setDateRangeStart(dateRange.getDatePickerStart().getDate());
@@ -249,47 +261,67 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         }
     }
 
-    private class CheckBoxHandler implements ActionListener {
+    protected void initializeFiltersReactToRetrievedPreferences() {
+        checkBoxcodeFilterReact();
+        checkBoxesNameAndSpecificationFiltersReact();
+        checkBoxFiltersAlwaysInvoke();
+    }
+
+    private void checkBoxcodeFilterReact() {
+        boolean isCodeSelected = checkCodeFilter.isSelected();
+        checkNameFilter.setEnabled(!isCodeSelected);
+        checkSpecificationFilter.setEnabled(!isCodeSelected);
+        searchFilters.setCodeFilter(isCodeSelected);
+        if (checkCodeFilter.isSelected()) {
+            checkNameFilter.setSelected(false);
+            checkSpecificationFilter.setSelected(false);
+            searchFilters.setNameFilter(false);
+            searchFilters.setSpecificationFilter(false);
+        }
+    }
+
+    private void checkBoxesNameAndSpecificationFiltersReact() {
+        boolean isNameORSpecificationSelected = (checkNameFilter.isSelected() || checkSpecificationFilter.isSelected());
+        boolean isNameANDSpecificationBothDeselected = !checkNameFilter.isSelected() && !checkSpecificationFilter.isSelected();
+        if (isNameORSpecificationSelected) {
+            checkCodeFilter.setEnabled(false);
+            checkCodeFilter.setSelected(false);
+            searchFilters.setCodeFilter(false);
+        }
+        if (isNameANDSpecificationBothDeselected) {
+            checkCodeFilter.setEnabled(true);
+        }
+        searchFilters.setNameFilter(checkNameFilter.isSelected());
+        searchFilters.setSpecificationFilter(checkSpecificationFilter.isSelected());
+    }
+
+    private void checkBoxFiltersAlwaysInvoke() {
+        boolean isAnyChecked = checkCodeFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
+        btnSearch.setText(isAnyChecked ? "Search" : "Get all");
+        tfSearchQuery.setEnabled(isAnyChecked);
+        searchFilters.enableDateRangeFilter(dateRange.getCheckDateFilter().isSelected());
+        isCodeChecked = checkCodeFilter.isSelected();
+        tfSearchQueryCodeChecker();
+    }
+
+    private class CheckBoxFiltersHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             JCheckBox source = (JCheckBox) e.getSource();
 
-            boolean isAnyChecked = checkCodeFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
-            btnSearch.setText(isAnyChecked ? "Search" : "Get all");
-            tfSearchQuery.setEnabled(isAnyChecked);
-
-            searchFilters.enableDateRangeFilter(dateRange.getCheckDateFilter().isSelected());
-
             if (source == checkCodeFilter) {
-                boolean isCodeSelected = checkCodeFilter.isSelected();
-                checkNameFilter.setEnabled(!isCodeSelected);
-                checkSpecificationFilter.setEnabled(!isCodeSelected);
-                searchFilters.setCodeFilter(isCodeSelected);
-                if (checkCodeFilter.isSelected()) {
-                    checkNameFilter.setSelected(false);
-                    checkSpecificationFilter.setSelected(false);
-                    searchFilters.setNameFilter(false);
-                    searchFilters.setSpecificationFilter(false);
-                }
+                checkBoxcodeFilterReact();
             } else {
                 if (source == checkNameFilter || source == checkSpecificationFilter) {
-                    boolean isNameORSpecificationSelected = (checkNameFilter.isSelected() || checkSpecificationFilter.isSelected());
-                    boolean isNameANDSpecificationBothDeselected = !checkNameFilter.isSelected() && !checkSpecificationFilter.isSelected();
-                    if (isNameORSpecificationSelected) {
-                        checkCodeFilter.setEnabled(false);
-                        checkCodeFilter.setSelected(false);
-                        searchFilters.setCodeFilter(false);
-                    }
-                    if (isNameANDSpecificationBothDeselected) {
-                        checkCodeFilter.setEnabled(true);
-                    }
-                    searchFilters.setNameFilter(checkNameFilter.isSelected());
-                    searchFilters.setSpecificationFilter(checkSpecificationFilter.isSelected());
+                    checkBoxesNameAndSpecificationFiltersReact();
                 }
             }
-            isCodeChecked = checkCodeFilter.isSelected();
-            tfSearchQueryCodeChecker();
+            checkBoxFiltersAlwaysInvoke();
+            prefs.putBoolean(PREFS_CODE_FILTER, checkCodeFilter.isSelected());
+            prefs.putBoolean(PREFS_NAME_FILTER, checkNameFilter.isSelected());
+            prefs.putBoolean(PREFS_SPECIFICATION_FILTER, checkSpecificationFilter.isSelected());
+            prefs.putBoolean(PREFS_DATE_RANGE_FILTER, dateRange.getCheckDateFilter().isSelected());
         }
     }
 
@@ -344,6 +376,9 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             }
             oldDateStart = dateRange.getDatePickerStart().getDate();
             oldDateEnd = dateRange.getDatePickerEnd().getDate();
+
+            prefs.put(PREFS_DATE_START_FILTER, dateRange.getDatePickerStart().getDate().toString());
+            prefs.put(PREFS_DATE_END_FILTER, dateRange.getDatePickerEnd().getDate().toString());
 
             if (datePicker == dateRange.getDatePickerStart()) {
                 searchFilters.setDateRangeStart(datePicker.getDate());

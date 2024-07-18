@@ -25,6 +25,7 @@ package warehouse.panel.inwards;
 
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+import java.time.LocalDate;
 import java.util.Locale;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -89,5 +90,9 @@ public class DateRange {
 
     protected JCheckBox getCheckDateFilter() {
         return checkDateFilter;
+    }
+
+    protected LocalDate getTodayDate() {
+        return LocalDate.now();
     }
 }
