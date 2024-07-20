@@ -34,6 +34,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -67,6 +68,8 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
     private String searchQueryImmutableCopy;
     private JDialog dialoge;
     private ArrayList<ListableItemFormForFiltersListener> listableItemFormForFiltersListeners;
+    private Preferences prefs;
+    private String prefsOK_key;
 
     public ListableItemFormForFilters() {
         //   super(owner, title, modal);
@@ -136,6 +139,14 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
 
     public void setDialoge(JDialog dialog) {
         this.dialoge = dialog;
+    }
+
+    public void setPreferencesKey(String prefskey) {
+        this.prefsOK_key = prefskey;
+    }
+
+    public void setPreferences(Preferences prefs) {
+        this.prefs = prefs;
     }
 
     @Override
@@ -211,6 +222,7 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         @Override
         public void actionPerformed(ActionEvent e) {
             listing.clearSelection();
+            prefs.putInt(prefsOK_key, 0);
         }
     }
 
@@ -220,6 +232,11 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         public void actionPerformed(ActionEvent e) {
             notifySelectedListable(listOfListable.getSelectedValue());
             dialoge.setVisible(false);
+            if (listOfListable.getSelectedValue() != null) {
+                prefs.putInt(prefsOK_key, listOfListable.getSelectedValue().getId());
+            } else {
+                prefs.putInt(prefsOK_key, 0);
+            }
         }
     }
 

@@ -44,6 +44,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import warehouse.db.CRUDInwards;
+import warehouse.db.CRUDListable;
 import warehouse.db.model.Source;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableItemFormForFilters;
@@ -81,11 +82,15 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private static final String PREFS_DATE_RANGE_FILTER = "checkDateRangeFilter";
     private static final String PREFS_DATE_START_FILTER = "checkDateStartFilter";
     private static final String PREFS_DATE_END_FILTER = "checkDateEndFilter";
+    private static final String PREFS_SOURCE_OK = "sourceOk";
     private Preferences prefs;
 
     public ItemsSearchLogic() {
+        prefs = Preferences.userRoot().node(getClass().getName());
         sourceFilterDialog = new SourceFilterDialog();
         sourceFilterDialog.setDialogeToListableItemFormForFilters();
+        sourceFilterDialog.setPreferences(prefs);
+        sourceFilterDialog.setPreferencesKey(PREFS_SOURCE_OK);
         itemsSearchListeners = new ArrayList<>();
         searchFilters = new SearchFilters();
         checkBoxFiltersHandler = new CheckBoxFiltersHandler();
@@ -94,7 +99,6 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         searchFilters.setNameFilter(true);
         searchFilters.setSpecificationFilter(true);
         searchFilters.enableDateRangeFilter(false);
-        prefs = Preferences.userRoot().node(getClass().getName());
     }
 
     protected ListableItemFormForFilters getListableItemFormForFilters() {
@@ -109,6 +113,12 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
     protected void setTfSourceFilter(JTextField tfSourceFilter) {
         this.tfSourceFilter = tfSourceFilter;
+        int sourceId = prefs.getInt(PREFS_SOURCE_OK, 0);
+        Source source = null;
+        if (sourceId > 0) {
+            source = (Source) CRUDListable.getById(new Source(), sourceId);
+        }
+        this.tfSourceFilter.setText((source != null) ? source.getName() : "");
     }
 
     protected void setBtnSearch(JButton btnSearch) {

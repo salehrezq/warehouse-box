@@ -25,6 +25,7 @@ package warehouse.panel.inwards;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.prefs.Preferences;
 import javax.swing.JDialog;
 import warehouse.db.model.Source;
 import warehouse.singularlisting.ListableItemFormForFilters;
@@ -47,6 +48,14 @@ public class SourceFilterDialog extends JDialog {
 
     protected void setDialogeToListableItemFormForFilters() {
         listableItemFormForFilters.setDialoge(this);
+    }
+
+    protected void setPreferencesKey(String prefsKey) {
+        listableItemFormForFilters.setPreferencesKey(prefsKey);
+    }
+
+    protected void setPreferences(Preferences preferences) {
+        listableItemFormForFilters.setPreferences(preferences);
     }
 
     protected ListableItemFormForFilters getListableItemFormForFilters() {
