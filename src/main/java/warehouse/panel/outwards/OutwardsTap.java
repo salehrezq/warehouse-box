@@ -63,13 +63,15 @@ public class OutwardsTap extends JPanel {
         outwardsSearchLogic.addItemSearchListener(outwardsList);
         outwardsSearchLogic.setTfSearchQuery(outwardsSearchPane.getTfSearchQuery());
         outwardsSearchLogic.setBtnSearch(outwardsSearchPane.getBtnSearchQuery());
-        outwardsSearchLogic.setCheckCodeFilter(outwardsSearchPane.getCheckCodeFilter());
-        outwardsSearchLogic.setCheckNameFilter(outwardsSearchPane.getCheckNameFilter());
-        outwardsSearchLogic.setCheckSpecificationFilter(outwardsSearchPane.getCheckSpecificationFilter());
+        outwardsSearchLogic.setCheckFilters(
+                outwardsSearchPane.getCheckCodeFilter(),
+                outwardsSearchPane.getCheckNameFilter(),
+                outwardsSearchPane.getCheckSpecificationFilter());
         outwardsSearchLogic.setBtnRecipientFilter(outwardsSearchPane.getBtnRecipientFilter());
         outwardsSearchLogic.setTfRecipientFilter(outwardsSearchPane.getTfRecipientFilter());
         outwardsSearchLogic.setBtnLoadMore(outwardsList.getBtnLoadMore());
         outwardsSearchLogic.setDateRangeFilter(outwardsSearchPane.getDateRange());
+        outwardsSearchLogic.initializeFiltersReactToRetrievedPreferences();
         ListableItemFormForFilters listableItemFormForFilters = outwardsSearchLogic.getListableItemFormForFilters();
         listableItemFormForFilters.addListableItemFormForFiltersListener(outwardsSearchLogic);
 
