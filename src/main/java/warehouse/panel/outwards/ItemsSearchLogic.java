@@ -118,6 +118,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         if (recipientId > 0) {
             recipient = (Recipient) CRUDListable.getById(new Recipient(), recipientId);
         }
+        searchFilters.setRecipient(recipient);
         this.tfRecipientFilter.setText((recipient != null) ? recipient.getName() : "");
     }
 
