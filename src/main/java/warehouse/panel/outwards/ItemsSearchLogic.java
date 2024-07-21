@@ -193,11 +193,6 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         });
     }
 
-//    public void notifySearchQuery(String currentQuery, String previousQuery) {
-//        this.itemsSearchListeners.forEach((itemsSearchListener) -> {
-//            itemsSearchListener.notifySearchQuery(currentQuery, previousQuery);
-//        });
-//    }
     public void notifySearchResult(List data) {
         this.itemsSearchListeners.forEach((itemsSearchListener) -> {
             itemsSearchListener.notifySearchResult(data);
