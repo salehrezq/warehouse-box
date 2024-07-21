@@ -42,6 +42,8 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Locale;
 import warehouse.db.CRUDInwards;
 import warehouse.db.model.Inward;
@@ -103,6 +105,7 @@ public class InwardDialog extends JDialog {
         container.add(btnSubmit, "span 4, center, gapy 10");
         add(container);
         this.setMinimumSize(new Dimension(520, 520));
+        this.addWindowListener(new ClosingWindowHandler());
     }
 
     private void setupDateField(DatePicker datePicker) {
@@ -151,6 +154,12 @@ public class InwardDialog extends JDialog {
         public void dateChanged(DateChangeEvent event) {
             selectedDate = datePicker.getDate();
         }
+    }
+
+    private void resetFields() {
+        tfQuantity.setText("");
+        formFieldSource.resetFields();
+        datePicker.setDateToToday();
     }
 
     private class BtnSubmitHandler implements ActionListener {
@@ -207,6 +216,15 @@ public class InwardDialog extends JDialog {
                             JOptionPane.WARNING_MESSAGE);
                 }
             }
+            resetFields();
+        }
+    }
+
+    private class ClosingWindowHandler extends WindowAdapter {
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+            resetFields();
         }
     }
 }
