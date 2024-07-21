@@ -150,7 +150,8 @@ public class InwardsList extends JPanel
 
     @Override
     public void created(Inward inward) {
-        model.addInward(inward);
+        // Not necessary and it causes visual duplicate
+        //  model.addInward(inward);
     }
 
     @Override

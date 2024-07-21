@@ -151,7 +151,8 @@ public class OutwardsList extends JPanel
 
     @Override
     public void created(Outward outward) {
-        model.addOutward(outward);
+        // Not necessary and it causes visual duplicate
+        // model.addOutward(outward);
     }
 
     @Override
