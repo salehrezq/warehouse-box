@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import utility.filemanage.ImageFileManager;
 import warehouse.db.CRUDImages;
@@ -128,9 +129,11 @@ public class FormManagement extends JPanel {
         Item item;
         List<Image> images, imagesRetrievedFromDB;
         boolean isUpdateOperation = false;
+        boolean isFieldsFilled;
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            isFieldsFilled = false;
             JButton btnNavigate = (JButton) e.getSource();
             if (btnNavigate == btnNext) {
                 navigateTracker++;
@@ -159,11 +162,39 @@ public class FormManagement extends JPanel {
                         item.setSpecification((String) c.collect().get("specification"));
                         QuantityUnit quamtityUnit = (QuantityUnit) c.collect().get("quantityUnit");
                         item.setQuantityUnit(quamtityUnit);
-                    } else if (c instanceof ItemFormImage) {
+                        /**
+                         * Validate fields.
+                         */
+                        if (!item.getName().isBlank()
+                                && !item.getSpecification().isBlank()
+                                && item.getQuantityUnit() != null
+                                && item.getQuantityUnit().getId() > 0) {
+                            isFieldsFilled = true;
+                        }
+                    } else if (c instanceof ItemFormImage && isFieldsFilled) {
+                        System.out.println("images collected");
                         images = (ArrayList<Image>) c.collect().get("images");
                         imagesRetrievedFromDB = (ArrayList<Image>) c.collect().get("imagesRetrievedFromDB");
                     }
                 });
+
+                if (isFieldsFilled == false) {
+                    String message = "Missing fields:\n";
+
+                    if (item.getName().isBlank()) {
+                        message += "- Name";
+                    }
+                    if (item.getSpecification().isBlank()) {
+                        message += "\n";
+                        message += "- Specification";
+                    }
+                    if (item.getQuantityUnit() == null || item.getQuantityUnit().getId() < 1) {
+                        message += "\n";
+                        message += "- Quantity";
+                    }
+                    JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 boolean isItemUpdate = false;
                 boolean isItemImagesUpdate = false;
