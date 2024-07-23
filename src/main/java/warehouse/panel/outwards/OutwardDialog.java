@@ -41,10 +41,14 @@ import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Locale;
+import java.util.regex.Pattern;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import warehouse.db.CRUDOutwards;
 import warehouse.db.model.ItemMeta;
 import warehouse.db.model.Outward;
@@ -68,6 +72,9 @@ public class OutwardDialog extends JDialog {
     private static ArrayList<OutwardCRUDListener> outwardCRUDListeners;
     private ItemMeta itemMeta;
     private Outward outward;
+    private QuantityValidateHandler quantityValidateHandler;
+    private final Pattern pattern = Pattern.compile("(^[0-9]{1,}(\\.[0-9]{1,2})?)");
+    private final Color colorError = new Color(255, 255, 0);
 
     public OutwardDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -75,9 +82,12 @@ public class OutwardDialog extends JDialog {
         container = new JPanel();
         container.setLayout(new MigLayout("center center"));
 
+        quantityValidateHandler = new QuantityValidateHandler();
+
         lbQuantityUnit = new JLabel();
         lbQuantity = new JLabel("Quantity");
         tfQuantity = new JTextField(5);
+        tfQuantity.getDocument().addDocumentListener(quantityValidateHandler);
 
         lbBalance = new JLabel();
 
@@ -95,6 +105,7 @@ public class OutwardDialog extends JDialog {
         this.setupDateField(datePicker);
 
         btnSubmit = new JButton("Submit addition");
+        btnSubmit.setEnabled(false);
         btnSubmit.addActionListener(new BtnSubmitHandler());
 
         container.add(lbQuantity);
@@ -155,8 +166,20 @@ public class OutwardDialog extends JDialog {
 
     private void resetFields() {
         tfQuantity.setText("");
+        tfQuantity.setBackground(Color.WHITE);
+        tfUsedFor.setText("");
         formFieldRecipient.resetFields();
         datePicker.setDateToToday();
+    }
+
+    private void tfQuantityValidateHandler() {
+        if (pattern.matcher(tfQuantity.getText()).matches()) {
+            tfQuantity.setBackground(Color.WHITE);
+            btnSubmit.setEnabled(true);
+        } else {
+            tfQuantity.setBackground(colorError);
+            btnSubmit.setEnabled(false);
+        }
     }
 
     private class DateChangeHandler implements DateChangeListener {
@@ -169,8 +192,31 @@ public class OutwardDialog extends JDialog {
 
     private class BtnSubmitHandler implements ActionListener {
 
+        boolean isFieldsFilled;
+
         @Override
         public void actionPerformed(ActionEvent e) {
+            isFieldsFilled = (!tfQuantity.getText().isBlank() && !tfUsedFor.getText().isBlank() && formFieldRecipient.getSelectedValue() != null);
+
+            if (isFieldsFilled == false) {
+                String message = "Missing fields:\n";
+                if (tfQuantity.getText().isBlank()) {
+                    message += "\n";
+                    message += "- Quantity";
+                }
+                if (tfUsedFor.getText().isBlank()) {
+                    message += "\n";
+                    message += "- Used for";
+                }
+                if (formFieldRecipient.getSelectedValue() == null) {
+                    message += "\n";
+                    message += "- Source";
+                }
+
+                JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             if (outward == null) {
                 BigDecimal quantity = new BigDecimal(tfQuantity.getText());
                 Outward itemOutward = new Outward();
@@ -222,6 +268,30 @@ public class OutwardDialog extends JDialog {
                 }
             }
             resetFields();
+        }
+    }
+
+    private class QuantityValidateHandler implements DocumentListener {
+
+        private void validate(DocumentEvent docEvent) {
+            if (docEvent.getDocument() == tfQuantity.getDocument()) {
+                tfQuantityValidateHandler();
+            }
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent docEvent) {
+            validate(docEvent);
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent docEvent) {
+            validate(docEvent);
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent docEvent) {
+            validate(docEvent);
         }
     }
 
