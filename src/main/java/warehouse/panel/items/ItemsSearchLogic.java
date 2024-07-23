@@ -64,6 +64,7 @@ public class ItemsSearchLogic {
     private static final String PREFS_NAME_FILTER = "checkNameFilter";
     private static final String PREFS_SPECIFICATION_FILTER = "checkSpecificationFilter";
     private CheckBoxFiltersHandler checkBoxFiltersHandler;
+    private final Color colorError = new Color(255, 255, 0);
 
     public ItemsSearchLogic() {
         checkBoxFiltersHandler = new CheckBoxFiltersHandler();
@@ -194,7 +195,7 @@ public class ItemsSearchLogic {
                 tfSearchQuery.setBackground(Color.WHITE);
                 btnSearch.setEnabled(true);
             } else {
-                tfSearchQuery.setBackground(new Color(255, 204, 204));
+                tfSearchQuery.setBackground(colorError);
                 btnSearch.setEnabled(false);
             }
         } else if (!isCodeChecked) {

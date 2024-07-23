@@ -84,6 +84,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private static final String PREFS_DATE_END_FILTER = "checkDateEndFilter";
     private static final String PREFS_RECIPIENT_OK = "recipientOk";
     private Preferences prefs;
+    private final Color colorError = new Color(255, 255, 0);
 
     public ItemsSearchLogic() {
         prefs = Preferences.userRoot().node(getClass().getName());
@@ -260,7 +261,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             if (pattern.matcher(tfSearchQuery.getText()).matches()) {
                 tfSearchQuery.setBackground(Color.WHITE);
             } else {
-                tfSearchQuery.setBackground(new Color(255, 204, 204));
+                tfSearchQuery.setBackground(colorError);
             }
         } else if (!isCodeChecked) {
             tfSearchQuery.setBackground(Color.WHITE);
