@@ -25,11 +25,9 @@ package warehouse.panel.outwards;
 
 import java.awt.Adjustable;
 import java.awt.Color;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import utility.scrollbarthin.ScrollBarThin;
@@ -43,15 +41,11 @@ public class ItemsSearchPane {
     private JPanel container;
     private JTextField tfSearchQuery, tfRecipientFilter;
     private ScrollBarThin scrollBarThinTfSearchQuery, scrollBarThinTfRecipientFilter;
-    private JButton btnSearchQuery;
+    private JButton btnSearchQuery, btnRecipientFilter;
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
-    private JLabel btnRecipientFilter;
     private DateRange dateRange;
-    public final static Color colorBtnSourceNormal = new Color(247, 247, 247);
-    public final static Color colorBtnSourceHover = new Color(233, 233, 233);
-    public final static Color colorBtnSourcePressed = new Color(200, 200, 200);
     private final Color colorTextField = new Color(84, 84, 84);
 
     public ItemsSearchPane() {
@@ -70,11 +64,7 @@ public class ItemsSearchPane {
         checkNameFilter = new JCheckBox("Name");
         checkSpecificationFilter = new JCheckBox("Specification");
 
-        btnRecipientFilter = new JLabel("Recipient...");
-        btnRecipientFilter.setOpaque(true);
-        btnRecipientFilter.setForeground(Color.BLACK);
-        btnRecipientFilter.setBackground(colorBtnSourceNormal);
-        btnRecipientFilter.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2));
+        btnRecipientFilter = new JButton("Recipient...");
         tfRecipientFilter = new JTextField(5);
         tfRecipientFilter.setEditable(false);
         tfRecipientFilter.setDisabledTextColor(colorTextField);
@@ -129,7 +119,7 @@ public class ItemsSearchPane {
         return checkSpecificationFilter;
     }
 
-    protected JLabel getBtnRecipientFilter() {
+    protected JButton getBtnRecipientFilter() {
         return btnRecipientFilter;
     }
 

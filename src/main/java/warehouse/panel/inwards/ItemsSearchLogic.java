@@ -29,8 +29,6 @@ import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +36,6 @@ import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -66,7 +63,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
-    private JLabel btnSourceFilter;
+    private JButton btnSourceFilter;
     private SourceFilterDialog sourceFilterDialog;
     private SearchFilters searchFilters, searchFiltersImmutableCopy;
     boolean isCodeChecked;
@@ -147,9 +144,9 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         this.checkSpecificationFilter.setSelected(prefs.getBoolean(PREFS_SPECIFICATION_FILTER, false));
     }
 
-    protected void setBtnSourceFilter(JLabel btnSourceFilter) {
+    protected void setBtnSourceFilter(JButton btnSourceFilter) {
         this.btnSourceFilter = btnSourceFilter;
-        this.btnSourceFilter.addMouseListener(new MouseEventsHandler());
+        this.btnSourceFilter.addActionListener(new ButtonSourceHandler());
     }
 
     protected void setDateRangeFilter(DateRange dateRange) {
@@ -396,35 +393,11 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         }
     }
 
-    private class MouseEventsHandler extends MouseAdapter {
-
-        private boolean hovered = false;
+    private class ButtonSourceHandler implements ActionListener {
 
         @Override
-        public void mouseClicked(MouseEvent e) {
+        public void actionPerformed(ActionEvent e) {
             sourceFilterDialog.setVisible(true);
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            btnSourceFilter.setBackground(ItemsSearchPane.colorBtnSourcePressed);
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            btnSourceFilter.setBackground((hovered) ? ItemsSearchPane.colorBtnSourceHover : ItemsSearchPane.colorBtnSourceNormal);
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            hovered = true;
-            btnSourceFilter.setBackground(ItemsSearchPane.colorBtnSourceHover);
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            hovered = false;
-            btnSourceFilter.setBackground(ItemsSearchPane.colorBtnSourceNormal);
         }
     }
 }
