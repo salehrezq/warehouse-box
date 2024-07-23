@@ -93,6 +93,7 @@ public class InwardDialog extends JDialog {
         lbBalance = new JLabel();
 
         formFieldSource = new ListableItemForm();
+        formFieldSource.setLabelText("Source");
         formFieldSource.setListableImpl(new Source());
         formFieldSource.setListablePreferredSize(300, 300);
 

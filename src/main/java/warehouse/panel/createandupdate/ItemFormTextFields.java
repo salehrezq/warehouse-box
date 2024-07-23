@@ -71,6 +71,7 @@ public class ItemFormTextFields extends JPanel implements Collectable {
         boxSpecsField.add(scrollBarThinTfSpecs);
 
         itemFormQuantityUnit = new ListableItemForm();
+        itemFormQuantityUnit.setLabelText("Unit");
         itemFormQuantityUnit.setListableImpl(new QuantityUnit());
         itemFormQuantityUnit.setListablePreferredSize(300, 300);
 

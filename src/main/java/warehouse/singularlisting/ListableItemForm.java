@@ -111,6 +111,10 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
         this.listableImplementation = listable;
     }
 
+    public void setLabelText(String labelText) {
+        label.setText(labelText);
+    }
+
     /**
      * Used to add element preview selected for editing
      *

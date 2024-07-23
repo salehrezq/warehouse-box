@@ -95,6 +95,7 @@ public class OutwardDialog extends JDialog {
         tfUsedFor = new JTextField(15);
 
         formFieldRecipient = new ListableItemForm();
+        formFieldRecipient.setLabelText("Recipient");
         formFieldRecipient.setListableImpl(new Recipient());
         formFieldRecipient.setListablePreferredSize(300, 300);
 
