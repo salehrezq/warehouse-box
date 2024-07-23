@@ -41,10 +41,14 @@ import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Locale;
+import java.util.regex.Pattern;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import warehouse.db.CRUDInwards;
 import warehouse.db.model.Inward;
 import warehouse.db.model.ItemMeta;
@@ -69,6 +73,9 @@ public class InwardDialog extends JDialog {
     private static ArrayList<InwardCRUDListener> inwardCRUDListeners;
     private ItemMeta itemMeta;
     private Inward inward;
+    private QuantityValidateHandler quantityValidateHandler;
+    private final Pattern pattern = Pattern.compile("(^[0-9]{1,}(\\.[0-9]{1,2})?)");
+    private final Color colorError = new Color(255, 255, 0);
 
     public InwardDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -76,9 +83,12 @@ public class InwardDialog extends JDialog {
         container = new JPanel();
         container.setLayout(new MigLayout("center center"));
 
+        quantityValidateHandler = new QuantityValidateHandler();
+
         lbQuantityUnit = new JLabel();
         lbQuantity = new JLabel("Quantity");
         tfQuantity = new JTextField(5);
+        tfQuantity.getDocument().addDocumentListener(quantityValidateHandler);
 
         lbBalance = new JLabel();
 
@@ -93,6 +103,7 @@ public class InwardDialog extends JDialog {
         this.setupDateField(datePicker);
 
         btnSubmit = new JButton("Submit addition");
+        btnSubmit.setEnabled(false);
         btnSubmit.addActionListener(new BtnSubmitHandler());
 
         container.add(lbQuantity);
@@ -158,14 +169,44 @@ public class InwardDialog extends JDialog {
 
     private void resetFields() {
         tfQuantity.setText("");
+        tfQuantity.setBackground(Color.WHITE);
         formFieldSource.resetFields();
         datePicker.setDateToToday();
     }
 
+    private void tfQuantityValidateHandler() {
+        if (pattern.matcher(tfQuantity.getText()).matches()) {
+            tfQuantity.setBackground(Color.WHITE);
+            btnSubmit.setEnabled(true);
+        } else {
+            tfQuantity.setBackground(colorError);
+            btnSubmit.setEnabled(false);
+        }
+    }
+
     private class BtnSubmitHandler implements ActionListener {
+
+        boolean isFieldsFilled;
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            isFieldsFilled = (!tfQuantity.getText().isBlank() && formFieldSource.getSelectedValue() != null);
+
+            if (isFieldsFilled == false) {
+                String message = "Missing fields:\n";
+                if (tfQuantity.getText().isBlank()) {
+                    message += "\n";
+                    message += "- Quantity";
+                }
+                if (formFieldSource.getSelectedValue() == null) {
+                    message += "\n";
+                    message += "- Source";
+                }
+
+                JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             if (inward == null) {
                 BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
                 Inward inward = new Inward();
@@ -217,6 +258,30 @@ public class InwardDialog extends JDialog {
                 }
             }
             resetFields();
+        }
+    }
+
+    private class QuantityValidateHandler implements DocumentListener {
+
+        private void validate(DocumentEvent docEvent) {
+            if (docEvent.getDocument() == tfQuantity.getDocument()) {
+                tfQuantityValidateHandler();
+            }
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent docEvent) {
+            validate(docEvent);
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent docEvent) {
+            validate(docEvent);
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent docEvent) {
+            validate(docEvent);
         }
     }
 
