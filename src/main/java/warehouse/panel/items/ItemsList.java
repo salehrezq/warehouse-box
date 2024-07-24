@@ -343,6 +343,13 @@ public class ItemsList extends JPanel
         }
     }
 
+    private void setEnabledMenuList(boolean enable) {
+        menuItemInwardsOfSelectedItem.setEnabled(enable);
+        menuItemOutwardOfSelectedItem.setEnabled(enable);
+        menuItemUpdateItem.setEnabled(enable);
+        menuItemDeleteItem.setEnabled(enable);
+    }
+
     private class RowSelectionListener implements ListSelectionListener {
 
         @Override
@@ -392,6 +399,7 @@ public class ItemsList extends JPanel
 
             SwingUtilities.invokeLater(() -> {
                 int rowAtPoint = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
+                setEnabledMenuList(rowAtPoint > -1);
                 if (rowAtPoint > -1) {
                     table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
                 }

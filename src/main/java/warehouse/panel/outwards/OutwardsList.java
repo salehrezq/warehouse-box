@@ -257,6 +257,11 @@ public class OutwardsList extends JPanel
         }
     }
 
+    private void setEnabledMenuList(boolean enable) {
+        menuOutwardEdit.setEnabled(enable);
+        menuOutwardDelete.setEnabled(enable);
+    }
+
     private class RowSelectionListener implements ListSelectionListener {
 
         @Override
@@ -304,6 +309,7 @@ public class OutwardsList extends JPanel
         public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
             SwingUtilities.invokeLater(() -> {
                 int rowAtPoint = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
+                setEnabledMenuList(rowAtPoint > -1);
                 if (rowAtPoint > -1) {
                     table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
                 }
