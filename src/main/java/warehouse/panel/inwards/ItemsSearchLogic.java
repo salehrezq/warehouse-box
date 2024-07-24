@@ -66,7 +66,10 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private JButton btnSourceFilter;
     private SourceFilterDialog sourceFilterDialog;
     private SearchFilters searchFilters, searchFiltersImmutableCopy;
-    boolean isCodeChecked;
+    boolean isCodeChecked,
+            isAnyTextRelatedCheckboxesSelected,
+            isSourceSelected,
+            isDateRangeCheckSelected;
     private MatchDigitsOnlyHandler matchDigitsOnly;
     private final Pattern pattern = Pattern.compile("\\d+");
     private DateRange dateRange;
@@ -202,10 +205,14 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         if (listable != null) {
             tfSourceFilter.setText(listable.getName());
             searchFilters.setSource((Source) listable);
+            isSourceSelected = true;
         } else {
-            tfSourceFilter.setText(null);
+            tfSourceFilter.setText("");
             searchFilters.setSource(null);
+            isSourceSelected = false;
         }
+        boolean boolSum = isAnyTextRelatedCheckboxesSelected || isSourceSelected || isDateRangeCheckSelected;
+        btnSearch.setText(boolSum ? "Search" : "Get all");
     }
 
     private class SearchHandler implements ActionListener {
@@ -300,11 +307,15 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     }
 
     private void checkBoxFiltersAlwaysInvoke() {
-        boolean isAnyChecked = checkCodeFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
-        btnSearch.setText(isAnyChecked ? "Search" : "Get all");
-        tfSearchQuery.setEnabled(isAnyChecked);
+        isAnyTextRelatedCheckboxesSelected = checkCodeFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
+        btnSearch.setText(isAnyTextRelatedCheckboxesSelected ? "Search" : "Get all");
+        tfSearchQuery.setEnabled(isAnyTextRelatedCheckboxesSelected);
         searchFilters.enableDateRangeFilter(dateRange.getCheckDateFilter().isSelected());
         isCodeChecked = checkCodeFilter.isSelected();
+        isSourceSelected = !tfSourceFilter.getText().isBlank();
+        isDateRangeCheckSelected = dateRange.getCheckDateFilter().isSelected();
+        boolean boolSum = isAnyTextRelatedCheckboxesSelected || isSourceSelected || isDateRangeCheckSelected;
+        btnSearch.setText(boolSum ? "Search" : "Get all");
         tfSearchQueryCodeChecker();
     }
 
@@ -316,10 +327,12 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
             if (source == checkCodeFilter) {
                 checkBoxcodeFilterReact();
-            } else {
-                if (source == checkNameFilter || source == checkSpecificationFilter) {
-                    checkBoxesNameAndSpecificationFiltersReact();
-                }
+            } else if (source == checkNameFilter || source == checkSpecificationFilter) {
+                checkBoxesNameAndSpecificationFiltersReact();
+            } else if (source == dateRange.getCheckDateFilter()) {
+                isDateRangeCheckSelected = dateRange.getCheckDateFilter().isSelected();
+                boolean boolSum = isAnyTextRelatedCheckboxesSelected || isSourceSelected || isDateRangeCheckSelected;
+                btnSearch.setText(boolSum ? "Search" : "Get all");
             }
             checkBoxFiltersAlwaysInvoke();
             prefs.putBoolean(PREFS_CODE_FILTER, checkCodeFilter.isSelected());
