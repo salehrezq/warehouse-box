@@ -25,9 +25,12 @@ package warehouse.panel.inwards;
 
 import java.awt.Adjustable;
 import java.awt.Color;
+import java.awt.Image;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import utility.scrollbarthin.ScrollBarThin;
@@ -40,8 +43,10 @@ public class ItemsSearchPane {
 
     private JPanel container;
     private JTextField tfSearchQuery, tfSourceFilter;
+    private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
     private ScrollBarThin scrollBarThinTfSearchQuery, scrollBarThinTfSourceFilter;
     private JButton btnSearchQuery, btnSourceFilter;
+    private JLabel btnRemoveSource;
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
@@ -64,11 +69,17 @@ public class ItemsSearchPane {
         checkNameFilter = new JCheckBox("Name");
         checkSpecificationFilter = new JCheckBox("Specification");
         btnSourceFilter = new JButton("Source...");
-        tfSourceFilter = new JTextField(5);
+        tfSourceFilter = new JTextField(15);
         tfSourceFilter.setEditable(false);
         tfSourceFilter.setDisabledTextColor(colorTextField);
         scrollBarThinTfSourceFilter = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarThinTfSourceFilter.setModel(tfSourceFilter.getHorizontalVisibility());
+        imageIconRemoveNormal = getTransformedImageIcon("/images/remove-icon-circular/remove-normal.png");
+        imageIconRemoveHover = getTransformedImageIcon("/images/remove-icon-circular/remove-hover.png");
+        imageIconRemovePress = getTransformedImageIcon("/images/remove-icon-circular/remove-press.png");
+        btnRemoveSource = new JLabel();
+        btnRemoveSource.setOpaque(false);
+        btnRemoveSource.setIcon(imageIconRemoveNormal);
         Box boxSourceFilterField = Box.createVerticalBox();
         boxSourceFilterField.add(tfSourceFilter);
         boxSourceFilterField.add(scrollBarThinTfSourceFilter);
@@ -88,11 +99,20 @@ public class ItemsSearchPane {
         boxFilters.add(btnSourceFilter);
         boxFilters.add(Box.createHorizontalStrut(2));
         boxFilters.add(boxSourceFilterField);
+        boxFilters.add(Box.createHorizontalStrut(2));
+        boxFilters.add(btnRemoveSource);
         Box boxContainer = Box.createVerticalBox();
         boxContainer.add(boxSearch);
         boxContainer.add(boxFilters);
         boxContainer.add(dateRange.getContainer());
         container.add(boxContainer);
+    }
+
+    private ImageIcon getTransformedImageIcon(String resource) {
+        ImageIcon imageIconOrignal = new ImageIcon(getClass().getResource(resource));
+        Image image = imageIconOrignal.getImage();
+        Image transformedImageIcon = image.getScaledInstance(18, 18, java.awt.Image.SCALE_SMOOTH);
+        return new ImageIcon(transformedImageIcon);
     }
 
     protected JPanel getContainer() {
@@ -101,6 +121,22 @@ public class ItemsSearchPane {
 
     protected JTextField getTfSearchQuery() {
         return tfSearchQuery;
+    }
+
+    protected JLabel getBtnRemoveSource() {
+        return btnRemoveSource;
+    }
+
+    protected ImageIcon getImageIconRemoveNormal() {
+        return imageIconRemoveNormal;
+    }
+
+    protected ImageIcon getImageIconRemoveHover() {
+        return imageIconRemoveHover;
+    }
+
+    protected ImageIcon getImageIconRemovePress() {
+        return imageIconRemovePress;
     }
 
     protected JButton getBtnSearchQuery() {

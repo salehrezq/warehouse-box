@@ -29,13 +29,17 @@ import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -58,12 +62,14 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private static int LIMIT,
             OFFSET;
     private JTextField tfSearchQuery, tfSourceFilter;
+    private JLabel btnRemoveSource;
     private JButton btnSearch;
     private JButton btnLoadMore;
     private JCheckBox checkCodeFilter,
             checkNameFilter,
             checkSpecificationFilter;
     private JButton btnSourceFilter;
+    private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
     private SourceFilterDialog sourceFilterDialog;
     private SearchFilters searchFilters, searchFiltersImmutableCopy;
     boolean isCodeChecked,
@@ -150,6 +156,24 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     protected void setBtnSourceFilter(JButton btnSourceFilter) {
         this.btnSourceFilter = btnSourceFilter;
         this.btnSourceFilter.addActionListener(new ButtonSourceHandler());
+    }
+
+    protected void setBtnRemoveSource(JLabel btnRemoveSource) {
+        this.btnRemoveSource = btnRemoveSource;
+        this.btnRemoveSource.addMouseListener(new MouseEventsHandler());
+    }
+
+    protected void setImageIconRemoveNormal(ImageIcon imageIconRemoveNormal) {
+        this.imageIconRemoveNormal = imageIconRemoveNormal;
+
+    }
+
+    protected void setImageIconRemoveHover(ImageIcon imageIconRemoveHover) {
+        this.imageIconRemoveHover = imageIconRemoveHover;
+    }
+
+    protected void setImageIconRemovePress(ImageIcon imageIconRemovePress) {
+        this.imageIconRemovePress = imageIconRemovePress;
     }
 
     protected void setDateRangeFilter(DateRange dateRange) {
@@ -412,5 +436,38 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         public void actionPerformed(ActionEvent e) {
             sourceFilterDialog.setVisible(true);
         }
+    }
+
+    private class MouseEventsHandler extends MouseAdapter {
+
+        private boolean hovered = false;
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            System.out.println("Revmove listable button clicked");
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            btnRemoveSource.setIcon(imageIconRemovePress);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            btnRemoveSource.setIcon((hovered) ? imageIconRemoveHover : imageIconRemoveNormal);
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            hovered = true;
+            btnRemoveSource.setIcon(imageIconRemoveHover);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            hovered = false;
+            btnRemoveSource.setIcon(imageIconRemoveNormal);
+        }
+
     }
 }
