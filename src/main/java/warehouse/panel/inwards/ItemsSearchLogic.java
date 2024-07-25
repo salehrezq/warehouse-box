@@ -160,7 +160,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
     protected void setBtnRemoveSource(JLabel btnRemoveSource) {
         this.btnRemoveSource = btnRemoveSource;
-        this.btnRemoveSource.addMouseListener(new MouseEventsHandler());
+        this.btnRemoveSource.addMouseListener(new RemoveSourceMouseEventsHandler());
     }
 
     protected void setImageIconRemoveNormal(ImageIcon imageIconRemoveNormal) {
@@ -438,13 +438,18 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         }
     }
 
-    private class MouseEventsHandler extends MouseAdapter {
+    private class RemoveSourceMouseEventsHandler extends MouseAdapter {
 
         private boolean hovered = false;
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            System.out.println("Revmove listable button clicked");
+            searchFilters.setSource(null);
+            tfSourceFilter.setText("");
+            isSourceSelected = false;
+            boolean boolSum = isAnyTextRelatedCheckboxesSelected || isSourceSelected || isDateRangeCheckSelected;
+            btnSearch.setText(boolSum ? "Search" : "Get all");
+            prefs.putInt(PREFS_SOURCE_OK, 0);
         }
 
         @Override

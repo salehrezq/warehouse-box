@@ -43,8 +43,11 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import utility.scrollbarthin.ScrollBarThin;
 import warehouse.db.CRUDListable;
+import warehouse.db.model.Source;
 
 /**
  *
@@ -56,7 +59,7 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
     private JLabel label;
     private JTextField tfSearch;
     private ScrollBarThin scrollBarThinTfSearch;
-    private JButton btnSearch, btnLoadMore, btnClearSelection, btnOK;
+    private JButton btnSearch, btnLoadMore, btnOK;
     private ListOfListable listOfListable;
     private JList listing;
     private Listable listableImplementation;
@@ -98,6 +101,7 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         listOfListable = new ListOfListable();
         listing = listOfListable.getJList();
         listing.addMouseListener(new MouseJListHandler());
+        listing.addListSelectionListener(new ListSelectionHandler());
         //  btnClose.addActionListener(btnListener);
 
         panelSearch.add(label);
@@ -108,10 +112,8 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         btnLoadMore.setEnabled(false);
         btnLoadMore.addActionListener(new BtnLoadMoreHandler());
 
-        btnClearSelection = new JButton("Clear selection");
-        btnClearSelection.addActionListener(new BtnClearSelectionHandler());
-
         btnOK = new JButton("OK");
+        btnOK.setEnabled(false);
         btnOK.addActionListener(new BtnOKHandler());
 
         panelControls = new JPanel(new GridBagLayout());
@@ -121,10 +123,6 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         panelControls.add(btnLoadMore, c);
         c = new GridBagConstraints();
         c.gridx = 1;
-        c.gridy = 0;
-        panelControls.add(btnClearSelection, c);
-        c = new GridBagConstraints();
-        c.gridx = 2;
         c.gridy = 0;
         panelControls.add(btnOK, c);
 
@@ -217,15 +215,6 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         }
     }
 
-    private class BtnClearSelectionHandler implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            listing.clearSelection();
-            prefs.putInt(prefsOK_key, 0);
-        }
-    }
-
     private class BtnOKHandler implements ActionListener {
 
         @Override
@@ -246,6 +235,22 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         public void mousePressed(MouseEvent e) {
             if (SwingUtilities.isRightMouseButton(e)) {
                 listing.setSelectedIndex(listing.locationToIndex(e.getPoint()));
+            }
+        }
+    }
+
+    private class ListSelectionHandler implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            JList list = (JList) event.getSource();
+            if (!event.getValueIsAdjusting()) {
+                Source source = (Source) list.getSelectedValue();
+                if (source != null && source instanceof Source) {
+                    btnOK.setEnabled(true);
+                } else {
+                    btnOK.setEnabled(false);
+                }
             }
         }
     }
