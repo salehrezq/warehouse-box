@@ -47,7 +47,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import utility.scrollbarthin.ScrollBarThin;
 import warehouse.db.CRUDListable;
-import warehouse.db.model.Source;
 
 /**
  *
@@ -245,8 +244,8 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         public void valueChanged(ListSelectionEvent event) {
             JList list = (JList) event.getSource();
             if (!event.getValueIsAdjusting()) {
-                Source source = (Source) list.getSelectedValue();
-                if (source != null && source instanceof Source) {
+                Listable listable = (Listable) list.getSelectedValue();
+                if (listable != null) {
                     btnOK.setEnabled(true);
                 } else {
                     btnOK.setEnabled(false);
