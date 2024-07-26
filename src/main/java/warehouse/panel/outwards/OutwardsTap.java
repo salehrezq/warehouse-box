@@ -69,6 +69,10 @@ public class OutwardsTap extends JPanel {
                 outwardsSearchPane.getCheckSpecificationFilter());
         outwardsSearchLogic.setBtnRecipientFilter(outwardsSearchPane.getBtnRecipientFilter());
         outwardsSearchLogic.setTfRecipientFilter(outwardsSearchPane.getTfRecipientFilter());
+        outwardsSearchLogic.setBtnRemoveRecipient(outwardsSearchPane.getBtnRemoveRecipient());
+        outwardsSearchLogic.setImageIconRemoveNormal(outwardsSearchPane.getImageIconRemoveNormal());
+        outwardsSearchLogic.setImageIconRemoveHover(outwardsSearchPane.getImageIconRemoveHover());
+        outwardsSearchLogic.setImageIconRemovePress(outwardsSearchPane.getImageIconRemovePress());
         outwardsSearchLogic.setBtnLoadMore(outwardsList.getBtnLoadMore());
         outwardsSearchLogic.setDateRangeFilter(outwardsSearchPane.getDateRange());
         outwardsSearchLogic.initializeFiltersReactToRetrievedPreferences();
