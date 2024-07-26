@@ -31,22 +31,27 @@ import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author Saleh
  */
-public class NameAndSpecDisplayFields {
+public class RowAttributesDisplay {
 
     private JPanel container;
     private JTextField tfItemName,
-            tfItemSpecifications;
+            tfItemSpecifications,
+            tfItemRecipient,
+            tfItemUsedFor;
     private ScrollBarThin scrollBarTfName,
-            scrollBarTfSpecifications;
-    private JSplitPane splitpane;
+            scrollBarTfSpecifications,
+            scrollBarTfItemRecipient,
+            scrollBarTfItemUsedFor;
+    private JSplitPane splitpane1, splitPane2;
     private final Color colorTextField = new Color(84, 84, 84);
 
-    public NameAndSpecDisplayFields() {
+    public RowAttributesDisplay() {
         container = new JPanel(new BorderLayout());
         tfItemName = new JTextField(1);
         tfItemName.setEnabled(false);
@@ -54,11 +59,23 @@ public class NameAndSpecDisplayFields {
         tfItemSpecifications = new JTextField(30);
         tfItemSpecifications.setEnabled(false);
         tfItemSpecifications.setDisabledTextColor(colorTextField);
+        tfItemRecipient = new JTextField(2);
+        tfItemRecipient.setEnabled(false);
+        tfItemRecipient.setDisabledTextColor(colorTextField);
+        tfItemUsedFor = new JTextField(20);
+        tfItemUsedFor.setEnabled(false);
+        tfItemUsedFor.setDisabledTextColor(colorTextField);
 
         scrollBarTfName = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarTfName.setModel(tfItemName.getHorizontalVisibility());
         scrollBarTfSpecifications = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarTfSpecifications.setModel(tfItemSpecifications.getHorizontalVisibility());
+        scrollBarTfItemRecipient = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarTfItemRecipient.setModel(tfItemRecipient.getHorizontalVisibility());
+        scrollBarTfItemUsedFor = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarTfItemUsedFor.setModel(tfItemUsedFor.getHorizontalVisibility());
+
+        Box boxContainer = Box.createVerticalBox();
 
         Box boxNameField = Box.createVerticalBox();
         boxNameField.add(tfItemName);
@@ -66,13 +83,37 @@ public class NameAndSpecDisplayFields {
         Box boxSpecsField = Box.createVerticalBox();
         boxSpecsField.add(tfItemSpecifications);
         boxSpecsField.add(scrollBarTfSpecifications);
-        // box.add(Box.createVerticalGlue());
-        // container.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        splitpane.setDividerSize(3);
-        splitpane.setTopComponent(boxNameField);
-        splitpane.setBottomComponent(boxSpecsField);
-        container.add(splitpane, BorderLayout.NORTH);
+
+        splitpane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitpane1.setDividerSize(3);
+        splitpane1.setTopComponent(boxNameField);
+        splitpane1.setBottomComponent(boxSpecsField);
+
+        SwingUtilities.invokeLater(() -> {
+            splitpane1.setDividerLocation(130);
+        });
+
+        Box boxItemRecipientField = Box.createVerticalBox();
+        boxItemRecipientField.add(tfItemRecipient);
+        boxItemRecipientField.add(scrollBarTfItemRecipient);
+
+        Box boxItemUsedForField = Box.createVerticalBox();
+        boxItemUsedForField.add(tfItemUsedFor);
+        boxItemUsedForField.add(scrollBarTfItemUsedFor);
+
+        splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane2.setDividerSize(3);
+        splitPane2.setTopComponent(boxItemRecipientField);
+        splitPane2.setBottomComponent(boxItemUsedForField);
+
+        SwingUtilities.invokeLater(() -> {
+            splitPane2.setDividerLocation(130);
+        });
+
+        boxContainer.add(splitpane1);
+        boxContainer.add(splitPane2);
+
+        container.add(boxContainer, BorderLayout.NORTH);
     }
 
     protected void setTfItemNameText(String name) {
@@ -81,6 +122,14 @@ public class NameAndSpecDisplayFields {
 
     protected void setTfItemSpecificationsText(String specs) {
         tfItemSpecifications.setText(specs);
+    }
+
+    public void setTfRecipientText(String recipient) {
+        this.tfItemRecipient.setText(recipient);
+    }
+
+    public void setTfUsedForText(String usedFor) {
+        this.tfItemUsedFor.setText(usedFor);
     }
 
     protected JPanel getContainer() {

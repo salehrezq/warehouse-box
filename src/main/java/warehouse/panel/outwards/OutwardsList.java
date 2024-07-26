@@ -82,7 +82,7 @@ public class OutwardsList extends JPanel
             incrementedReturnedRowsCount,
             rowIndex,
             tableRow;
-    private NameAndSpecDisplayFields nameAndSpecDisplayFields;
+    private RowAttributesDisplay rowAttributesDisplay;
     private OutwardDialog outwarEditdDialog;
 
     public OutwardsList() {
@@ -145,8 +145,8 @@ public class OutwardsList extends JPanel
         return btnLoadMore;
     }
 
-    protected void setnameAndSpecDisplayFields(NameAndSpecDisplayFields nameAndSpecDisplayFields) {
-        this.nameAndSpecDisplayFields = nameAndSpecDisplayFields;
+    protected void setRowAttributesDisplay(RowAttributesDisplay rowAttributesDisplay) {
+        this.rowAttributesDisplay = rowAttributesDisplay;
     }
 
     @Override
@@ -276,11 +276,22 @@ public class OutwardsList extends JPanel
                     if (viewRow > -1) {
                         int itemNameColumnIndex = 7;
                         int itemSpecificationColumnIndex = 8;
+                        int itemRecipientColumnIndex = 4;
+                        int itemUsedForColumnIndex = 5;
+
                         selectedModelRow = table.convertRowIndexToModel(viewRow);
+
                         String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
+                        rowAttributesDisplay.setTfItemNameText(itemNameObject);
+
                         String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
-                        nameAndSpecDisplayFields.setTfItemNameText(itemNameObject);
-                        nameAndSpecDisplayFields.setTfItemSpecificationsText(itemSpecificationObject);
+                        rowAttributesDisplay.setTfItemSpecificationsText(itemSpecificationObject);
+
+                        String itemRecipientObject = (String) table.getModel().getValueAt(selectedModelRow, itemRecipientColumnIndex);
+                        rowAttributesDisplay.setTfRecipientText(itemRecipientObject);
+
+                        String itemUsedForObject = (String) table.getModel().getValueAt(selectedModelRow, itemUsedForColumnIndex);
+                        rowAttributesDisplay.setTfUsedForText(itemUsedForObject);
                     }
                 }
             }
