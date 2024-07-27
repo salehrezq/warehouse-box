@@ -44,7 +44,7 @@ public class InwardsTap extends JPanel {
     private ItemsSearchLogic inwardsSearchLogic;
     private InwardsList inwardsList;
     private ItemImage itemsImages;
-    private NameAndSpecDisplayFields nameAndSpecDisplayFields;
+    private RowAttributesDisplay rowAttributesDisplay;
 
     public InwardsTap() {
 
@@ -56,9 +56,9 @@ public class InwardsTap extends JPanel {
         panelInwardsList = new JPanel(new BorderLayout());
         inwardsList = new InwardsList();
         inwardsList.setListableImpl(new QuantityUnit());
-        nameAndSpecDisplayFields = new NameAndSpecDisplayFields();
-        inwardsList.setnameAndSpecDisplayFields(nameAndSpecDisplayFields);
-        panelInwardsList.add(nameAndSpecDisplayFields.getContainer(), BorderLayout.PAGE_START);
+        rowAttributesDisplay = new RowAttributesDisplay();
+        inwardsList.setnameAndSpecDisplayFields(rowAttributesDisplay);
+        panelInwardsList.add(rowAttributesDisplay.getContainer(), BorderLayout.PAGE_START);
         panelInwardsList.add(inwardsList, BorderLayout.CENTER);
         inwardsSearchLogic = new ItemsSearchLogic();
         inwardsSearchLogic.addItemSearchListener(inwardsList);

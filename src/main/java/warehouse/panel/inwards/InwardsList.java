@@ -82,7 +82,7 @@ public class InwardsList extends JPanel
             incrementedReturnedRowsCount,
             rowIndex,
             tableRow;
-    private NameAndSpecDisplayFields nameAndSpecDisplayFields;
+    private RowAttributesDisplay rowAttributesDisplay;
     private InwardDialog inwardEditDialog;
 
     public InwardsList() {
@@ -144,8 +144,8 @@ public class InwardsList extends JPanel
         return btnLoadMore;
     }
 
-    protected void setnameAndSpecDisplayFields(NameAndSpecDisplayFields nameAndSpecDisplayFields) {
-        this.nameAndSpecDisplayFields = nameAndSpecDisplayFields;
+    protected void setnameAndSpecDisplayFields(RowAttributesDisplay rowAttributesDisplay) {
+        this.rowAttributesDisplay = rowAttributesDisplay;
     }
 
     @Override
@@ -275,11 +275,18 @@ public class InwardsList extends JPanel
                     if (viewRow > -1) {
                         int itemNameColumnIndex = 6;
                         int itemSpecificationColumnIndex = 7;
+                        int itemSourceColumnIndex = 4;
+
                         selectedModelRow = table.convertRowIndexToModel(viewRow);
+
                         String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
+                        rowAttributesDisplay.setTfItemNameText(itemNameObject);
+
                         String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
-                        nameAndSpecDisplayFields.setTfItemNameText(itemNameObject);
-                        nameAndSpecDisplayFields.setTfItemSpecificationsText(itemSpecificationObject);
+                        rowAttributesDisplay.setTfItemSpecificationsText(itemSpecificationObject);
+
+                        String itemSourceObject = (String) table.getModel().getValueAt(selectedModelRow, itemSourceColumnIndex);
+                        rowAttributesDisplay.setTfItemSourceText(itemSourceObject);
                     }
                 }
             }

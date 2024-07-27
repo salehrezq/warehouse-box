@@ -36,43 +36,61 @@ import javax.swing.JTextField;
  *
  * @author Saleh
  */
-public class NameAndSpecDisplayFields {
+public class RowAttributesDisplay {
 
     private JPanel container;
     private JTextField tfItemName,
-            tfItemSpecifications;
+            tfItemSpecifications,
+            tfItemSource;
     private ScrollBarThin scrollBarTfName,
-            scrollBarTfSpecifications;
+            scrollBarTfSpecifications,
+            scrollBarTfSource;
     private JSplitPane splitpane;
     private final Color colorTextField = new Color(84, 84, 84);
 
-    public NameAndSpecDisplayFields() {
-        container = new JPanel(new BorderLayout());
-        tfItemName = new JTextField(1);
+    public RowAttributesDisplay() {
+        tfItemName = new JTextField();
         tfItemName.setEnabled(false);
         tfItemName.setDisabledTextColor(colorTextField);
-        tfItemSpecifications = new JTextField(30);
-        tfItemSpecifications.setEnabled(false);
-        tfItemSpecifications.setDisabledTextColor(colorTextField);
-
         scrollBarTfName = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarTfName.setModel(tfItemName.getHorizontalVisibility());
-        scrollBarTfSpecifications = new ScrollBarThin(Adjustable.HORIZONTAL);
-        scrollBarTfSpecifications.setModel(tfItemSpecifications.getHorizontalVisibility());
-
         Box boxNameField = Box.createVerticalBox();
         boxNameField.add(tfItemName);
         boxNameField.add(scrollBarTfName);
+
+        tfItemSpecifications = new JTextField();
+        tfItemSpecifications.setEnabled(false);
+        tfItemSpecifications.setDisabledTextColor(colorTextField);
+        scrollBarTfSpecifications = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarTfSpecifications.setModel(tfItemSpecifications.getHorizontalVisibility());
         Box boxSpecsField = Box.createVerticalBox();
         boxSpecsField.add(tfItemSpecifications);
         boxSpecsField.add(scrollBarTfSpecifications);
-        // box.add(Box.createVerticalGlue());
-        // container.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
         splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitpane.setDividerSize(3);
+        splitpane.setDividerLocation(130);
         splitpane.setTopComponent(boxNameField);
         splitpane.setBottomComponent(boxSpecsField);
-        container.add(splitpane, BorderLayout.NORTH);
+        JPanel panelHolder = new JPanel(new BorderLayout());
+        panelHolder.add(splitpane);
+
+        Box boxContainer = Box.createVerticalBox();
+        boxContainer.add(panelHolder);
+
+        tfItemSource = new JTextField();
+        tfItemSource.setEnabled(false);
+        tfItemSource.setDisabledTextColor(colorTextField);
+        scrollBarTfSource = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarTfSource.setModel(tfItemSource.getHorizontalVisibility());
+        Box boxItemSourceField = Box.createVerticalBox();
+        boxItemSourceField.add(tfItemSource);
+        boxItemSourceField.add(scrollBarTfSource);
+
+        boxContainer.add(boxItemSourceField);
+
+        container = new JPanel(new BorderLayout());
+        container.add(boxContainer, BorderLayout.NORTH);
     }
 
     protected void setTfItemNameText(String name) {
@@ -81,6 +99,10 @@ public class NameAndSpecDisplayFields {
 
     protected void setTfItemSpecificationsText(String specs) {
         tfItemSpecifications.setText(specs);
+    }
+
+    protected void setTfItemSourceText(String source) {
+        tfItemSource.setText(source);
     }
 
     protected JPanel getContainer() {
