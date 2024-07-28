@@ -130,25 +130,27 @@ public class ScrollableScalableImageContainer {
 
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
-            JScrollPane scrollPane = (JScrollPane) e.getSource();
-            if (e.isControlDown()) {
-                lbImage.requestFocus();
-                scrollPane.setWheelScrollingEnabled(false);
-                if (e.getWheelRotation() < 0) {
-                    // up
-                    if (scale.compareTo(upper) == -1) {
-                        scale = scale.add(increment);
-                        paintImage();
+            if (image != null) {
+                JScrollPane scrollPane = (JScrollPane) e.getSource();
+                if (e.isControlDown()) {
+                    lbImage.requestFocus();
+                    scrollPane.setWheelScrollingEnabled(false);
+                    if (e.getWheelRotation() < 0) {
+                        // up
+                        if (scale.compareTo(upper) == -1) {
+                            scale = scale.add(increment);
+                            paintImage();
+                        }
+                    } else {
+                        //down
+                        if (scale.compareTo(lower) == 1) {
+                            scale = scale.subtract(increment);
+                            paintImage();
+                        }
                     }
                 } else {
-                    //down
-                    if (scale.compareTo(lower) == 1) {
-                        scale = scale.subtract(increment);
-                        paintImage();
-                    }
+                    scrollPane.setWheelScrollingEnabled(true);
                 }
-            } else {
-                scrollPane.setWheelScrollingEnabled(true);
             }
         }
     }
@@ -157,9 +159,11 @@ public class ScrollableScalableImageContainer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            image.setScale(scale);
-            CRUDImages.updateScale(image);
-            System.out.println("saved scale " + scale);
+            if (image != null) {
+                image.setScale(scale);
+                CRUDImages.updateScale(image);
+                System.out.println("saved scale " + scale);
+            }
         }
     }
 }
