@@ -105,6 +105,7 @@ public class ItemImage implements RowIdSelectionListener {
             spinnerValueOnSpinning = 0;
             imagesMap.clear();
             scalableImageContainer.setImage(null);
+            scalableImageContainer.noImageResponseAnimated();
         }
         spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
     }
