@@ -80,6 +80,7 @@ public class ItemFormImage implements
         imagesMap = new HashMap<>();
         panelContainer = new JPanel(new BorderLayout());
         scalableImageContainer = new ScrollableScalableImageContainer();
+        scalableImageContainer.noImageFeedback();
         panelContols = new JPanel();
         btnBrowse = new JButton("Browse...");
         spinnerH = new SpinnerH();
@@ -128,6 +129,7 @@ public class ItemFormImage implements
             spinnerValueOnSpinning = 0;
             imagesMap.clear();
             scalableImageContainer.setImage(null);
+            scalableImageContainer.noImageFeedback();
         }
         spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
     }
