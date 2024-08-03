@@ -30,10 +30,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import utility.horizontalspinner.Renderer;
@@ -59,6 +65,8 @@ public class ItemImage
     private HashMap<Integer, Image> imagesMap;
     private ArrayList<Image> imagesSelected;
     private int spinnerValueOnSpinning;
+    private SwingWorker swingWorker;
+    private ScheduledThreadPoolExecutor delayedSynchronousExecution;
 
     public ItemImage() {
         data = new HashMap<String, BufferedImage>();
@@ -91,25 +99,69 @@ public class ItemImage
     }
 
     private void setImagesOfSelectedItem(int itemId) {
-        List<Image> images = CRUDImages.getImagesByItemId(itemId);
-        int imagesCount = images.size();
-        int spinnerValue = 0;
-        if (imagesCount > 0) {
-            for (Image image : images) {
-                imagesMap.put(image.getOrder(), image);
-                if (image.isDefaultImage()) {
-                    scalableImageContainer.setImage(image);
-                    spinnerValue = image.getOrder();
-                    spinnerValueOnSpinning = spinnerValue;
+        spinnerValueOnSpinning = 0;
+        imagesMap.clear();
+        scalableImageContainer.setImage(null);
+        /**
+         * Cancel swingWorker. This is the case that a new item row is selected,
+         * cancel the ongoing doInBackground() to start a new one.
+         */
+        if (swingWorker != null) {
+            swingWorker.cancel(true);
+        }
+
+        swingWorker = new SwingWorker<List<Image>, Void>() {
+
+            @Override
+            public List<Image> doInBackground() {
+                return CRUDImages.getImagesByItemId(itemId);
+            }
+
+            @Override
+            public void done() {
+                if (!isCancelled()) {
+                    try {
+                        List<Image> images = get();
+                        int imagesCount = images.size();
+                        int spinnerValue = 0;
+                        if (imagesCount > 0) {
+                            for (Image image : images) {
+                                imagesMap.put(image.getOrder(), image);
+                                if (image.isDefaultImage()) {
+                                    scalableImageContainer.setImage(image);
+                                    spinnerValue = image.getOrder();
+                                    spinnerValueOnSpinning = spinnerValue;
+                                }
+                            }
+                        } else {
+                            spinnerValueOnSpinning = 0;
+                            imagesMap.clear();
+                            scalableImageContainer.setImage(null);
+                            scalableImageContainer.noImageResponseAnimated();
+                        }
+                        spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
+
+                    } catch (InterruptedException | ExecutionException ex) {
+                        Logger.getLogger(ItemImage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
-        } else {
-            spinnerValueOnSpinning = 0;
-            imagesMap.clear();
-            scalableImageContainer.setImage(null);
-            scalableImageContainer.noImageResponseAnimated();
-        }
-        spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
+        };
+        swingWorker.execute();
+
+        /**
+         * ScheduledThreadPoolExecutor to invoke task between doInBackground()
+         * and done(). After the method doInBackground() is starting, if done()
+         * does not finish after specified time, then synchronously invoke
+         * loading animation. Later, the loading animation will be removed in
+         * the done() method.
+         */
+        delayedSynchronousExecution = new ScheduledThreadPoolExecutor(1);
+        delayedSynchronousExecution.schedule(() -> {
+            if (swingWorker != null && !swingWorker.isDone()) {
+                scalableImageContainer.loading();
+            }
+        }, 100, TimeUnit.MILLISECONDS);
     }
 
     @Override
