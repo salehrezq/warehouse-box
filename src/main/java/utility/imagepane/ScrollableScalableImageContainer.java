@@ -61,6 +61,7 @@ public class ScrollableScalableImageContainer {
     private InputMap inputMap;
     private ImageScaleSaveHandler imageScaleSaveHandler;
     private NoImageResponse noImageResponse;
+    private LoadingFeedback loadingFeedback;
 
     public ScrollableScalableImageContainer() {
         increment = new BigDecimal("0.05");
@@ -80,6 +81,7 @@ public class ScrollableScalableImageContainer {
         imageScaleSaveHandler = new ImageScaleSaveHandler();
         actionMap.put(keyStrokeCTRLRelease.toString(), imageScaleSaveHandler);
         noImageResponse = new NoImageResponse(lbImage);
+        loadingFeedback = new LoadingFeedback(lbImage);
     }
 
     public void setImage(Image image) {
@@ -104,6 +106,10 @@ public class ScrollableScalableImageContainer {
 
     public void noImageFeedback() {
         noImageResponse.noImageStillFrame();
+    }
+
+    public void loading() {
+        loadingFeedback.loading();
     }
 
     public JScrollPane getContainer() {
