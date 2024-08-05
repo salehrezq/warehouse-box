@@ -26,6 +26,8 @@ package warehouse.panel.createandupdate;
 import utility.imagefilechooser.ImageRemovedListener;
 import utility.imagefilechooser.IMGFileChooser;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -61,7 +63,7 @@ public class ItemFormImage implements
         FilesSelectionLimitListener {
 
     private JPanel panelContainer, panelContols;
-    private JButton btnBrowse;
+    private JButton btnBrowse, btnSetDefaultImage;
     private JLabel btnRemove;
     private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
     private ScrollableScalableImageContainer scalableImageContainer;
@@ -93,9 +95,12 @@ public class ItemFormImage implements
         btnRemove.addMouseListener(new MouseEventsHandler());
         btnRemove.setOpaque(false);
         btnRemove.setIcon(imageIconRemoveNormal);
+        btnSetDefaultImage = new JButton("Set default");
+        btnSetDefaultImage.addActionListener(new SetDefaultImageHandler());
         panelContols.add(btnBrowse);
         panelContols.add(spinnerH.getSpinner());
-        panelContols.add(Box.createHorizontalStrut(4));
+        panelContols.add(btnSetDefaultImage);
+        panelContols.add(Box.createHorizontalStrut(100));
         panelContols.add(btnRemove);
         panelContainer.add(scalableImageContainer.getContainer(), BorderLayout.CENTER);
         panelContainer.add(panelContols, BorderLayout.PAGE_END);
@@ -123,6 +128,7 @@ public class ItemFormImage implements
                     scalableImageContainer.setImage(image);
                     spinnerValue = image.getOrder();
                     spinnerValueOnSpinning = spinnerValue;
+                    btnSetDefaultImage.setEnabled(false);
                 }
             }
         } else {
@@ -183,6 +189,22 @@ public class ItemFormImage implements
         });
     }
 
+    private class SetDefaultImageHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Image imageToBeSetAsDefault = imagesMap.get(spinnerValueOnSpinning);
+            imagesSelected.stream().forEach(image -> {
+                if (imageToBeSetAsDefault == image) {
+                    image.setDefaultImage(true);
+                } else {
+                    image.setDefaultImage(false);
+                }
+            });
+            btnSetDefaultImage.setEnabled(false);
+        }
+    }
+
     private class JSpinnerHandler implements ChangeListener {
 
         @Override
@@ -192,6 +214,7 @@ public class ItemFormImage implements
                 Renderer renderer = (Renderer) spinner.getValue();
                 spinnerValueOnSpinning = renderer.getValue();
                 Image image = imagesMap.get(spinnerValueOnSpinning);
+                btnSetDefaultImage.setEnabled(!image.isDefaultImage());
                 scalableImageContainer.setImage(image);
             }
         }
