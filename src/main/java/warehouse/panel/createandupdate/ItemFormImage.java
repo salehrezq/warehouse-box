@@ -101,7 +101,7 @@ public class ItemFormImage implements
         panelContols.add(btnBrowse);
         panelContols.add(spinnerH.getSpinner());
         panelContols.add(btnSetDefaultImage);
-        panelContols.add(Box.createHorizontalStrut(100));
+        panelContols.add(Box.createHorizontalStrut(50));
         panelContols.add(btnRemove);
         panelContainer.add(scalableImageContainer.getContainer(), BorderLayout.CENTER);
         panelContainer.add(panelContols, BorderLayout.PAGE_END);
