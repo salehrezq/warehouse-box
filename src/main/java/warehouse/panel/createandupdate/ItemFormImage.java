@@ -96,6 +96,7 @@ public class ItemFormImage implements
         btnRemove.setOpaque(false);
         btnRemove.setIcon(imageIconRemoveNormal);
         btnSetDefaultImage = new JButton("Set default");
+        btnSetDefaultImage.setEnabled(false);
         btnSetDefaultImage.addActionListener(new SetDefaultImageHandler());
         panelContols.add(btnBrowse);
         panelContols.add(spinnerH.getSpinner());
@@ -172,7 +173,9 @@ public class ItemFormImage implements
         spinnerValueOnSpinning = 0;
         imagesMap.clear();
         scalableImageContainer.setImage(null);
+        scalableImageContainer.noImageFeedback();
         spinnerH.setModel(0, 0, 0, 1);
+        btnSetDefaultImage.setEnabled(false);
     }
 
     public IMGFileChooser getIMGFileChooser() {
