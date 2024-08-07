@@ -125,6 +125,29 @@ public class ItemFormImage implements
         if (imagesCount > 0) {
             for (Image image : images) {
                 imagesMap.put(image.getOrder(), image);
+                if (image.getOrder() == imagesCount) {
+                    scalableImageContainer.setImage(image);
+                    spinnerValue = image.getOrder();
+                    spinnerValueOnSpinning = spinnerValue;
+                    btnSetDefaultImage.setEnabled(!image.isDefaultImage());
+                }
+            }
+        } else {
+            spinnerValueOnSpinning = 0;
+            imagesMap.clear();
+            scalableImageContainer.setImage(null);
+            scalableImageContainer.noImageFeedback();
+        }
+        spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
+    }
+
+    private void loadedImages(List<Image> images) {
+        imagesSelected = images;
+        int imagesCount = images.size();
+        int spinnerValue = 0;
+        if (imagesCount > 0) {
+            for (Image image : images) {
+                imagesMap.put(image.getOrder(), image);
                 if (image.isDefaultImage()) {
                     scalableImageContainer.setImage(image);
                     spinnerValue = image.getOrder();
@@ -144,7 +167,7 @@ public class ItemFormImage implements
     protected void loadItemImages(int itemId) {
         imagesSelected = CRUDImages.getImagesByItemId(itemId);
         imagesRetrievedFromDB = new ArrayList<>(imagesSelected);
-        imagesSelected(imagesSelected);
+        loadedImages(imagesSelected);
         iMGFileChooser.setUpLoadedImagesForUpdate(imagesSelected);
         // iMGFileChooser notify it about files state
         // cashe alvailable files in case user cancel updating, so we perserve them
