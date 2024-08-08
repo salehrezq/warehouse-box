@@ -141,6 +141,41 @@ public class ItemFormImage implements
         spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
     }
 
+    @Override
+    public void imagesSelectedAfterImageRemoved(List<Image> images, Image removedImage) {
+        imagesSelected = images;
+        int imagesCount = images.size();
+        int spinnerValue = 0;
+
+        if (imagesCount > 0) {
+            images.forEach(image -> {
+                imagesMap.put(image.getOrder(), image);
+            });
+
+            Image imageReplacesRemovedImage;
+            if ((removedImage.getOrder() - 1) != imagesCount) {
+                // The removed image was at any position other than the end.
+                imageReplacesRemovedImage = images.stream().filter(image -> image.getOrder() == removedImage.getOrder()).findFirst().get();
+            } else {
+                // The removed image was only at the end position.
+                imageReplacesRemovedImage = images.stream().filter(image -> image.getOrder() == imagesCount).findFirst().get();
+            }
+
+            if (imageReplacesRemovedImage != null) {
+                scalableImageContainer.setImage(imageReplacesRemovedImage);
+                spinnerValue = imageReplacesRemovedImage.getOrder();
+                spinnerValueOnSpinning = spinnerValue;
+                btnSetDefaultImage.setEnabled(!imageReplacesRemovedImage.isDefaultImage());
+            }
+        } else {
+            spinnerValueOnSpinning = 0;
+            imagesMap.clear();
+            scalableImageContainer.setImage(null);
+            scalableImageContainer.noImageFeedback();
+        }
+        spinnerH.setModel(spinnerValue, (imagesCount > 0) ? 1 : 0, imagesCount, 1);
+    }
+
     private void loadedImages(List<Image> images) {
         imagesSelected = images;
         int imagesCount = images.size();

@@ -34,4 +34,6 @@ public interface ImagesSelectedListener {
 
     // public void imagesSelected(byte[] photoInBytes);
     public void imagesSelected(List<Image> images);
+
+    public void imagesSelectedAfterImageRemoved(List<Image> images, Image removedImage);
 }

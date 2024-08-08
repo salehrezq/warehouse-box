@@ -91,6 +91,12 @@ public class IMGFileChooser implements
         });
     }
 
+    public void notifyImagesSelectedAfterImageRemoved(List<Image> imagesSelected, Image removedImage) {
+        this.imagesSelectedListeners.forEach((imagesSelectedListener) -> {
+            imagesSelectedListener.imagesSelectedAfterImageRemoved(imagesSelected, removedImage);
+        });
+    }
+
     public void addFilesSelectionLimitListener(FilesSelectionLimitListener filesSelectionLimitListener) {
         this.filesSelectionLimitListeners.add(filesSelectionLimitListener);
     }
@@ -227,7 +233,7 @@ public class IMGFileChooser implements
                     image.setDefaultImage(true);
                 }
             }
-            notifyImagesSelected(imagesSelectedByUser);
+            notifyImagesSelectedAfterImageRemoved(imagesSelectedByUser, removedImage);
         }
     }
 
