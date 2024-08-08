@@ -170,7 +170,7 @@ public class ItemsList extends JPanel
         itemMeta.setId(item.getId());
         itemMeta.setName(item.getName());
         itemMeta.setSpecification(item.getSpecification());
-        itemMeta.setBalance(BigDecimal.ONE);
+        itemMeta.setBalance(new BigDecimal("0.00"));
         itemMeta.setQuantityUnit(item.getQuantityUnit());
         model.addItemMeta(itemMeta);
         rowIndex++;
