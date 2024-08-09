@@ -43,15 +43,17 @@ import warehouse.singularlisting.Listable;
 public class Menu {
 
     private JMenuBar menubar;
-    private JMenu menuFile;
+    private JMenu menuFile, menuSettings;
     private JMenuItem menuCreateItem, menuItemMangeQuantityUnit,
             menuItemMangeSources,
-            menuItemManageRecipients;
+            menuItemManageRecipients,
+            menuItemSearchResultSize;
     private JFrame target;
     private ListableItemManage manageQuantityUnitDialog,
             manageSourceDialog,
             manageRecipientDialog;
     private ItemCreateUpdateDialog createItemDialog;
+    private ResultLimitSizeDialog resultSizeDialog;
     private MenuItemsListener menuItemsListener;
 
     public Menu() {
@@ -67,6 +69,12 @@ public class Menu {
         menuFile.add(menuItemManageRecipients);
         menubar.add(menuFile);
 
+        menuSettings = new JMenu("Settings");
+        menuItemSearchResultSize = new JMenuItem("Result size...");
+        menuSettings.add(menuItemSearchResultSize);
+        menubar.add(menuSettings);
+        resultSizeDialog = new ResultLimitSizeDialog(target, "Set search result rows size on \"load more\"", true);
+
         menuItemsListener = new MenuItemsListener();
         createItemDialog = new ItemCreateUpdateDialog(target, "Create Item", true);
         manageQuantityUnitDialog = new ListableItemManage(target, "Manage units", true);
@@ -80,6 +88,7 @@ public class Menu {
         menuItemMangeSources.addActionListener(menuItemsListener);
         menuCreateItem.addActionListener(menuItemsListener);
         menuItemManageRecipients.addActionListener(menuItemsListener);
+        menuItemSearchResultSize.addActionListener(menuItemsListener);
     }
 
     public JMenuBar getMenuBar() {
@@ -119,6 +128,9 @@ public class Menu {
                 manageSourceDialog.setVisible(true);
             } else if (source == menuItemManageRecipients) {
                 manageRecipientDialog.setVisible(true);
+            } else if (source == menuItemSearchResultSize) {
+                resultSizeDialog.initializeWithSavedLimitSize();
+                resultSizeDialog.setVisible(true);
             }
         }
     }
