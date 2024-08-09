@@ -38,6 +38,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import warehouse.db.CRUDItems;
 import warehouse.db.model.ItemMeta;
+import warehouse.panel.menus.ResultLimitSizePreference;
 
 /**
  *
@@ -109,14 +110,6 @@ public class ItemsSearchLogic {
         initializeFiltersReactToRetrievedPreferences();
     }
 
-    public static void setResultsPageLimit(int pageLimit) {
-        ItemsSearchLogic.LIMIT = pageLimit;
-    }
-
-    public static int getResultsPageLimit() {
-        return ItemsSearchLogic.LIMIT;
-    }
-
     public void addItemSearchListener(ItemsSearchListener itemsSearchListener) {
         this.itemsSearchListeners.add(itemsSearchListener);
     }
@@ -176,6 +169,7 @@ public class ItemsSearchLogic {
                 }
             }
             notifySearchResultTotalRowsCount(CRUDItems.searchResultRowsCount(searchFilters));
+            LIMIT = ResultLimitSizePreference.getResultLimitSize();
             notifySearchResult(CRUDItems.search(searchFilters, LIMIT, OFFSET));
         }
     }

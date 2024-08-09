@@ -47,6 +47,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import utility.scrollbarthin.ScrollBarThin;
 import warehouse.db.CRUDListable;
+import warehouse.panel.menus.ResultLimitSizePreference;
 
 /**
  *
@@ -77,7 +78,6 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         //   super(owner, title, modal);
 
         listableItemFormForFiltersListeners = new ArrayList<>();
-        LIMIT = 3;
 
         thisListableItemManageClass = ListableItemFormForFilters.this;
         setLayout(new BorderLayout());
@@ -188,6 +188,7 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         public void actionPerformed(ActionEvent e) {
             searchQueryImmutableCopy = tfSearch.getText();
             searchResultTotalRowsCount = CRUDListable.searchResultRowsCount(listableImplementation, tfSearch.getText());
+            LIMIT = ResultLimitSizePreference.getResultLimitSize();
             btnLoadMore.setEnabled(!(LIMIT >= searchResultTotalRowsCount));
             listOfListable.removeAllElements();
             OFFSET = 0;

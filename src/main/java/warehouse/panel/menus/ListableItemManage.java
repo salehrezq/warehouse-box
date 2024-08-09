@@ -78,8 +78,6 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
     public ListableItemManage(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
 
-        LIMIT = 3;
-
         popupMenuListableHandler = new PopupMenuListableHandler();
         thisListableItemManageClass = ListableItemManage.this;
         listableItemEditDialog = new ListableItemEditDialog(null, "Edit", true);
@@ -162,6 +160,7 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         public void actionPerformed(ActionEvent e) {
             searchQueryImmutableCopy = tfSearch.getText();
             searchResultTotalRowsCount = CRUDListable.searchResultRowsCount(listableImplementation, tfSearch.getText());
+            LIMIT = ResultLimitSizePreference.getResultLimitSize();
             btnLoadMore.setEnabled(!(LIMIT >= searchResultTotalRowsCount));
             listOfListable.removeAllElements();
             OFFSET = 0;

@@ -66,7 +66,6 @@ public class ItemsTab extends JPanel {
                 itemsSearchPane.getCheckNameFilter(),
                 itemsSearchPane.getCheckSpecificationFilter());
         itemsSearchLogic.setBtnLoadMore(itemsList.getBtnLoadMore());
-        ItemsSearchLogic.setResultsPageLimit(3);
         itemsImages = new ItemImage();
 
         itemsList.addRowIdSelectionListener(itemsImages);

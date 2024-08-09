@@ -40,6 +40,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import utility.scrollbarthin.ScrollBarThin;
 import warehouse.db.CRUDListable;
+import warehouse.panel.menus.ResultLimitSizePreference;
 
 /**
  *
@@ -64,8 +65,6 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
 
     public ListableItemForm() {
         //   super(owner, title, modal);
-
-        LIMIT = 3;
 
         thisListableItemManageClass = ListableItemForm.this;
         setLayout(new BorderLayout());
@@ -144,6 +143,7 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
         public void actionPerformed(ActionEvent e) {
             searchQueryImmutableCopy = tfSearch.getText();
             searchResultTotalRowsCount = CRUDListable.searchResultRowsCount(listableImplementation, tfSearch.getText());
+            LIMIT = ResultLimitSizePreference.getResultLimitSize();
             btnLoadMore.setEnabled(!(LIMIT >= searchResultTotalRowsCount));
             listOfListable.removeAllElements();
             OFFSET = 0;

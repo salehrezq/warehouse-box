@@ -47,6 +47,7 @@ import javax.swing.event.DocumentListener;
 import warehouse.db.CRUDListable;
 import warehouse.db.CRUDOutwards;
 import warehouse.db.model.Recipient;
+import warehouse.panel.menus.ResultLimitSizePreference;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableItemFormForFilters;
 import warehouse.singularlisting.ListableItemFormForFiltersListener;
@@ -194,14 +195,6 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         searchFilters.setDateRangeEnd(dateRange.getDatePickerEnd().getDate());
     }
 
-    public static void setResultsPageLimit(int pageLimit) {
-        ItemsSearchLogic.LIMIT = pageLimit;
-    }
-
-    public static int getResultsPageLimit() {
-        return ItemsSearchLogic.LIMIT;
-    }
-
     public void addItemSearchListener(ItemsSearchListener itemsSearchListener) {
         this.itemsSearchListeners.add(itemsSearchListener);
     }
@@ -271,6 +264,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                 }
             }
             notifySearchResultTotalRowsCount(CRUDOutwards.searchResultRowsCount(searchFilters));
+            LIMIT = ResultLimitSizePreference.getResultLimitSize();
             notifySearchResult(CRUDOutwards.search(searchFilters, LIMIT, OFFSET));
         }
     }

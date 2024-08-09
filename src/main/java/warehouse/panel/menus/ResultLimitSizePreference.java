@@ -43,7 +43,7 @@ import javax.swing.event.DocumentListener;
  *
  * @author Saleh
  */
-public class ResultLimitSizeDialog extends JDialog {
+public class ResultLimitSizePreference extends JDialog {
 
     private final JTextField tfResultLimitSizeLimit;
     private final JButton btnSave;
@@ -56,7 +56,7 @@ public class ResultLimitSizeDialog extends JDialog {
     private final Pattern pattern = Pattern.compile("^[1-9][0-9]?$|^100$");
     private final Color colorError = new Color(255, 255, 0);
 
-    public ResultLimitSizeDialog(JFrame owner, String title, boolean modal) {
+    public ResultLimitSizePreference(JFrame owner, String title, boolean modal) {
         super(owner, title, modal);
         prefs = Preferences.userRoot().node(getClass().getName());
 

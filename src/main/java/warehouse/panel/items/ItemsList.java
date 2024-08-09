@@ -58,6 +58,7 @@ import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
 import warehouse.panel.inwards.InwardCRUDListener;
 import warehouse.panel.inwards.InwardDeleteListener;
 import warehouse.panel.menus.ListableUpdateListener;
+import warehouse.panel.menus.ResultLimitSizePreference;
 import warehouse.panel.outwards.OutwardCRUDListener;
 import warehouse.panel.outwards.OutwardDeleteListener;
 import warehouse.singularlisting.Listable;
@@ -198,7 +199,7 @@ public class ItemsList extends JPanel
     @Override
     public void notifySearchResultTotalRowsCount(int searchResultTotalRowsCount) {
         this.searchResultTotalRowsCount = searchResultTotalRowsCount;
-        btnLoadMore.setEnabled(!(ItemsSearchLogic.getResultsPageLimit() >= searchResultTotalRowsCount));
+        btnLoadMore.setEnabled(!(ResultLimitSizePreference.getResultLimitSize() >= searchResultTotalRowsCount));
     }
 
     @Override

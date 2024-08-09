@@ -80,7 +80,6 @@ public class InwardsTap extends JPanel {
         ListableItemFormForFilters listableItemFormForFilters = inwardsSearchLogic.getListableItemFormForFilters();
         listableItemFormForFilters.addListableItemFormForFiltersListener(inwardsSearchLogic);
 
-        ItemsSearchLogic.setResultsPageLimit(3);
         itemsImages = new ItemImage();
 
         inwardsList.addRowIdSelectionListener(itemsImages);

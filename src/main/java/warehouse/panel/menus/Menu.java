@@ -53,7 +53,7 @@ public class Menu {
             manageSourceDialog,
             manageRecipientDialog;
     private ItemCreateUpdateDialog createItemDialog;
-    private ResultLimitSizeDialog resultSizeDialog;
+    private ResultLimitSizePreference resultSizeDialog;
     private MenuItemsListener menuItemsListener;
 
     public Menu() {
@@ -73,7 +73,7 @@ public class Menu {
         menuItemSearchResultSize = new JMenuItem("Result size...");
         menuSettings.add(menuItemSearchResultSize);
         menubar.add(menuSettings);
-        resultSizeDialog = new ResultLimitSizeDialog(target, "Set search result rows size on \"load more\"", true);
+        resultSizeDialog = new ResultLimitSizePreference(target, "Set search result rows size on \"load more\"", true);
 
         menuItemsListener = new MenuItemsListener();
         createItemDialog = new ItemCreateUpdateDialog(target, "Create Item", true);

@@ -79,7 +79,6 @@ public class OutwardsTap extends JPanel {
         ListableItemFormForFilters listableItemFormForFilters = outwardsSearchLogic.getListableItemFormForFilters();
         listableItemFormForFilters.addListableItemFormForFiltersListener(outwardsSearchLogic);
 
-        ItemsSearchLogic.setResultsPageLimit(3);
         itemsImages = new ItemImage();
         outwardsList.addRowIdSelectionListener(itemsImages);
         // Add the scroll panes to a split pane.

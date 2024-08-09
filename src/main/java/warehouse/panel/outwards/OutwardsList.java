@@ -53,6 +53,7 @@ import warehouse.db.model.Item;
 import warehouse.db.model.Outward;
 import warehouse.db.model.QuantityUnit;
 import warehouse.panel.menus.ListableUpdateListener;
+import warehouse.panel.menus.ResultLimitSizePreference;
 import warehouse.singularlisting.Listable;
 import warehouse.singularlisting.ListableConsumer;
 
@@ -187,7 +188,7 @@ public class OutwardsList extends JPanel
     @Override
     public void notifySearchResultTotalRowsCount(int searchResultTotalRowsCount) {
         this.searchResultTotalRowsCount = searchResultTotalRowsCount;
-        btnLoadMore.setEnabled(!(ItemsSearchLogic.getResultsPageLimit() >= searchResultTotalRowsCount));
+        btnLoadMore.setEnabled(!(ResultLimitSizePreference.getResultLimitSize() >= searchResultTotalRowsCount));
     }
 
     @Override
