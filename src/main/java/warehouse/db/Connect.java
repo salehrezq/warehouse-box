@@ -23,11 +23,13 @@
  */
 package warehouse.db;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.flywaydb.core.Flyway;
 
 /**
  *
@@ -36,8 +38,11 @@ import java.util.logging.Logger;
 public class Connect {
 
     // JDBC driver name and database URL
-    private static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
-    private static final String DB_URL = "jdbc:mariadb://localhost:3306/warehouse_box_db";
+    private static final String JDBC_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+    private static final String DB_URL = "jdbc:derby:"
+            + System.getProperty("user.home")
+            + File.separator
+            + "warehouse-db;create=true";
 
     //  Database credentials
     private static final String USER = "root";
@@ -45,6 +50,11 @@ public class Connect {
 
     // For atomic statements
     private static Connection conn;
+
+    public static void buildDatabaseIfNotExist() {
+        Flyway flyway = Flyway.configure().dataSource(DB_URL, USER, PASS).load();
+        flyway.migrate();
+    }
 
     public static Connection getConnection() {
         cleanUp();

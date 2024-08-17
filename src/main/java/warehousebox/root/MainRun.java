@@ -24,6 +24,7 @@
 package warehousebox.root;
 
 import javax.swing.JFrame;
+import warehouse.db.Connect;
 import warehouse.db.model.QuantityUnit;
 import warehouse.db.model.Recipient;
 import warehouse.db.model.Source;
@@ -85,6 +86,7 @@ public class MainRun {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(() -> {
+            Connect.buildDatabaseIfNotExist();
             MainRun mainRun = new MainRun();
             mainRun.createAndShowGUI();
             mainRun.linkActionToListeners();
