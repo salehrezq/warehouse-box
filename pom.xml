@@ -12,12 +12,6 @@
         <exec.mainClass>warehousebox.root.MainRun</exec.mainClass>
     </properties>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
-        <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>3.3.1</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/com.miglayout/miglayout -->
         <dependency>
             <groupId>com.miglayout</groupId>
@@ -47,6 +41,24 @@
             <groupId>com.github.lgooddatepicker</groupId>
             <artifactId>LGoodDatePicker</artifactId>
             <version>11.2.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.17.1.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.derby/derbytools -->
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbytools</artifactId>
+            <version>10.17.1.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-database-derby -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-derby</artifactId>
+            <version>10.17.1</version>
         </dependency>
     </dependencies>
     <build>
