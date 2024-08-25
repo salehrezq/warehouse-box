@@ -54,7 +54,7 @@ public class CRUDItems {
     private static Map<String, Boolean> searchFilters;
 
     public static Item create(Item item) {
-        String sqlCreateItem = "INSERT INTO items (`name`, `specification`, `unit_id`) VALUES (?, ?, ?)";
+        String sqlCreateItem = "INSERT INTO items (name, specification, unit_id) VALUES (?, ?, ?)";
         con = Connect.getConnection();
         try {
             PreparedStatement createItemsStatement = con.prepareStatement(sqlCreateItem, Statement.RETURN_GENERATED_KEYS);
@@ -84,7 +84,7 @@ public class CRUDItems {
         ArrayList<Item> items = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM `items` ORDER BY `name` ASC";
+            String sql = "SELECT * FROM items ORDER BY name ASC";
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
@@ -138,19 +138,19 @@ public class CRUDItems {
         if (searchFilters != null) {
             boolean boolCodeFilter = searchFilters.get("code");
             if (boolCodeFilter) {
-                sqlFilter += " it.`id` = ?";
+                sqlFilter += " it.id = ?";
                 return sqlFilter;
             }
             boolean boolNameFilter = searchFilters.get("name");
             boolean boolSpecificationFilter = searchFilters.get("specification");
             if (boolNameFilter) {
-                sqlFilter += " it.`name` LIKE ?";
+                sqlFilter += " it.name LIKE ?";
                 if (boolSpecificationFilter) {
                     sqlFilter += " OR";
                 }
             }
             if (boolSpecificationFilter) {
-                sqlFilter += " it.`specification` LIKE ?";
+                sqlFilter += " it.specification LIKE ?";
             }
         }
         return sqlFilter;
@@ -170,16 +170,16 @@ public class CRUDItems {
             return sqlFilter;
         }
         if (isCodeFilter) {
-            sqlFilter += " it.`id` = ?";
+            sqlFilter += " it.id = ?";
             return sqlFilter;
         }
         if (isNameFilter) {
-            sqlFilter += " (it.`name` LIKE ?";
+            sqlFilter += " (it.name LIKE ?";
             sqlFilter += (isSpecificationFilter) ? " OR" : ")";
         }
         if (isSpecificationFilter) {
             sqlFilter += isNameFilter ? "" : "(";
-            sqlFilter += " it.`specification` LIKE ?)";
+            sqlFilter += " it.specification LIKE ?)";
         }
         return sqlFilter;
     }
@@ -211,7 +211,7 @@ public class CRUDItems {
     public static List<ItemMeta> search(SearchFilters searchFilters, int LIMIT, int OFFSET) {
         List<ItemMeta> itemsMeta = new ArrayList<>();
         try {
-            String sql = " SELECT it.id , it.`name`, it.specification,"
+            String sql = " SELECT it.id , it.name, it.specification,"
                     + " ("
                     + " COALESCE((SELECT SUM(i.quantity)"
                     + " FROM inwards AS i"
@@ -220,12 +220,12 @@ public class CRUDItems {
                     + " COALESCE((SELECT SUM(o.quantity)"
                     + " FROM outwards AS o"
                     + " WHERE o.item_id = it.id),0)"
-                    + " ) AS balance, u.id AS unit_id, u.`name` AS unit"
+                    + " ) AS balance, u.id AS unit_id, u.name AS unit"
                     + " "
-                    + " FROM `items` AS it JOIN `quantity_unit` AS u"
+                    + " FROM items AS it JOIN quantity_unit AS u"
                     + " ON it.unit_id = u.id"
                     + formulateSearchFilters(searchFilters)
-                    + " ORDER BY `id` ASC"
+                    + " ORDER BY id ASC"
                     + " LIMIT ? OFFSET ?";
 
             con = Connect.getConnection();
@@ -259,7 +259,7 @@ public class CRUDItems {
         int searchResultRowsCount = 0;
         try {
             String sql = "SELECT COUNT(id) AS search_result_rows_count"
-                    + " FROM `items` AS `it`"
+                    + " FROM items AS it"
                     + formulateSearchFilters(searchFilters);
 
             con = Connect.getConnection();
@@ -278,7 +278,7 @@ public class CRUDItems {
 
     public static int getRecordsCount() {
         int numberOfRows = 0;
-        String sql = "SELECT COUNT(*) AS `items_rows_count` FROM items";
+        String sql = "SELECT COUNT(*) AS items_rows_count FROM items";
         con = Connect.getConnection();
         try {
             PreparedStatement p;
@@ -355,7 +355,7 @@ public class CRUDItems {
 
     public static boolean delete(ItemMeta itemMeta) {
         int delete = 0;
-        String sql = "DELETE FROM items WHERE `id` = ?";
+        String sql = "DELETE FROM items WHERE id = ?";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sql);

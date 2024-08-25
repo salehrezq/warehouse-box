@@ -45,7 +45,7 @@ public class CRUDImages {
 
     public static int create(List<Image> images, int itemId) {
         int[] patchArray = null;
-        String sql = "INSERT INTO images (`item_id`, `order`, `name`, `default_image`, `scale`) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO images (item_id, position, name, default_image, scale) VALUES (?, ?, ?, ?, ?)";
         con = Connect.getConnection();
         String newImageName = "";
         try {
@@ -54,7 +54,7 @@ public class CRUDImages {
                 Image image = images.get(i);
                 newImageName = ImageFileManager.generateImageName(image.getImageFile());
                 pstmt.setInt(1, itemId);
-                pstmt.setInt(2, image.getOrder());
+                pstmt.setInt(2, image.getPosition());
                 pstmt.setString(3, newImageName);
                 pstmt.setBoolean(4, image.isDefaultImage());
                 pstmt.setBigDecimal(5, image.getScale());
@@ -75,7 +75,7 @@ public class CRUDImages {
     public static List<Image> getImagesByItemId(int itemId) {
         List<Image> images = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM `images` WHERE item_id =" + itemId + " ORDER BY `order` ASC";
+            String sql = "SELECT * FROM images WHERE item_id =" + itemId + " ORDER BY position ASC";
             con = Connect.getConnection();
             PreparedStatement p;
             p = con.prepareStatement(sql);
@@ -85,7 +85,7 @@ public class CRUDImages {
                 image.setId(result.getInt("id"));
                 image.setItemId(result.getInt("item_id"));
                 image.setImageName(result.getString("name"));
-                image.setOrder(result.getInt("order"));
+                image.setPosition(result.getInt("position"));
                 image.setDefaultImage(result.getBoolean("default_image"));
                 image.setScale(result.getObject("scale", BigDecimal.class));
                 images.add(image);
@@ -102,16 +102,16 @@ public class CRUDImages {
         int[] patchArray = null;
         String sql = "UPDATE images"
                 + " SET"
-                + " `order` = ?,"
-                + " `default_image` = ?"
-                + " WHERE `id` = ?";
+                + " position = ?,"
+                + " default_image = ?"
+                + " WHERE id = ?";
 
         con = Connect.getConnection();
         try {
             PreparedStatement pstmt = con.prepareStatement(sql);
             for (int i = 0; i < images.size(); i++) {
                 Image image = images.get(i);
-                pstmt.setInt(1, image.getOrder());
+                pstmt.setInt(1, image.getPosition());
                 pstmt.setBoolean(2, image.isDefaultImage());
                 pstmt.setInt(3, image.getId());
                 pstmt.addBatch();
@@ -149,7 +149,7 @@ public class CRUDImages {
 
     public static int delete(List<Image> images) {
         int[] patchArray = null;
-        String sql = "DELETE FROM images WHERE `id` = ?";
+        String sql = "DELETE FROM images WHERE id = ?";
         con = Connect.getConnection();
         try {
             PreparedStatement pstmt = con.prepareStatement(sql);

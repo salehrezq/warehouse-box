@@ -57,12 +57,9 @@ public class Connect {
     }
 
     public static Connection getConnection() {
-        cleanUp();
-        conn = null;
         try {
             Class.forName(JDBC_DRIVER);
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            conn.setAutoCommit(false);
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Connect.class.getName()).log(Level.SEVERE, null, ex);
         }

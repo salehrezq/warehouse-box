@@ -47,7 +47,7 @@ public class CRUDOutwards {
     private static Connection con;
 
     public static Outward create(Outward outward) {
-        String sql = "INSERT INTO outwards (`item_id`, `quantity`, `recipient_id`, `for`, `date`) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO outwards (item_id, quantity, recipient_id, for, date) VALUES (?, ?, ?, ?, ?)";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -101,16 +101,16 @@ public class CRUDOutwards {
             }
         }
         if (isCodeFilter) {
-            sqlFilter += " i.`id` = ?";
+            sqlFilter += " i.id = ?";
             return sqlFilter;
         }
         if (isNameFilter) {
-            sqlFilter += " (i.`name` LIKE ?";
+            sqlFilter += " (i.name LIKE ?";
             sqlFilter += (isSpecificationFilter) ? " OR" : ")";
         }
         if (isSpecificationFilter) {
             sqlFilter += isNameFilter ? "" : "(";
-            sqlFilter += " i.`specification` LIKE ?)";
+            sqlFilter += " i.specification LIKE ?)";
         }
         return sqlFilter;
     }
@@ -153,7 +153,7 @@ public class CRUDOutwards {
         try {
             String sql = "SELECT o.id AS outward_id, o.item_id AS item_id,"
                     + " o.quantity, u.id AS qunit_id, u.name AS qunit_name,"
-                    + " r.id AS recipient_id, r.name AS recipient_name, o.`for`,"
+                    + " r.id AS recipient_id, r.name AS recipient_name, o.for,"
                     + " o.date, i.name AS item_name, i.specification AS item_specs"
                     + " FROM outwards AS o JOIN items AS i JOIN quantity_unit AS u JOIN recipients AS r"
                     + " ON (o.item_id = i.id) AND (i.unit_id = u.id) AND (r.id = o.recipient_id)"
@@ -221,8 +221,8 @@ public class CRUDOutwards {
     public static boolean update(Outward outward) {
         int update = 0;
         String sql = "UPDATE outwards"
-                + " SET `quantity` = ?, `recipient_id` = ?, `for` = ?, `date` = ?"
-                + " WHERE `id` = ?";
+                + " SET quantity = ?, recipient_id = ?, for = ?, date = ?"
+                + " WHERE id = ?";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sql);

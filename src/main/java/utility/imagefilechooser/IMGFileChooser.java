@@ -164,11 +164,11 @@ public class IMGFileChooser implements
                 BufferedImage bufferedImage = ImageIO.read(files[i]);
                 // Maintain image order throgh different file chooser opens
                 int imageOrder = i + previousIncrementedFilesSelecionLength + 1;
-                image.setOrder(imageOrder);
+                image.setPosition(imageOrder);
                 image.setBufferedImage(bufferedImage);
                 images.add(image);
                 // Set the first image, image of order one to be the default image.
-                if (image.getOrder() == 1) {
+                if (image.getPosition() == 1) {
                     image.setDefaultImage(true);
                 }
             } catch (IOException ex) {
@@ -196,8 +196,8 @@ public class IMGFileChooser implements
 
         int sizeBeforRemoval = imagesSelectedByUser.size();
         if (sizeBeforRemoval > 0) {
-            int removedImageOrder = removedImage.getOrder();
-            boolean removed = imagesSelectedByUser.removeIf(image -> image.getOrder() == removedImage.getOrder());
+            int removedImageOrder = removedImage.getPosition();
+            boolean removed = imagesSelectedByUser.removeIf(image -> image.getPosition() == removedImage.getPosition());
             int sizeAfterRemoval = imagesSelectedByUser.size();
             if (removed) {
                 incrementedFilesSelecionLength -= 1;
@@ -217,10 +217,10 @@ public class IMGFileChooser implements
                     if (removedImageOrder < sizeBeforRemoval) {
                         for (int i = 0; i < sizeAfterRemoval; i++) {
                             Image image = imagesSelectedByUser.get(i);
-                            imagesSelectedByUser.get(i).setOrder(
-                                    (image.getOrder() > removedImageOrder)
-                                    ? image.getOrder() - 1
-                                    : image.getOrder());
+                            imagesSelectedByUser.get(i).setPosition(
+                                    (image.getPosition() > removedImageOrder)
+                                    ? image.getPosition() - 1
+                                    : image.getPosition());
                         }
                     }
                 }

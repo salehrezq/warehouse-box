@@ -45,13 +45,13 @@ public class CRUDListable {
         int insert = 0;
         String sql = "INSERT INTO "
                 + listable.getDBEntityName()
-                + " (`" + listable.getDBAttributeName() + "`) VALUES (?)";
+                + " (" + listable.getDBAttributeName() + ") VALUES (?)";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sql);
             p.setString(1, listable.getName());
             insert = p.executeUpdate();
-            con.commit();
+            //p.close();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -63,7 +63,7 @@ public class CRUDListable {
         Listable listableInstance = null;
         String sqlSelectStatement = "SELECT * FROM "
                 + listableImplementation.getDBEntityName()
-                + " ORDER BY `" + listableImplementation.getDBAttributeName() + "` ASC";
+                + " ORDER BY " + listableImplementation.getDBAttributeName() + " ASC";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sqlSelectStatement);
@@ -105,9 +105,9 @@ public class CRUDListable {
         boolean exist = false;
         String tempAttibuteAlais = "is_" + listable.getDBEntityName() + "_exist";
         System.out.println("tempAttibuteAlais " + tempAttibuteAlais);
-        String sql = "SELECT EXISTS(SELECT " + "`" + listable.getDBAttributeName() + "`"
-                + " FROM " + "`" + listable.getDBEntityName() + "`"
-                + " WHERE (" + "`" + listable.getDBAttributeName() + "` = ?))"
+        String sql = "SELECT EXISTS(SELECT " + listable.getDBAttributeName()
+                + " FROM " + listable.getDBEntityName()
+                + " WHERE (" + listable.getDBAttributeName() + " = ?))"
                 + " AS " + tempAttibuteAlais;
         con = Connect.getConnection();
         try {
@@ -154,7 +154,7 @@ public class CRUDListable {
             return sqlFilter;
         }
         sqlFilter = " WHERE";
-        sqlFilter += " `" + listableImplementation.getDBAttributeName() + "`";
+        sqlFilter += " " + listableImplementation.getDBAttributeName() + "";
         sqlFilter += " LIKE ?";
         return sqlFilter;
     }
@@ -172,7 +172,7 @@ public class CRUDListable {
         int searchResultRowsCount = 0;
         try {
             String sql = "SELECT COUNT(id) AS search_result_rows_count"
-                    + " FROM " + "`" + listableImplementation.getDBEntityName() + "`"
+                    + " FROM " + "" + listableImplementation.getDBEntityName() + ""
                     + formulateSearchFilters(listableImplementation, query);
             con = Connect.getConnection();
             PreparedStatement p;
@@ -192,9 +192,9 @@ public class CRUDListable {
         List<Listable> listables = new ArrayList<>();
         try {
             String sql = "SELECT *"
-                    + " FROM " + "`" + listableImplementation.getDBEntityName() + "`"
+                    + " FROM " + "" + listableImplementation.getDBEntityName() + ""
                     + formulateSearchFilters(listableImplementation, query)
-                    + " ORDER BY " + "`" + listableImplementation.getDBAttributeName() + "`" + " ASC"
+                    + " ORDER BY " + "" + listableImplementation.getDBAttributeName() + "" + " ASC"
                     + " LIMIT ? OFFSET ?";
 
             con = Connect.getConnection();
@@ -241,16 +241,15 @@ public class CRUDListable {
 
     public static boolean update(Listable listable) {
         int update = 0;
-        String sql = "UPDATE " + "`" + listable.getDBEntityName() + "`"
-                + " SET " + "`" + listable.getDBAttributeName() + "`" + " = ?"
-                + " WHERE `id` = ?";
+        String sql = "UPDATE " + "" + listable.getDBEntityName() + ""
+                + " SET " + "" + listable.getDBAttributeName() + "" + " = ?"
+                + " WHERE id = ?";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sql);
             p.setString(1, listable.getName());
             p.setInt(2, listable.getId());
             update = p.executeUpdate();
-            con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -261,8 +260,8 @@ public class CRUDListable {
 
     public static boolean isListableInUse(Listable listableImplementation) {
         boolean isUsed = false;
-        String sql = "SELECT id FROM " + "`" + listableImplementation.getConsumer().get("table") + "`"
-                + " WHERE " + "`" + listableImplementation.getConsumer().get("column") + "` = ?"
+        String sql = "SELECT id FROM " + "" + listableImplementation.getConsumer().get("table") + ""
+                + " WHERE " + "" + listableImplementation.getConsumer().get("column") + " = ?"
                 + " LIMIT 1";
         con = Connect.getConnection();
         try {
@@ -272,7 +271,6 @@ public class CRUDListable {
             while (result.next()) {
                 isUsed = true;
             }
-            con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -283,14 +281,13 @@ public class CRUDListable {
 
     public static boolean delete(Listable listableImplementation) {
         int delete = 0;
-        String sql = "DELETE FROM " + "`" + listableImplementation.getDBEntityName() + "`"
-                + " WHERE `id` = ?";
+        String sql = "DELETE FROM " + "" + listableImplementation.getDBEntityName() + ""
+                + " WHERE id = ?";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sql);
             p.setInt(1, listableImplementation.getId());
             delete = p.executeUpdate();
-            con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

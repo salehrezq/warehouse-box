@@ -124,10 +124,10 @@ public class ItemImage implements RowIdSelectionListener {
                         int spinnerValue = 0;
                         if (imagesCount > 0) {
                             for (Image image : images) {
-                                imagesMap.put(image.getOrder(), image);
+                                imagesMap.put(image.getPosition(), image);
                                 if (image.isDefaultImage()) {
                                     scalableImageContainer.setImage(image);
-                                    spinnerValue = image.getOrder();
+                                    spinnerValue = image.getPosition();
                                     spinnerValueOnSpinning = spinnerValue;
                                 }
                             }

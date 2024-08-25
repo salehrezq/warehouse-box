@@ -124,10 +124,10 @@ public class ItemFormImage implements
         int spinnerValue = 0;
         if (imagesCount > 0) {
             for (Image image : images) {
-                imagesMap.put(image.getOrder(), image);
-                if (image.getOrder() == imagesCount) {
+                imagesMap.put(image.getPosition(), image);
+                if (image.getPosition() == imagesCount) {
                     scalableImageContainer.setImage(image);
-                    spinnerValue = image.getOrder();
+                    spinnerValue = image.getPosition();
                     spinnerValueOnSpinning = spinnerValue;
                     btnSetDefaultImage.setEnabled(!image.isDefaultImage());
                 }
@@ -149,21 +149,21 @@ public class ItemFormImage implements
 
         if (imagesCount > 0) {
             images.forEach(image -> {
-                imagesMap.put(image.getOrder(), image);
+                imagesMap.put(image.getPosition(), image);
             });
 
             Image imageReplacesRemovedImage;
-            if ((removedImage.getOrder() - 1) != imagesCount) {
+            if ((removedImage.getPosition() - 1) != imagesCount) {
                 // The removed image was at any position other than the end.
-                imageReplacesRemovedImage = images.stream().filter(image -> image.getOrder() == removedImage.getOrder()).findFirst().get();
+                imageReplacesRemovedImage = images.stream().filter(image -> image.getPosition() == removedImage.getPosition()).findFirst().get();
             } else {
                 // The removed image was only at the end position.
-                imageReplacesRemovedImage = images.stream().filter(image -> image.getOrder() == imagesCount).findFirst().get();
+                imageReplacesRemovedImage = images.stream().filter(image -> image.getPosition() == imagesCount).findFirst().get();
             }
 
             if (imageReplacesRemovedImage != null) {
                 scalableImageContainer.setImage(imageReplacesRemovedImage);
-                spinnerValue = imageReplacesRemovedImage.getOrder();
+                spinnerValue = imageReplacesRemovedImage.getPosition();
                 spinnerValueOnSpinning = spinnerValue;
                 btnSetDefaultImage.setEnabled(!imageReplacesRemovedImage.isDefaultImage());
             }
@@ -182,10 +182,10 @@ public class ItemFormImage implements
         int spinnerValue = 0;
         if (imagesCount > 0) {
             for (Image image : images) {
-                imagesMap.put(image.getOrder(), image);
+                imagesMap.put(image.getPosition(), image);
                 if (image.isDefaultImage()) {
                     scalableImageContainer.setImage(image);
-                    spinnerValue = image.getOrder();
+                    spinnerValue = image.getPosition();
                     spinnerValueOnSpinning = spinnerValue;
                     btnSetDefaultImage.setEnabled(false);
                 }

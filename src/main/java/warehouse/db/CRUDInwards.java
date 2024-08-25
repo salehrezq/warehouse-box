@@ -47,7 +47,7 @@ public class CRUDInwards {
     private static Connection con;
 
     public static Inward create(Inward inward) {
-        String sql = "INSERT INTO inwards (`item_id`, `quantity`, `date`, `source_id`) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO inwards (item_id, quantity, date, source_id) VALUES (?, ?, ?, ?)";
         con = Connect.getConnection();
         try {
             PreparedStatement p = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -100,16 +100,16 @@ public class CRUDInwards {
             }
         }
         if (isCodeFilter) {
-            sqlFilter += " i.`id` = ?";
+            sqlFilter += " i.id = ?";
             return sqlFilter;
         }
         if (isNameFilter) {
-            sqlFilter += " (i.`name` LIKE ?";
+            sqlFilter += " (i.name LIKE ?";
             sqlFilter += (isSpecificationFilter) ? " OR" : ")";
         }
         if (isSpecificationFilter) {
             sqlFilter += isNameFilter ? "" : "(";
-            sqlFilter += " i.`specification` LIKE ?)";
+            sqlFilter += " i.specification LIKE ?)";
         }
         return sqlFilter;
     }

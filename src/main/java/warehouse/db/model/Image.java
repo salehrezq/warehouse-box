@@ -42,7 +42,7 @@ public class Image {
     private int id;
     private int itemId;
     private String imageName;
-    private int order;
+    private int position;
     private boolean defaultImage;
     private BigDecimal scale;
     /**
@@ -76,12 +76,12 @@ public class Image {
         this.setBufferedImage(ImageFileManager.loadImage(imageName));
     }
 
-    public int getOrder() {
-        return order;
+    public int getPosition() {
+        return position;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setPosition(int order) {
+        this.position = order;
     }
 
     public boolean isDefaultImage() {
