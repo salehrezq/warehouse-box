@@ -101,22 +101,17 @@ public class CRUDListable {
     }
 
     public static boolean isExist(Listable listable) {
-        System.out.println("listable name " + listable.getName());
         boolean exist = false;
-        String tempAttibuteAlais = "is_" + listable.getDBEntityName() + "_exist";
-        System.out.println("tempAttibuteAlais " + tempAttibuteAlais);
-        String sql = "SELECT EXISTS(SELECT " + listable.getDBAttributeName()
+        String sql = "SELECT COUNT(" + listable.getDBAttributeName() + ") AS count"
                 + " FROM " + listable.getDBEntityName()
-                + " WHERE (" + listable.getDBAttributeName() + " = ?))"
-                + " AS " + tempAttibuteAlais;
-        con = Connect.getConnection();
-        try {
+                + " WHERE " + listable.getDBAttributeName() + " = ?";
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement isExistStatement = con.prepareStatement(sql);
-            System.out.println(isExistStatement);
             isExistStatement.setString(1, listable.getName());
-            ResultSet result = isExistStatement.executeQuery();
-            if (result.next()) {
-                exist = result.getInt(tempAttibuteAlais) == 1;
+            try (ResultSet result = isExistStatement.executeQuery()) {
+                if (result.next()) {
+                    exist = result.getInt("count") == 1;
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
