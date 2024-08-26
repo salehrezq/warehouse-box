@@ -185,27 +185,25 @@ public class CRUDListable {
 
     public static List<Listable> search(Listable listableImplementation, String query, int LIMIT, int OFFSET) {
         List<Listable> listables = new ArrayList<>();
-        try {
-            String sql = "SELECT *"
-                    + " FROM " + "" + listableImplementation.getDBEntityName() + ""
-                    + formulateSearchFilters(listableImplementation, query)
-                    + " ORDER BY " + "" + listableImplementation.getDBAttributeName() + "" + " ASC"
-                    + " LIMIT ? OFFSET ?";
-
-            con = Connect.getConnection();
-            PreparedStatement p;
-            p = con.prepareStatement(sql);
+        String sql = "SELECT *"
+                + " FROM " + "" + listableImplementation.getDBEntityName() + ""
+                + formulateSearchFilters(listableImplementation, query)
+                + " ORDER BY " + "" + listableImplementation.getDBAttributeName() + "" + " ASC"
+                + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try (Connection con = Connect.getConnection()) {
+            PreparedStatement p = con.prepareStatement(sql);
             PreparedStatementWrapper preparedStatementWrapper
                     = formulateSearchPreparedStatement(query, new PreparedStatementWrapper(p));
             int parameterIndex = preparedStatementWrapper.getParameterIndex();
-            p.setInt(++parameterIndex, LIMIT);
             p.setInt(++parameterIndex, OFFSET);
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                Listable listableInstance = listableImplementation.getNewInstance();
-                listableInstance.setId(result.getInt("id"));
-                listableInstance.setName(result.getString(listableImplementation.getDBAttributeName()));
-                listables.add(listableInstance);
+            p.setInt(++parameterIndex, LIMIT);
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    Listable listableInstance = listableImplementation.getNewInstance();
+                    listableInstance.setId(result.getInt("id"));
+                    listableInstance.setName(result.getString(listableImplementation.getDBAttributeName()));
+                    listables.add(listableInstance);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
