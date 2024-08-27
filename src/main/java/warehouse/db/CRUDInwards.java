@@ -44,8 +44,6 @@ import warehouse.panel.inwards.SearchFilters;
  */
 public class CRUDInwards {
 
-    private static Connection con;
-
     public static Inward create(Inward inward) {
         String sql = "INSERT INTO inwards (item_id, quantity, date, source_id) VALUES (?, ?, ?, ?)";
 
