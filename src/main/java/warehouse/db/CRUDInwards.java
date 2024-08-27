@@ -48,12 +48,12 @@ public class CRUDInwards {
 
     public static Inward create(Inward inward) {
         String sql = "INSERT INTO inwards (item_id, quantity, date, source_id) VALUES (?, ?, ?, ?)";
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             p.setInt(1, inward.getItem().getId());
             p.setBigDecimal(2, inward.getQuantity());
-            p.setObject(3, inward.getDate());
+            p.setObject(3, java.sql.Date.valueOf(inward.getDate()));
             p.setInt(4, inward.getSource().getId());
             p.executeUpdate();
 
@@ -64,11 +64,8 @@ public class CRUDInwards {
                     throw new SQLException("Obtaining inward ID failed.");
                 }
             }
-            con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDInwards.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Connect.cleanUp();
         }
         return inward;
     }
