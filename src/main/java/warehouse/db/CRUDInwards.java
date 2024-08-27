@@ -196,19 +196,20 @@ public class CRUDInwards {
 
     public static int searchResultRowsCount(SearchFilters searchFilters) {
         int searchResultRowsCount = 0;
-        try {
-            String sql = "SELECT COUNT(inwards.id) AS search_result_rows_count"
-                    + " FROM inwards JOIN items AS i"
-                    + " ON inwards.item_id = i.id"
-                    + formulateSearchFilters(searchFilters);
 
-            con = Connect.getConnection();
+        String sql = "SELECT COUNT(inwards.id) AS search_result_rows_count"
+                + " FROM inwards JOIN items AS i"
+                + " ON inwards.item_id = i.id"
+                + formulateSearchFilters(searchFilters);
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p;
             p = con.prepareStatement(sql);
             formulateSearchPreparedStatement(searchFilters, new PreparedStatementWrapper(p));
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                searchResultRowsCount = result.getInt("search_result_rows_count");
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    searchResultRowsCount = result.getInt("search_result_rows_count");
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
@@ -238,17 +239,15 @@ public class CRUDInwards {
 
     public static boolean delete(Inward inward) {
         int delete = 0;
+
         String sql = "DELETE FROM inwards WHERE id = ?";
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
             p.setInt(1, inward.getId());
             delete = p.executeUpdate();
-            con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDInwards.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Connect.cleanUp();
         }
         return (delete > 0);
     }
