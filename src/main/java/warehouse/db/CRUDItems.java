@@ -210,44 +210,44 @@ public class CRUDItems {
 
     public static List<ItemMeta> search(SearchFilters searchFilters, int LIMIT, int OFFSET) {
         List<ItemMeta> itemsMeta = new ArrayList<>();
-        try {
-            String sql = " SELECT it.id , it.name, it.specification,"
-                    + " ("
-                    + " COALESCE((SELECT SUM(i.quantity)"
-                    + " FROM inwards AS i"
-                    + " WHERE i.item_id = it.id),0)"
-                    + " -"
-                    + " COALESCE((SELECT SUM(o.quantity)"
-                    + " FROM outwards AS o"
-                    + " WHERE o.item_id = it.id),0)"
-                    + " ) AS balance, u.id AS unit_id, u.name AS unit"
-                    + " "
-                    + " FROM items AS it JOIN quantity_unit AS u"
-                    + " ON it.unit_id = u.id"
-                    + formulateSearchFilters(searchFilters)
-                    + " ORDER BY id ASC"
-                    + " LIMIT ? OFFSET ?";
+        String sql = "SELECT it.id , it.name, it.specification,"
+                + " ("
+                + " COALESCE((SELECT SUM(i.quantity)"
+                + " FROM inwards AS i"
+                + " WHERE i.item_id = it.id),0)"
+                + " -"
+                + " COALESCE((SELECT SUM(o.quantity)"
+                + " FROM outwards AS o"
+                + " WHERE o.item_id = it.id),0)"
+                + " ) AS balance, u.id AS unit_id, u.name AS unit"
+                + " "
+                + " FROM items AS it JOIN quantity_unit AS u"
+                + " ON it.unit_id = u.id"
+                + formulateSearchFilters(searchFilters)
+                + " ORDER BY it.id ASC"
+                + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-            con = Connect.getConnection();
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p;
             p = con.prepareStatement(sql);
             PreparedStatementWrapper preparedStatementWrapper
                     = formulateSearchPreparedStatement(searchFilters, new PreparedStatementWrapper(p));
             int parameterIndex = preparedStatementWrapper.getParameterIndex();
-            p.setInt(++parameterIndex, LIMIT);
             p.setInt(++parameterIndex, OFFSET);
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                ItemMeta itemMeta = new ItemMeta();
-                itemMeta.setId(result.getInt("id"));
-                itemMeta.setName(result.getString("name"));
-                itemMeta.setSpecification(result.getString("specification"));
-                itemMeta.setBalance(result.getBigDecimal("balance"));
-                QuantityUnit quantityUnit = new QuantityUnit();
-                quantityUnit.setId(result.getInt("unit_id"));
-                quantityUnit.setName(result.getString("unit"));
-                itemMeta.setQuantityUnit(quantityUnit);
-                itemsMeta.add(itemMeta);
+            p.setInt(++parameterIndex, LIMIT);
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    ItemMeta itemMeta = new ItemMeta();
+                    itemMeta.setId(result.getInt("id"));
+                    itemMeta.setName(result.getString("name"));
+                    itemMeta.setSpecification(result.getString("specification"));
+                    itemMeta.setBalance(result.getBigDecimal("balance"));
+                    QuantityUnit quantityUnit = new QuantityUnit();
+                    quantityUnit.setId(result.getInt("unit_id"));
+                    quantityUnit.setName(result.getString("unit"));
+                    itemMeta.setQuantityUnit(quantityUnit);
+                    itemsMeta.add(itemMeta);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
