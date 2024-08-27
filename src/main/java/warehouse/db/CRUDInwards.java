@@ -218,22 +218,20 @@ public class CRUDInwards {
 
     public static boolean update(Inward inward) {
         int update = 0;
+
         String sql = "UPDATE inwards"
                 + " SET quantity = ?, source_id = ?, date = ?"
                 + " WHERE id = ?";
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
             p.setBigDecimal(1, inward.getQuantity());
             p.setInt(2, inward.getSource().getId());
-            p.setObject(3, inward.getDate());
+            p.setObject(3, java.sql.Date.valueOf(inward.getDate()));
             p.setInt(4, inward.getId());
             update = p.executeUpdate();
-            con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDInwards.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Connect.cleanUp();
         }
         return (update > 0);
     }
