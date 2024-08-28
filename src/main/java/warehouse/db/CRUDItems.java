@@ -33,7 +33,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -48,15 +47,10 @@ import warehouse.panel.items.SearchFilters;
  */
 public class CRUDItems {
 
-    private static Connection con;
-    private static int OFFSET = 0;
-    private static final int LIMIT = 20;
-    private static Map<String, Boolean> searchFilters;
-
     public static Item create(Item item) {
         String sqlCreateItem = "INSERT INTO items (name, specification, unit_id) VALUES (?, ?, ?)";
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement createItemsStatement = con.prepareStatement(sqlCreateItem, Statement.RETURN_GENERATED_KEYS);
             createItemsStatement.setString(1, item.getName());
             createItemsStatement.setString(2, item.getSpecification());
@@ -70,32 +64,30 @@ public class CRUDItems {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
             }
-            con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Connect.cleanUp();
         }
         return item;
     }
 
     public static ArrayList<Item> getAll() {
-
         ArrayList<Item> items = new ArrayList<>();
 
-        try {
-            String sql = "SELECT * FROM items ORDER BY name ASC";
-            con = Connect.getConnection();
+        String sql = "SELECT * FROM items ORDER BY name ASC";
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p;
             p = con.prepareStatement(sql);
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                Item item = new Item();
-                item.setId(result.getInt("id"));
-                item.setName(result.getString("name"));
-                item.setSpecification(result.getString("specification"));
-                item.setQuantityUnit((QuantityUnit) CRUDListable.getById(new QuantityUnit(), result.getInt("unit_id")));
-                items.add(item);
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    Item item = new Item();
+                    item.setId(result.getInt("id"));
+                    item.setName(result.getString("name"));
+                    item.setSpecification(result.getString("specification"));
+                    item.setQuantityUnit((QuantityUnit) CRUDListable.getById(new QuantityUnit(), result.getInt("unit_id")));
+                    items.add(item);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
@@ -105,55 +97,34 @@ public class CRUDItems {
 
     public static int getBalance(int itemId) {
         int itemBalance = 0;
-        try {
-            String sql = "SELECT "
-                    + " (COALESCE("
-                    + " (SELECT sum(i.quantity)"
-                    + " FROM inwards i"
-                    + " WHERE i.item_id = ?),0)"
-                    + " -"
-                    + " COALESCE("
-                    + " (SELECT sum(o.quantity)"
-                    + " FROM outwards o"
-                    + " WHERE o.item_id = ?),"
-                    + " 0)) balance";
 
-            con = Connect.getConnection();
+        String sql = "SELECT "
+                + " (COALESCE("
+                + " (SELECT sum(i.quantity)"
+                + " FROM inwards i"
+                + " WHERE i.item_id = ?),0)"
+                + " -"
+                + " COALESCE("
+                + " (SELECT sum(o.quantity)"
+                + " FROM outwards o"
+                + " WHERE o.item_id = ?),"
+                + " 0)) balance";
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p;
             p = con.prepareStatement(sql);
             p.setInt(1, itemId);
             p.setInt(2, itemId);
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                itemBalance = result.getInt("balance");
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    itemBalance = result.getInt("balance");
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
         }
         return itemBalance;
-    }
-
-    private static String formulateFilters(Map<String, Boolean> searchFilters) {
-        String sqlFilter = " WHERE";
-        if (searchFilters != null) {
-            boolean boolCodeFilter = searchFilters.get("code");
-            if (boolCodeFilter) {
-                sqlFilter += " it.id = ?";
-                return sqlFilter;
-            }
-            boolean boolNameFilter = searchFilters.get("name");
-            boolean boolSpecificationFilter = searchFilters.get("specification");
-            if (boolNameFilter) {
-                sqlFilter += " it.name LIKE ?";
-                if (boolSpecificationFilter) {
-                    sqlFilter += " OR";
-                }
-            }
-            if (boolSpecificationFilter) {
-                sqlFilter += " it.specification LIKE ?";
-            }
-        }
-        return sqlFilter;
     }
 
     private static String formulateSearchFilters(SearchFilters searchFilters) {
@@ -210,6 +181,7 @@ public class CRUDItems {
 
     public static List<ItemMeta> search(SearchFilters searchFilters, int LIMIT, int OFFSET) {
         List<ItemMeta> itemsMeta = new ArrayList<>();
+
         String sql = "SELECT it.id , it.name, it.specification,"
                 + " ("
                 + " COALESCE((SELECT SUM(i.quantity)"
@@ -235,6 +207,7 @@ public class CRUDItems {
             int parameterIndex = preparedStatementWrapper.getParameterIndex();
             p.setInt(++parameterIndex, OFFSET);
             p.setInt(++parameterIndex, LIMIT);
+
             try (ResultSet result = p.executeQuery()) {
                 while (result.next()) {
                     ItemMeta itemMeta = new ItemMeta();
@@ -257,18 +230,20 @@ public class CRUDItems {
 
     public static int searchResultRowsCount(SearchFilters searchFilters) {
         int searchResultRowsCount = 0;
-        try {
-            String sql = "SELECT COUNT(id) AS search_result_rows_count"
-                    + " FROM items AS it"
-                    + formulateSearchFilters(searchFilters);
 
-            con = Connect.getConnection();
+        String sql = "SELECT COUNT(id) AS search_result_rows_count"
+                + " FROM items AS it"
+                + formulateSearchFilters(searchFilters);
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p;
             p = con.prepareStatement(sql);
             formulateSearchPreparedStatement(searchFilters, new PreparedStatementWrapper(p));
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                searchResultRowsCount = result.getInt("search_result_rows_count");
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    searchResultRowsCount = result.getInt("search_result_rows_count");
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
@@ -276,41 +251,22 @@ public class CRUDItems {
         return searchResultRowsCount;
     }
 
-    public static int getRecordsCount() {
-        int numberOfRows = 0;
-        String sql = "SELECT COUNT(*) AS items_rows_count FROM items";
-        con = Connect.getConnection();
-        try {
-            PreparedStatement p;
-            p = con.prepareStatement(sql);
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                numberOfRows = result.getInt("items_rows_count");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return numberOfRows;
-    }
-
     public static boolean update(Item item) {
         int update = 0;
+
         String sql = "UPDATE items"
                 + " SET name = ?, specification = ?, unit_id = ?"
                 + " WHERE id = ?";
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
             p.setString(1, item.getName());
             p.setString(2, item.getSpecification());
             p.setInt(3, item.getQuantityUnit().getId());
             p.setInt(4, item.getId());
             update = p.executeUpdate();
-            con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Connect.cleanUp();
         }
         return (update > 0);
     }
@@ -334,38 +290,34 @@ public class CRUDItems {
         String sql = "SELECT it.id"
                 + " FROM items it JOIN inwards i JOIN outwards o"
                 + " WHERE (it.id = ?) AND ((it.id = i.item_id) OR (it.id = o.item_id))"
-                + " LIMIT 1";
+                + " FETCH FIRST 1 ROW ONLY";
 
-        con = Connect.getConnection();
-        try {
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
             p.setInt(1, itemMeta.getId());
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                isUsed = true;
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    isUsed = true;
+                }
             }
-            con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Connect.cleanUp();
         }
         return isUsed;
     }
 
     public static boolean delete(ItemMeta itemMeta) {
         int delete = 0;
+
         String sql = "DELETE FROM items WHERE id = ?";
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
             p.setInt(1, itemMeta.getId());
             delete = p.executeUpdate();
-            con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Connect.cleanUp();
         }
         return (delete > 0);
     }
