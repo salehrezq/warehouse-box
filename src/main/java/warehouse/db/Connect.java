@@ -42,7 +42,7 @@ public class Connect {
     private static final String DB_URL = "jdbc:derby:"
             + System.getProperty("user.home")
             + File.separator
-            + "warehouse-db;create=true";
+            + "warehouse-db;create=true;collation=TERRITORY_BASED:PRIMARY";
 
     //  Database credentials
     private static final String USER = "root";
