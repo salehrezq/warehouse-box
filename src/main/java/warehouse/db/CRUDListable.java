@@ -39,19 +39,16 @@ import warehouse.singularlisting.Listable;
  */
 public class CRUDListable {
 
-    private static Connection con;
-
     public static boolean create(Listable listable) {
         int insert = 0;
         String sql = "INSERT INTO "
                 + listable.getDBEntityName()
                 + " (" + listable.getDBAttributeName() + ") VALUES (?)";
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
             p.setString(1, listable.getName());
             insert = p.executeUpdate();
-            //p.close();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -64,15 +61,17 @@ public class CRUDListable {
         String sqlSelectStatement = "SELECT * FROM "
                 + listableImplementation.getDBEntityName()
                 + " ORDER BY " + listableImplementation.getDBAttributeName() + " ASC";
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sqlSelectStatement);
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                listableInstance = listableImplementation.getNewInstance();
-                listableInstance.setId(result.getInt("id"));
-                listableInstance.setName(result.getString(listableImplementation.getDBAttributeName()));
-                listables.add(listableInstance);
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    listableInstance = listableImplementation.getNewInstance();
+                    listableInstance.setId(result.getInt("id"));
+                    listableInstance.setName(result.getString(listableImplementation.getDBAttributeName()));
+                    listables.add(listableInstance);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
@@ -85,14 +84,16 @@ public class CRUDListable {
         String sql = "SELECT * FROM "
                 + listableImplementation.getDBEntityName()
                 + " WHERE id = " + id;
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                listable = listableImplementation.getNewInstance();
-                listable.setId(result.getInt("id"));
-                listable.setName(result.getString(listable.getDBAttributeName()));
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    listable = listableImplementation.getNewInstance();
+                    listable.setId(result.getInt("id"));
+                    listable.setName(result.getString(listable.getDBAttributeName()));
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
@@ -105,37 +106,15 @@ public class CRUDListable {
         String sql = "SELECT COUNT(" + listable.getDBAttributeName() + ") AS count"
                 + " FROM " + listable.getDBEntityName()
                 + " WHERE " + listable.getDBAttributeName() + " = ?";
+
         try (Connection con = Connect.getConnection()) {
             PreparedStatement isExistStatement = con.prepareStatement(sql);
             isExistStatement.setString(1, listable.getName());
+
             try (ResultSet result = isExistStatement.executeQuery()) {
                 if (result.next()) {
                     exist = result.getInt("count") == 1;
                 }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return exist;
-    }
-
-    public static boolean isExistExceptThis(Listable listable) {
-        boolean exist = false;
-        String tempAttibuteAlais = "is_" + listable.getDBEntityName() + "_exist";
-        String sql = "SELECT EXISTS(SELECT " + "`" + listable.getDBAttributeName() + "`"
-                + " FROM " + "`" + listable.getDBEntityName() + "`"
-                + " WHERE (" + "`" + listable.getDBAttributeName() + "` = ? AND `id` NOT IN (?)))"
-                + " AS " + tempAttibuteAlais;
-
-        con = Connect.getConnection();
-        System.out.println(sql);
-        try {
-            PreparedStatement isExistStatement = con.prepareStatement(sql);
-            isExistStatement.setString(1, listable.getName());
-            isExistStatement.setInt(2, listable.getId());
-            ResultSet result = isExistStatement.executeQuery();
-            if (result.next()) {
-                exist = result.getInt(tempAttibuteAlais) == 1;
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
@@ -165,17 +144,19 @@ public class CRUDListable {
 
     public static int searchResultRowsCount(Listable listableImplementation, String query) {
         int searchResultRowsCount = 0;
-        try {
-            String sql = "SELECT COUNT(id) AS search_result_rows_count"
-                    + " FROM " + "" + listableImplementation.getDBEntityName() + ""
-                    + formulateSearchFilters(listableImplementation, query);
-            con = Connect.getConnection();
+        String sql = "SELECT COUNT(id) AS search_result_rows_count"
+                + " FROM " + "" + listableImplementation.getDBEntityName() + ""
+                + formulateSearchFilters(listableImplementation, query);
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p;
             p = con.prepareStatement(sql);
             formulateSearchPreparedStatement(query, new PreparedStatementWrapper(p));
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                searchResultRowsCount = result.getInt("search_result_rows_count");
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    searchResultRowsCount = result.getInt("search_result_rows_count");
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
@@ -190,6 +171,7 @@ public class CRUDListable {
                 + formulateSearchFilters(listableImplementation, query)
                 + " ORDER BY " + "" + listableImplementation.getDBAttributeName() + "" + " ASC"
                 + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
         try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
             PreparedStatementWrapper preparedStatementWrapper
@@ -197,6 +179,7 @@ public class CRUDListable {
             int parameterIndex = preparedStatementWrapper.getParameterIndex();
             p.setInt(++parameterIndex, OFFSET);
             p.setInt(++parameterIndex, LIMIT);
+
             try (ResultSet result = p.executeQuery()) {
                 while (result.next()) {
                     Listable listableInstance = listableImplementation.getNewInstance();
@@ -216,15 +199,17 @@ public class CRUDListable {
         String sqlSelectStatement = "SELECT * FROM " + listableImplementation.getDBEntityName() + " WHERE "
                 + listableImplementation.getDBAttributeName()
                 + " LIKE '%" + str + "%'";
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sqlSelectStatement);
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                Listable listableInstance = listableImplementation.getNewInstance();
-                listableInstance.setId(result.getInt("id"));
-                listableInstance.setName(result.getString(listableImplementation.getDBAttributeName()));
-                listables.add(listableInstance);
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    Listable listableInstance = listableImplementation.getNewInstance();
+                    listableInstance.setId(result.getInt("id"));
+                    listableInstance.setName(result.getString(listableImplementation.getDBAttributeName()));
+                    listables.add(listableInstance);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
@@ -237,16 +222,14 @@ public class CRUDListable {
         String sql = "UPDATE " + "" + listable.getDBEntityName() + ""
                 + " SET " + "" + listable.getDBAttributeName() + "" + " = ?"
                 + " WHERE id = ?";
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
             p.setString(1, listable.getName());
             p.setInt(2, listable.getId());
             update = p.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Connect.cleanUp();
         }
         return (update > 0);
     }
@@ -255,19 +238,19 @@ public class CRUDListable {
         boolean isUsed = false;
         String sql = "SELECT id FROM " + "" + listableImplementation.getConsumer().get("table") + ""
                 + " WHERE " + "" + listableImplementation.getConsumer().get("column") + " = ?"
-                + " LIMIT 1";
-        con = Connect.getConnection();
-        try {
+                + " FETCH FIRST 1 ROW ONLY";
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
             p.setInt(1, listableImplementation.getId());
-            ResultSet result = p.executeQuery();
-            while (result.next()) {
-                isUsed = true;
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    isUsed = true;
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Connect.cleanUp();
         }
         return isUsed;
     }
@@ -276,15 +259,13 @@ public class CRUDListable {
         int delete = 0;
         String sql = "DELETE FROM " + "" + listableImplementation.getDBEntityName() + ""
                 + " WHERE id = ?";
-        con = Connect.getConnection();
-        try {
+
+        try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
             p.setInt(1, listableImplementation.getId());
             delete = p.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Connect.cleanUp();
         }
         return (delete > 0);
     }
