@@ -286,9 +286,9 @@ public class CRUDItems {
 
     public static boolean isInUse(ItemMeta itemMeta) {
         boolean isUsed = false;
-
         String sql = "SELECT it.id"
-                + " FROM items it JOIN inwards i JOIN outwards o"
+                + " FROM items it LEFT JOIN inwards i ON it.id = i.item_id"
+                + " LEFT JOIN outwards o ON it.id = o.item_id"
                 + " WHERE (it.id = ?) AND ((it.id = i.item_id) OR (it.id = o.item_id))"
                 + " FETCH FIRST 1 ROW ONLY";
 
