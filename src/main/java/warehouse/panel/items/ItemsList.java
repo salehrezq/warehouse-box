@@ -263,12 +263,14 @@ public class ItemsList extends JPanel
             int compare = quantityDifference.compareTo(BigDecimal.ZERO);
             BigDecimal updatedBalance = itemMeta.getBalance();
             switch (compare) {
-                case 1:
+                case 1 -> {
                     updatedBalance = updatedBalance.add(quantityDifference.abs());
                     itemMeta.setBalance(updatedBalance);
-                case -1:
+                }
+                case -1 -> {
                     updatedBalance = updatedBalance.subtract(quantityDifference.abs());
                     itemMeta.setBalance(updatedBalance);
+                }
             }
         }
     }
@@ -299,12 +301,14 @@ public class ItemsList extends JPanel
             int compare = quantityDifference.compareTo(BigDecimal.ZERO);
             BigDecimal updatedBalance = itemMeta.getBalance();
             switch (compare) {
-                case 1:
+                case 1 -> {
                     updatedBalance = updatedBalance.subtract(quantityDifference.abs());
                     itemMeta.setBalance(updatedBalance);
-                case -1:
+                }
+                case -1 -> {
                     updatedBalance = updatedBalance.add(quantityDifference.abs());
                     itemMeta.setBalance(updatedBalance);
+                }
             }
         }
     }

@@ -73,12 +73,15 @@ public class ItemTableModel extends AbstractTableModel {
     @Override
     public Class getColumnClass(int column) {
         switch (column) {
-            case 3:
+            case 3 -> {
                 return BigDecimal.class;
-            case 4:
+            }
+            case 4 -> {
                 return QuantityUnit.class;
-            default:
+            }
+            default -> {
                 return String.class;
+            }
         }
     }
 
