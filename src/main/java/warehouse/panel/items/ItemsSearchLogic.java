@@ -170,7 +170,12 @@ public class ItemsSearchLogic {
             }
             notifySearchResultTotalRowsCount(CRUDItems.searchResultRowsCount(searchFilters));
             LIMIT = ResultLimitSizePreference.getResultLimitSize();
-            notifySearchResult(CRUDItems.search(searchFilters, LIMIT, OFFSET));
+            List<ItemMeta> searchResults = CRUDItems.search(searchFilters, LIMIT, OFFSET);
+            if (searchResults.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "No matched results!", "Info",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+            notifySearchResult(searchResults);
         }
     }
 

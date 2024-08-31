@@ -46,6 +46,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import warehouse.db.CRUDListable;
 import warehouse.db.CRUDOutwards;
+import warehouse.db.model.Outward;
 import warehouse.db.model.Recipient;
 import warehouse.panel.menus.ResultLimitSizePreference;
 import warehouse.singularlisting.Listable;
@@ -265,7 +266,12 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             }
             notifySearchResultTotalRowsCount(CRUDOutwards.searchResultRowsCount(searchFilters));
             LIMIT = ResultLimitSizePreference.getResultLimitSize();
-            notifySearchResult(CRUDOutwards.search(searchFilters, LIMIT, OFFSET));
+            List<Outward> searchResults = CRUDOutwards.search(searchFilters, LIMIT, OFFSET);
+            if (searchResults.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "No matched results!", "Info",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+            notifySearchResult(searchResults);
         }
     }
 
