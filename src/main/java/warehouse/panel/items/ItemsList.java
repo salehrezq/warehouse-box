@@ -48,7 +48,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import utility.filemanage.ImageFileManager;
+import warehouse.db.CRUDImages;
 import warehouse.db.CRUDItems;
+import warehouse.db.model.Image;
 import warehouse.db.model.Inward;
 import warehouse.db.model.Item;
 import warehouse.db.model.ItemMeta;
@@ -234,6 +237,12 @@ public class ItemsList extends JPanel
     public void notifySelectedRowId(int rowId) {
         this.rowIdSelectionListeners.forEach((item) -> {
             item.selectedRowId(rowId);
+        });
+    }
+
+    public void notifySelectedRowHasBeenDeleted(int rowId) {
+        this.rowIdSelectionListeners.forEach((item) -> {
+            item.selectedRowHasBeenDeleted(rowId);
         });
     }
 
@@ -460,9 +469,14 @@ public class ItemsList extends JPanel
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.WARNING_MESSAGE);
                     if (reply == JOptionPane.YES_OPTION) {
+                        List<Image> relatedImagesToBeRemoved = CRUDImages.getImagesByItemId(itemMeta.getId());
+                        CRUDImages.deleteByItem(itemMeta);
                         boolean deleted = CRUDItems.delete(itemMeta);
                         if (deleted) {
                             model.removeItemMeta(selectedModelRow);
+                            relatedImagesToBeRemoved.forEach(imageTobeRemoved
+                                    -> ImageFileManager.delete(imageTobeRemoved.getImageName()));
+                            notifySelectedRowHasBeenDeleted(itemMeta.getId());
                             JOptionPane.showMessageDialog(
                                     null,
                                     "Item has been deleted successfully",

@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import utility.filemanage.ImageFileManager;
 import warehouse.db.model.Image;
+import warehouse.db.model.Item;
 
 /**
  *
@@ -150,6 +151,26 @@ public class CRUDImages {
             Logger.getLogger(CRUDImages.class.getName()).log(Level.SEVERE, null, ex);
         }
         return patchArray.length;
+    }
+
+    /**
+     * Delete images related to the specified item.
+     *
+     * @param item
+     * @return
+     */
+    public static int deleteByItem(Item item) {
+        int delete = 0;
+        String sql = "DELETE FROM images WHERE item_id = ?";
+
+        try (Connection con = Connect.getConnection()) {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setInt(1, item.getId());
+            delete = p.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return delete;
     }
 
 }

@@ -30,4 +30,6 @@ package warehouse.panel.items;
 public interface RowIdSelectionListener {
 
     public void selectedRowId(int rowId);
+
+    public void selectedRowHasBeenDeleted(int rowId);
 }

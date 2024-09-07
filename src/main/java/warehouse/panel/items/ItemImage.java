@@ -170,6 +170,11 @@ public class ItemImage
     }
 
     @Override
+    public void selectedRowHasBeenDeleted(int rowId) {
+        scalableImageContainer.setImage(null);
+    }
+
+    @Override
     public void created(Item createdItem) {
         // Not required.
     }

@@ -162,6 +162,11 @@ public class ItemImage implements RowIdSelectionListener {
         }, 100, TimeUnit.MILLISECONDS);
     }
 
+    @Override
+    public void selectedRowHasBeenDeleted(int rowId) {
+        scalableImageContainer.setImage(null);
+    }
+
     private class JSpinnerHandler implements ChangeListener {
 
         @Override
