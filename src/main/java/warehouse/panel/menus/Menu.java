@@ -26,6 +26,9 @@ package warehouse.panel.menus;
 import warehouse.panel.createandupdate.ItemCreateUpdateDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -43,7 +46,7 @@ import warehouse.singularlisting.Listable;
 public class Menu {
 
     private JMenuBar menubar;
-    private JMenu menuFile, menuSettings;
+    private JMenu menuFile, menuSettings, menuAbout;
     private JMenuItem menuCreateItem, menuItemMangeQuantityUnit,
             menuItemMangeSources,
             menuItemManageRecipients,
@@ -55,6 +58,8 @@ public class Menu {
     private ItemCreateUpdateDialog createItemDialog;
     private ResultLimitSizePreference resultSizeDialog;
     private MenuItemsListener menuItemsListener;
+    private About about;
+    private ImageIcon imageIconAboutNormal, imageIconAboutHover, imageIconAboutPress;
 
     public Menu() {
         menubar = new JMenuBar();
@@ -74,6 +79,16 @@ public class Menu {
         menuSettings.add(menuItemSearchResultSize);
         menubar.add(menuSettings);
         resultSizeDialog = new ResultLimitSizePreference(target, "Set search result rows size on \"load more\"", true);
+
+        imageIconAboutNormal = new ImageIcon(getClass().getResource("/images/app-about/about-normal.png"));
+        imageIconAboutHover = new ImageIcon(getClass().getResource("/images/app-about/about-hovered.png"));
+        imageIconAboutPress = new ImageIcon(getClass().getResource("/images/app-about/about-pressed.png"));
+
+        menuAbout = new JMenu("About");
+        menuAbout.setIcon(imageIconAboutNormal);
+        menuAbout.addMouseListener(new AboutButtonMouseEventHandler());
+
+        menubar.add(menuAbout);
 
         menuItemsListener = new MenuItemsListener();
         createItemDialog = new ItemCreateUpdateDialog(target, "Create Item", true);
@@ -133,5 +148,41 @@ public class Menu {
                 resultSizeDialog.setVisible(true);
             }
         }
+    }
+
+    private class AboutButtonMouseEventHandler extends MouseAdapter {
+
+        private boolean hovered = false;
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (about == null) {
+                about = new About(target, "About", true);
+            }
+            about.setVisible(true);
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            menuAbout.setIcon(imageIconAboutPress);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            menuAbout.setIcon((hovered) ? imageIconAboutHover : imageIconAboutNormal);
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            hovered = true;
+            menuAbout.setIcon(imageIconAboutHover);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            hovered = false;
+            menuAbout.setIcon(imageIconAboutNormal);
+        }
+
     }
 }
