@@ -23,6 +23,7 @@
  */
 package warehousebox.root;
 
+import java.awt.Toolkit;
 import javax.swing.JFrame;
 import warehouse.db.Connect;
 import warehouse.db.model.QuantityUnit;
@@ -53,6 +54,7 @@ public class MainRun {
         menu = new Menu();
         tabs = new Tabs();
         frame = new JFrame("Warehouse Box");
+        frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/app-icon/app-icon.png")));
         menu.setTarget(frame);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(tabs);
