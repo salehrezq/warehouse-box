@@ -25,16 +25,16 @@ package warehousebox.root;
 
 import java.awt.Toolkit;
 import javax.swing.JFrame;
-import warehouse.db.Connect;
-import warehouse.db.model.QuantityUnit;
-import warehouse.db.model.Recipient;
-import warehouse.db.model.Source;
-import warehouse.panel.menus.Menu;
-import warehouse.panel.Tabs;
-import warehouse.panel.createandupdate.FormManagement;
-import warehouse.panel.items.ItemImage;
-import warehouse.panel.menus.ListableItemEditDialog;
-import warehouse.panel.menus.ListableItemManage;
+import warehousebox.db.Connect;
+import warehousebox.db.model.QuantityUnit;
+import warehousebox.db.model.Recipient;
+import warehousebox.db.model.Source;
+import warehousebox.panel.menus.Menu;
+import warehousebox.panel.tabs.Tabs;
+import warehousebox.panel.createandupdate.FormManagement;
+import warehousebox.panel.items.ItemImage;
+import warehousebox.panel.menus.ListableItemEditDialog;
+import warehousebox.panel.menus.ListableItemManage;
 
 /**
  *
