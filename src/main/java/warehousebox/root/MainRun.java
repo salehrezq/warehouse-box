@@ -53,7 +53,7 @@ public class MainRun {
     private void createAndShowGUI() {
         menu = new Menu();
         tabs = new Tabs();
-        frame = new JFrame("Warehouse Box");
+        frame = new JFrame("Warehouse Box 1.0.0");
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/app-icon/app-icon.png")));
         menu.setTarget(frame);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
