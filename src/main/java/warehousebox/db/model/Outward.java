@@ -24,6 +24,7 @@
 package warehousebox.db.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 /**
@@ -56,7 +57,7 @@ public class Outward {
     }
 
     public BigDecimal getQuantity() {
-        return quantity;
+        return quantity.setScale(2, RoundingMode.HALF_UP);
     }
 
     public void setQuantity(BigDecimal quantity) {
