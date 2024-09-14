@@ -106,6 +106,13 @@ public class Menu {
         menuItemSearchResultSize.addActionListener(menuItemsListener);
     }
 
+    private ImageIcon getTransformedImageIcon(String resource) {
+        ImageIcon imageIconOrignal = new ImageIcon(getClass().getResource(resource));
+        Image image = imageIconOrignal.getImage();
+        Image transformedImageIcon = image.getScaledInstance(18, 18, java.awt.Image.SCALE_SMOOTH);
+        return new ImageIcon(transformedImageIcon);
+    }
+
     public JMenuBar getMenuBar() {
         return this.menubar;
     }
