@@ -90,7 +90,7 @@ public class About extends JDialog implements HyperlinkListener {
         stringBuilder.append("<p style='text-align:center;'>Version: 1.0.0</p>");
         stringBuilder.append("<p>Warehouse Box is maintained at <a href='https://github.com/salehrezq/warehouse-box'>Github</a>.</p>");
         stringBuilder.append("<p>Feedback on errors or suggestions can go to <a href='mailto:salehrezq@gmail.com'>salehrezq@gmail.com</a>,<br>");
-        stringBuilder.append("or contact on:+967 780 431 625.</p>");
+        stringBuilder.append("or Whatsapp/Telegram on:+967 780 431 625.</p>");
         stringBuilder.append("<p>Credit goes to Alaa Al Baa'dany for the business logic.</p>");
         stringBuilder.append("</html>");
         aboutPane.setText(stringBuilder.toString());
