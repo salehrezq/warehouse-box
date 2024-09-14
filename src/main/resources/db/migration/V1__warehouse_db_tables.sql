@@ -41,23 +41,23 @@ information VARCHAR(255) NOT NULL,
 UNIQUE (information)
 );
 
-CREATE TABLE inwards (
+CREATE TABLE inbounds (
 id INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 item_id INT NOT NULL,
 quantity DECIMAL(8,2) NOT NULL,
 source_id INT,
 date DATE NOT NULL,
 
-CONSTRAINT fk_inwards_item_id_references_items_id
+CONSTRAINT fk_inbounds_item_id_references_items_id
 FOREIGN KEY (item_id) REFERENCES items(id)
 ON DELETE CASCADE,
 	
-CONSTRAINT fk_inwards_source_id_references_source_id
+CONSTRAINT fk_inbounds_source_id_references_source_id
 FOREIGN KEY (source_id) REFERENCES source(id)
 ON DELETE CASCADE
 );
 
-CREATE TABLE outwards (
+CREATE TABLE outbounds (
 id INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 item_id INT NOT NULL,
 quantity DECIMAL(8,2) NOT NULL,
@@ -65,11 +65,11 @@ recipient_id INT NOT NULL,
 used_for VARCHAR(255) NOT NULL,
 date DATE NOT NULL,
 
-CONSTRAINT fk_outwards_item_id_references_items_id
+CONSTRAINT fk_outbounds_item_id_references_items_id
 FOREIGN KEY (item_id) REFERENCES items(id)
 ON DELETE CASCADE,
 
-CONSTRAINT fk_outwards_recipient_id_references_recipients_id
+CONSTRAINT fk_outbounds_recipient_id_references_recipients_id
 FOREIGN KEY (recipient_id) REFERENCES recipients(id)
 ON DELETE CASCADE
 );

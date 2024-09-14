@@ -90,7 +90,7 @@ public class Recipient implements Listable {
             return consumer;
         } else {
             consumer = new HashMap<String, String>();
-            consumer.put("table", "outwards");
+            consumer.put("table", "outbounds");
             consumer.put("column", "recipient_id");
             return consumer;
         }

@@ -90,7 +90,7 @@ public class Source implements Listable {
             return consumer;
         } else {
             consumer = new HashMap<String, String>();
-            consumer.put("table", "inwards");
+            consumer.put("table", "inbounds");
             consumer.put("column", "source_id");
             return consumer;
         }

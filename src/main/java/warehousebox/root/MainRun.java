@@ -74,16 +74,16 @@ public class MainRun {
         ListableItemManage listableItemManageDialogeQuantityUnit = menu.getListableItemManage(new QuantityUnit());
         ListableItemEditDialog editDialogeForQuantityUnit = listableItemManageDialogeQuantityUnit.getListableItemEditDialog();
         editDialogeForQuantityUnit.addListableUpdateListener(tabs.getItemsList());
-        editDialogeForQuantityUnit.addListableUpdateListener(tabs.getInwardsList());
-        editDialogeForQuantityUnit.addListableUpdateListener(tabs.getOutwardsList());
+        editDialogeForQuantityUnit.addListableUpdateListener(tabs.getInboundsList());
+        editDialogeForQuantityUnit.addListableUpdateListener(tabs.getOutboundsList());
 
         ListableItemManage listableItemManageDialogeSource = menu.getListableItemManage(new Source());
         ListableItemEditDialog editDialogeForSource = listableItemManageDialogeSource.getListableItemEditDialog();
-        editDialogeForSource.addListableUpdateListener(tabs.getInwardsList());
+        editDialogeForSource.addListableUpdateListener(tabs.getInboundsList());
 
         ListableItemManage listableItemManageDialogeRecipient = menu.getListableItemManage(new Recipient());
         ListableItemEditDialog editDialogeForRecipient = listableItemManageDialogeRecipient.getListableItemEditDialog();
-        editDialogeForRecipient.addListableUpdateListener(tabs.getOutwardsList());
+        editDialogeForRecipient.addListableUpdateListener(tabs.getOutboundsList());
     }
 
     public static void main(String[] args) {

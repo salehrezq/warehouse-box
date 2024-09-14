@@ -260,7 +260,7 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
                         boolean deleted = CRUDListable.delete(listable);
                         if (deleted) {
                             listOfListable.removeElement(listing.getSelectedIndex());
-                            // notifyOutwardDeleted(outward);
+                            // notifyOutboundDeleted(outbound);
                             JOptionPane.showMessageDialog(
                                     null,
                                     listableImplementation.getLabel() + " deleted successfully",

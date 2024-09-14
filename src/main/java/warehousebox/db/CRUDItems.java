@@ -101,12 +101,12 @@ public class CRUDItems {
         String sql = "SELECT "
                 + " (COALESCE("
                 + " (SELECT sum(i.quantity)"
-                + " FROM inwards i"
+                + " FROM inbounds i"
                 + " WHERE i.item_id = ?),0)"
                 + " -"
                 + " COALESCE("
                 + " (SELECT sum(o.quantity)"
-                + " FROM outwards o"
+                + " FROM outbounds o"
                 + " WHERE o.item_id = ?),"
                 + " 0)) balance";
 
@@ -185,11 +185,11 @@ public class CRUDItems {
         String sql = "SELECT it.id , it.name, it.specification,"
                 + " ("
                 + " COALESCE((SELECT SUM(i.quantity)"
-                + " FROM inwards AS i"
+                + " FROM inbounds AS i"
                 + " WHERE i.item_id = it.id),0)"
                 + " -"
                 + " COALESCE((SELECT SUM(o.quantity)"
-                + " FROM outwards AS o"
+                + " FROM outbounds AS o"
                 + " WHERE o.item_id = it.id),0)"
                 + " ) AS balance, u.id AS unit_id, u.name AS unit"
                 + " "
@@ -287,8 +287,8 @@ public class CRUDItems {
     public static boolean isInUse(ItemMeta itemMeta) {
         boolean isUsed = false;
         String sql = "SELECT it.id"
-                + " FROM items it LEFT JOIN inwards i ON it.id = i.item_id"
-                + " LEFT JOIN outwards o ON it.id = o.item_id"
+                + " FROM items it LEFT JOIN inbounds i ON it.id = i.item_id"
+                + " LEFT JOIN outbounds o ON it.id = o.item_id"
                 + " WHERE (it.id = ?) AND ((it.id = i.item_id) OR (it.id = o.item_id))"
                 + " FETCH FIRST 1 ROW ONLY";
 

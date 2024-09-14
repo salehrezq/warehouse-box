@@ -27,15 +27,15 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import warehousebox.panel.inwards.InwardDialog;
-import warehousebox.panel.inwards.InwardsList;
-import warehousebox.panel.inwards.InwardsTap;
+import warehousebox.panel.inbounds.InboundDialog;
+import warehousebox.panel.inbounds.InboundsList;
+import warehousebox.panel.inbounds.InboundsTap;
 import warehousebox.panel.items.ItemsList;
 import warehousebox.panel.items.ItemsTab;
-import warehousebox.panel.outwards.OutwardsTap;
+import warehousebox.panel.outbounds.OutboundsTap;
 import warehousebox.panel.items.ItemImage;
-import warehousebox.panel.outwards.OutwardDialog;
-import warehousebox.panel.outwards.OutwardsList;
+import warehousebox.panel.outbounds.OutboundDialog;
+import warehousebox.panel.outbounds.OutboundsList;
 
 /**
  *
@@ -45,31 +45,31 @@ public class Tabs extends JPanel {
 
     private JTabbedPane tabs;
     private ItemsTab itemsTab;
-    private InwardsTap inwardsTap;
-    private OutwardsTap outwardsTap;
+    private InboundsTap inboundsTap;
+    private OutboundsTap outboundsTap;
 
     public Tabs() {
 
         this.setLayout(new BorderLayout());
         tabs = new JTabbedPane();
         itemsTab = new ItemsTab();
-        inwardsTap = new InwardsTap();
-        outwardsTap = new OutwardsTap();
+        inboundsTap = new InboundsTap();
+        outboundsTap = new OutboundsTap();
 
-        InwardDialog inwardDialog = itemsTab.getItemsList().getInwardCreateDialog();
-        inwardDialog.addInwardCRUDListener(inwardsTap.getInwardsList());
-        inwardDialog.addInwardCRUDListener(itemsTab.getItemsList());
+        InboundDialog inboundDialog = itemsTab.getItemsList().getInboundCreateDialog();
+        inboundDialog.addInboundCRUDListener(inboundsTap.getInboundsList());
+        inboundDialog.addInboundCRUDListener(itemsTab.getItemsList());
 
-        OutwardDialog outInwardDialog = itemsTab.getItemsList().getOutwardCreateDialog();
-        outInwardDialog.addOutwardCRUDListener(outwardsTap.getOutwardsList());
-        outInwardDialog.addOutwardCRUDListener(itemsTab.getItemsList());
+        OutboundDialog outInboundDialog = itemsTab.getItemsList().getOutboundCreateDialog();
+        outInboundDialog.addOutboundCRUDListener(outboundsTap.getOutboundsList());
+        outInboundDialog.addOutboundCRUDListener(itemsTab.getItemsList());
 
-        inwardsTap.getInwardsList().addInwardDeleteListener(itemsTab.getItemsList());
-        outwardsTap.getOutwardsList().addOutwardDeleteListener(itemsTab.getItemsList());
+        inboundsTap.getInboundsList().addInboundDeleteListener(itemsTab.getItemsList());
+        outboundsTap.getOutboundsList().addOutboundDeleteListener(itemsTab.getItemsList());
 
         tabs.add(itemsTab, "Items");
-        tabs.add(inwardsTap, "Inwards");
-        tabs.add(outwardsTap, "Outwards");
+        tabs.add(inboundsTap, "Inbounds");
+        tabs.add(outboundsTap, "Outbounds");
         this.add(tabs, BorderLayout.CENTER);
         this.setPreferredSize(new Dimension(1000, 500));
     }
@@ -82,11 +82,11 @@ public class Tabs extends JPanel {
         return itemsTab.getItemImage();
     }
 
-    public InwardsList getInwardsList() {
-        return inwardsTap.getInwardsList();
+    public InboundsList getInboundsList() {
+        return inboundsTap.getInboundsList();
     }
 
-    public OutwardsList getOutwardsList() {
-        return outwardsTap.getOutwardsList();
+    public OutboundsList getOutboundsList() {
+        return outboundsTap.getOutboundsList();
     }
 }

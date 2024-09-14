@@ -23,8 +23,8 @@
  */
 package warehousebox.panel.items;
 
-import warehousebox.panel.outwards.OutwardDialog;
-import warehousebox.panel.inwards.InwardDialog;
+import warehousebox.panel.outbounds.OutboundDialog;
+import warehousebox.panel.inbounds.InboundDialog;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Point;
@@ -52,18 +52,18 @@ import warehousebox.utility.filemanage.ImageFileManager;
 import warehousebox.db.CRUDImages;
 import warehousebox.db.CRUDItems;
 import warehousebox.db.model.Image;
-import warehousebox.db.model.Inward;
+import warehousebox.db.model.Inbound;
 import warehousebox.db.model.Item;
 import warehousebox.db.model.ItemMeta;
-import warehousebox.db.model.Outward;
+import warehousebox.db.model.Outbound;
 import warehousebox.db.model.QuantityUnit;
 import warehousebox.panel.createandupdate.ItemCreateUpdateDialog;
-import warehousebox.panel.inwards.InwardCRUDListener;
-import warehousebox.panel.inwards.InwardDeleteListener;
+import warehousebox.panel.inbounds.InboundCRUDListener;
+import warehousebox.panel.inbounds.InboundDeleteListener;
 import warehousebox.panel.menus.ListableUpdateListener;
 import warehousebox.panel.menus.ResultLimitSizePreference;
-import warehousebox.panel.outwards.OutwardCRUDListener;
-import warehousebox.panel.outwards.OutwardDeleteListener;
+import warehousebox.panel.outbounds.OutboundCRUDListener;
+import warehousebox.panel.outbounds.OutboundDeleteListener;
 import warehousebox.utility.singularlisting.Listable;
 
 /**
@@ -74,10 +74,10 @@ public class ItemsList extends JPanel
         implements
         ItemCRUDListener,
         ItemsSearchListener,
-        InwardCRUDListener,
-        OutwardCRUDListener,
-        InwardDeleteListener,
-        OutwardDeleteListener,
+        InboundCRUDListener,
+        OutboundCRUDListener,
+        InboundDeleteListener,
+        OutboundDeleteListener,
         ListableUpdateListener {
 
     private ItemTableModel model;
@@ -86,12 +86,12 @@ public class ItemsList extends JPanel
     private Integer selectedModelRow;
     private ArrayList<RowIdSelectionListener> rowIdSelectionListeners;
     private final JPopupMenu popupMenu;
-    private final JMenuItem menuItemInwardsOfSelectedItem,
-            menuItemOutwardOfSelectedItem,
+    private final JMenuItem menuItemInboundsOfSelectedItem,
+            menuItemOutboundOfSelectedItem,
             menuItemUpdateItem,
             menuItemDeleteItem;
-    private InwardDialog inwardCreateDialog;
-    private OutwardDialog outwardCreateDialog;
+    private InboundDialog inboundCreateDialog;
+    private OutboundDialog outboundCreateDialog;
     private ItemCreateUpdateDialog updateItemDialog;
     private JButton btnLoadMore;
     private int searchResultTotalRowsCount,
@@ -110,16 +110,16 @@ public class ItemsList extends JPanel
         popupMenuItemActionHandler = new PopupMenuItemActionHandler();
         popupMenu = new JPopupMenu();
         popupMenu.addPopupMenuListener(new RowMouseRightClickHandler());
-        menuItemInwardsOfSelectedItem = new JMenuItem("Inwards");
-        menuItemInwardsOfSelectedItem.addActionListener(popupMenuItemActionHandler);
-        menuItemOutwardOfSelectedItem = new JMenuItem("Outwards");
-        menuItemOutwardOfSelectedItem.addActionListener(popupMenuItemActionHandler);
+        menuItemInboundsOfSelectedItem = new JMenuItem("Inbounds");
+        menuItemInboundsOfSelectedItem.addActionListener(popupMenuItemActionHandler);
+        menuItemOutboundOfSelectedItem = new JMenuItem("Outbounds");
+        menuItemOutboundOfSelectedItem.addActionListener(popupMenuItemActionHandler);
         menuItemUpdateItem = new JMenuItem("Edit item");
         menuItemUpdateItem.addActionListener(popupMenuItemActionHandler);
         menuItemDeleteItem = new JMenuItem("Delete");
         menuItemDeleteItem.addActionListener(popupMenuItemActionHandler);
-        popupMenu.add(menuItemInwardsOfSelectedItem);
-        popupMenu.add(menuItemOutwardOfSelectedItem);
+        popupMenu.add(menuItemInboundsOfSelectedItem);
+        popupMenu.add(menuItemOutboundOfSelectedItem);
         popupMenu.addSeparator();
         popupMenu.add(menuItemUpdateItem);
         popupMenu.addSeparator();
@@ -143,8 +143,8 @@ public class ItemsList extends JPanel
         btnLoadMore.setEnabled(false);
         //  btnLoadMore.addActionListener(new LoadMoreHandler());
         add(btnLoadMore, BorderLayout.PAGE_END);
-        inwardCreateDialog = new InwardDialog(null, "Inward", true);
-        outwardCreateDialog = new OutwardDialog(null, "Outward", true);
+        inboundCreateDialog = new InboundDialog(null, "Inbound", true);
+        outboundCreateDialog = new OutboundDialog(null, "Outbound", true);
         updateItemDialog = new ItemCreateUpdateDialog(null, "Update item", true);
     }
 
@@ -156,12 +156,12 @@ public class ItemsList extends JPanel
         return btnLoadMore;
     }
 
-    public InwardDialog getInwardCreateDialog() {
-        return this.inwardCreateDialog;
+    public InboundDialog getInboundCreateDialog() {
+        return this.inboundCreateDialog;
     }
 
-    public OutwardDialog getOutwardCreateDialog() {
-        return this.outwardCreateDialog;
+    public OutboundDialog getOutboundCreateDialog() {
+        return this.outboundCreateDialog;
     }
 
     protected void setnameAndSpecDisplayFields(NameAndSpecDisplayFields nameAndSpecDisplayFields) {
@@ -247,28 +247,28 @@ public class ItemsList extends JPanel
     }
 
     /**
-     * React on Inward create.
+     * React on Inbound create.
      *
-     * @param inward
+     * @param inbound
      */
     @Override
-    public void created(Inward inward) {
+    public void created(Inbound inbound) {
         BigDecimal quantity = (BigDecimal) table.getValueAt(tableRow, 3);
-        quantity = quantity.add(inward.getQuantity());
+        quantity = quantity.add(inbound.getQuantity());
         table.setValueAt(quantity, tableRow, 3);
     }
 
     /**
-     * React on Inward update.
+     * React on Inbound update.
      *
-     * @param inward
+     * @param inbound
      * @param oldQuantity
      */
     @Override
-    public void updated(Inward inward, BigDecimal oldQuantity) {
-        ItemMeta itemMeta = model.getItemMetaById(inward.getItem().getId());
+    public void updated(Inbound inbound, BigDecimal oldQuantity) {
+        ItemMeta itemMeta = model.getItemMetaById(inbound.getItem().getId());
         if (itemMeta != null) {
-            BigDecimal quantityDifference = inward.getQuantity().subtract(oldQuantity);
+            BigDecimal quantityDifference = inbound.getQuantity().subtract(oldQuantity);
             int compare = quantityDifference.compareTo(BigDecimal.ZERO);
             BigDecimal updatedBalance = itemMeta.getBalance();
             switch (compare) {
@@ -285,28 +285,28 @@ public class ItemsList extends JPanel
     }
 
     /**
-     * React on Outward create.
+     * React on Outbound create.
      *
-     * @param outward
+     * @param outbound
      */
     @Override
-    public void created(Outward outward) {
+    public void created(Outbound outbound) {
         BigDecimal quantity = (BigDecimal) table.getValueAt(tableRow, 3);
-        quantity = quantity.subtract(outward.getQuantity());
+        quantity = quantity.subtract(outbound.getQuantity());
         table.setValueAt(quantity, tableRow, 3);
     }
 
     /**
-     * React on Outward update.
+     * React on Outbound update.
      *
-     * @param outward
+     * @param outbound
      * @param oldQuantity
      */
     @Override
-    public void updated(Outward outward, BigDecimal oldQuantity) {
-        ItemMeta itemMeta = model.getItemMetaById(outward.getItem().getId());
+    public void updated(Outbound outbound, BigDecimal oldQuantity) {
+        ItemMeta itemMeta = model.getItemMetaById(outbound.getItem().getId());
         if (itemMeta != null) {
-            BigDecimal quantityDifference = outward.getQuantity().subtract(oldQuantity);
+            BigDecimal quantityDifference = outbound.getQuantity().subtract(oldQuantity);
             int compare = quantityDifference.compareTo(BigDecimal.ZERO);
             BigDecimal updatedBalance = itemMeta.getBalance();
             switch (compare) {
@@ -323,19 +323,19 @@ public class ItemsList extends JPanel
     }
 
     @Override
-    public void deleted(Inward inward) {
-        ItemMeta itemMeta = model.getItemMetaById(inward.getItem().getId());
+    public void deleted(Inbound inbound) {
+        ItemMeta itemMeta = model.getItemMetaById(inbound.getItem().getId());
         if (itemMeta != null) {
-            BigDecimal updatedBalance = itemMeta.getBalance().subtract(inward.getQuantity());
+            BigDecimal updatedBalance = itemMeta.getBalance().subtract(inbound.getQuantity());
             itemMeta.setBalance(updatedBalance);
         }
     }
 
     @Override
-    public void deleted(Outward outward) {
-        ItemMeta itemMeta = model.getItemMetaById(outward.getItem().getId());
+    public void deleted(Outbound outbound) {
+        ItemMeta itemMeta = model.getItemMetaById(outbound.getItem().getId());
         if (itemMeta != null) {
-            BigDecimal updatedBalance = itemMeta.getBalance().add(outward.getQuantity());
+            BigDecimal updatedBalance = itemMeta.getBalance().add(outbound.getQuantity());
             itemMeta.setBalance(updatedBalance);
         }
     }
@@ -358,8 +358,8 @@ public class ItemsList extends JPanel
     }
 
     private void setEnabledMenuList(boolean enable) {
-        menuItemInwardsOfSelectedItem.setEnabled(enable);
-        menuItemOutwardOfSelectedItem.setEnabled(enable);
+        menuItemInboundsOfSelectedItem.setEnabled(enable);
+        menuItemOutboundOfSelectedItem.setEnabled(enable);
         menuItemUpdateItem.setEnabled(enable);
         menuItemDeleteItem.setEnabled(enable);
     }
@@ -437,12 +437,12 @@ public class ItemsList extends JPanel
         public void actionPerformed(ActionEvent e) {
             ItemMeta itemMeta = model.getItemMeta(selectedModelRow);
             Object source = e.getSource();
-            if (source == menuItemInwardsOfSelectedItem) {
-                inwardCreateDialog.setItemMeta(itemMeta);
-                inwardCreateDialog.setVisible(true);
-            } else if (source == menuItemOutwardOfSelectedItem) {
-                outwardCreateDialog.setItemMeta(itemMeta);
-                outwardCreateDialog.setVisible(true);
+            if (source == menuItemInboundsOfSelectedItem) {
+                inboundCreateDialog.setItemMeta(itemMeta);
+                inboundCreateDialog.setVisible(true);
+            } else if (source == menuItemOutboundOfSelectedItem) {
+                outboundCreateDialog.setItemMeta(itemMeta);
+                outboundCreateDialog.setVisible(true);
             } else if (source == menuItemUpdateItem) {
                 updateItemDialog.setTfName(itemMeta.getName());
                 updateItemDialog.setTfSpecs(itemMeta.getSpecification());
