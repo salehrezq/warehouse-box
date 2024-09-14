@@ -70,6 +70,7 @@ public class NameAndSpecDisplayFields {
         // container.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitpane.setDividerSize(3);
+        splitpane.setDividerLocation(130);
         splitpane.setTopComponent(boxNameField);
         splitpane.setBottomComponent(boxSpecsField);
         container.add(splitpane, BorderLayout.NORTH);

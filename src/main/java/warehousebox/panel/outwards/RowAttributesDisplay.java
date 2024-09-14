@@ -31,7 +31,6 @@ import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -86,12 +85,9 @@ public class RowAttributesDisplay {
 
         splitpane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitpane1.setDividerSize(3);
+        splitpane1.setDividerLocation(130);
         splitpane1.setTopComponent(boxNameField);
         splitpane1.setBottomComponent(boxSpecsField);
-
-        SwingUtilities.invokeLater(() -> {
-            splitpane1.setDividerLocation(130);
-        });
 
         Box boxItemRecipientField = Box.createVerticalBox();
         boxItemRecipientField.add(tfItemRecipient);
@@ -103,12 +99,9 @@ public class RowAttributesDisplay {
 
         splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane2.setDividerSize(3);
+        splitPane2.setDividerLocation(130);
         splitPane2.setTopComponent(boxItemRecipientField);
         splitPane2.setBottomComponent(boxItemUsedForField);
-
-        SwingUtilities.invokeLater(() -> {
-            splitPane2.setDividerLocation(130);
-        });
 
         boxContainer.add(splitpane1);
         boxContainer.add(splitPane2);
