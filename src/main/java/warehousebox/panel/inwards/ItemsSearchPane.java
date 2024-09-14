@@ -75,8 +75,8 @@ public class ItemsSearchPane {
         scrollBarThinTfSourceFilter = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarThinTfSourceFilter.setModel(tfSourceFilter.getHorizontalVisibility());
         imageIconRemoveNormal = getTransformedImageIcon("/images/remove-icon-circular/remove-normal.png");
-        imageIconRemoveHover = getTransformedImageIcon("/images/remove-icon-circular/remove-hover.png");
-        imageIconRemovePress = getTransformedImageIcon("/images/remove-icon-circular/remove-press.png");
+        imageIconRemoveHover = getTransformedImageIcon("/images/remove-icon-circular/remove-hovered.png");
+        imageIconRemovePress = getTransformedImageIcon("/images/remove-icon-circular/remove-pressed.png");
         btnRemoveSource = new JLabel();
         btnRemoveSource.setOpaque(false);
         btnRemoveSource.setIcon(imageIconRemoveNormal);

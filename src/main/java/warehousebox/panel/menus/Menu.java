@@ -23,6 +23,7 @@
  */
 package warehousebox.panel.menus;
 
+import java.awt.Image;
 import warehousebox.panel.createandupdate.ItemCreateUpdateDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -80,9 +81,9 @@ public class Menu {
         menubar.add(menuSettings);
         resultSizeDialog = new ResultLimitSizePreference(target, "Set search result rows size on \"load more\"", true);
 
-        imageIconAboutNormal = new ImageIcon(getClass().getResource("/images/app-about/about-normal.png"));
-        imageIconAboutHover = new ImageIcon(getClass().getResource("/images/app-about/about-hovered.png"));
-        imageIconAboutPress = new ImageIcon(getClass().getResource("/images/app-about/about-pressed.png"));
+        imageIconAboutNormal = getTransformedImageIcon("/images/app-about/about-normal.png");
+        imageIconAboutHover = getTransformedImageIcon("/images/app-about/about-hovered.png");
+        imageIconAboutPress = getTransformedImageIcon("/images/app-about/about-pressed.png");
 
         menuAbout = new JMenu("About");
         menuAbout.setIcon(imageIconAboutNormal);

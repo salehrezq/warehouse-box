@@ -89,8 +89,8 @@ public class ItemFormImage implements
         spinnerH.setModel(0, 0, 0, 1);
         spinnerH.getSpinner().addChangeListener(new JSpinnerHandler());
         imageIconRemoveNormal = new ImageIcon(getClass().getResource("/images/remove-icon/remove-normal.png"));
-        imageIconRemoveHover = new ImageIcon(getClass().getResource("/images/remove-icon/remove-hover.png"));
-        imageIconRemovePress = new ImageIcon(getClass().getResource("/images/remove-icon/remove-press.png"));
+        imageIconRemoveHover = new ImageIcon(getClass().getResource("/images/remove-icon/remove-hovered.png"));
+        imageIconRemovePress = new ImageIcon(getClass().getResource("/images/remove-icon/remove-pressed.png"));
         btnRemove = new JLabel();
         btnRemove.addMouseListener(new MouseEventsHandler());
         btnRemove.setOpaque(false);
