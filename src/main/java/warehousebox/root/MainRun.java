@@ -23,8 +23,10 @@
  */
 package warehousebox.root;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 import warehousebox.db.Connect;
 import warehousebox.db.model.QuantityUnit;
 import warehousebox.db.model.Recipient;
@@ -89,6 +91,9 @@ public class MainRun {
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(() -> {
             Connect.buildDatabaseIfNotExist();
+            FlatLightLaf.setup();
+            UIManager.put("Table.showVerticalLines", true);
+            UIManager.put("Table.showHorizontalLines", true);
             MainRun mainRun = new MainRun();
             mainRun.createAndShowGUI();
             mainRun.linkActionToListeners();
