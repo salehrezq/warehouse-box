@@ -160,6 +160,7 @@ public class InboundsList extends JPanel
         table.setValueAt(inbound.getQuantity(), tableRow, 2);
         table.setValueAt(inbound.getSource(), tableRow, 4);
         table.setValueAt(inbound.getDate(), tableRow, 5);
+        rowAttributesDisplay.setTfItemSourceText(inbound.getSource().getName());
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {

@@ -188,6 +188,8 @@ public class ItemsList extends JPanel
         table.setValueAt(updatedItem.getSpecification(), tableRow, 2);
         // 3 is calculated value not relevant on the update here
         table.setValueAt(updatedItem.getQuantityUnit(), tableRow, 4);
+        nameAndSpecDisplayFields.setTfItemNameText(updatedItem.getName());
+        nameAndSpecDisplayFields.setTfItemSpecificationsText(updatedItem.getSpecification());
     }
 
     @Override

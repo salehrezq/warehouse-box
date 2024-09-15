@@ -162,6 +162,8 @@ public class OutboundsList extends JPanel
         table.setValueAt(outbound.getRecipient(), tableRow, 4);
         table.setValueAt(outbound.getUsedFor(), tableRow, 5);
         table.setValueAt(outbound.getDate(), tableRow, 6);
+        rowAttributesDisplay.setTfRecipientText(outbound.getRecipient().getName());
+        rowAttributesDisplay.setTfUsedForText(outbound.getUsedFor());
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
