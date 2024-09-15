@@ -43,7 +43,7 @@ public class InboundsTap extends JPanel {
     private ItemsSearchPane inboundsSearchPane;
     private ItemsSearchLogic inboundsSearchLogic;
     private InboundsList inboundsList;
-    private ItemImage itemsImages;
+    private ItemImage itemImage;
     private RowAttributesDisplay rowAttributesDisplay;
 
     public InboundsTap() {
@@ -80,9 +80,9 @@ public class InboundsTap extends JPanel {
         ListableItemFormForFilters listableItemFormForFilters = inboundsSearchLogic.getListableItemFormForFilters();
         listableItemFormForFilters.addListableItemFormForFiltersListener(inboundsSearchLogic);
 
-        itemsImages = new ItemImage();
+        itemImage = new ItemImage();
 
-        inboundsList.addRowIdSelectionListener(itemsImages);
+        inboundsList.addRowIdSelectionListener(itemImage);
 
         // Add the scroll panes to a split pane.
         splitSearchAndItemsListPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -90,7 +90,7 @@ public class InboundsTap extends JPanel {
         splitSearchAndItemsListPane.setTopComponent(inboundsSearchPane.getContainer());
         splitSearchAndItemsListPane.setBottomComponent(panelInboundsList);
         panelGatherLeft.add(splitSearchAndItemsListPane, BorderLayout.CENTER);
-        panelGatherRight.add(itemsImages.getFormContainer(), BorderLayout.CENTER);
+        panelGatherRight.add(itemImage.getFormContainer(), BorderLayout.CENTER);
 
         splitRightAndLeftPanes = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitRightAndLeftPanes.setDividerSize(5);
