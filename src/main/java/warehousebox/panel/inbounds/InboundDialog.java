@@ -242,14 +242,13 @@ public class InboundDialog extends JDialog {
                 inbound.setDate(selectedDate);
                 boolean update = CRUDInbounds.update(inbound);
                 if (update) {
-                    notifyUpdated(inbound, oldQuantity);
                     InboundDialog.this.dispose();
                     JOptionPane.showMessageDialog(
                             null,
                             "Inbound updated successfully",
                             "Success",
                             JOptionPane.INFORMATION_MESSAGE);
-
+                    notifyUpdated(inbound, oldQuantity);
                 } else {
                     JOptionPane.showMessageDialog(
                             null,

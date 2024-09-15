@@ -253,13 +253,13 @@ public class OutboundDialog extends JDialog {
                 outbound.setDate(selectedDate);
                 boolean update = CRUDOutbounds.update(outbound);
                 if (update) {
-                    notifyUpdated(outbound, oldQuantity);
                     OutboundDialog.this.dispose();
                     JOptionPane.showMessageDialog(
                             null,
                             "Outbound updated successfully",
                             "Success",
                             JOptionPane.INFORMATION_MESSAGE);
+                    notifyUpdated(outbound, oldQuantity);
                 } else {
                     JOptionPane.showMessageDialog(
                             null,
