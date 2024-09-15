@@ -452,7 +452,6 @@ public class ItemsList extends JPanel
                 quantityUnit.setId(itemMeta.getQuantityUnit().getId());
                 quantityUnit.setName(itemMeta.getQuantityUnit().getName());
                 updateItemDialog.setItemIdForUpdate(itemMeta.getId());
-                updateItemDialog.getFormManagement().addItemCRUDListener(ItemsList.this);
                 updateItemDialog.setUnitName(quantityUnit);
                 updateItemDialog.setItemImages(itemMeta.getId());
                 updateItemDialog.setVisible(true);
