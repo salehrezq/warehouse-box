@@ -103,7 +103,7 @@ public class InboundDialog extends JDialog {
         datePicker.addDateChangeListener(dateChangeHandler);
         this.setupDateField(datePicker);
 
-        btnSubmit = new JButton("Submit addition");
+        btnSubmit = new JButton("Submit");
         btnSubmit.setEnabled(false);
         btnSubmit.addActionListener(new BtnSubmitHandler());
 
