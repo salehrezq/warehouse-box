@@ -64,7 +64,7 @@ public class OutboundsTap extends JPanel {
         outboundsSearchLogic.setTfSearchQuery(outboundsSearchPane.getTfSearchQuery());
         outboundsSearchLogic.setBtnSearch(outboundsSearchPane.getBtnSearchQuery());
         outboundsSearchLogic.setCheckFilters(
-                outboundsSearchPane.getCheckCodeFilter(),
+                outboundsSearchPane.getCheckIdFilter(),
                 outboundsSearchPane.getCheckNameFilter(),
                 outboundsSearchPane.getCheckSpecificationFilter());
         outboundsSearchLogic.setBtnRecipientFilter(outboundsSearchPane.getBtnRecipientFilter());

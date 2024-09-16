@@ -71,12 +71,12 @@ public class CRUDInbounds {
     private static String formulateSearchFilters(SearchFilters searchFilters) {
         String sqlFilter = " WHERE";
         boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
-        boolean isCodeFilter = searchFilters.isCodeFilter();
+        boolean isIdFilter = searchFilters.isIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
         boolean isSourceFilter = searchFilters.isSourceFilter();
-        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isSourceFilter;
+        boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter || isSourceFilter;
 
         if ((!isAnyFilterOn || isSearchisQueryBlank) && !(isDateRangeFilter || isSourceFilter)) {
             sqlFilter = "";
@@ -84,17 +84,17 @@ public class CRUDInbounds {
         }
         if (isDateRangeFilter) {
             sqlFilter += " (date >= ? AND date <= ?)";
-            if (isCodeFilter || isNameFilter || isSpecificationFilter || isSourceFilter) {
+            if (isIdFilter || isNameFilter || isSpecificationFilter || isSourceFilter) {
                 sqlFilter += " AND";
             }
         }
         if (isSourceFilter) {
             sqlFilter += " source_id = ?";
-            if (isCodeFilter || isNameFilter || isSpecificationFilter) {
+            if (isIdFilter || isNameFilter || isSpecificationFilter) {
                 sqlFilter += " AND";
             }
         }
-        if (isCodeFilter) {
+        if (isIdFilter) {
             sqlFilter += " i.id = ?";
             return sqlFilter;
         }
@@ -111,14 +111,14 @@ public class CRUDInbounds {
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         String searchQuery = searchFilters.getSearchQuery();
-        boolean isCodeFilter = searchFilters.isCodeFilter();
+        boolean isIdFilter = searchFilters.isIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
         boolean isSourceFilter = searchFilters.isSourceFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter || isSourceFilter;
+        boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter || isSourceFilter;
 
         if ((!isAnyFilterOn || searchQuery.isBlank()) && !(isDateRangeFilter || isSourceFilter)) {
             return preparedStatementWrapper;
@@ -130,7 +130,7 @@ public class CRUDInbounds {
         if (isSourceFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), searchFilters.getSource().getId());
         }
-        if (isCodeFilter) {
+        if (isIdFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
         }
         if (isNameFilter) {

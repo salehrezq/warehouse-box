@@ -67,14 +67,14 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private JLabel btnRemoveSource;
     private JButton btnSearch;
     private JButton btnLoadMore;
-    private JCheckBox checkCodeFilter,
+    private JCheckBox checkIdFilter,
             checkNameFilter,
             checkSpecificationFilter;
     private JButton btnSourceFilter;
     private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
     private SourceFilterDialog sourceFilterDialog;
     private SearchFilters searchFilters, searchFiltersImmutableCopy;
-    boolean isCodeChecked,
+    boolean isIdChecked,
             isAnyTextRelatedCheckboxesSelected,
             isSourceSelected,
             isDateRangeCheckSelected;
@@ -84,7 +84,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private LocalDate oldDateStart, oldDateEnd;
     private DateChangeHandler dateChangeHandler;
     private CheckBoxFiltersHandler checkBoxFiltersHandler;
-    private static final String PREFS_CODE_FILTER = "checkCodeFilter";
+    private static final String PREFS_CODE_FILTER = "checkIdFilter";
     private static final String PREFS_NAME_FILTER = "checkNameFilter";
     private static final String PREFS_SPECIFICATION_FILTER = "checkSpecificationFilter";
     private static final String PREFS_DATE_RANGE_FILTER = "checkDateRangeFilter";
@@ -104,7 +104,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         searchFilters = new SearchFilters();
         checkBoxFiltersHandler = new CheckBoxFiltersHandler();
         matchDigitsOnly = new MatchDigitsOnlyHandler();
-        searchFilters.setCodeFilter(false);
+        searchFilters.setIdFilter(false);
         searchFilters.setNameFilter(true);
         searchFilters.setSpecificationFilter(true);
         searchFilters.enableDateRangeFilter(false);
@@ -116,7 +116,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
     protected void setTfSearchQuery(JTextField tfSearchQuery) {
         this.tfSearchQuery = tfSearchQuery;
-        isCodeChecked = false;
+        isIdChecked = false;
         this.tfSearchQuery.getDocument().addDocumentListener(matchDigitsOnly);
     }
 
@@ -142,15 +142,15 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     }
 
     protected void setCheckFilters(JCheckBox... checkfilters) {
-        checkCodeFilter = checkfilters[0];
+        checkIdFilter = checkfilters[0];
         checkNameFilter = checkfilters[1];
         checkSpecificationFilter = checkfilters[2];
 
-        checkCodeFilter.addActionListener(checkBoxFiltersHandler);
+        checkIdFilter.addActionListener(checkBoxFiltersHandler);
         checkNameFilter.addActionListener(checkBoxFiltersHandler);
         checkSpecificationFilter.addActionListener(checkBoxFiltersHandler);
 
-        this.checkCodeFilter.setSelected(prefs.getBoolean(PREFS_CODE_FILTER, false));
+        this.checkIdFilter.setSelected(prefs.getBoolean(PREFS_CODE_FILTER, false));
         this.checkNameFilter.setSelected(prefs.getBoolean(PREFS_NAME_FILTER, false));
         this.checkSpecificationFilter.setSelected(prefs.getBoolean(PREFS_SPECIFICATION_FILTER, false));
     }
@@ -253,7 +253,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-            } else if (searchFilters.isCodeFilter()) {
+            } else if (searchFilters.isIdFilter()) {
                 if (!pattern.matcher(searchFilters.getSearchQuery()).matches()) {
                     btnLoadMore.setEnabled(false);
                     JOptionPane.showMessageDialog(
@@ -284,30 +284,30 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         }
     }
 
-    private void tfSearchQueryCodeChecker() {
-        if (isCodeChecked) {
+    private void tfSearchQueryIdChecker() {
+        if (isIdChecked) {
             if (pattern.matcher(tfSearchQuery.getText()).matches()) {
                 tfSearchQuery.setBackground(Color.WHITE);
             } else {
                 tfSearchQuery.setBackground(colorError);
             }
-        } else if (!isCodeChecked) {
+        } else if (!isIdChecked) {
             tfSearchQuery.setBackground(Color.WHITE);
         }
     }
 
     protected void initializeFiltersReactToRetrievedPreferences() {
-        checkBoxcodeFilterReact();
+        checkBoxidFilterReact();
         checkBoxesNameAndSpecificationFiltersReact();
         checkBoxFiltersAlwaysInvoke();
     }
 
-    private void checkBoxcodeFilterReact() {
-        boolean isCodeSelected = checkCodeFilter.isSelected();
-        checkNameFilter.setEnabled(!isCodeSelected);
-        checkSpecificationFilter.setEnabled(!isCodeSelected);
-        searchFilters.setCodeFilter(isCodeSelected);
-        if (checkCodeFilter.isSelected()) {
+    private void checkBoxidFilterReact() {
+        boolean isIdSelected = checkIdFilter.isSelected();
+        checkNameFilter.setEnabled(!isIdSelected);
+        checkSpecificationFilter.setEnabled(!isIdSelected);
+        searchFilters.setIdFilter(isIdSelected);
+        if (checkIdFilter.isSelected()) {
             checkNameFilter.setSelected(false);
             checkSpecificationFilter.setSelected(false);
             searchFilters.setNameFilter(false);
@@ -319,28 +319,28 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         boolean isNameORSpecificationSelected = (checkNameFilter.isSelected() || checkSpecificationFilter.isSelected());
         boolean isNameANDSpecificationBothDeselected = !checkNameFilter.isSelected() && !checkSpecificationFilter.isSelected();
         if (isNameORSpecificationSelected) {
-            checkCodeFilter.setEnabled(false);
-            checkCodeFilter.setSelected(false);
-            searchFilters.setCodeFilter(false);
+            checkIdFilter.setEnabled(false);
+            checkIdFilter.setSelected(false);
+            searchFilters.setIdFilter(false);
         }
         if (isNameANDSpecificationBothDeselected) {
-            checkCodeFilter.setEnabled(true);
+            checkIdFilter.setEnabled(true);
         }
         searchFilters.setNameFilter(checkNameFilter.isSelected());
         searchFilters.setSpecificationFilter(checkSpecificationFilter.isSelected());
     }
 
     private void checkBoxFiltersAlwaysInvoke() {
-        isAnyTextRelatedCheckboxesSelected = checkCodeFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
+        isAnyTextRelatedCheckboxesSelected = checkIdFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
         btnSearch.setText(isAnyTextRelatedCheckboxesSelected ? "Search" : "Get all");
         tfSearchQuery.setEnabled(isAnyTextRelatedCheckboxesSelected);
         searchFilters.enableDateRangeFilter(dateRange.getCheckDateFilter().isSelected());
-        isCodeChecked = checkCodeFilter.isSelected();
+        isIdChecked = checkIdFilter.isSelected();
         isSourceSelected = !tfSourceFilter.getText().isBlank();
         isDateRangeCheckSelected = dateRange.getCheckDateFilter().isSelected();
         boolean boolSum = isAnyTextRelatedCheckboxesSelected || isSourceSelected || isDateRangeCheckSelected;
         btnSearch.setText(boolSum ? "Search" : "Get all");
-        tfSearchQueryCodeChecker();
+        tfSearchQueryIdChecker();
     }
 
     private class CheckBoxFiltersHandler implements ActionListener {
@@ -349,8 +349,8 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         public void actionPerformed(ActionEvent e) {
             JCheckBox source = (JCheckBox) e.getSource();
 
-            if (source == checkCodeFilter) {
-                checkBoxcodeFilterReact();
+            if (source == checkIdFilter) {
+                checkBoxidFilterReact();
             } else if (source == checkNameFilter || source == checkSpecificationFilter) {
                 checkBoxesNameAndSpecificationFiltersReact();
             } else if (source == dateRange.getCheckDateFilter()) {
@@ -359,7 +359,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                 btnSearch.setText(boolSum ? "Search" : "Get all");
             }
             checkBoxFiltersAlwaysInvoke();
-            prefs.putBoolean(PREFS_CODE_FILTER, checkCodeFilter.isSelected());
+            prefs.putBoolean(PREFS_CODE_FILTER, checkIdFilter.isSelected());
             prefs.putBoolean(PREFS_NAME_FILTER, checkNameFilter.isSelected());
             prefs.putBoolean(PREFS_SPECIFICATION_FILTER, checkSpecificationFilter.isSelected());
             prefs.putBoolean(PREFS_DATE_RANGE_FILTER, dateRange.getCheckDateFilter().isSelected());
@@ -370,7 +370,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
         private void check(DocumentEvent e) {
             if (e.getDocument() == tfSearchQuery.getDocument()) {
-                tfSearchQueryCodeChecker();
+                tfSearchQueryIdChecker();
             }
         }
 

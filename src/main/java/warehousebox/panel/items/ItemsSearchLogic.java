@@ -53,15 +53,15 @@ public class ItemsSearchLogic {
     private JTextField tfSearchQuery;
     private JButton btnSearch;
     private JButton btnLoadMore;
-    private JCheckBox checkCodeFilter,
+    private JCheckBox checkIdFilter,
             checkNameFilter,
             checkSpecificationFilter;
     private SearchFilters searchFilters, searchFiltersImmutableCopy;
-    boolean isCodeChecked;
+    boolean isIdChecked;
     private MatchDigitsOnlyHandler matchDigitsOnly;
     private final Pattern pattern = Pattern.compile("\\d+");
     private Preferences prefs;
-    private static final String PREFS_CODE_FILTER = "checkCodeFilter";
+    private static final String PREFS_CODE_FILTER = "checkIdFilter";
     private static final String PREFS_NAME_FILTER = "checkNameFilter";
     private static final String PREFS_SPECIFICATION_FILTER = "checkSpecificationFilter";
     private CheckBoxFiltersHandler checkBoxFiltersHandler;
@@ -72,7 +72,7 @@ public class ItemsSearchLogic {
         itemsSearchListeners = new ArrayList<>();
         searchFilters = new SearchFilters();
         matchDigitsOnly = new MatchDigitsOnlyHandler();
-        searchFilters.setCodeFilter(false);
+        searchFilters.setIdFilter(false);
         searchFilters.setNameFilter(true);
         searchFilters.setSpecificationFilter(true);
         prefs = Preferences.userRoot().node(getClass().getName());
@@ -80,7 +80,7 @@ public class ItemsSearchLogic {
 
     protected void setTfSearchQuery(JTextField tfSearchQuery) {
         this.tfSearchQuery = tfSearchQuery;
-        isCodeChecked = false;
+        isIdChecked = false;
         this.tfSearchQuery.getDocument().addDocumentListener(matchDigitsOnly);
     }
 
@@ -95,15 +95,15 @@ public class ItemsSearchLogic {
     }
 
     protected void setCheckFilters(JCheckBox... checks) {
-        checkCodeFilter = checks[0];
+        checkIdFilter = checks[0];
         checkNameFilter = checks[1];
         checkSpecificationFilter = checks[2];
 
-        checkCodeFilter.addActionListener(checkBoxFiltersHandler);
+        checkIdFilter.addActionListener(checkBoxFiltersHandler);
         checkNameFilter.addActionListener(checkBoxFiltersHandler);
         checkSpecificationFilter.addActionListener(checkBoxFiltersHandler);
 
-        this.checkCodeFilter.setSelected(prefs.getBoolean(PREFS_CODE_FILTER, false));
+        this.checkIdFilter.setSelected(prefs.getBoolean(PREFS_CODE_FILTER, false));
         this.checkNameFilter.setSelected(prefs.getBoolean(PREFS_NAME_FILTER, false));
         this.checkSpecificationFilter.setSelected(prefs.getBoolean(PREFS_SPECIFICATION_FILTER, false));
 
@@ -157,7 +157,7 @@ public class ItemsSearchLogic {
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-            } else if (searchFilters.isCodeFilter()) {
+            } else if (searchFilters.isIdFilter()) {
                 if (!pattern.matcher(searchFilters.getSearchQuery()).matches()) {
                     btnLoadMore.setEnabled(false);
                     JOptionPane.showMessageDialog(
@@ -188,8 +188,8 @@ public class ItemsSearchLogic {
         }
     }
 
-    private void tfSearchQueryCodeChecker() {
-        if (isCodeChecked) {
+    private void tfSearchQueryIdChecker() {
+        if (isIdChecked) {
             if (pattern.matcher(tfSearchQuery.getText()).matches()) {
                 tfSearchQuery.setBackground(Color.WHITE);
                 btnSearch.setEnabled(true);
@@ -197,24 +197,24 @@ public class ItemsSearchLogic {
                 tfSearchQuery.setBackground(colorError);
                 btnSearch.setEnabled(false);
             }
-        } else if (!isCodeChecked) {
+        } else if (!isIdChecked) {
             tfSearchQuery.setBackground(Color.WHITE);
             btnSearch.setEnabled(true);
         }
     }
 
     private void initializeFiltersReactToRetrievedPreferences() {
-        checkBoxcodeFilterReact();
+        checkBoxidFilterReact();
         checkBoxesNameAndSpecificationFiltersReact();
         checkBoxFiltersAlwaysInvoke();
     }
 
-    private void checkBoxcodeFilterReact() {
-        boolean isCodeSelected = checkCodeFilter.isSelected();
-        checkNameFilter.setEnabled(!isCodeSelected);
-        checkSpecificationFilter.setEnabled(!isCodeSelected);
-        searchFilters.setCodeFilter(isCodeSelected);
-        if (checkCodeFilter.isSelected()) {
+    private void checkBoxidFilterReact() {
+        boolean isIdSelected = checkIdFilter.isSelected();
+        checkNameFilter.setEnabled(!isIdSelected);
+        checkSpecificationFilter.setEnabled(!isIdSelected);
+        searchFilters.setIdFilter(isIdSelected);
+        if (checkIdFilter.isSelected()) {
             checkNameFilter.setSelected(false);
             checkSpecificationFilter.setSelected(false);
             searchFilters.setNameFilter(false);
@@ -226,23 +226,23 @@ public class ItemsSearchLogic {
         boolean isNameORSpecificationSelected = (checkNameFilter.isSelected() || checkSpecificationFilter.isSelected());
         boolean isNameANDSpecificationBothDeselected = !checkNameFilter.isSelected() && !checkSpecificationFilter.isSelected();
         if (isNameORSpecificationSelected) {
-            checkCodeFilter.setEnabled(false);
-            checkCodeFilter.setSelected(false);
-            searchFilters.setCodeFilter(false);
+            checkIdFilter.setEnabled(false);
+            checkIdFilter.setSelected(false);
+            searchFilters.setIdFilter(false);
         }
         if (isNameANDSpecificationBothDeselected) {
-            checkCodeFilter.setEnabled(true);
+            checkIdFilter.setEnabled(true);
         }
         searchFilters.setNameFilter(checkNameFilter.isSelected());
         searchFilters.setSpecificationFilter(checkSpecificationFilter.isSelected());
     }
 
     private void checkBoxFiltersAlwaysInvoke() {
-        boolean isAnyChecked = checkCodeFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
+        boolean isAnyChecked = checkIdFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
         btnSearch.setText(isAnyChecked ? "Search" : "Get all");
         tfSearchQuery.setEnabled(isAnyChecked);
-        isCodeChecked = checkCodeFilter.isSelected();
-        tfSearchQueryCodeChecker();
+        isIdChecked = checkIdFilter.isSelected();
+        tfSearchQueryIdChecker();
     }
 
     private class CheckBoxFiltersHandler implements ActionListener {
@@ -250,15 +250,15 @@ public class ItemsSearchLogic {
         @Override
         public void actionPerformed(ActionEvent e) {
             JCheckBox source = (JCheckBox) e.getSource();
-            if (source == checkCodeFilter) {
-                checkBoxcodeFilterReact();
+            if (source == checkIdFilter) {
+                checkBoxidFilterReact();
             } else {
                 if (source == checkNameFilter || source == checkSpecificationFilter) {
                     checkBoxesNameAndSpecificationFiltersReact();
                 }
             }
             checkBoxFiltersAlwaysInvoke();
-            prefs.putBoolean(PREFS_CODE_FILTER, checkCodeFilter.isSelected());
+            prefs.putBoolean(PREFS_CODE_FILTER, checkIdFilter.isSelected());
             prefs.putBoolean(PREFS_NAME_FILTER, checkNameFilter.isSelected());
             prefs.putBoolean(PREFS_SPECIFICATION_FILTER, checkSpecificationFilter.isSelected());
         }
@@ -268,7 +268,7 @@ public class ItemsSearchLogic {
 
         private void check(DocumentEvent e) {
             if (e.getDocument() == tfSearchQuery.getDocument()) {
-                tfSearchQueryCodeChecker();
+                tfSearchQueryIdChecker();
             }
         }
 

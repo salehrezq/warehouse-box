@@ -30,7 +30,7 @@ package warehousebox.panel.items;
 public class SearchFilters {
 
     private String searchQuery;
-    private boolean codeFilter;
+    private boolean idFilter;
     private boolean nameFilter;
     private boolean specificationFilter;
 
@@ -44,7 +44,7 @@ public class SearchFilters {
      */
     public SearchFilters(SearchFilters searchFilters) {
         this.searchQuery = searchFilters.searchQuery;
-        this.codeFilter = searchFilters.codeFilter;
+        this.idFilter = searchFilters.idFilter;
         this.nameFilter = searchFilters.nameFilter;
         this.specificationFilter = searchFilters.specificationFilter;
     }
@@ -57,12 +57,12 @@ public class SearchFilters {
         this.searchQuery = searchQuery;
     }
 
-    public Boolean isCodeFilter() {
-        return codeFilter;
+    public Boolean isIdFilter() {
+        return idFilter;
     }
 
-    public void setCodeFilter(boolean codeFilter) {
-        this.codeFilter = codeFilter;
+    public void setIdFilter(boolean idFilter) {
+        this.idFilter = idFilter;
     }
 
     public boolean isNameFilter() {

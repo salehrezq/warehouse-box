@@ -62,7 +62,7 @@ public class ItemsTab extends JPanel {
         itemsSearchLogic.setTfSearchQuery(itemsSearchPane.getTfSearchQuery());
         itemsSearchLogic.setBtnSearch(itemsSearchPane.getBtnSearchQuery());
         itemsSearchLogic.setCheckFilters(
-                itemsSearchPane.getCheckCodeFilter(),
+                itemsSearchPane.getCheckIdFilter(),
                 itemsSearchPane.getCheckNameFilter(),
                 itemsSearchPane.getCheckSpecificationFilter());
         itemsSearchLogic.setBtnLoadMore(itemsList.getBtnLoadMore());

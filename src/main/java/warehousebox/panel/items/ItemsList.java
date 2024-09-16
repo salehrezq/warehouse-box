@@ -182,8 +182,6 @@ public class ItemsList extends JPanel
 
     @Override
     public void updated(Item updatedItem) {
-        // "Code", "Name", "Specification", "Balance", "unit_id", "Unit"
-        // QuantityUnit unit = (QuantityUnit) CRUDListable.getById(new QuantityUnit(), updatedItem.getQuantityUnit().getId());
         table.setValueAt(updatedItem.getName(), tableRow, 1);
         table.setValueAt(updatedItem.getSpecification(), tableRow, 2);
         // 3 is calculated value not relevant on the update here

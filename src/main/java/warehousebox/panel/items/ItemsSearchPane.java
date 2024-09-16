@@ -41,7 +41,7 @@ public class ItemsSearchPane extends JPanel {
     private JTextField tfSearchQuery;
     private ScrollBarThin scrollBarThinTfSearchQuery;
     private JButton btnSearchQuery;
-    private JCheckBox checkCodeFilter,
+    private JCheckBox checkIdFilter,
             checkNameFilter,
             checkSpecificationFilter;
 
@@ -58,7 +58,7 @@ public class ItemsSearchPane extends JPanel {
 
         btnSearchQuery = new JButton("Search");
 
-        checkCodeFilter = new JCheckBox("Code");
+        checkIdFilter = new JCheckBox("Id");
         checkNameFilter = new JCheckBox("Name");
         checkSpecificationFilter = new JCheckBox("Specification");
 
@@ -66,7 +66,7 @@ public class ItemsSearchPane extends JPanel {
         boxSearch.add(boxSearchQueryField);
         boxSearch.add(btnSearchQuery);
         Box boxFilters = Box.createHorizontalBox();
-        boxFilters.add(checkCodeFilter);
+        boxFilters.add(checkIdFilter);
         boxFilters.add(Box.createHorizontalStrut(5));
         boxFilters.add(checkNameFilter);
         boxFilters.add(Box.createHorizontalStrut(5));
@@ -89,8 +89,8 @@ public class ItemsSearchPane extends JPanel {
         return btnSearchQuery;
     }
 
-    protected JCheckBox getCheckCodeFilter() {
-        return checkCodeFilter;
+    protected JCheckBox getCheckIdFilter() {
+        return checkIdFilter;
     }
 
     protected JCheckBox getCheckNameFilter() {

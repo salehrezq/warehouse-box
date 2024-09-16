@@ -130,17 +130,17 @@ public class CRUDItems {
     private static String formulateSearchFilters(SearchFilters searchFilters) {
         String sqlFilter = " WHERE";
         boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
-        boolean isCodeFilter = searchFilters.isCodeFilter();
+        boolean isIdFilter = searchFilters.isIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
 
-        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter;
+        boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter;
 
         if (!isAnyFilterOn || isSearchisQueryBlank) {
             sqlFilter = "";
             return sqlFilter;
         }
-        if (isCodeFilter) {
+        if (isIdFilter) {
             sqlFilter += " it.id = ?";
             return sqlFilter;
         }
@@ -157,17 +157,17 @@ public class CRUDItems {
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         String searchQuery = searchFilters.getSearchQuery();
-        boolean isCodeFilter = searchFilters.isCodeFilter();
+        boolean isIdFilter = searchFilters.isIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn = isCodeFilter || isNameFilter || isSpecificationFilter;
+        boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter;
 
         if (!isAnyFilterOn || searchQuery.isBlank()) {
             return preparedStatementWrapper;
         }
-        if (isCodeFilter) {
+        if (isIdFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
         }
         if (isNameFilter) {
