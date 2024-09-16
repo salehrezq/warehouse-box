@@ -66,8 +66,6 @@ public class NameAndSpecDisplayFields {
         Box boxSpecsField = Box.createVerticalBox();
         boxSpecsField.add(tfItemSpecifications);
         boxSpecsField.add(scrollBarTfSpecifications);
-        // box.add(Box.createVerticalGlue());
-        // container.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitpane.setDividerSize(3);
         splitpane.setDividerLocation(130);

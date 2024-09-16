@@ -25,9 +25,7 @@ package warehousebox.panel.createandupdate;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.util.ArrayList;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import warehousebox.utility.imagefilechooser.IMGFileChooser;
@@ -54,7 +52,6 @@ public class ItemForm extends JPanel implements Navigatable {
         setLayout(new BorderLayout());
         cardLayout = new CardLayout();
         panelCards = new JPanel(cardLayout);
-        panelCards.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         itemFormTextFields = new ItemFormTextFields();
         itemFormImage = new ItemFormImage();
         linkListenersToChangeProviders(itemFormImage);
@@ -65,7 +62,6 @@ public class ItemForm extends JPanel implements Navigatable {
         cardLayout.show(panelCards, FORMTEXTFIELDS);
         formManagement = new FormManagement(collectables);
         formManagement.setFormLastStep(panelCards.getComponentCount());
-        formManagement.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         add(panelCards, BorderLayout.CENTER);
         add(formManagement, BorderLayout.PAGE_END);
     }
