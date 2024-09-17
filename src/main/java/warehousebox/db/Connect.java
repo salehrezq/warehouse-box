@@ -94,13 +94,6 @@ public class Connect {
         }
     }
 
-    public static void cleanUp() {
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(Connect.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 }
