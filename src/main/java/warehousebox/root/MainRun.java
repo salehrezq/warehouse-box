@@ -63,6 +63,16 @@ public class MainRun {
         frame.setJMenuBar(menu.getMenuBar());
         frame.pack();
         frame.setVisible(true);
+
+        /**
+         * Shutdown the database on app termination.
+         */
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                Connect.shutdown();
+            }
+        });
     }
 
     private void linkActionToListeners() {

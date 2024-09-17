@@ -39,14 +39,20 @@ public class Connect {
 
     // JDBC driver name and database URL
     private static final String JDBC_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+    //  Database credentials
+    private static final String DB_NAME = "warehouse-box-db";
+    private static final String USER = "root";
+    private static final String PASS = "$%^1Rt!&*d!21";
+
     private static final String DB_URL = "jdbc:derby:"
             + System.getProperty("user.home")
             + File.separator
-            + "warehouse-box-db;create=true;collation=TERRITORY_BASED:PRIMARY";
+            + DB_NAME + ";create=true;collation=TERRITORY_BASED:PRIMARY";
 
-    //  Database credentials
-    private static final String USER = "root";
-    private static final String PASS = "1212";
+    private static final String DB_SHUTDOWN_URL = "jdbc:derby:"
+            + System.getProperty("user.home")
+            + File.separator
+            + DB_NAME + ";user=" + USER + ";password=" + PASS + ";shutdown=true";
 
     // For atomic statements
     private static Connection conn;
@@ -94,6 +100,12 @@ public class Connect {
         }
     }
 
+    public static void shutdown() {
+        try {
+            DriverManager.getConnection(DB_SHUTDOWN_URL);
+        } catch (SQLException ex) {
+            Logger.getLogger(Connect.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }
