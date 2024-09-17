@@ -476,6 +476,8 @@ public class ItemsList extends JPanel
                             relatedImagesToBeRemoved.forEach(imageTobeRemoved
                                     -> ImageFileManager.delete(imageTobeRemoved.getImageName()));
                             notifySelectedRowHasBeenDeleted(itemMeta.getId());
+                            nameAndSpecDisplayFields.setTfItemNameText("");
+                            nameAndSpecDisplayFields.setTfItemSpecificationsText("");
                             JOptionPane.showMessageDialog(
                                     null,
                                     "Item has been deleted successfully",

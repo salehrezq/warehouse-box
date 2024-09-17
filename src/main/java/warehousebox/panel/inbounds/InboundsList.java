@@ -359,6 +359,9 @@ public class InboundsList extends JPanel
                     if (deleted) {
                         model.removeInbound(modelIndex);
                         notifyInboundDeleted(inbound);
+                        rowAttributesDisplay.setTfItemNameText("");
+                        rowAttributesDisplay.setTfItemSourceText("");
+                        rowAttributesDisplay.setTfItemSpecificationsText("");
                         JOptionPane.showMessageDialog(
                                 null,
                                 "Inbound deleted successfully",

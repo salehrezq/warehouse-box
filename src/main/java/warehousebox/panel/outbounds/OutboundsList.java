@@ -364,6 +364,10 @@ public class OutboundsList extends JPanel
                     if (deleted) {
                         model.removeOutbound(modelIndex);
                         notifyOutboundDeleted(outbound);
+                        rowAttributesDisplay.setTfItemNameText("");
+                        rowAttributesDisplay.setTfItemSpecificationsText("");
+                        rowAttributesDisplay.setTfUsedForText("");
+                        rowAttributesDisplay.setTfRecipientText("");
                         JOptionPane.showMessageDialog(
                                 null,
                                 "Outbound deleted successfully",
