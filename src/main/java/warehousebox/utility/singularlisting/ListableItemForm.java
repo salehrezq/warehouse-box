@@ -30,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -62,10 +63,12 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
     private static int LIMIT,
             OFFSET;
     private String searchQueryImmutableCopy;
+    private List<LoadMoreEnabledListener> loadMoreEnabledListeners;
 
     public ListableItemForm() {
         //   super(owner, title, modal);
 
+        loadMoreEnabledListeners = new ArrayList<>();
         thisListableItemManageClass = ListableItemForm.this;
         setLayout(new BorderLayout());
         panelSearch = new JPanel();
@@ -130,11 +133,38 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
     public void resetFields() {
         tfSearch.setText("");
         btnLoadMore.setEnabled(false);
+        notifyloadMoreEnabled(btnLoadMore.isEnabled());
         listOfListable.removeAllElements();
     }
 
     public void setListablePreferredSize(int with, int height) {
         listOfListable.setPreferredSize(with, height);
+    }
+
+    public JTextField getTfSearch() {
+        return tfSearch;
+    }
+
+    public JButton getBtnSearch() {
+        return btnSearch;
+    }
+
+    public JButton getBtnLoadMore() {
+        return btnLoadMore;
+    }
+
+    public JList getlist() {
+        return listOfListable.getJList();
+    }
+
+    public void addLoadMoreEnabledListener(LoadMoreEnabledListener lmel) {
+        this.loadMoreEnabledListeners.add(lmel);
+    }
+
+    public void notifyloadMoreEnabled(boolean enabled) {
+        this.loadMoreEnabledListeners.forEach((lmel) -> {
+            lmel.loadMoreEnabled(enabled);
+        });
     }
 
     private class BtnSearchHandler implements ActionListener {
@@ -145,6 +175,7 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
             searchResultTotalRowsCount = CRUDListable.searchResultRowsCount(listableImplementation, tfSearch.getText());
             LIMIT = ResultLimitSizePreference.getResultLimitSize();
             btnLoadMore.setEnabled(!(LIMIT >= searchResultTotalRowsCount));
+            notifyloadMoreEnabled(btnLoadMore.isEnabled());
             listOfListable.removeAllElements();
             OFFSET = 0;
             incrementedReturnedRowsCount = 0;
@@ -167,6 +198,7 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
                 listOfListable.addElement(listable);
             });
             btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
+            notifyloadMoreEnabled(btnLoadMore.isEnabled());
         }
     }
 

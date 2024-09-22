@@ -25,16 +25,23 @@ package warehousebox.panel.createandupdate;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FocusTraversalPolicy;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import warehousebox.utility.imagefilechooser.IMGFileChooser;
+import warehousebox.utility.singularlisting.LoadMoreEnabledListener;
 
 /**
  *
  * @author Saleh
  */
-public class ItemForm extends JPanel implements Navigatable {
+public class ItemForm extends JPanel
+        implements Navigatable,
+        LoadMoreEnabledListener {
 
     private JPanel panelCards;
     private CardLayout cardLayout;
@@ -46,6 +53,9 @@ public class ItemForm extends JPanel implements Navigatable {
     private ArrayList<Collectable> collectables;
     private BoxLayout boxLayout;
     private IMGFileChooser iMGFileChooser;
+    private List<Component> order;
+    private FocusTraversalPolicyCreateItemDialoge focusTraversalPolicyForCreateItemDialoge;
+    private boolean loadmorebuttonadded;
 
     public ItemForm() {
         collectables = new ArrayList<>();
@@ -62,6 +72,7 @@ public class ItemForm extends JPanel implements Navigatable {
         cardLayout.show(panelCards, FORMTEXTFIELDS);
         formManagement = new FormManagement(collectables);
         formManagement.setFormLastStep(panelCards.getComponentCount());
+        setupFocusTraversPolicy();
         add(panelCards, BorderLayout.CENTER);
         add(formManagement, BorderLayout.PAGE_END);
     }
@@ -71,6 +82,20 @@ public class ItemForm extends JPanel implements Navigatable {
         iMGFileChooser.addImageSelectedListener(itemFormImage);
         iMGFileChooser.addFilesSelectionLimitListener(itemFormImage);
         itemFormImage.addImageRemovedListener(iMGFileChooser);
+    }
+
+    private void setupFocusTraversPolicy() {
+        itemFormTextFields.getListableItemForm().addLoadMoreEnabledListener(this);
+        order = new ArrayList<>();
+        order.add(itemFormTextFields.getTfName());
+        order.add(itemFormTextFields.getTfSpecs());
+        order.add(itemFormTextFields.getListableItemForm().getTfSearch());
+        order.add(itemFormTextFields.getListableItemForm().getBtnSearch());
+        order.add(itemFormTextFields.getListableItemForm().getlist());
+        order.add(formManagement.getBtnNext());
+        focusTraversalPolicyForCreateItemDialoge = new FocusTraversalPolicyCreateItemDialoge(order);
+        this.setFocusCycleRoot(true);
+        this.setFocusTraversalPolicy(focusTraversalPolicyForCreateItemDialoge);
     }
 
     public FormManagement getFormManagement() {
@@ -104,6 +129,63 @@ public class ItemForm extends JPanel implements Navigatable {
         itemFormTextFields.resetFields();
         itemFormImage.resetFields();
         iMGFileChooser.resetFields();
+    }
+
+    @Override
+    public void loadMoreEnabled(boolean enabled) {
+        if (enabled && !loadmorebuttonadded) {
+            // Button "load more " added to focus cycle list
+            order.add(5, itemFormTextFields.getListableItemForm().getBtnLoadMore());
+            loadmorebuttonadded = true;
+        } else {
+            if (loadmorebuttonadded) {
+                // Button "load more " removed from focus cycle list
+                order.remove(5);
+                loadmorebuttonadded = false;
+            }
+        }
+    }
+
+    public static class FocusTraversalPolicyCreateItemDialoge
+            extends FocusTraversalPolicy {
+
+        private List<Component> order;
+
+        public FocusTraversalPolicyCreateItemDialoge(List<Component> order) {
+            this.order = order;
+        }
+
+        @Override
+        public Component getComponentAfter(Container focusCycleRoot,
+                Component aComponent) {
+            int idx = (order.indexOf(aComponent) + 1) % order.size();
+            return order.get(idx);
+        }
+
+        @Override
+        public Component getComponentBefore(Container focusCycleRoot,
+                Component aComponent) {
+            int idx = order.indexOf(aComponent) - 1;
+            if (idx < 0) {
+                idx = order.size() - 1;
+            }
+            return order.get(idx);
+        }
+
+        @Override
+        public Component getDefaultComponent(Container focusCycleRoot) {
+            return order.get(0);
+        }
+
+        @Override
+        public Component getLastComponent(Container focusCycleRoot) {
+            return order.getLast();
+        }
+
+        @Override
+        public Component getFirstComponent(Container focusCycleRoot) {
+            return order.get(0);
+        }
     }
 
 }

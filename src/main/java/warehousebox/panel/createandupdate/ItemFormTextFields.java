@@ -98,6 +98,18 @@ public class ItemFormTextFields extends JPanel implements Collectable {
         itemFormQuantityUnit.setPreviewSelected(quantityUnit);
     }
 
+    protected ListableItemForm getListableItemForm() {
+        return itemFormQuantityUnit;
+    }
+
+    protected JTextField getTfName() {
+        return tfName;
+    }
+
+    protected JTextField getTfSpecs() {
+        return tfSpecs;
+    }
+
     @Override
     public Map collect() {
         // If class used for item update; this field will be populated elsewhere.
