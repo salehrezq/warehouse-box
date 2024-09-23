@@ -273,7 +273,6 @@ public class OutboundsList extends JPanel
                 DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) e.getSource();
                 if (selectionModel.isSelectionEmpty()) {
                     // Table row de-selection occurred
-                    System.out.println("row de-selected");
                 } else {
                     int viewRow = table.getSelectedRow();
                     if (viewRow > -1) {

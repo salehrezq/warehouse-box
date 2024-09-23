@@ -176,7 +176,6 @@ public class FormManagement extends JPanel {
                             isFieldsFilled = true;
                         }
                     } else if (c instanceof ItemFormImage && isFieldsFilled) {
-                        System.out.println("images collected");
                         images = (ArrayList<Image>) c.collect().get("images");
                         imagesRetrievedFromDB = (ArrayList<Image>) c.collect().get("imagesRetrievedFromDB");
                     }

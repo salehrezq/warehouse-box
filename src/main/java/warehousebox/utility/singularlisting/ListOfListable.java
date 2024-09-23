@@ -31,14 +31,12 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 /**
  *
  * @author Saleh
  */
-public class ListOfListable implements ListSelectionListener {
+public class ListOfListable {
 
     private JList list;
     private DefaultListModel listModel;
@@ -75,10 +73,6 @@ public class ListOfListable implements ListSelectionListener {
         listModel.removeAllElements();
     }
 
-    public void selectResposivity() {
-        list.addListSelectionListener(this);
-    }
-
     protected void setPreferredSize(int with, int height) {
         scrollPane.setPreferredSize(new Dimension(with, height));
     }
@@ -92,11 +86,6 @@ public class ListOfListable implements ListSelectionListener {
 
     public Listable getSelectedValue() {
         return (Listable) list.getSelectedValue();
-    }
-
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-        System.out.println("List value changed");
     }
 
     private class ListCellQuantityUnitRenderer extends DefaultListCellRenderer {

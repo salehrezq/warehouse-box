@@ -178,7 +178,6 @@ public class ScrollableScalableImageContainer {
             if (image != null) {
                 image.setScale(scale);
                 CRUDImages.updateScale(image);
-                System.out.println("saved scale " + scale);
             }
         }
     }

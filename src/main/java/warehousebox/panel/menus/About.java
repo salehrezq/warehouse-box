@@ -64,7 +64,6 @@ public class About extends JDialog implements HyperlinkListener {
 
     public About(JFrame owner, String title, boolean modal) {
         super(owner, title, modal);
-        // System.out.println(" dialog constructor");
         this.width = 420;
         this.height = 400;
         // this.thisParentFrame = parentFrame;
@@ -82,7 +81,7 @@ public class About extends JDialog implements HyperlinkListener {
         aboutPane.setContentType("text/html");
         font = new Font("Arial", Font.PLAIN, 12);
         aboutPane.setFont(font);
-        // this is the trick!
+
         stringBuilder = new StringBuilder(1000);
         image = new ImageIcon(getClass().getResource("/images/app-icon/app-icon.png"));
         stringBuilder.append("<html><p style='text-align:center;'><img src='" + image + "' width=50 height=50></img></p>");

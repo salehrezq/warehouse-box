@@ -98,7 +98,6 @@ public class ListableItemEditDialog extends JDialog {
                 if (!oldText.equals(currentText)) {
                     listable.setName(currentText);
                     boolean isExist = CRUDListable.isExist(listable);
-                    System.out.println("CRUDListable.isExist " + isExist);
                     if (isExist) {
                         listable.setName(oldText);
                         JOptionPane.showMessageDialog(
