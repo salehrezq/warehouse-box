@@ -166,6 +166,10 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
             OFFSET = 0;
             incrementedReturnedRowsCount = 0;
             List<Listable> listables = CRUDListable.search(listableImplementation, tfSearch.getText(), LIMIT, OFFSET);
+            if (listables.isEmpty()) {
+                JOptionPane.showMessageDialog(ListableItemManage.this, "No matched results!", "Info",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
             incrementedReturnedRowsCount += listables.size();
             listables.forEach(listable -> {
                 listOfListable.addElement(listable);

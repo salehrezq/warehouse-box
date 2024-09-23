@@ -40,6 +40,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -194,6 +195,10 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
             OFFSET = 0;
             incrementedReturnedRowsCount = 0;
             List<Listable> listables = CRUDListable.search(listableImplementation, tfSearch.getText(), LIMIT, OFFSET);
+            if (listables.isEmpty()) {
+                JOptionPane.showMessageDialog(ListableItemFormForFilters.this, "No matched results!", "Info",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
             incrementedReturnedRowsCount += listables.size();
             listables.forEach(listable -> {
                 listOfListable.addElement(listable);
