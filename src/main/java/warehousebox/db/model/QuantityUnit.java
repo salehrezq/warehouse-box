@@ -35,7 +35,7 @@ public class QuantityUnit implements Listable {
 
     private int id;
     private String name;
-    private final String strLabel = "QUantity_unit";
+    private final String strLabel = "Quantity unit";
     private final String dbEntityName = "quantity_unit";
     private final String dbAttributeName = "name";
     private Map consumer;
