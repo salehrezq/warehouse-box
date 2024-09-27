@@ -133,11 +133,18 @@ public class FormManagement extends JPanel {
         Item item;
         List<Image> images, imagesRetrievedFromDB;
         boolean isUpdateOperation = false;
-        boolean isFieldsFilled;
+        List<Boolean> isFieldsFilled;
+        List<Boolean> isFieldsNotExceed255;
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            isFieldsFilled = false;
+            isFieldsFilled = new ArrayList<>();
+            isFieldsFilled.add(null);
+            isFieldsFilled.add(null);
+            isFieldsFilled.add(null);
+            isFieldsNotExceed255 = new ArrayList<>();
+            isFieldsNotExceed255.add(null);
+            isFieldsNotExceed255.add(null);
             JButton btnNavigate = (JButton) e.getSource();
             if (btnNavigate == btnNext) {
                 navigateTracker++;
@@ -169,31 +176,33 @@ public class FormManagement extends JPanel {
                         /**
                          * Validate fields.
                          */
-                        if (!item.getName().isBlank()
-                                && !item.getSpecification().isBlank()
-                                && item.getQuantityUnit() != null
-                                && item.getQuantityUnit().getId() > 0) {
-                            isFieldsFilled = true;
-                        }
-                    } else if (c instanceof ItemFormImage && isFieldsFilled) {
+                        isFieldsFilled.set(0, !item.getName().isBlank());
+                        isFieldsFilled.set(1, !item.getSpecification().isBlank());
+                        isFieldsFilled.set(2, (item.getQuantityUnit() != null) && (item.getQuantityUnit().getId() > 0));
+                        isFieldsNotExceed255.set(0, item.getName().length() < 256);
+                        isFieldsNotExceed255.set(1, item.getSpecification().length() < 256);
+                    } else if (c instanceof ItemFormImage
+                            && isFieldsFilled.stream().allMatch(fieldCheck -> fieldCheck.equals(Boolean.TRUE))
+                            && isFieldsNotExceed255.stream().allMatch(fieldCheck -> fieldCheck.equals(Boolean.TRUE))) {
                         images = (ArrayList<Image>) c.collect().get("images");
                         imagesRetrievedFromDB = (ArrayList<Image>) c.collect().get("imagesRetrievedFromDB");
                     }
                 });
-
-                if (isFieldsFilled == false) {
-                    String message = "Missing fields:\n";
-
-                    if (item.getName().isBlank()) {
-                        message += "- Name";
+                if (isFieldsFilled.stream().anyMatch(fieldCheck -> fieldCheck.equals(Boolean.FALSE))
+                        || isFieldsNotExceed255.stream().anyMatch(fieldCheck -> fieldCheck.equals(Boolean.FALSE))) {
+                    String message = "Correct these faulty fields:\n";
+                    if (!isFieldsFilled.get(0)) {
+                        message += "- Name is missing\n";
+                    } else if (!isFieldsNotExceed255.get(0)) {
+                        message += "- Name exeeds the limit of 255 charachters\n";
                     }
-                    if (item.getSpecification().isBlank()) {
-                        message += "\n";
-                        message += "- Specification";
+                    if (!isFieldsFilled.get(1)) {
+                        message += "- Specification is missing\n";
+                    } else if (!isFieldsNotExceed255.get(1)) {
+                        message += "- Specification exeeds the limit of 255 charachters\n";
                     }
-                    if (item.getQuantityUnit() == null || item.getQuantityUnit().getId() < 1) {
-                        message += "\n";
-                        message += "- Quantity";
+                    if (!isFieldsFilled.get(2)) {
+                        message += "- Quantity is missing\n";
                     }
                     JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
                     return;
