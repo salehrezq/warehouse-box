@@ -95,13 +95,20 @@ public class ListableItemEditDialog extends JDialog {
             JButton source = (JButton) e.getSource();
             if (source == btnEditSave) {
                 String currentText = tfListableText.getText().trim();
+                if (currentText.length() > 255) {
+                    JOptionPane.showMessageDialog(ListableItemEditDialog.this,
+                            listable.getLabel() + " exeeds the limit of 255 charachters",
+                            "Exceeded the limit",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 if (!oldText.equals(currentText)) {
                     listable.setName(currentText);
                     boolean isExist = CRUDListable.isExist(listable);
                     if (isExist) {
                         listable.setName(oldText);
                         JOptionPane.showMessageDialog(
-                                null,
+                                ListableItemEditDialog.this,
                                 listable.getLabel() + " is already available. Try another value",
                                 "Available!",
                                 JOptionPane.WARNING_MESSAGE);
@@ -110,14 +117,14 @@ public class ListableItemEditDialog extends JDialog {
                         if (updated) {
                             notifyListableUpdate(listable, oldText);
                             JOptionPane.showMessageDialog(
-                                    null,
+                                    ListableItemEditDialog.this,
                                     listable.getLabel() + " updated successfully",
                                     "Success",
                                     JOptionPane.INFORMATION_MESSAGE);
                             dispose();
                         } else {
                             JOptionPane.showMessageDialog(
-                                    null,
+                                    ListableItemEditDialog.this,
                                     "Issue: " + listable.getLabel() + " was not updated due to unkown issue.",
                                     "Failure",
                                     JOptionPane.WARNING_MESSAGE);

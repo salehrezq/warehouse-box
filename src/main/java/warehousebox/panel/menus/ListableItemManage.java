@@ -202,6 +202,13 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            if (tfCreate.getText().length() > 255) {
+                JOptionPane.showMessageDialog(thisListableItemManageClass,
+                        listableImplementation.getLabel() + " exeeds the limit of 255 charachters",
+                        "Exceeded the limit",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             listableImplementation.setName(tfCreate.getText());
             if (CRUDListable.isExist(listableImplementation)) {
                 JOptionPane.showMessageDialog(thisListableItemManageClass,
