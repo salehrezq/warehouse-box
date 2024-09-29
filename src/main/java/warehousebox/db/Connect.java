@@ -47,7 +47,7 @@ public class Connect {
     private static final String DB_URL = "jdbc:derby:"
             + System.getProperty("user.home")
             + File.separator
-            + DB_NAME + ";create=true;collation=TERRITORY_BASED:PRIMARY";
+            + DB_NAME + ";create=true;territory=en_US;collation=TERRITORY_BASED:PRIMARY";
 
     private static final String DB_SHUTDOWN_URL = "jdbc:derby:"
             + System.getProperty("user.home")
