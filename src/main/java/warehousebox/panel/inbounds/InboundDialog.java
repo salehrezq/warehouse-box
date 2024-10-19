@@ -74,7 +74,7 @@ public class InboundDialog extends JDialog {
     private ItemMeta itemMeta;
     private Inbound inbound;
     private QuantityValidateHandler quantityValidateHandler;
-    private final Pattern pattern = Pattern.compile("(^[0-9]{1,}(\\.[0-9]{1,2})?)");
+    private final Pattern pattern = Pattern.compile("(^[0-9]{1,8}(\\.[0-9]{1,2})?)");
     private final Color colorError = new Color(255, 255, 0);
 
     public InboundDialog(Frame owner, String title, boolean modal) {
