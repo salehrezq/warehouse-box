@@ -211,7 +211,7 @@ public class OutboundDialog extends JDialog {
                 }
                 if (formFieldRecipient.getSelectedValue() == null) {
                     message += "\n";
-                    message += "- Source";
+                    message += "- Recipient";
                 }
 
                 JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
