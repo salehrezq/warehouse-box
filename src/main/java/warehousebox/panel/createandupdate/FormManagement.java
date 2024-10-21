@@ -128,6 +128,14 @@ public class FormManagement extends JPanel {
         return btnNext;
     }
 
+    protected JButton getBtnPrevious() {
+        return btnPrevious;
+    }
+
+    protected JButton getBtnSubmit() {
+        return btnSubmit;
+    }
+
     private class NavigateButtonsListener implements ActionListener {
 
         Item item;

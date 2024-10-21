@@ -28,9 +28,12 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FocusTraversalPolicy;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import warehousebox.utility.imagefilechooser.IMGFileChooser;
 import warehousebox.utility.singularlisting.LoadMoreEnabledListener;
@@ -55,7 +58,9 @@ public class ItemForm extends JPanel
     private IMGFileChooser iMGFileChooser;
     private List<Component> order;
     private FocusTraversalPolicyCreateItemDialoge focusTraversalPolicyForCreateItemDialoge;
-    private boolean loadmorebuttonadded;
+    private boolean loadMoreButtonAdded;
+    private JButton btnPrevious, btnNext, btnSubmit, btnLoadMore;
+    private FocusTraversPolicySwitchHandler focusTraversPolicySwitchHandler;
 
     public ItemForm() {
         collectables = new ArrayList<>();
@@ -63,6 +68,8 @@ public class ItemForm extends JPanel
         cardLayout = new CardLayout();
         panelCards = new JPanel(cardLayout);
         itemFormTextFields = new ItemFormTextFields();
+        btnLoadMore = itemFormTextFields.getListableItemForm().getBtnLoadMore();
+        itemFormTextFields.getListableItemForm().addLoadMoreEnabledListener(this);
         itemFormImage = new ItemFormImage();
         linkListenersToChangeProviders(itemFormImage);
         panelCards.add(itemFormTextFields, FORMTEXTFIELDS);
@@ -71,8 +78,14 @@ public class ItemForm extends JPanel
         collectables.add(itemFormImage);
         cardLayout.show(panelCards, FORMTEXTFIELDS);
         formManagement = new FormManagement(collectables);
+        focusTraversPolicySwitchHandler = new FocusTraversPolicySwitchHandler();
+        btnPrevious = formManagement.getBtnPrevious();
+        btnPrevious.addActionListener(focusTraversPolicySwitchHandler);
+        btnNext = formManagement.getBtnNext();
+        btnNext.addActionListener(focusTraversPolicySwitchHandler);
+        btnSubmit = formManagement.getBtnSubmit();
         formManagement.setFormLastStep(panelCards.getComponentCount());
-        setupFocusTraversPolicy();
+        setupFocusTraversPolicyForItemFormTextFields();
         add(panelCards, BorderLayout.CENTER);
         add(formManagement, BorderLayout.PAGE_END);
     }
@@ -84,15 +97,34 @@ public class ItemForm extends JPanel
         itemFormImage.addImageRemovedListener(iMGFileChooser);
     }
 
-    private void setupFocusTraversPolicy() {
-        itemFormTextFields.getListableItemForm().addLoadMoreEnabledListener(this);
+    private void setupFocusTraversPolicyForItemFormTextFields() {
         order = new ArrayList<>();
         order.add(itemFormTextFields.getTfName());
         order.add(itemFormTextFields.getTfSpecs());
         order.add(itemFormTextFields.getListableItemForm().getTfSearch());
         order.add(itemFormTextFields.getListableItemForm().getBtnSearch());
         order.add(itemFormTextFields.getListableItemForm().getlist());
+        if (!loadMoreButtonAdded && btnLoadMore.isEnabled()) {
+            order.add(btnLoadMore);
+            loadMoreButtonAdded = true;
+        }
         order.add(formManagement.getBtnNext());
+        focusTraversalPolicyForCreateItemDialoge = new FocusTraversalPolicyCreateItemDialoge(order);
+        this.setFocusCycleRoot(true);
+        this.setFocusTraversalPolicy(focusTraversalPolicyForCreateItemDialoge);
+    }
+
+    private void setupFocusTraversPolicyForItemFormImages() {
+        /**
+         * Because "load more" button will not be part of the order array at
+         * this point this flag should be set to false to save consistency and
+         * be used later accordingly.
+         */
+        loadMoreButtonAdded = false;
+        order = new ArrayList<>();
+        order.add(itemFormImage.getBtnBrowse());
+        order.add(btnPrevious);
+        order.add(btnSubmit);
         focusTraversalPolicyForCreateItemDialoge = new FocusTraversalPolicyCreateItemDialoge(order);
         this.setFocusCycleRoot(true);
         this.setFocusTraversalPolicy(focusTraversalPolicyForCreateItemDialoge);
@@ -133,15 +165,17 @@ public class ItemForm extends JPanel
 
     @Override
     public void loadMoreEnabled(boolean enabled) {
-        if (enabled && !loadmorebuttonadded) {
-            // Button "load more " added to focus cycle list
-            order.add(5, itemFormTextFields.getListableItemForm().getBtnLoadMore());
-            loadmorebuttonadded = true;
+        if (enabled) {
+            if (!loadMoreButtonAdded) {
+                // Button "load more " added to focus cycle list
+                order.add(5, itemFormTextFields.getListableItemForm().getBtnLoadMore());
+                loadMoreButtonAdded = true;
+            }
         } else {
-            if (loadmorebuttonadded) {
+            if (loadMoreButtonAdded) {
                 // Button "load more " removed from focus cycle list
                 order.remove(5);
-                loadmorebuttonadded = false;
+                loadMoreButtonAdded = false;
             }
         }
     }
@@ -185,6 +219,19 @@ public class ItemForm extends JPanel
         @Override
         public Component getFirstComponent(Container focusCycleRoot) {
             return order.get(0);
+        }
+    }
+
+    private class FocusTraversPolicySwitchHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton source = (JButton) e.getSource();
+            if (source == btnPrevious) {
+                setupFocusTraversPolicyForItemFormTextFields();
+            } else if (source == btnNext) {
+                setupFocusTraversPolicyForItemFormImages();
+            }
         }
     }
 

@@ -227,6 +227,10 @@ public class ItemFormImage implements
         btnBrowse.setEnabled(true);
     }
 
+    protected JButton getBtnBrowse() {
+        return btnBrowse;
+    }
+
     public void resetFields() {
         spinnerValueOnSpinning = 0;
         imagesMap.clear();
