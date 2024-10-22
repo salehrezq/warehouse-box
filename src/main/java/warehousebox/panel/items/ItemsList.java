@@ -369,21 +369,22 @@ public class ItemsList extends JPanel
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+                int viewRow = table.getSelectedRow();
+                if (viewRow > -1) {
+                    tableRow = table.getSelectedRow();
+                    int itemNameColumnIndex = 1;
+                    int itemSpecificationColumnIndex = 2;
+                    selectedModelRow = table.convertRowIndexToModel(viewRow);
+                    String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
+                    String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
+                    nameAndSpecDisplayFields.setTfItemNameText(itemNameObject);
+                    nameAndSpecDisplayFields.setTfItemSpecificationsText(itemSpecificationObject);
+                }
+            } else {
                 DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) e.getSource();
-                if (selectionModel.isSelectionEmpty()) {
-                    // Table row de-selection occurred
-                } else {
-                    int viewRow = table.getSelectedRow();
-                    if (viewRow > -1) {
-                        tableRow = table.getSelectedRow();
-                        int itemNameColumnIndex = 1;
-                        int itemSpecificationColumnIndex = 2;
-                        selectedModelRow = table.convertRowIndexToModel(viewRow);
-                        String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
-                        String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
-                        nameAndSpecDisplayFields.setTfItemNameText(itemNameObject);
-                        nameAndSpecDisplayFields.setTfItemSpecificationsText(itemSpecificationObject);
-                    }
+                if (selectionModel.isSelectionEmpty() && !e.getValueIsAdjusting()) {
+                    nameAndSpecDisplayFields.setTfItemNameText("");
+                    nameAndSpecDisplayFields.setTfItemSpecificationsText("");
                 }
             }
         }

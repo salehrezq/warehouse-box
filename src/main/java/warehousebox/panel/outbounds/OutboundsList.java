@@ -270,31 +270,34 @@ public class OutboundsList extends JPanel
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+                int viewRow = table.getSelectedRow();
+                if (viewRow > -1) {
+                    int itemNameColumnIndex = 7;
+                    int itemSpecificationColumnIndex = 8;
+                    int itemRecipientColumnIndex = 4;
+                    int itemUsedForColumnIndex = 5;
+
+                    selectedModelRow = table.convertRowIndexToModel(viewRow);
+
+                    String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
+                    rowAttributesDisplay.setTfItemNameText(itemNameObject);
+
+                    String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
+                    rowAttributesDisplay.setTfItemSpecificationsText(itemSpecificationObject);
+
+                    String itemRecipientObject = (String) table.getModel().getValueAt(selectedModelRow, itemRecipientColumnIndex);
+                    rowAttributesDisplay.setTfRecipientText(itemRecipientObject);
+
+                    String itemUsedForObject = (String) table.getModel().getValueAt(selectedModelRow, itemUsedForColumnIndex);
+                    rowAttributesDisplay.setTfUsedForText(itemUsedForObject);
+                }
+            } else {
                 DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) e.getSource();
-                if (selectionModel.isSelectionEmpty()) {
-                    // Table row de-selection occurred
-                } else {
-                    int viewRow = table.getSelectedRow();
-                    if (viewRow > -1) {
-                        int itemNameColumnIndex = 7;
-                        int itemSpecificationColumnIndex = 8;
-                        int itemRecipientColumnIndex = 4;
-                        int itemUsedForColumnIndex = 5;
-
-                        selectedModelRow = table.convertRowIndexToModel(viewRow);
-
-                        String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
-                        rowAttributesDisplay.setTfItemNameText(itemNameObject);
-
-                        String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
-                        rowAttributesDisplay.setTfItemSpecificationsText(itemSpecificationObject);
-
-                        String itemRecipientObject = (String) table.getModel().getValueAt(selectedModelRow, itemRecipientColumnIndex);
-                        rowAttributesDisplay.setTfRecipientText(itemRecipientObject);
-
-                        String itemUsedForObject = (String) table.getModel().getValueAt(selectedModelRow, itemUsedForColumnIndex);
-                        rowAttributesDisplay.setTfUsedForText(itemUsedForObject);
-                    }
+                if (selectionModel.isSelectionEmpty() && !e.getValueIsAdjusting()) {
+                    rowAttributesDisplay.setTfItemNameText("");
+                    rowAttributesDisplay.setTfItemSpecificationsText("");
+                    rowAttributesDisplay.setTfUsedForText("");
+                    rowAttributesDisplay.setTfRecipientText("");
                 }
             }
         }

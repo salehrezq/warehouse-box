@@ -268,27 +268,29 @@ public class InboundsList extends JPanel
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+                int viewRow = table.getSelectedRow();
+                if (viewRow > -1) {
+                    int itemNameColumnIndex = 6;
+                    int itemSpecificationColumnIndex = 7;
+                    int itemSourceColumnIndex = 4;
+
+                    selectedModelRow = table.convertRowIndexToModel(viewRow);
+
+                    String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
+                    rowAttributesDisplay.setTfItemNameText(itemNameObject);
+
+                    String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
+                    rowAttributesDisplay.setTfItemSpecificationsText(itemSpecificationObject);
+
+                    String itemSourceObject = (String) table.getModel().getValueAt(selectedModelRow, itemSourceColumnIndex);
+                    rowAttributesDisplay.setTfItemSourceText(itemSourceObject);
+                }
+            } else {
                 DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) e.getSource();
-                if (selectionModel.isSelectionEmpty()) {
-                    // Table row de-selection occurred
-                } else {
-                    int viewRow = table.getSelectedRow();
-                    if (viewRow > -1) {
-                        int itemNameColumnIndex = 6;
-                        int itemSpecificationColumnIndex = 7;
-                        int itemSourceColumnIndex = 4;
-
-                        selectedModelRow = table.convertRowIndexToModel(viewRow);
-
-                        String itemNameObject = (String) table.getModel().getValueAt(selectedModelRow, itemNameColumnIndex);
-                        rowAttributesDisplay.setTfItemNameText(itemNameObject);
-
-                        String itemSpecificationObject = (String) table.getModel().getValueAt(selectedModelRow, itemSpecificationColumnIndex);
-                        rowAttributesDisplay.setTfItemSpecificationsText(itemSpecificationObject);
-
-                        String itemSourceObject = (String) table.getModel().getValueAt(selectedModelRow, itemSourceColumnIndex);
-                        rowAttributesDisplay.setTfItemSourceText(itemSourceObject);
-                    }
+                if (selectionModel.isSelectionEmpty() && !e.getValueIsAdjusting()) {
+                    rowAttributesDisplay.setTfItemNameText("");
+                    rowAttributesDisplay.setTfItemSourceText("");
+                    rowAttributesDisplay.setTfItemSpecificationsText("");
                 }
             }
         }
