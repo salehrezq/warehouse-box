@@ -76,10 +76,13 @@ public class MainRun {
     }
 
     private void linkActionToListeners() {
-        menu.getFormManagement().addItemCRUDListener(tabs.getItemsList());
+        FormManagement createFormManagment = menu.getFormManagement();
+        createFormManagment.addItemCRUDListener(tabs.getItemsList());
+
         ItemImage itemImage = tabs.getItemImage();
         FormManagement updateFormManagment = tabs.getItemsList().getUpdateItemDialog().getFormManagement();
         updateFormManagment.addItemCRUDListener(itemImage);
+        updateFormManagment.addItemCRUDListener(tabs.getItemsList());
 
         ListableItemManage listableItemManageDialogeQuantityUnit = menu.getListableItemManage(new QuantityUnit());
         ListableItemEditDialog editDialogeForQuantityUnit = listableItemManageDialogeQuantityUnit.getListableItemEditDialog();
