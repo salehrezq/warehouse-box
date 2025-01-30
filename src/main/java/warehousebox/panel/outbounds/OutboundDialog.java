@@ -210,7 +210,8 @@ public class OutboundDialog extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            isFieldsFilled = (!tfQuantity.getText().isBlank() && !tfUsedFor.getText().isBlank() && formFieldRecipient.getSelectedValue() != null);
+            isFieldsFilled = (!tfQuantity.getText().isBlank() && !tfUsedFor.getText().isBlank() && formFieldRecipient.getSelectedValue() != null)
+                    && ((IssuanceTypeItem) comboIssuanceType.getSelectedItem()).getId() > (short) 0;
 
             if (isFieldsFilled == false) {
                 String message = "Missing fields:\n";
@@ -225,6 +226,10 @@ public class OutboundDialog extends JDialog {
                 if (formFieldRecipient.getSelectedValue() == null) {
                     message += "\n";
                     message += "- Recipient";
+                }
+                if (comboIssuanceType.getSelectedIndex() == 0) {
+                    message += "\n";
+                    message += "- Issuance type";
                 }
 
                 JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
