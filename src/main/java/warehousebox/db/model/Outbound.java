@@ -37,6 +37,7 @@ public class Outbound {
     private Item item;
     private BigDecimal quantity;
     private Recipient recipient;
+    protected short issuanceType;
     private String usedFor;
     private LocalDate date;
 
@@ -70,6 +71,14 @@ public class Outbound {
 
     public void setRecipient(Recipient recipient) {
         this.recipient = recipient;
+    }
+
+    public short getIssuanceType() {
+        return issuanceType;
+    }
+
+    public void setIssuanceType(short issuanceType) {
+        this.issuanceType = issuanceType;
     }
 
     public String getUsedFor() {

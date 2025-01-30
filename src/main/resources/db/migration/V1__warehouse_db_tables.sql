@@ -64,7 +64,7 @@ quantity DECIMAL(10,2) NOT NULL,
 recipient_id INT NOT NULL,
 used_for VARCHAR(255) NOT NULL,
 date DATE NOT NULL,
-
+issuance_type SMALLINT NOT NULL,
 CONSTRAINT fk_outbounds_item_id_references_items_id
 FOREIGN KEY (item_id) REFERENCES items(id)
 ON DELETE CASCADE,

@@ -46,7 +46,9 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Locale;
+import java.util.Vector;
 import java.util.regex.Pattern;
+import javax.swing.JComboBox;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import warehousebox.db.CRUDOutbounds;
@@ -75,6 +77,8 @@ public class OutboundDialog extends JDialog {
     private QuantityValidateHandler quantityValidateHandler;
     private final Pattern pattern = Pattern.compile("(^[0-9]{1,8}(\\.[0-9]{1,2})?)");
     private final Color colorError = new Color(255, 255, 0);
+    private Vector issuanceTypeModel;
+    private JComboBox comboIssuanceType;
 
     public OutboundDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -99,6 +103,14 @@ public class OutboundDialog extends JDialog {
         formFieldRecipient.setListableImpl(new Recipient());
         formFieldRecipient.setListablePreferredSize(300, 300);
 
+        issuanceTypeModel = new Vector();
+        issuanceTypeModel.addElement(new IssuanceTypeItem((short) 0, "Issuance type..."));
+        issuanceTypeModel.addElement(new IssuanceTypeItem((short) 1, "Consumable"));
+        issuanceTypeModel.addElement(new IssuanceTypeItem((short) 2, "Returnable"));
+        issuanceTypeModel.addElement(new IssuanceTypeItem((short) 3, "Scrap"));
+
+        comboIssuanceType = new JComboBox(issuanceTypeModel);
+
         lbDate = new JLabel("Date");
         datePicker = new DatePicker();
         dateChangeHandler = new DateChangeHandler();
@@ -116,8 +128,9 @@ public class OutboundDialog extends JDialog {
         container.add(lbUsedFor);
         container.add(tfUsedFor, "grow, span 3, wrap");
         container.add(formFieldRecipient, "span 4,wrap");
-        container.add(lbDate);
-        container.add(datePicker, "span 3, wrap");
+        container.add(comboIssuanceType, "span 2");
+        container.add(lbDate, "span 1, gapx 222");
+        container.add(datePicker, "span 1, wrap");
         container.add(btnSubmit, "span 4, center, gapy 10");
         add(container);
         this.setMinimumSize(new Dimension(520, 540));
@@ -301,6 +314,30 @@ public class OutboundDialog extends JDialog {
         @Override
         public void windowClosing(WindowEvent e) {
             resetFields();
+        }
+    }
+
+    private class IssuanceTypeItem {
+
+        private short id;
+        private String description;
+
+        public IssuanceTypeItem(short id, String description) {
+            this.id = id;
+            this.description = description;
+        }
+
+        public short getId() {
+            return id;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return description;
         }
     }
 }
