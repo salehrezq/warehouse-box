@@ -245,6 +245,7 @@ public class OutboundDialog extends JDialog {
                 itemOutbound.setDate(selectedDate);
                 Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
                 itemOutbound.setRecipient(recipient);
+                itemOutbound.setIssuanceType(((IssuanceTypeItem) comboIssuanceType.getSelectedItem()).getId());
                 Outbound outbound = CRUDOutbounds.create(itemOutbound);
                 if (outbound != null) {
                     notifyCreated(itemOutbound);
@@ -269,6 +270,7 @@ public class OutboundDialog extends JDialog {
                 outbound.setRecipient(recipient);
                 outbound.setUsedFor(tfUsedFor.getText());
                 outbound.setDate(selectedDate);
+                outbound.setIssuanceType(((IssuanceTypeItem) comboIssuanceType.getSelectedItem()).getId());
                 boolean update = CRUDOutbounds.update(outbound);
                 if (update) {
                     OutboundDialog.this.dispose();
