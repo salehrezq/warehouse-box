@@ -107,7 +107,6 @@ public class OutboundDialog extends JDialog {
         issuanceTypeModel.addElement(new IssuanceTypeItem((short) 0, "Issuance type..."));
         issuanceTypeModel.addElement(new IssuanceTypeItem((short) 1, "Consumable"));
         issuanceTypeModel.addElement(new IssuanceTypeItem((short) 2, "Returnable"));
-        issuanceTypeModel.addElement(new IssuanceTypeItem((short) 3, "Scrap"));
 
         comboIssuanceType = new JComboBox(issuanceTypeModel);
 
@@ -183,6 +182,7 @@ public class OutboundDialog extends JDialog {
         tfQuantity.setBackground(Color.WHITE);
         tfUsedFor.setText("");
         formFieldRecipient.resetFields();
+        comboIssuanceType.setSelectedIndex(0);
         datePicker.setDateToToday();
     }
 
