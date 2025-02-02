@@ -79,6 +79,9 @@ public class OutboundDialog extends JDialog {
     private final Color colorError = new Color(255, 255, 0);
     private Vector issuanceTypeModel;
     private JComboBox comboIssuanceType;
+    private final IssuanceTypeItem issuanceTypeNotSetYet = new IssuanceTypeItem((short) 0, "Issuance type...");
+    private final IssuanceTypeItem issuanceTypeConsumable = new IssuanceTypeItem((short) 1, "Consumable");
+    private final IssuanceTypeItem issuanceTypeReturnable = new IssuanceTypeItem((short) 2, "Returnable");
 
     public OutboundDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -104,9 +107,9 @@ public class OutboundDialog extends JDialog {
         formFieldRecipient.setListablePreferredSize(300, 300);
 
         issuanceTypeModel = new Vector();
-        issuanceTypeModel.addElement(new IssuanceTypeItem((short) 0, "Issuance type..."));
-        issuanceTypeModel.addElement(new IssuanceTypeItem((short) 1, "Consumable"));
-        issuanceTypeModel.addElement(new IssuanceTypeItem((short) 2, "Returnable"));
+        issuanceTypeModel.addElement(issuanceTypeNotSetYet);
+        issuanceTypeModel.addElement(issuanceTypeConsumable);
+        issuanceTypeModel.addElement(issuanceTypeReturnable);
 
         comboIssuanceType = new JComboBox(issuanceTypeModel);
 
@@ -182,7 +185,7 @@ public class OutboundDialog extends JDialog {
         tfQuantity.setBackground(Color.WHITE);
         tfUsedFor.setText("");
         formFieldRecipient.resetFields();
-        comboIssuanceType.setSelectedIndex(0);
+        comboIssuanceType.setSelectedItem(issuanceTypeNotSetYet);
         datePicker.setDateToToday();
     }
 
