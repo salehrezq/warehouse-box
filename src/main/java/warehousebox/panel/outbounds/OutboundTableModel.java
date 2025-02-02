@@ -115,7 +115,7 @@ public class OutboundTableModel extends AbstractTableModel {
             case 3 ->
                 inbound.getItem().getQuantityUnit().getName();
             case 4 ->
-                inbound.getIssuanceType();
+                getIssuanceTypeDescriptiveValue(inbound.getIssuanceType());
             case 5 ->
                 inbound.getRecipient().getName();
             case 6 ->
@@ -128,6 +128,27 @@ public class OutboundTableModel extends AbstractTableModel {
                 inbound.getItem().getSpecification();
             default ->
                 null;
+        };
+    }
+
+    /**
+     * Get descriptive text of the issuanceType numeric (short) value. This is
+     * helpful so that we can update the description anytime.
+     *
+     * @return String
+     */
+    private String getIssuanceTypeDescriptiveValue(short issuanceType) {
+        return switch (issuanceType) {
+            case (short) 0 ->
+                "Not set yet";
+            case (short) 1 ->
+                "Consumable";
+            case (short) 2 ->
+                "Returnable";
+            case (short) 3 ->
+                "Scrap";
+            default ->
+                "Unknown";
         };
     }
 
