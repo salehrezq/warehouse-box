@@ -45,6 +45,7 @@ public class OutboundTableModel extends AbstractTableModel {
                 "Item ID",
                 "Qty",
                 "Unit",
+                "Issuance type",
                 "Recipient",
                 "For",
                 "Date",
@@ -86,9 +87,9 @@ public class OutboundTableModel extends AbstractTableModel {
                 BigDecimal.class;
             case 3 ->
                 QuantityUnit.class;
-            case 4 ->
+            case 5 ->
                 Recipient.class;
-            case 6 ->
+            case 7 ->
                 LocalDate.class;
             default ->
                 String.class;
@@ -114,14 +115,16 @@ public class OutboundTableModel extends AbstractTableModel {
             case 3 ->
                 inbound.getItem().getQuantityUnit().getName();
             case 4 ->
-                inbound.getRecipient().getName();
+                inbound.getIssuanceType();
             case 5 ->
-                inbound.getUsedFor();
+                inbound.getRecipient().getName();
             case 6 ->
-                inbound.getDate();
+                inbound.getUsedFor();
             case 7 ->
-                inbound.getItem().getName();
+                inbound.getDate();
             case 8 ->
+                inbound.getItem().getName();
+            case 9 ->
                 inbound.getItem().getSpecification();
             default ->
                 null;
@@ -142,14 +145,16 @@ public class OutboundTableModel extends AbstractTableModel {
             case 3 ->
                 outbound.setItem((Item) value); // Item Quantity unit
             case 4 ->
-                outbound.setRecipient((Recipient) value);
+                outbound.setIssuanceType((short) value);
             case 5 ->
-                outbound.setUsedFor((String) value);
+                outbound.setRecipient((Recipient) value);
             case 6 ->
-                outbound.setDate((LocalDate) value); // 
+                outbound.setUsedFor((String) value);
             case 7 ->
-                outbound.setItem((Item) value); // Item Name
+                outbound.setDate((LocalDate) value); // 
             case 8 ->
+                outbound.setItem((Item) value); // Item Name
+            case 9 ->
                 outbound.setItem((Item) value); // Item Specification
         }
         fireTableCellUpdated(row, column);

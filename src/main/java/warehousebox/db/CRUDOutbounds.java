@@ -45,15 +45,16 @@ import warehousebox.panel.outbounds.SearchFilters;
 public class CRUDOutbounds {
 
     public static Outbound create(Outbound outbound) {
-        String sql = "INSERT INTO outbounds (item_id, quantity, recipient_id, used_for, date) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO outbounds (item_id, issuance_type, quantity, recipient_id, used_for, date) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             p.setInt(1, outbound.getItem().getId());
-            p.setBigDecimal(2, outbound.getQuantity());
-            p.setInt(3, outbound.getRecipient().getId());
-            p.setString(4, outbound.getUsedFor());
-            p.setObject(5, java.sql.Date.valueOf(outbound.getDate()));
+            p.setShort(2, outbound.getIssuanceType());
+            p.setBigDecimal(3, outbound.getQuantity());
+            p.setInt(4, outbound.getRecipient().getId());
+            p.setString(5, outbound.getUsedFor());
+            p.setObject(6, java.sql.Date.valueOf(outbound.getDate()));
             p.executeUpdate();
 
             try (ResultSet generatedKeys = p.getGeneratedKeys()) {
@@ -146,7 +147,7 @@ public class CRUDOutbounds {
     public static List<Outbound> search(SearchFilters searchFilters, int LIMIT, int OFFSET) {
         List<Outbound> outbounds = new ArrayList<>();
 
-        String sql = "SELECT o.id AS outbound_id, o.item_id AS item_id,"
+        String sql = "SELECT o.id AS outbound_id, o.item_id AS item_id, o.issuance_type,"
                 + " o.quantity, u.id AS qunit_id, u.name AS qunit_name,"
                 + " r.id AS recipient_id, r.name AS recipient_name, o.used_for,"
                 + " o.date, i.name AS item_name, i.specification AS item_specs"
@@ -176,6 +177,7 @@ public class CRUDOutbounds {
                     item.setQuantityUnit(quantityUnit);
                     outbound.setId(result.getInt("outbound_id"));
                     outbound.setItem(item);
+                    outbound.setIssuanceType(result.getShort("issuance_type"));
                     outbound.setQuantity(result.getBigDecimal("quantity"));
                     Recipient recipient = new Recipient();
                     recipient.setId(result.getInt("recipient_id"));
@@ -219,16 +221,17 @@ public class CRUDOutbounds {
         int update = 0;
 
         String sql = "UPDATE outbounds"
-                + " SET quantity = ?, recipient_id = ?, used_for = ?, date = ?"
+                + " SET issuance_type = ?, quantity = ?, recipient_id = ?, used_for = ?, date = ?"
                 + " WHERE id = ?";
 
         try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
-            p.setBigDecimal(1, outbound.getQuantity());
-            p.setInt(2, outbound.getRecipient().getId());
-            p.setString(3, outbound.getUsedFor());
-            p.setObject(4, java.sql.Date.valueOf(outbound.getDate()));
-            p.setInt(5, outbound.getId());
+            p.setShort(1, outbound.getIssuanceType());
+            p.setBigDecimal(2, outbound.getQuantity());
+            p.setInt(3, outbound.getRecipient().getId());
+            p.setString(4, outbound.getUsedFor());
+            p.setObject(5, java.sql.Date.valueOf(outbound.getDate()));
+            p.setInt(6, outbound.getId());
             update = p.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDOutbounds.class.getName()).log(Level.SEVERE, null, ex);
