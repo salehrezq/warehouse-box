@@ -154,6 +154,7 @@ public class OutboundDialog extends JDialog {
         tfQuantity.setText(outbound.getQuantity().toPlainString());
         formFieldRecipient.setPreviewSelected(outbound.getRecipient());
         tfUsedFor.setText(outbound.getUsedFor());
+        comboIssuanceType.setSelectedItem(issuanceTypeModel.get(outbound.getIssuanceType()));
         datePicker.setDate(outbound.getDate());
     }
 
