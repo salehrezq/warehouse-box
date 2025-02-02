@@ -118,6 +118,7 @@ public class OutboundsList extends JPanel
          */
         table.removeColumn(table.getColumnModel().getColumn(9));
         table.removeColumn(table.getColumnModel().getColumn(8));
+        table.removeColumn(table.getColumnModel().getColumn(6));
         table.getColumnModel().getColumn(0).setPreferredWidth(2);
         table.getColumnModel().getColumn(1).setPreferredWidth(2);
         table.getColumnModel().getColumn(2).setPreferredWidth(2);
@@ -125,7 +126,6 @@ public class OutboundsList extends JPanel
         table.getColumnModel().getColumn(4).setPreferredWidth(2);
         table.getColumnModel().getColumn(5).setPreferredWidth(2);
         table.getColumnModel().getColumn(6).setPreferredWidth(2);
-        table.getColumnModel().getColumn(7).setPreferredWidth(2);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setComponentPopupMenu(popupMenu);
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -160,9 +160,9 @@ public class OutboundsList extends JPanel
     @Override
     public void updated(Outbound outbound, BigDecimal oldQuantity) {
         table.setValueAt(outbound.getQuantity(), tableRow, 2);
+        table.setValueAt(outbound.getIssuanceType(), tableRow, 4);
         table.setValueAt(outbound.getRecipient(), tableRow, 5);
-        table.setValueAt(outbound.getUsedFor(), tableRow, 6);
-        table.setValueAt(outbound.getDate(), tableRow, 7);
+        table.setValueAt(outbound.getDate(), tableRow, 6);
         rowAttributesDisplay.setTfRecipientText(outbound.getRecipient().getName());
         rowAttributesDisplay.setTfUsedForText(outbound.getUsedFor());
     }
@@ -184,6 +184,7 @@ public class OutboundsList extends JPanel
             table.setModel(model);
             table.removeColumn(table.getColumnModel().getColumn(9));
             table.removeColumn(table.getColumnModel().getColumn(8));
+            table.removeColumn(table.getColumnModel().getColumn(6));
             incrementedReturnedRowsCount = 0;
         }
     }
