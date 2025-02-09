@@ -42,11 +42,11 @@ public class RowAttributesDisplay {
     private JTextField tfItemName,
             tfItemSpecifications,
             tfItemRecipient,
-            tfItemUsedFor;
+            tfItemNote;
     private ScrollBarThin scrollBarTfName,
             scrollBarTfSpecifications,
             scrollBarTfItemRecipient,
-            scrollBarTfItemUsedFor;
+            scrollBarTfItemNote;
     private JSplitPane splitpane1, splitPane2;
     private final Color colorTextField = new Color(84, 84, 84);
 
@@ -61,9 +61,9 @@ public class RowAttributesDisplay {
         tfItemRecipient = new JTextField(2);
         tfItemRecipient.setEnabled(false);
         tfItemRecipient.setDisabledTextColor(colorTextField);
-        tfItemUsedFor = new JTextField(20);
-        tfItemUsedFor.setEnabled(false);
-        tfItemUsedFor.setDisabledTextColor(colorTextField);
+        tfItemNote = new JTextField(20);
+        tfItemNote.setEnabled(false);
+        tfItemNote.setDisabledTextColor(colorTextField);
 
         scrollBarTfName = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarTfName.setModel(tfItemName.getHorizontalVisibility());
@@ -71,8 +71,8 @@ public class RowAttributesDisplay {
         scrollBarTfSpecifications.setModel(tfItemSpecifications.getHorizontalVisibility());
         scrollBarTfItemRecipient = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarTfItemRecipient.setModel(tfItemRecipient.getHorizontalVisibility());
-        scrollBarTfItemUsedFor = new ScrollBarThin(Adjustable.HORIZONTAL);
-        scrollBarTfItemUsedFor.setModel(tfItemUsedFor.getHorizontalVisibility());
+        scrollBarTfItemNote = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarTfItemNote.setModel(tfItemNote.getHorizontalVisibility());
 
         Box boxContainer = Box.createVerticalBox();
 
@@ -93,15 +93,15 @@ public class RowAttributesDisplay {
         boxItemRecipientField.add(tfItemRecipient);
         boxItemRecipientField.add(scrollBarTfItemRecipient);
 
-        Box boxItemUsedForField = Box.createVerticalBox();
-        boxItemUsedForField.add(tfItemUsedFor);
-        boxItemUsedForField.add(scrollBarTfItemUsedFor);
+        Box boxItemNoteField = Box.createVerticalBox();
+        boxItemNoteField.add(tfItemNote);
+        boxItemNoteField.add(scrollBarTfItemNote);
 
         splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane2.setDividerSize(3);
         splitPane2.setDividerLocation(130);
         splitPane2.setTopComponent(boxItemRecipientField);
-        splitPane2.setBottomComponent(boxItemUsedForField);
+        splitPane2.setBottomComponent(boxItemNoteField);
 
         boxContainer.add(splitpane1);
         boxContainer.add(splitPane2);
@@ -121,8 +121,8 @@ public class RowAttributesDisplay {
         this.tfItemRecipient.setText(recipient);
     }
 
-    public void setTfUsedForText(String usedFor) {
-        this.tfItemUsedFor.setText(usedFor);
+    public void setTfNoteText(String note) {
+        this.tfItemNote.setText(note);
     }
 
     protected JPanel getContainer() {

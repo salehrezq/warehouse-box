@@ -63,9 +63,9 @@ import warehousebox.db.model.Recipient;
 public class OutboundDialog extends JDialog {
 
     private JPanel container;
-    private JTextField tfQuantity, tfUsedFor;
+    private JTextField tfQuantity, tfNote;
     private ListableItemForm formFieldRecipient;
-    private JLabel lbQuantity, lbQuantityUnit, lbBalance, lbUsedFor, lbSource, lbDate;
+    private JLabel lbQuantity, lbQuantityUnit, lbBalance, lbNote, lbSource, lbDate;
     private JButton btnSubmit;
     private DatePicker datePicker;
     private DatePickerSettings datePickerSettings;
@@ -98,8 +98,8 @@ public class OutboundDialog extends JDialog {
 
         lbBalance = new JLabel();
 
-        lbUsedFor = new JLabel("Used for");
-        tfUsedFor = new JTextField(15);
+        lbNote = new JLabel("Used for");
+        tfNote = new JTextField(15);
 
         formFieldRecipient = new ListableItemForm();
         formFieldRecipient.setLabelText("Recipient");
@@ -127,8 +127,8 @@ public class OutboundDialog extends JDialog {
         container.add(tfQuantity, "grow");
         container.add(lbQuantityUnit);
         container.add(lbBalance, "wrap");
-        container.add(lbUsedFor);
-        container.add(tfUsedFor, "grow, span 3, wrap");
+        container.add(lbNote);
+        container.add(tfNote, "grow, span 3, wrap");
         container.add(formFieldRecipient, "span 4,wrap");
         container.add(comboIssuanceType, "span 2");
         container.add(lbDate, "span 1, gapx 222");
@@ -153,7 +153,7 @@ public class OutboundDialog extends JDialog {
         this.outbound = outbound;
         tfQuantity.setText(outbound.getQuantity().toPlainString());
         formFieldRecipient.setPreviewSelected(outbound.getRecipient());
-        tfUsedFor.setText(outbound.getUsedFor());
+        tfNote.setText(outbound.getNote());
         comboIssuanceType.setSelectedItem(issuanceTypeModel.get(outbound.getIssuanceType()));
         datePicker.setDate(outbound.getDate());
     }
@@ -184,7 +184,7 @@ public class OutboundDialog extends JDialog {
     private void resetFields() {
         tfQuantity.setText("");
         tfQuantity.setBackground(Color.WHITE);
-        tfUsedFor.setText("");
+        tfNote.setText("");
         formFieldRecipient.resetFields();
         comboIssuanceType.setSelectedItem(issuanceTypeNotSetYet);
         datePicker.setDateToToday();
@@ -214,7 +214,7 @@ public class OutboundDialog extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            isFieldsFilled = (!tfQuantity.getText().isBlank() && !tfUsedFor.getText().isBlank() && formFieldRecipient.getSelectedValue() != null)
+            isFieldsFilled = (!tfQuantity.getText().isBlank() && !tfNote.getText().isBlank() && formFieldRecipient.getSelectedValue() != null)
                     && ((IssuanceTypeItem) comboIssuanceType.getSelectedItem()).getId() > (short) 0;
 
             if (isFieldsFilled == false) {
@@ -223,7 +223,7 @@ public class OutboundDialog extends JDialog {
                     message += "\n";
                     message += "- Quantity";
                 }
-                if (tfUsedFor.getText().isBlank()) {
+                if (tfNote.getText().isBlank()) {
                     message += "\n";
                     message += "- Used for";
                 }
@@ -245,7 +245,7 @@ public class OutboundDialog extends JDialog {
                 Outbound itemOutbound = new Outbound();
                 itemOutbound.setItem(itemMeta);
                 itemOutbound.setQuantity(quantity);
-                itemOutbound.setUsedFor(tfUsedFor.getText());
+                itemOutbound.setNote(tfNote.getText());
                 itemOutbound.setDate(selectedDate);
                 Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
                 itemOutbound.setRecipient(recipient);
@@ -272,7 +272,7 @@ public class OutboundDialog extends JDialog {
                 outbound.setQuantity(bigDecimal);
                 Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
                 outbound.setRecipient(recipient);
-                outbound.setUsedFor(tfUsedFor.getText());
+                outbound.setNote(tfNote.getText());
                 outbound.setDate(selectedDate);
                 outbound.setIssuanceType(((IssuanceTypeItem) comboIssuanceType.getSelectedItem()).getId());
                 boolean update = CRUDOutbounds.update(outbound);

@@ -119,7 +119,7 @@ public class OutboundTableModel extends AbstractTableModel {
             case 5 ->
                 inbound.getRecipient().getName();
             case 6 ->
-                inbound.getUsedFor();
+                inbound.getNote();
             case 7 ->
                 inbound.getDate();
             case 8 ->
@@ -170,7 +170,7 @@ public class OutboundTableModel extends AbstractTableModel {
             case 5 ->
                 outbound.setRecipient((Recipient) value);
             case 6 ->
-                outbound.setUsedFor((String) value);
+                outbound.setNote((String) value);
             case 7 ->
                 outbound.setDate((LocalDate) value); // 
             case 8 ->

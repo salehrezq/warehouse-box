@@ -164,7 +164,7 @@ public class OutboundsList extends JPanel
         table.setValueAt(outbound.getRecipient(), tableRow, 5);
         table.setValueAt(outbound.getDate(), tableRow, 6);
         rowAttributesDisplay.setTfRecipientText(outbound.getRecipient().getName());
-        rowAttributesDisplay.setTfUsedForText(outbound.getUsedFor());
+        rowAttributesDisplay.setTfNoteText(outbound.getNote());
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
@@ -277,7 +277,7 @@ public class OutboundsList extends JPanel
                     int itemNameColumnIndex = 8;
                     int itemSpecificationColumnIndex = 9;
                     int itemRecipientColumnIndex = 5;
-                    int itemUsedForColumnIndex = 6;
+                    int itemNoteColumnIndex = 6;
 
                     selectedModelRow = table.convertRowIndexToModel(viewRow);
 
@@ -290,15 +290,15 @@ public class OutboundsList extends JPanel
                     String itemRecipientObject = (String) table.getModel().getValueAt(selectedModelRow, itemRecipientColumnIndex);
                     rowAttributesDisplay.setTfRecipientText(itemRecipientObject);
 
-                    String itemUsedForObject = (String) table.getModel().getValueAt(selectedModelRow, itemUsedForColumnIndex);
-                    rowAttributesDisplay.setTfUsedForText(itemUsedForObject);
+                    String itemNoteObject = (String) table.getModel().getValueAt(selectedModelRow, itemNoteColumnIndex);
+                    rowAttributesDisplay.setTfNoteText(itemNoteObject);
                 }
             } else {
                 DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) e.getSource();
                 if (selectionModel.isSelectionEmpty() && !e.getValueIsAdjusting()) {
                     rowAttributesDisplay.setTfItemNameText("");
                     rowAttributesDisplay.setTfItemSpecificationsText("");
-                    rowAttributesDisplay.setTfUsedForText("");
+                    rowAttributesDisplay.setTfNoteText("");
                     rowAttributesDisplay.setTfRecipientText("");
                 }
             }
@@ -370,7 +370,7 @@ public class OutboundsList extends JPanel
                         notifyOutboundDeleted(outbound);
                         rowAttributesDisplay.setTfItemNameText("");
                         rowAttributesDisplay.setTfItemSpecificationsText("");
-                        rowAttributesDisplay.setTfUsedForText("");
+                        rowAttributesDisplay.setTfNoteText("");
                         rowAttributesDisplay.setTfRecipientText("");
                         JOptionPane.showMessageDialog(
                                 null,
