@@ -30,6 +30,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.flywaydb.core.Flyway;
+import warehousebox.db.model.Recipient;
+import warehousebox.utility.singularlisting.Listable;
 
 /**
  *
@@ -60,6 +62,19 @@ public class Connect {
     public static void buildDatabaseIfNotExist() {
         Flyway flyway = Flyway.configure().dataSource(DB_URL, USER, PASS).load();
         flyway.migrate();
+        Connect.createScrapperRecipient();
+    }
+
+    /**
+     * Create the recipient "Scrapper" for the Scrap category of outbounds. This
+     * recipient is assigned when the item is issued as scrap.
+     */
+    private static void createScrapperRecipient() {
+        Listable recipient = new Recipient();
+        recipient.setName("Scrapper");
+        if (!CRUDListable.isExist(recipient)) {
+            CRUDListable.create(recipient);
+        }
     }
 
     public static Connection getConnection() {
