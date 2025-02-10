@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import warehousebox.db.model.Recipient;
 import warehousebox.utility.singularlisting.Listable;
 
 /**
@@ -183,6 +184,16 @@ public class CRUDListable {
             try (ResultSet result = p.executeQuery()) {
                 while (result.next()) {
                     Listable listableInstance = listableImplementation.getNewInstance();
+
+                    /**
+                     * Exclude the entry "Scrapper" of the Recipient model type.
+                     * Because it is reserved for the scrap category of
+                     * outbounds.
+                     */
+                    if ((listableImplementation instanceof Recipient)
+                            && ((result.getString(listableImplementation.getDBAttributeName()).equals("Scrapper")))) {
+                        continue;
+                    }
                     listableInstance.setId(result.getInt("id"));
                     listableInstance.setName(result.getString(listableImplementation.getDBAttributeName()));
                     listables.add(listableInstance);
