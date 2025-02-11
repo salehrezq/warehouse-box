@@ -64,6 +64,7 @@ import warehousebox.panel.menus.ListableUpdateListener;
 import warehousebox.panel.menus.ResultLimitSizePreference;
 import warehousebox.panel.outbounds.OutboundCRUDListener;
 import warehousebox.panel.outbounds.OutboundDeleteListener;
+import warehousebox.panel.outbounds.OutboundScrapDialog;
 import warehousebox.utility.singularlisting.Listable;
 
 /**
@@ -88,10 +89,12 @@ public class ItemsList extends JPanel
     private final JPopupMenu popupMenu;
     private final JMenuItem menuItemInboundsOfSelectedItem,
             menuItemOutboundOfSelectedItem,
+            menuItemOutboundScrapOfSelectedItem,
             menuItemUpdateItem,
             menuItemDeleteItem;
     private InboundDialog inboundCreateDialog;
     private OutboundDialog outboundCreateDialog;
+    private OutboundScrapDialog outboundScrapDialog;
     private ItemCreateUpdateDialog updateItemDialog;
     private JButton btnLoadMore;
     private int searchResultTotalRowsCount,
@@ -114,12 +117,16 @@ public class ItemsList extends JPanel
         menuItemInboundsOfSelectedItem.addActionListener(popupMenuItemActionHandler);
         menuItemOutboundOfSelectedItem = new JMenuItem("Outbounds");
         menuItemOutboundOfSelectedItem.addActionListener(popupMenuItemActionHandler);
+        menuItemOutboundScrapOfSelectedItem = new JMenuItem("Scrap");
+        menuItemOutboundScrapOfSelectedItem.addActionListener(popupMenuItemActionHandler);
         menuItemUpdateItem = new JMenuItem("Edit item");
         menuItemUpdateItem.addActionListener(popupMenuItemActionHandler);
         menuItemDeleteItem = new JMenuItem("Delete");
         menuItemDeleteItem.addActionListener(popupMenuItemActionHandler);
         popupMenu.add(menuItemInboundsOfSelectedItem);
         popupMenu.add(menuItemOutboundOfSelectedItem);
+        popupMenu.addSeparator();
+        popupMenu.add(menuItemOutboundScrapOfSelectedItem);
         popupMenu.addSeparator();
         popupMenu.add(menuItemUpdateItem);
         popupMenu.addSeparator();
@@ -145,6 +152,7 @@ public class ItemsList extends JPanel
         add(btnLoadMore, BorderLayout.PAGE_END);
         inboundCreateDialog = new InboundDialog(null, "Inbound", true);
         outboundCreateDialog = new OutboundDialog(null, "Outbound", true);
+        outboundScrapDialog = new OutboundScrapDialog(null, "Scrap", true);
         updateItemDialog = new ItemCreateUpdateDialog(null, "Update item", true);
     }
 
@@ -360,6 +368,7 @@ public class ItemsList extends JPanel
     private void setEnabledMenuList(boolean enable) {
         menuItemInboundsOfSelectedItem.setEnabled(enable);
         menuItemOutboundOfSelectedItem.setEnabled(enable);
+        menuItemOutboundScrapOfSelectedItem.setEnabled(enable);
         menuItemUpdateItem.setEnabled(enable);
         menuItemDeleteItem.setEnabled(enable);
     }
@@ -443,6 +452,9 @@ public class ItemsList extends JPanel
             } else if (source == menuItemOutboundOfSelectedItem) {
                 outboundCreateDialog.setItemMeta(itemMeta);
                 outboundCreateDialog.setVisible(true);
+            } else if (source == menuItemOutboundScrapOfSelectedItem) {
+                outboundScrapDialog.setItemMeta(itemMeta);
+                outboundScrapDialog.setVisible(true);
             } else if (source == menuItemUpdateItem) {
                 updateItemDialog.setTfName(itemMeta.getName());
                 updateItemDialog.setTfSpecs(itemMeta.getSpecification());
