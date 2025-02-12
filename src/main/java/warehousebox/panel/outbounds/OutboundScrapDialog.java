@@ -36,7 +36,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
-import warehousebox.utility.singularlisting.ListableItemForm;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
@@ -51,6 +50,7 @@ import java.util.regex.Pattern;
 import javax.swing.JComboBox;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import warehousebox.db.CRUDListable;
 import warehousebox.db.CRUDOutbounds;
 import warehousebox.db.model.ItemMeta;
 import warehousebox.db.model.Outbound;
@@ -64,7 +64,6 @@ public class OutboundScrapDialog extends JDialog {
 
     private JPanel container;
     private JTextField tfQuantity, tfNote;
-    private ListableItemForm formFieldRecipient;
     private JLabel lbQuantity, lbQuantityUnit, lbBalance, lbNote, lbSource, lbDate;
     private JButton btnSubmit;
     private DatePicker datePicker;
@@ -79,7 +78,7 @@ public class OutboundScrapDialog extends JDialog {
     private final Color colorError = new Color(255, 255, 0);
     private Vector issuanceTypeModel;
     private JComboBox comboIssuanceType;
-    private final IssuanceTypeItem issuanceTypeScrap = new IssuanceTypeItem((short) 0, "Scrap");
+    private final IssuanceTypeItem issuanceTypeScrap = new IssuanceTypeItem((short) 3, "Scrap");
 
     public OutboundScrapDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -98,11 +97,6 @@ public class OutboundScrapDialog extends JDialog {
 
         lbNote = new JLabel("Note");
         tfNote = new JTextField(15);
-
-        formFieldRecipient = new ListableItemForm();
-        formFieldRecipient.setLabelText("Recipient");
-        formFieldRecipient.setListableImpl(new Recipient());
-        formFieldRecipient.setListablePreferredSize(300, 300);
 
         issuanceTypeModel = new Vector();
         issuanceTypeModel.addElement(issuanceTypeScrap);
@@ -148,7 +142,6 @@ public class OutboundScrapDialog extends JDialog {
     protected void setOutboundToFormFields(Outbound outbound) {
         this.outbound = outbound;
         tfQuantity.setText(outbound.getQuantity().toPlainString());
-        formFieldRecipient.setPreviewSelected(outbound.getRecipient());
         tfNote.setText(outbound.getNote());
         comboIssuanceType.setSelectedItem(issuanceTypeModel.get(outbound.getIssuanceType()));
         datePicker.setDate(outbound.getDate());
@@ -181,7 +174,6 @@ public class OutboundScrapDialog extends JDialog {
         tfQuantity.setText("");
         tfQuantity.setBackground(Color.WHITE);
         tfNote.setText("");
-        formFieldRecipient.resetFields();
         comboIssuanceType.setSelectedItem(issuanceTypeScrap);
         datePicker.setDateToToday();
     }
@@ -210,8 +202,9 @@ public class OutboundScrapDialog extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            isFieldsFilled = (!tfQuantity.getText().isBlank() && !tfNote.getText().isBlank() && formFieldRecipient.getSelectedValue() != null)
-                    && ((IssuanceTypeItem) comboIssuanceType.getSelectedItem()).getId() > (short) 0;
+            isFieldsFilled = !tfQuantity.getText().isBlank()
+                    && !tfNote.getText().isBlank()
+                    && ((IssuanceTypeItem) comboIssuanceType.getSelectedItem()).getId() == (short) 3;
 
             if (isFieldsFilled == false) {
                 String message = "Missing fields:\n";
@@ -223,11 +216,7 @@ public class OutboundScrapDialog extends JDialog {
                     message += "\n";
                     message += "- Used for";
                 }
-                if (formFieldRecipient.getSelectedValue() == null) {
-                    message += "\n";
-                    message += "- Recipient";
-                }
-                if (comboIssuanceType.getSelectedIndex() == 0) {
+                if (comboIssuanceType.getSelectedIndex() != 0) {
                     message += "\n";
                     message += "- Issuance type";
                 }
@@ -243,7 +232,11 @@ public class OutboundScrapDialog extends JDialog {
                 itemOutbound.setQuantity(quantity);
                 itemOutbound.setNote(tfNote.getText());
                 itemOutbound.setDate(selectedDate);
-                Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
+                Recipient recipient = (Recipient) CRUDListable.getById(new Recipient(), 1);
+                if (recipient == null || !recipient.getName().equals("Scrapper")) {
+                    JOptionPane.showMessageDialog(null, "Faulty recipient", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 itemOutbound.setRecipient(recipient);
                 itemOutbound.setIssuanceType(((IssuanceTypeItem) comboIssuanceType.getSelectedItem()).getId());
                 Outbound outbound = CRUDOutbounds.create(itemOutbound);
@@ -266,7 +259,11 @@ public class OutboundScrapDialog extends JDialog {
                 BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
                 BigDecimal oldQuantity = outbound.getQuantity();
                 outbound.setQuantity(bigDecimal);
-                Recipient recipient = (Recipient) formFieldRecipient.getSelectedValue();
+                Recipient recipient = (Recipient) CRUDListable.getById(new Recipient(), 1);
+                if (recipient == null || !recipient.getName().equals("Scrapper")) {
+                    JOptionPane.showMessageDialog(null, "Faulty recipient", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 outbound.setRecipient(recipient);
                 outbound.setNote(tfNote.getText());
                 outbound.setDate(selectedDate);
@@ -276,14 +273,14 @@ public class OutboundScrapDialog extends JDialog {
                     OutboundScrapDialog.this.dispose();
                     JOptionPane.showMessageDialog(
                             null,
-                            "Outbound updated successfully",
+                            "Outbound scrap updated successfully",
                             "Success",
                             JOptionPane.INFORMATION_MESSAGE);
                     notifyUpdated(outbound, oldQuantity);
                 } else {
                     JOptionPane.showMessageDialog(
                             null,
-                            "Issue: Outbound was not updated",
+                            "Issue: Outbound scrap was not updated",
                             "Failure",
                             JOptionPane.WARNING_MESSAGE);
                 }
