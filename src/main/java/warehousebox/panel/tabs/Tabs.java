@@ -61,9 +61,9 @@ public class Tabs extends JPanel {
         inboundDialog.addInboundCRUDListener(inboundsTap.getInboundsList());
         inboundDialog.addInboundCRUDListener(itemsTab.getItemsList());
 
-        OutboundDialog outInboundDialog = itemsTab.getItemsList().getOutboundCreateDialog();
-        outInboundDialog.addOutboundCRUDListener(outboundsTap.getOutboundsList());
-        outInboundDialog.addOutboundCRUDListener(itemsTab.getItemsList());
+        OutboundDialog outboundDialog = itemsTab.getItemsList().getOutboundCreateDialog();
+        outboundDialog.addOutboundCRUDListener(outboundsTap.getOutboundsList());
+        outboundDialog.addOutboundCRUDListener(itemsTab.getItemsList());
 
         OutboundScrapDialog outboundScrapDialog = itemsTab.getItemsList().getOutboundScrapDialog();
         outboundScrapDialog.addOutboundScrapCRUDListener(itemsTab.getItemsList());

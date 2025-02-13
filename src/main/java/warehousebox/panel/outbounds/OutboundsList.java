@@ -84,7 +84,7 @@ public class OutboundsList extends JPanel
             rowIndex,
             tableRow;
     private RowAttributesDisplay rowAttributesDisplay;
-    private OutboundDialog outwarEditdDialog;
+    private OutboundDialog outboundEditdDialog;
 
     public OutboundsList() {
 
@@ -131,7 +131,7 @@ public class OutboundsList extends JPanel
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
 
-        outwarEditdDialog = new OutboundDialog(null, "Update Outbound", true);
+        outboundEditdDialog = new OutboundDialog(null, "Update Outbound", true);
 
         btnLoadMore = new JButton("Load more");
         btnLoadMore.setEnabled(false);
@@ -354,8 +354,8 @@ public class OutboundsList extends JPanel
             Outbound outbound = model.getOutbound(modelIndex);
             JMenuItem source = (JMenuItem) e.getSource();
             if (source == menuOutboundEdit) {
-                outwarEditdDialog.setOutboundToFormFields(outbound);
-                outwarEditdDialog.setVisible(true);
+                outboundEditdDialog.setOutboundToFormFields(outbound);
+                outboundEditdDialog.setVisible(true);
             } else if (source == menuOutboundDelete) {
                 int reply = JOptionPane.showConfirmDialog(
                         null,
