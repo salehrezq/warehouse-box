@@ -172,6 +172,10 @@ public class ItemsList extends JPanel
         return this.outboundCreateDialog;
     }
 
+    public OutboundScrapDialog getOutboundScrapDialog() {
+        return outboundScrapDialog;
+    }
+
     protected void setnameAndSpecDisplayFields(NameAndSpecDisplayFields nameAndSpecDisplayFields) {
         this.nameAndSpecDisplayFields = nameAndSpecDisplayFields;
     }

@@ -35,6 +35,7 @@ import warehousebox.panel.items.ItemsTab;
 import warehousebox.panel.outbounds.OutboundsTap;
 import warehousebox.panel.items.ItemImage;
 import warehousebox.panel.outbounds.OutboundDialog;
+import warehousebox.panel.outbounds.OutboundScrapDialog;
 import warehousebox.panel.outbounds.OutboundsList;
 
 /**
@@ -63,6 +64,10 @@ public class Tabs extends JPanel {
         OutboundDialog outInboundDialog = itemsTab.getItemsList().getOutboundCreateDialog();
         outInboundDialog.addOutboundCRUDListener(outboundsTap.getOutboundsList());
         outInboundDialog.addOutboundCRUDListener(itemsTab.getItemsList());
+
+        OutboundScrapDialog outboundScrapDialog = itemsTab.getItemsList().getOutboundScrapDialog();
+        outboundScrapDialog.addOutboundScrapCRUDListener(itemsTab.getItemsList());
+        outboundScrapDialog.addOutboundScrapCRUDListener(outboundsTap.getOutboundsList());
 
         inboundsTap.getInboundsList().addInboundDeleteListener(itemsTab.getItemsList());
         outboundsTap.getOutboundsList().addOutboundDeleteListener(itemsTab.getItemsList());

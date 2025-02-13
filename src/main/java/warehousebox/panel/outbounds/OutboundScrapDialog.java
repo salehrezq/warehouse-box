@@ -70,7 +70,7 @@ public class OutboundScrapDialog extends JDialog {
     private DatePickerSettings datePickerSettings;
     private LocalDate selectedDate;
     private DateChangeHandler dateChangeHandler;
-    private static ArrayList<OutboundCRUDListener> outboundCRUDListeners;
+    private static ArrayList<OutboundCRUDListener> outboundScrapCRUDListeners;
     private ItemMeta itemMeta;
     private Outbound outbound;
     private QuantityValidateHandler quantityValidateHandler;
@@ -82,7 +82,7 @@ public class OutboundScrapDialog extends JDialog {
 
     public OutboundScrapDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
-        outboundCRUDListeners = new ArrayList<>();
+        outboundScrapCRUDListeners = new ArrayList<>();
         container = new JPanel();
         container.setLayout(new MigLayout("center center"));
 
@@ -154,19 +154,19 @@ public class OutboundScrapDialog extends JDialog {
         lbBalance.setText(" | Balance: " + balance.toPlainString());
     }
 
-    public void addOutboundCRUDListener(OutboundCRUDListener outboundCRUDListener) {
-        outboundCRUDListeners.add(outboundCRUDListener);
+    public void addOutboundScrapCRUDListener(OutboundCRUDListener outboundScrapCRUDListener) {
+        outboundScrapCRUDListeners.add(outboundScrapCRUDListener);
     }
 
-    public void notifyCreated(Outbound outbound) {
-        outboundCRUDListeners.forEach((outboundCRUDListener) -> {
-            outboundCRUDListener.created(outbound);
+    public void notifyCreated(Outbound outboundScrap) {
+        outboundScrapCRUDListeners.forEach((outboundScrapCRUDListener) -> {
+            outboundScrapCRUDListener.created(outboundScrap);
         });
     }
 
-    public void notifyUpdated(Outbound outbound, BigDecimal oldQuantity) {
-        outboundCRUDListeners.forEach((outboundCRUDListener) -> {
-            outboundCRUDListener.updated(outbound, oldQuantity);
+    public void notifyUpdated(Outbound outboundScrap, BigDecimal oldQuantity) {
+        outboundScrapCRUDListeners.forEach((outboundScrapCRUDListener) -> {
+            outboundScrapCRUDListener.updated(outboundScrap, oldQuantity);
         });
     }
 
