@@ -85,6 +85,7 @@ public class OutboundsList extends JPanel
             tableRow;
     private RowAttributesDisplay rowAttributesDisplay;
     private OutboundDialog outboundEditdDialog;
+    private OutboundScrapDialog outboundScrapDialog;
 
     public OutboundsList() {
 
@@ -132,6 +133,7 @@ public class OutboundsList extends JPanel
         add(scrollTable, BorderLayout.CENTER);
 
         outboundEditdDialog = new OutboundDialog(null, "Update Outbound", true);
+        outboundScrapDialog = new OutboundScrapDialog(null, "Update Scrap Outbound", true);
 
         btnLoadMore = new JButton("Load more");
         btnLoadMore.setEnabled(false);
@@ -354,8 +356,25 @@ public class OutboundsList extends JPanel
             Outbound outbound = model.getOutbound(modelIndex);
             JMenuItem source = (JMenuItem) e.getSource();
             if (source == menuOutboundEdit) {
-                outboundEditdDialog.setOutboundToFormFields(outbound);
-                outboundEditdDialog.setVisible(true);
+                short issuanceType = outbound.getIssuanceType();
+                switch (issuanceType) {
+                    case (short) 1: // 1 Consumable
+                    case (short) 2: // 2 Returnable
+                        outboundEditdDialog.setOutboundToFormFields(outbound);
+                        outboundEditdDialog.setVisible(true);
+                        break;
+                    case (short) 3: // 3 Scrap
+                        outboundScrapDialog.setOutboundScrapToFormFields(outbound);
+                        outboundScrapDialog.setVisible(true);
+                        break;
+                    default:
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Issue: Unknown outbound type",
+                                "Failure",
+                                JOptionPane.WARNING_MESSAGE);
+                        break;
+                }
             } else if (source == menuOutboundDelete) {
                 int reply = JOptionPane.showConfirmDialog(
                         null,

@@ -139,12 +139,11 @@ public class OutboundScrapDialog extends JDialog {
         selectedDate = datePicker.getDate();
     }
 
-    protected void setOutboundToFormFields(Outbound outbound) {
-        this.outbound = outbound;
-        tfQuantity.setText(outbound.getQuantity().toPlainString());
-        tfNote.setText(outbound.getNote());
-        comboIssuanceType.setSelectedItem(issuanceTypeModel.get(outbound.getIssuanceType()));
-        datePicker.setDate(outbound.getDate());
+    protected void setOutboundScrapToFormFields(Outbound outboundScrap) {
+        this.outbound = outboundScrap;
+        tfQuantity.setText(outboundScrap.getQuantity().toPlainString());
+        tfNote.setText(outboundScrap.getNote());
+        datePicker.setDate(outboundScrap.getDate());
     }
 
     public void setItemMeta(ItemMeta itemMeta) {
