@@ -214,7 +214,7 @@ public class OutboundScrapDialog extends JDialog {
                 }
                 if (tfNote.getText().isBlank()) {
                     message += "\n";
-                    message += "- Used for";
+                    message += "- Note";
                 }
                 if (comboIssuanceType.getSelectedIndex() != 0) {
                     message += "\n";
