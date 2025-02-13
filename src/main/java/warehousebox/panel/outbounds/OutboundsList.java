@@ -77,6 +77,7 @@ public class OutboundsList extends JPanel
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
     private final JMenuItem menuOutboundEdit,
+            menuOutboundReturnableReturn,
             menuOutboundDelete;
     private JButton btnLoadMore;
     private int searchResultTotalRowsCount,
@@ -99,6 +100,10 @@ public class OutboundsList extends JPanel
         menuOutboundEdit = new JMenuItem("Edit...");
         menuOutboundEdit.addActionListener(new PopupMenuItemActionHandler());
         popupMenu.add(menuOutboundEdit);
+
+        menuOutboundReturnableReturn = new JMenuItem("Return...");
+        menuOutboundReturnableReturn.addActionListener(new PopupMenuItemActionHandler());
+        popupMenu.add(menuOutboundReturnableReturn);
 
         menuOutboundDelete = new JMenuItem("Delete");
         menuOutboundDelete.addActionListener(new PopupMenuItemActionHandler());
@@ -167,6 +172,10 @@ public class OutboundsList extends JPanel
         table.setValueAt(outbound.getDate(), tableRow, 6);
         rowAttributesDisplay.setTfRecipientText(outbound.getRecipient().getName());
         rowAttributesDisplay.setTfNoteText(outbound.getNote());
+    }
+
+    public void returnableReturn(Outbound outbound, BigDecimal oldQuantity) {
+
     }
 
     public void addRowIdSelectionListener(RowIdSelectionListener var) {
@@ -266,6 +275,7 @@ public class OutboundsList extends JPanel
 
     private void setEnabledMenuList(boolean enable) {
         menuOutboundEdit.setEnabled(enable);
+        menuOutboundReturnableReturn.setEnabled(enable);
         menuOutboundDelete.setEnabled(enable);
     }
 
@@ -375,6 +385,8 @@ public class OutboundsList extends JPanel
                                 JOptionPane.WARNING_MESSAGE);
                         break;
                 }
+            } else if (source == menuOutboundReturnableReturn) {
+                System.out.println("menuOutboundReturnableReturn");
             } else if (source == menuOutboundDelete) {
                 int reply = JOptionPane.showConfirmDialog(
                         null,

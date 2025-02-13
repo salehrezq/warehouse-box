@@ -334,6 +334,10 @@ public class ItemsList extends JPanel
         }
     }
 
+    public void returnableReturn(Outbound outbound, BigDecimal oldQuantity) {
+        System.out.println("returnableReturn");
+    }
+
     @Override
     public void deleted(Inbound inbound) {
         ItemMeta itemMeta = model.getItemMetaById(inbound.getItem().getId());
