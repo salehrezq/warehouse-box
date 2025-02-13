@@ -173,7 +173,6 @@ public class OutboundScrapDialog extends JDialog {
         tfQuantity.setText("");
         tfQuantity.setBackground(Color.WHITE);
         tfNote.setText("");
-        comboIssuanceType.setSelectedItem(issuanceTypeScrap);
         datePicker.setDateToToday();
     }
 
