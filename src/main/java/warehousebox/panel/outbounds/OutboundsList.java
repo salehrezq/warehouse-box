@@ -339,8 +339,15 @@ public class OutboundsList extends JPanel
         public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
             SwingUtilities.invokeLater(() -> {
                 int rowAtPoint = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
+                int outboundIssuanceTypeColumnIndex = 4;
                 setEnabledMenuList(rowAtPoint > -1);
                 if (rowAtPoint > -1) {
+                    String issuanceType = (String) model.getValueAt(rowAtPoint, outboundIssuanceTypeColumnIndex);
+                    menuOutboundReturnableReturn.setVisible(issuanceType.equals("Returnable"));
+                    // The following two lines are necessary because changing the visibility of JMenuItem
+                    // affects the dimensions of the JPopupMenu and need to be revalidated again.
+                    popupMenu.revalidate();
+                    popupMenu.pack();
                     table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
                 }
             });
