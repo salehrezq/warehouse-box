@@ -85,6 +85,7 @@ public class InboundsList extends JPanel
             tableRow;
     private RowAttributesDisplay rowAttributesDisplay;
     private InboundDialog inboundEditDialog;
+    private Point mousePoint;
 
     public InboundsList() {
 
@@ -105,6 +106,7 @@ public class InboundsList extends JPanel
         popupMenu.add(menuInboundDelete);
 
         table = new JTable(model);
+        table.addMouseListener(new MousePointHandler());
         table.addMouseListener(new ItemRowDoubleClickHandler());
         table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -317,8 +319,10 @@ public class InboundsList extends JPanel
         @Override
         public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
             SwingUtilities.invokeLater(() -> {
-                int rowAtPoint = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
-                setEnabledMenuList(rowAtPoint > -1);
+                if (mousePoint == null) {
+                    return;
+                }
+                int rowAtPoint = table.rowAtPoint(mousePoint);
                 if (rowAtPoint > -1) {
                     table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
                 }
@@ -333,6 +337,18 @@ public class InboundsList extends JPanel
         @Override
         public void popupMenuCanceled(PopupMenuEvent e) {
             //throw new UnsupportedOperationException
+        }
+    }
+
+    private class MousePointHandler extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (SwingUtilities.isRightMouseButton(e)) {
+                int row = table.rowAtPoint(e.getPoint());
+                setEnabledMenuList(row > -1);
+                mousePoint = (row >= 0) ? e.getPoint() : null;
+            }
         }
     }
 

@@ -87,6 +87,7 @@ public class OutboundsList extends JPanel
     private RowAttributesDisplay rowAttributesDisplay;
     private OutboundDialog outboundEditdDialog;
     private OutboundScrapDialog outboundScrapDialog;
+    private Point mousePoint;
 
     public OutboundsList() {
 
@@ -111,6 +112,7 @@ public class OutboundsList extends JPanel
         popupMenu.add(menuOutboundDelete);
 
         table = new JTable(model);
+        table.addMouseListener(new MousePointHandler());
         table.addMouseListener(new ItemRowDoubleClickHandler());
         table.getSelectionModel().addListSelectionListener(new RowSelectionListener());
         table.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -338,9 +340,11 @@ public class OutboundsList extends JPanel
         @Override
         public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
             SwingUtilities.invokeLater(() -> {
-                int rowAtPoint = table.rowAtPoint(SwingUtilities.convertPoint(popupMenu, new Point(0, 0), table));
+                if (mousePoint == null) {
+                    return;
+                }
+                int rowAtPoint = table.rowAtPoint(mousePoint);
                 int outboundIssuanceTypeColumnIndex = 4;
-                setEnabledMenuList(rowAtPoint > -1);
                 if (rowAtPoint > -1) {
                     String issuanceType = (String) model.getValueAt(rowAtPoint, outboundIssuanceTypeColumnIndex);
                     menuOutboundReturnableReturn.setVisible(issuanceType.equals("Returnable"));
@@ -361,6 +365,18 @@ public class OutboundsList extends JPanel
         @Override
         public void popupMenuCanceled(PopupMenuEvent e) {
             //throw new UnsupportedOperationException
+        }
+    }
+
+    private class MousePointHandler extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (SwingUtilities.isRightMouseButton(e)) {
+                int row = table.rowAtPoint(e.getPoint());
+                setEnabledMenuList(row > -1);
+                mousePoint = (row >= 0) ? e.getPoint() : null;
+            }
         }
     }
 
