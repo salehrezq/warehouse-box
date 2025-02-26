@@ -29,12 +29,17 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -43,6 +48,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -131,12 +137,25 @@ public class InboundsList extends JPanel
         scrollTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollTable, BorderLayout.CENTER);
 
+        InputMap inputMapJTable = table.getInputMap();
+        inputMapJTable.put(KeyStroke.getKeyStroke(KeyEvent.VK_CONTEXT_MENU, 0), "popupmenu");
+
+        ActionMap actionMapJTable = table.getActionMap();
+        actionMapJTable.put("popupmenu", actionPopupMenu);
+
         inboundEditDialog = new InboundDialog(null, "Update Inbound", true);
 
         btnLoadMore = new JButton("Load more");
         btnLoadMore.setEnabled(false);
         add(btnLoadMore, BorderLayout.PAGE_END);
     }
+
+    Action actionPopupMenu = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // empty action
+        }
+    };
 
     @Override
     public void setListableImpl(Listable listable) {
