@@ -95,7 +95,6 @@ public class InboundDialog extends JDialog {
         formFieldSource = new ListableItemForm();
         formFieldSource.setLabelText("Source");
         formFieldSource.setListableImpl(new Source());
-        formFieldSource.setListablePreferredSize(300, 300);
 
         lbDate = new JLabel("Date");
         datePicker = new DatePicker();

@@ -73,7 +73,6 @@ public class ItemFormTextFields extends JPanel implements Collectable {
         itemFormQuantityUnit = new ListableItemForm();
         itemFormQuantityUnit.setLabelText("Unit");
         itemFormQuantityUnit.setListableImpl(new QuantityUnit());
-        itemFormQuantityUnit.setListablePreferredSize(300, 300);
 
         add(lbName);
         add(boxNameField, "wrap");

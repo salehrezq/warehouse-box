@@ -104,7 +104,6 @@ public class OutboundDialog extends JDialog {
         formFieldRecipient = new ListableItemForm();
         formFieldRecipient.setLabelText("Recipient");
         formFieldRecipient.setListableImpl(new Recipient());
-        formFieldRecipient.setListablePreferredSize(300, 300);
 
         issuanceTypeModel = new Vector();
         issuanceTypeModel.addElement(issuanceTypeNotSetYet);
