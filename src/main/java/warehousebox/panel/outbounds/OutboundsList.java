@@ -204,6 +204,12 @@ public class OutboundsList extends JPanel
         });
     }
 
+    private void notifySelectedRowHasBeenDeleted(int rowId) {
+        this.rowIdSelectionListeners.forEach((item) -> {
+            item.selectedRowHasBeenDeleted(rowId);
+        });
+    }
+
     @Override
     public void notifyOFFSET(int OFFSET) {
         if (OFFSET == 0) {
@@ -426,6 +432,7 @@ public class OutboundsList extends JPanel
                     if (deleted) {
                         model.removeOutbound(modelIndex);
                         notifyOutboundDeleted(outbound);
+                        notifySelectedRowHasBeenDeleted(outbound.getId());
                         rowAttributesDisplay.setTfItemNameText("");
                         rowAttributesDisplay.setTfItemSpecificationsText("");
                         rowAttributesDisplay.setTfNoteText("");
