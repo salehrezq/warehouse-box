@@ -161,6 +161,7 @@ public class ItemForm extends JPanel
         itemFormTextFields.resetFields();
         itemFormImage.resetFields();
         iMGFileChooser.resetFields();
+        setupFocusTraversPolicyForItemFormTextFields();
     }
 
     @Override
