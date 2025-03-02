@@ -83,7 +83,6 @@ public class OutboundsList extends JPanel
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
     private final JMenuItem menuOutboundEdit,
-            menuOutboundReturnableReturn,
             menuOutboundDelete;
     private JButton btnLoadMore;
     private int searchResultTotalRowsCount,
@@ -107,10 +106,6 @@ public class OutboundsList extends JPanel
         menuOutboundEdit = new JMenuItem("Edit...");
         menuOutboundEdit.addActionListener(new PopupMenuItemActionHandler());
         popupMenu.add(menuOutboundEdit);
-
-        menuOutboundReturnableReturn = new JMenuItem("Return...");
-        menuOutboundReturnableReturn.addActionListener(new PopupMenuItemActionHandler());
-        popupMenu.add(menuOutboundReturnableReturn);
 
         menuOutboundDelete = new JMenuItem("Delete");
         menuOutboundDelete.addActionListener(new PopupMenuItemActionHandler());
@@ -296,7 +291,6 @@ public class OutboundsList extends JPanel
 
     private void setEnabledMenuList(boolean enable) {
         menuOutboundEdit.setEnabled(enable);
-        menuOutboundReturnableReturn.setEnabled(enable);
         menuOutboundDelete.setEnabled(enable);
     }
 
@@ -363,14 +357,7 @@ public class OutboundsList extends JPanel
                     return;
                 }
                 int rowAtPoint = table.rowAtPoint(mousePoint);
-                int outboundIssuanceTypeColumnIndex = 4;
                 if (rowAtPoint > -1) {
-                    String issuanceType = (String) model.getValueAt(rowAtPoint, outboundIssuanceTypeColumnIndex);
-                    menuOutboundReturnableReturn.setVisible(issuanceType.equals("Returnable"));
-                    // The following two lines are necessary because changing the visibility of JMenuItem
-                    // affects the dimensions of the JPopupMenu and need to be revalidated again.
-                    popupMenu.revalidate();
-                    popupMenu.pack();
                     table.setRowSelectionInterval(rowAtPoint, rowAtPoint);
                 }
             });
@@ -427,8 +414,6 @@ public class OutboundsList extends JPanel
                                 JOptionPane.WARNING_MESSAGE);
                         break;
                 }
-            } else if (source == menuOutboundReturnableReturn) {
-                System.out.println("menuOutboundReturnableReturn");
             } else if (source == menuOutboundDelete) {
                 int reply = JOptionPane.showConfirmDialog(
                         null,

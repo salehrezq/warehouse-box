@@ -35,6 +35,4 @@ public interface OutboundCRUDListener {
     public void created(Outbound outbound);
 
     public void updated(Outbound outbound, BigDecimal oldQuantity);
-
-    public void returnableReturn(Outbound outbound, BigDecimal oldQuantity);
 }
