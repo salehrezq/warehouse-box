@@ -84,6 +84,10 @@ public class NoImageResponse {
         setInitialFrame();
     }
 
+    protected void stopAnimation() {
+        timer.stop();
+    }
+
     private void setInitialFrame() {
         container.setIcon(frames[0]);
     }

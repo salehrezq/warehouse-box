@@ -107,6 +107,10 @@ public class ScrollableScalableImageContainer {
         noImageResponse.noImageStillFrame();
     }
 
+    public void stopAnimation() {
+        noImageResponse.stopAnimation();
+    }
+
     public void loading() {
         loadingFeedback.loading();
     }
