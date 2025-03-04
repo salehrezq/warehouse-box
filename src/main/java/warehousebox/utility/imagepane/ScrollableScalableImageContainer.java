@@ -88,7 +88,6 @@ public class ScrollableScalableImageContainer {
         this.image = image;
         scale = (image != null) ? image.getScale() : new BigDecimal("0.6");
         bufferedImage = (image != null) ? image.getBufferedImage() : null;
-        setImageIcone(bufferedImage);
         paintImage();
     }
 

@@ -99,7 +99,6 @@ public class ItemImage implements RowIdSelectionListener {
     public void selectedRowId(int rowId) {
         spinnerValueOnSpinning = 0;
         imagesMap.clear();
-        scalableImageContainer.setImage(null);
         /**
          * Cancel swingWorker. This is the case that a new item row is selected,
          * cancel the ongoing doInBackground() to start a new one.
