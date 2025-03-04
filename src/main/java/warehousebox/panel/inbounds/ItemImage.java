@@ -125,6 +125,20 @@ public class ItemImage implements RowIdSelectionListener {
                             for (Image image : images) {
                                 imagesMap.put(image.getPosition(), image);
                                 if (image.isDefaultImage()) {
+                                    /**
+                                     * Stopping the animation is necessary to
+                                     * maintain consistency. If the animation
+                                     * takes longer time than the concurrent
+                                     * retrieval of images; the "no image" icon
+                                     * will win the display. This scenario
+                                     * occurs when a user double-clicks on a row
+                                     * with no associated images and then
+                                     * quickly double-clicks on a row with
+                                     * available images. To prevent the "no
+                                     * images" display, we need to stop the
+                                     * animation.
+                                     */
+                                    scalableImageContainer.stopAnimation();
                                     scalableImageContainer.setImage(image);
                                     spinnerValue = image.getPosition();
                                     spinnerValueOnSpinning = spinnerValue;
