@@ -31,5 +31,5 @@ public interface RowIdSelectionListener {
 
     public void selectedRowId(int rowId);
 
-    public void selectedRowHasBeenDeleted(int rowId);
+    public void selectedRowHasBeenDeleted();
 }

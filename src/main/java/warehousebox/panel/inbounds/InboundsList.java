@@ -194,9 +194,9 @@ public class InboundsList extends JPanel
         });
     }
 
-    private void notifySelectedRowHasBeenDeleted(int rowId) {
+    private void notifySelectedRowHasBeenDeleted() {
         this.rowIdSelectionListeners.forEach((item) -> {
-            item.selectedRowHasBeenDeleted(rowId);
+            item.selectedRowHasBeenDeleted();
         });
     }
 
@@ -401,7 +401,7 @@ public class InboundsList extends JPanel
                     if (deleted) {
                         model.removeInbound(modelIndex);
                         notifyInboundDeleted(inbound);
-                        notifySelectedRowHasBeenDeleted(inbound.getId());
+                        notifySelectedRowHasBeenDeleted();
                         rowAttributesDisplay.setTfItemNameText("");
                         rowAttributesDisplay.setTfItemSourceText("");
                         rowAttributesDisplay.setTfItemSpecificationsText("");

@@ -273,9 +273,9 @@ public class ItemsList extends JPanel
         });
     }
 
-    public void notifySelectedRowHasBeenDeleted(int rowId) {
+    public void notifySelectedRowHasBeenDeleted() {
         this.rowIdSelectionListeners.forEach((item) -> {
-            item.selectedRowHasBeenDeleted(rowId);
+            item.selectedRowHasBeenDeleted();
         });
     }
 
@@ -525,7 +525,7 @@ public class ItemsList extends JPanel
                             model.removeItemMeta(selectedModelRow);
                             relatedImagesToBeRemoved.forEach(imageTobeRemoved
                                     -> ImageFileManager.delete(imageTobeRemoved.getImageName()));
-                            notifySelectedRowHasBeenDeleted(itemMeta.getId());
+                            notifySelectedRowHasBeenDeleted();
                             nameAndSpecDisplayFields.setTfItemNameText("");
                             nameAndSpecDisplayFields.setTfItemSpecificationsText("");
                             JOptionPane.showMessageDialog(

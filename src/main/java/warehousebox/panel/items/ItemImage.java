@@ -170,7 +170,7 @@ public class ItemImage
     }
 
     @Override
-    public void selectedRowHasBeenDeleted(int rowId) {
+    public void selectedRowHasBeenDeleted() {
         scalableImageContainer.setImage(null);
     }
 

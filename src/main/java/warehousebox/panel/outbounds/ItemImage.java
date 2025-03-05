@@ -163,7 +163,7 @@ public class ItemImage implements RowIdSelectionListener {
     }
 
     @Override
-    public void selectedRowHasBeenDeleted(int rowId) {
+    public void selectedRowHasBeenDeleted() {
         scalableImageContainer.setImage(null);
     }
 
