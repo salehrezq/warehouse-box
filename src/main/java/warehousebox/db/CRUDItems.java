@@ -47,6 +47,9 @@ import warehousebox.panel.items.SearchFilters;
  */
 public class CRUDItems {
 
+    private static String[] searchedWords;
+    private static int wordsLength;
+
     public static Item create(Item item) {
         String sqlCreateItem = "INSERT INTO items (name, specification, unit_id) VALUES (?, ?, ?)";
 
@@ -143,14 +146,26 @@ public class CRUDItems {
         if (isIdFilter) {
             sqlFilter += " it.id = ?";
             return sqlFilter;
-        }
-        if (isNameFilter) {
-            sqlFilter += " (it.name LIKE ?";
-            sqlFilter += (isSpecificationFilter) ? " OR" : ")";
-        }
-        if (isSpecificationFilter) {
-            sqlFilter += isNameFilter ? "" : "(";
-            sqlFilter += " it.specification LIKE ?)";
+        } else {
+            searchedWords = SearchFormatter.getArrayOfWords(searchFilters.getSearchQuery());
+            wordsLength = searchedWords.length;
+
+            if (isNameFilter) {
+                sqlFilter += " (";
+                for (int i = 0; i < wordsLength; i++) {
+                    sqlFilter += "it.name LIKE ?";
+                    sqlFilter += (i < (wordsLength - 1)) ? " OR " : "";
+                }
+                sqlFilter += (isSpecificationFilter) ? " OR " : ")";
+            }
+            if (isSpecificationFilter) {
+                sqlFilter += isNameFilter ? "" : " (";
+                for (int i = 0; i < wordsLength; i++) {
+                    sqlFilter += "it.specification LIKE ?";
+                    sqlFilter += (i < (wordsLength - 1)) ? " OR " : "";
+                }
+                sqlFilter += ")";
+            }
         }
         return sqlFilter;
     }
@@ -171,10 +186,14 @@ public class CRUDItems {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
         }
         if (isNameFilter) {
-            p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchQuery + "%");
+            for (int i = 0; i < wordsLength; i++) {
+                p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
+            }
         }
         if (isSpecificationFilter) {
-            p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchQuery + "%");
+            for (int i = 0; i < wordsLength; i++) {
+                p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
+            }
         }
         return preparedStatementWrapper;
     }
