@@ -152,11 +152,12 @@ public class CRUDItems {
 
             if (isNameFilter) {
                 sqlFilter += " (";
+                sqlFilter += (isSpecificationFilter) ? "(" : "";
                 for (int i = 0; i < wordsLength; i++) {
                     sqlFilter += "it.name LIKE ?";
                     sqlFilter += (i < (wordsLength - 1)) ? " OR " : "";
                 }
-                sqlFilter += (isSpecificationFilter) ? " OR " : ")";
+                sqlFilter += (isSpecificationFilter) ? ") OR (" : ")";
             }
             if (isSpecificationFilter) {
                 sqlFilter += isNameFilter ? "" : " (";
@@ -165,6 +166,7 @@ public class CRUDItems {
                     sqlFilter += (i < (wordsLength - 1)) ? " OR " : "";
                 }
                 sqlFilter += ")";
+                sqlFilter += isNameFilter ? ")" : "";
             }
         }
         return sqlFilter;
