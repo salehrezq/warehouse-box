@@ -195,17 +195,16 @@ public class CRUDItems {
     public static List<ItemMeta> search(SearchFilters searchFilters, int LIMIT, int OFFSET) {
         List<ItemMeta> itemsMeta = new ArrayList<>();
 
-        String sql = "SELECT it.id , it.name, it.specification,"
+        String sql = "SELECT it.id, it.name, it.specification,"
                 + " ("
-                + " COALESCE((SELECT SUM(i.quantity)"
+                + "COALESCE((SELECT SUM(i.quantity)"
                 + " FROM inbounds AS i"
                 + " WHERE i.item_id = it.id),0)"
-                + " -"
-                + " COALESCE((SELECT SUM(o.quantity)"
+                + "-"
+                + "COALESCE((SELECT SUM(o.quantity)"
                 + " FROM outbounds AS o"
                 + " WHERE o.item_id = it.id),0)"
-                + " ) AS balance, u.id AS unit_id, u.name AS unit"
-                + " "
+                + ") AS balance, u.id AS unit_id, u.name AS unit"
                 + " FROM items AS it JOIN quantity_unit AS u"
                 + " ON it.unit_id = u.id"
                 + formulateSearchFilters(searchFilters)
