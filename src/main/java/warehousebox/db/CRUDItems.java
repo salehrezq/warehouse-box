@@ -131,7 +131,7 @@ public class CRUDItems {
     }
 
     private static String formulateSearchFilters(SearchFilters searchFilters) {
-        String sqlFilter = " WHERE";
+        String sqlFilter = " WHERE ";
         boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
         boolean isIdFilter = searchFilters.isIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
@@ -144,29 +144,27 @@ public class CRUDItems {
             return sqlFilter;
         }
         if (isIdFilter) {
-            sqlFilter += " it.id = ?";
+            sqlFilter += "it.id = ?";
             return sqlFilter;
         } else {
             searchedWords = SearchFormatter.getArrayOfWords(searchFilters.getSearchQuery());
             wordsLength = searchedWords.length;
 
-            if (isNameFilter) {
-                sqlFilter += " (";
-                sqlFilter += (isSpecificationFilter) ? "(" : "";
-                for (int i = 0; i < wordsLength; i++) {
-                    sqlFilter += "it.name LIKE ?";
-                    sqlFilter += (i < (wordsLength - 1)) ? " OR " : "";
-                }
-                sqlFilter += (isSpecificationFilter) ? ") OR (" : ")";
+            String query;
+            if (isNameFilter && !isSpecificationFilter) {
+                query = "it.name LIKE ?";
+            } else if (isSpecificationFilter && !isNameFilter) {
+                query = "it.specification LIKE ?";
+            } else {
+                query = "(it.name || ' ' || it.specification) LIKE ?";
             }
-            if (isSpecificationFilter) {
-                sqlFilter += isNameFilter ? "" : " (";
-                for (int i = 0; i < wordsLength; i++) {
-                    sqlFilter += "it.specification LIKE ?";
-                    sqlFilter += (i < (wordsLength - 1)) ? " OR " : "";
-                }
-                sqlFilter += ")";
-                sqlFilter += isNameFilter ? ")" : "";
+
+            sqlFilter += wordsLength > 1 ? "(" : "";
+            for (var i = 0; i < wordsLength; i++) {
+                sqlFilter += query;
+                sqlFilter += (wordsLength > 1 && i == 0) ? ")" : "";
+                sqlFilter += (i > 0) ? ")" : "";
+                sqlFilter += (i < (wordsLength - 1)) ? " AND (" : "";
             }
         }
         return sqlFilter;
@@ -186,13 +184,7 @@ public class CRUDItems {
         }
         if (isIdFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
-        }
-        if (isNameFilter) {
-            for (int i = 0; i < wordsLength; i++) {
-                p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
-            }
-        }
-        if (isSpecificationFilter) {
+        } else {
             for (int i = 0; i < wordsLength; i++) {
                 p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
             }
