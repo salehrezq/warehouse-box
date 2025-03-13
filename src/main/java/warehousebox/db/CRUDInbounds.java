@@ -159,7 +159,7 @@ public class CRUDInbounds {
         List<Inbound> inbounds = new ArrayList<>();
 
         String sql = "SELECT inbounds.item_id AS item_id, inbounds.id AS inbound_id,"
-                + " inbounds.quantity, u.id AS unit_id ,u.name AS unit_name, s.id AS source_id, s.information AS source_information,"
+                + " inbounds.quantity, u.id AS unit_id, u.name AS unit_name, s.id AS source_id, s.information AS source_information,"
                 + " inbounds.date, i.name AS item_name, i.specification AS item_specs"
                 + " FROM inbounds JOIN items AS i ON inbounds.item_id = i.id"
                 + " JOIN quantity_unit AS u ON i.unit_id = u.id"
