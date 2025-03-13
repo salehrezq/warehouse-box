@@ -44,6 +44,9 @@ import warehousebox.panel.inbounds.SearchFilters;
  */
 public class CRUDInbounds {
 
+    private static String[] searchedWords;
+    private static int wordsLength;
+
     public static Inbound create(Inbound inbound) {
         String sql = "INSERT INTO inbounds (item_id, quantity, date, source_id) VALUES (?, ?, ?, ?)";
 
@@ -69,7 +72,7 @@ public class CRUDInbounds {
     }
 
     private static String formulateSearchFilters(SearchFilters searchFilters) {
-        String sqlFilter = " WHERE";
+        String sqlFilter = " WHERE ";
         boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
         boolean isIdFilter = searchFilters.isIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
@@ -97,14 +100,26 @@ public class CRUDInbounds {
         if (isIdFilter) {
             sqlFilter += " i.id = ?";
             return sqlFilter;
-        }
-        if (isNameFilter) {
-            sqlFilter += " (i.name LIKE ?";
-            sqlFilter += (isSpecificationFilter) ? " OR" : ")";
-        }
-        if (isSpecificationFilter) {
-            sqlFilter += isNameFilter ? "" : "(";
-            sqlFilter += " i.specification LIKE ?)";
+        } else {
+            searchedWords = SearchFormatter.getArrayOfWords(searchFilters.getSearchQuery());
+            wordsLength = searchedWords.length;
+
+            String query;
+            if (isNameFilter && !isSpecificationFilter) {
+                query = "i.name LIKE ?";
+            } else if (isSpecificationFilter && !isNameFilter) {
+                query = "i.specification LIKE ?";
+            } else {
+                query = "(i.name || ' ' || i.specification) LIKE ?";
+            }
+
+            sqlFilter += wordsLength > 1 ? "(" : "";
+            for (var i = 0; i < wordsLength; i++) {
+                sqlFilter += query;
+                sqlFilter += (wordsLength > 1 && i == 0) ? ")" : "";
+                sqlFilter += (i > 0) ? ")" : "";
+                sqlFilter += (i < (wordsLength - 1)) ? " AND (" : "";
+            }
         }
         return sqlFilter;
     }
@@ -132,12 +147,10 @@ public class CRUDInbounds {
         }
         if (isIdFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
-        }
-        if (isNameFilter) {
-            p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchQuery + "%");
-        }
-        if (isSpecificationFilter) {
-            p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchQuery + "%");
+        } else {
+            for (int i = 0; i < wordsLength; i++) {
+                p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
+            }
         }
         return preparedStatementWrapper;
     }
