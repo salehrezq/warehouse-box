@@ -108,19 +108,16 @@ public class CRUDInbounds {
 
             String query;
             if (isNameFilter && !isSpecificationFilter) {
-                query = "i.name LIKE ?";
+                query = "(i.name LIKE ?)";
             } else if (isSpecificationFilter && !isNameFilter) {
-                query = "i.specification LIKE ?";
+                query = "(i.specification LIKE ?)";
             } else {
-                query = "(i.name || ' ' || i.specification) LIKE ?";
+                query = "((i.name || ' ' || i.specification) LIKE ?)";
             }
             sqlFilter += (isSourceFilter || isDateRangeFilter) ? " " : "";
-            sqlFilter += wordsLength > 1 ? "(" : "";
             for (var i = 0; i < wordsLength; i++) {
                 sqlFilter += query;
-                sqlFilter += (wordsLength > 1 && i == 0) ? ")" : "";
-                sqlFilter += (i > 0) ? ")" : "";
-                sqlFilter += (i < (wordsLength - 1)) ? " AND (" : "";
+                sqlFilter += (i < (wordsLength - 1)) ? " AND " : "";
             }
         }
         return sqlFilter;
