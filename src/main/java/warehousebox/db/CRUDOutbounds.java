@@ -44,6 +44,9 @@ import warehousebox.panel.outbounds.SearchFilters;
  */
 public class CRUDOutbounds {
 
+    private static String[] searchedWords;
+    private static int wordsLength;
+
     public static Outbound create(Outbound outbound) {
         String sql = "INSERT INTO outbounds (item_id, issuance_type, quantity, recipient_id, note, date) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -71,7 +74,7 @@ public class CRUDOutbounds {
     }
 
     private static String formulateSearchFilters(SearchFilters searchFilters) {
-        String sqlFilter = " WHERE";
+        String sqlFilter = " WHERE ";
         boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
         boolean isIdFilter = searchFilters.isIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
@@ -85,28 +88,39 @@ public class CRUDOutbounds {
             return sqlFilter;
         }
         if (isDateRangeFilter) {
-            sqlFilter += " (date >= ? AND date <= ?)";
+            sqlFilter += "(date >= ? AND date <= ?)";
             if (isIdFilter || isNameFilter || isSpecificationFilter || isRecipientFilter) {
                 sqlFilter += " AND";
             }
         }
         if (isRecipientFilter) {
-            sqlFilter += " recipient_id = ?";
+            sqlFilter += isDateRangeFilter ? " " : "";
+            sqlFilter += "(recipient_id = ?)";
             if (isIdFilter || isNameFilter || isSpecificationFilter) {
                 sqlFilter += " AND";
             }
         }
         if (isIdFilter) {
-            sqlFilter += " i.id = ?";
+            sqlFilter += (isDateRangeFilter || isRecipientFilter) ? " " : "";
+            sqlFilter += "(i.id = ?)";
             return sqlFilter;
-        }
-        if (isNameFilter) {
-            sqlFilter += " (i.name LIKE ?";
-            sqlFilter += (isSpecificationFilter) ? " OR" : ")";
-        }
-        if (isSpecificationFilter) {
-            sqlFilter += isNameFilter ? "" : "(";
-            sqlFilter += " i.specification LIKE ?)";
+        } else if (isNameFilter || isSpecificationFilter) {
+            searchedWords = SearchFormatter.getArrayOfWords(searchFilters.getSearchQuery());
+            wordsLength = searchedWords.length;
+
+            String query;
+            if (isNameFilter && !isSpecificationFilter) {
+                query = "(i.name LIKE ?)";
+            } else if (isSpecificationFilter && !isNameFilter) {
+                query = "(i.specification LIKE ?)";
+            } else {
+                query = "((i.name || ' ' || i.specification) LIKE ?)";
+            }
+            sqlFilter += (isRecipientFilter || isDateRangeFilter) ? " " : "";
+            for (var i = 0; i < wordsLength; i++) {
+                sqlFilter += query;
+                sqlFilter += (i < (wordsLength - 1)) ? " AND " : "";
+            }
         }
         return sqlFilter;
     }
@@ -134,12 +148,10 @@ public class CRUDOutbounds {
         }
         if (isIdFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
-        }
-        if (isNameFilter) {
-            p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchQuery + "%");
-        }
-        if (isSpecificationFilter) {
-            p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchQuery + "%");
+        } else if (isNameFilter || isSpecificationFilter) {
+            for (int i = 0; i < wordsLength; i++) {
+                p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
+            }
         }
         return preparedStatementWrapper;
     }
