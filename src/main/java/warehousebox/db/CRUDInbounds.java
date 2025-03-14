@@ -86,21 +86,23 @@ public class CRUDInbounds {
             return sqlFilter;
         }
         if (isDateRangeFilter) {
-            sqlFilter += " (date >= ? AND date <= ?)";
+            sqlFilter += "(date >= ? AND date <= ?)";
             if (isIdFilter || isNameFilter || isSpecificationFilter || isSourceFilter) {
                 sqlFilter += " AND";
             }
         }
         if (isSourceFilter) {
-            sqlFilter += " source_id = ?";
+            sqlFilter += (isDateRangeFilter) ? " " : "";
+            sqlFilter += "(source_id = ?)";
             if (isIdFilter || isNameFilter || isSpecificationFilter) {
                 sqlFilter += " AND";
             }
         }
         if (isIdFilter) {
-            sqlFilter += " i.id = ?";
+            sqlFilter += (isDateRangeFilter || isSourceFilter) ? " " : "";
+            sqlFilter += "(i.id = ?)";
             return sqlFilter;
-        } else {
+        } else if (isNameFilter || isSpecificationFilter) {
             searchedWords = SearchFormatter.getArrayOfWords(searchFilters.getSearchQuery());
             wordsLength = searchedWords.length;
 
@@ -112,7 +114,7 @@ public class CRUDInbounds {
             } else {
                 query = "(i.name || ' ' || i.specification) LIKE ?";
             }
-
+            sqlFilter += (isSourceFilter || isDateRangeFilter) ? " " : "";
             sqlFilter += wordsLength > 1 ? "(" : "";
             for (var i = 0; i < wordsLength; i++) {
                 sqlFilter += query;
@@ -147,7 +149,7 @@ public class CRUDInbounds {
         }
         if (isIdFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
-        } else {
+        } else if (isNameFilter || isSpecificationFilter) {
             for (int i = 0; i < wordsLength; i++) {
                 p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
             }
