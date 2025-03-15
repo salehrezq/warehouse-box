@@ -36,6 +36,7 @@ public class SearchFilters {
     private boolean idFilter;
     private boolean nameFilter;
     private boolean specificationFilter;
+    private boolean noteFilter;
     private Recipient recipient;
     // Date range
     private boolean enableDateRangeFilter;
@@ -55,6 +56,7 @@ public class SearchFilters {
         this.idFilter = searchFilters.idFilter;
         this.nameFilter = searchFilters.nameFilter;
         this.specificationFilter = searchFilters.specificationFilter;
+        this.noteFilter = searchFilters.noteFilter;
         this.recipient = searchFilters.recipient;
         this.enableDateRangeFilter = searchFilters.enableDateRangeFilter;
         this.dateRangeStart = searchFilters.dateRangeStart;
@@ -91,6 +93,14 @@ public class SearchFilters {
 
     public void setSpecificationFilter(boolean specificationFilter) {
         this.specificationFilter = specificationFilter;
+    }
+
+    public boolean isNoteFilter() {
+        return noteFilter;
+    }
+
+    public void setNoteFilter(boolean noteFilter) {
+        this.noteFilter = noteFilter;
     }
 
     public boolean isRecipientFilter() {
