@@ -47,7 +47,7 @@ public class ItemsSearchPane {
     private ScrollBarThin scrollBarThinTfSearchQuery, scrollBarThinTfSourceFilter;
     private JButton btnSearchQuery, btnSourceFilter;
     private JLabel btnRemoveSource;
-    private JCheckBox checkIdFilter,
+    private JCheckBox checkItemIdFilter,
             checkNameFilter,
             checkSpecificationFilter;
     private DateRange dateRange;
@@ -65,7 +65,7 @@ public class ItemsSearchPane {
         boxSearchQueryField.add(scrollBarThinTfSearchQuery);
         // --
         btnSearchQuery = new JButton("Search");
-        checkIdFilter = new JCheckBox("Id");
+        checkItemIdFilter = new JCheckBox("Id");
         checkNameFilter = new JCheckBox("Name");
         checkSpecificationFilter = new JCheckBox("Specification");
         btnSourceFilter = new JButton("Source...");
@@ -90,7 +90,7 @@ public class ItemsSearchPane {
         boxSearch.add(boxSearchQueryField);
         boxSearch.add(btnSearchQuery);
         Box boxFilters = Box.createHorizontalBox();
-        boxFilters.add(checkIdFilter);
+        boxFilters.add(checkItemIdFilter);
         boxFilters.add(Box.createHorizontalStrut(5));
         boxFilters.add(checkNameFilter);
         boxFilters.add(Box.createHorizontalStrut(5));
@@ -143,8 +143,8 @@ public class ItemsSearchPane {
         return btnSearchQuery;
     }
 
-    protected JCheckBox getCheckIdFilter() {
-        return checkIdFilter;
+    protected JCheckBox getCheckItemIdFilter() {
+        return checkItemIdFilter;
     }
 
     protected JCheckBox getCheckNameFilter() {
