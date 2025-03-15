@@ -49,7 +49,8 @@ public class ItemsSearchPane {
     private JLabel btnRemoveRecipient;
     private JCheckBox checkIdFilter,
             checkNameFilter,
-            checkSpecificationFilter;
+            checkSpecificationFilter,
+            checkNoteFilter;
     private DateRange dateRange;
     private final Color colorTextField = new Color(84, 84, 84);
 
@@ -68,6 +69,7 @@ public class ItemsSearchPane {
         checkIdFilter = new JCheckBox("Id");
         checkNameFilter = new JCheckBox("Name");
         checkSpecificationFilter = new JCheckBox("Specification");
+        checkNoteFilter = new JCheckBox("Note");
 
         btnRecipientFilter = new JButton("Recipient...");
         tfRecipientFilter = new JTextField(15);
@@ -96,6 +98,9 @@ public class ItemsSearchPane {
         boxFilters.add(checkNameFilter);
         boxFilters.add(Box.createHorizontalStrut(5));
         boxFilters.add(checkSpecificationFilter);
+        boxFilters.add(Box.createHorizontalStrut(5));
+        boxFilters.add(checkNoteFilter);
+        boxFilters.add(Box.createHorizontalStrut(2));
         boxFilters.add(btnRecipientFilter);
         boxFilters.add(Box.createHorizontalStrut(2));
         boxFilters.add(boxRecipientFilterField);
@@ -153,6 +158,10 @@ public class ItemsSearchPane {
 
     protected JCheckBox getCheckSpecificationFilter() {
         return checkSpecificationFilter;
+    }
+
+    protected JCheckBox getCheckNoteFilter() {
+        return checkNoteFilter;
     }
 
     protected JButton getBtnRecipientFilter() {
