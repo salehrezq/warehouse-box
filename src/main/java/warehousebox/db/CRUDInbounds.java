@@ -125,14 +125,14 @@ public class CRUDInbounds {
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         String searchQuery = searchFilters.getSearchQuery();
-        boolean isIdFilter = searchFilters.isItemIdFilter();
+        boolean isIdItemFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
         boolean isSourceFilter = searchFilters.isSourceFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter || isSourceFilter;
+        boolean isAnyFilterOn = isIdItemFilter || isNameFilter || isSpecificationFilter || isSourceFilter;
 
         if ((!isAnyFilterOn || searchQuery.isBlank()) && !(isDateRangeFilter || isSourceFilter)) {
             return preparedStatementWrapper;
@@ -144,7 +144,7 @@ public class CRUDInbounds {
         if (isSourceFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), searchFilters.getSource().getId());
         }
-        if (isIdFilter) {
+        if (isIdItemFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
         } else if (isNameFilter || isSpecificationFilter) {
             for (int i = 0; i < wordsLength; i++) {
