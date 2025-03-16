@@ -65,6 +65,7 @@ public class InboundsTap extends JPanel {
         inboundsSearchLogic.setTfSearchQuery(inboundsSearchPane.getTfSearchQuery());
         inboundsSearchLogic.setBtnSearch(inboundsSearchPane.getBtnSearchQuery());
         inboundsSearchLogic.setCheckFilters(
+                inboundsSearchPane.getCheckInboundIdFilter(),
                 inboundsSearchPane.getCheckItemIdFilter(),
                 inboundsSearchPane.getCheckNameFilter(),
                 inboundsSearchPane.getCheckSpecificationFilter());

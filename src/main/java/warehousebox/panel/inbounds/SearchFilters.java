@@ -33,7 +33,8 @@ import warehousebox.db.model.Source;
 public class SearchFilters {
 
     private String searchQuery;
-    private boolean idFilter;
+    private boolean idInboundFilter;
+    private boolean idItemFilter;
     private boolean nameFilter;
     private boolean specificationFilter;
     private Source source;
@@ -52,7 +53,8 @@ public class SearchFilters {
      */
     public SearchFilters(SearchFilters searchFilters) {
         this.searchQuery = searchFilters.searchQuery;
-        this.idFilter = searchFilters.idFilter;
+        this.idInboundFilter = searchFilters.idInboundFilter;
+        this.idItemFilter = searchFilters.idItemFilter;
         this.nameFilter = searchFilters.nameFilter;
         this.specificationFilter = searchFilters.specificationFilter;
         this.source = searchFilters.source;
@@ -69,12 +71,20 @@ public class SearchFilters {
         this.searchQuery = searchQuery;
     }
 
-    public Boolean isIdFilter() {
-        return idFilter;
+    public Boolean isInboundIdFilter() {
+        return idInboundFilter;
     }
 
-    public void setIdFilter(boolean idFilter) {
-        this.idFilter = idFilter;
+    public void setInboundIdFilter(boolean idInboundFilter) {
+        this.idInboundFilter = idInboundFilter;
+    }
+
+    public Boolean isItemIdFilter() {
+        return idItemFilter;
+    }
+
+    public void setItemIdFilter(boolean idFilter) {
+        this.idItemFilter = idFilter;
     }
 
     public boolean isNameFilter() {

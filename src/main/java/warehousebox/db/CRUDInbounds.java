@@ -74,7 +74,7 @@ public class CRUDInbounds {
     private static String formulateSearchFilters(SearchFilters searchFilters) {
         String sqlFilter = " WHERE ";
         boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
-        boolean isIdFilter = searchFilters.isIdFilter();
+        boolean isIdFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
@@ -125,7 +125,7 @@ public class CRUDInbounds {
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         String searchQuery = searchFilters.getSearchQuery();
-        boolean isIdFilter = searchFilters.isIdFilter();
+        boolean isIdFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
