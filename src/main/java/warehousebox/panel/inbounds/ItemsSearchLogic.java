@@ -67,7 +67,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private JLabel btnRemoveSource;
     private JButton btnSearch;
     private JButton btnLoadMore;
-    private JCheckBox checkIdFilter,
+    private JCheckBox checkItemIdFilter,
             checkNameFilter,
             checkSpecificationFilter;
     private JButton btnSourceFilter;
@@ -84,7 +84,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private LocalDate oldDateStart, oldDateEnd;
     private DateChangeHandler dateChangeHandler;
     private CheckBoxFiltersHandler checkBoxFiltersHandler;
-    private static final String PREFS_CODE_FILTER = "checkIdFilter";
+    private static final String PREFS_ITEM_ID_FILTER = "checkItemIdFilter";
     private static final String PREFS_NAME_FILTER = "checkNameFilter";
     private static final String PREFS_SPECIFICATION_FILTER = "checkSpecificationFilter";
     private static final String PREFS_DATE_RANGE_FILTER = "checkDateRangeFilter";
@@ -142,15 +142,15 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     }
 
     protected void setCheckFilters(JCheckBox... checkfilters) {
-        checkIdFilter = checkfilters[0];
+        checkItemIdFilter = checkfilters[0];
         checkNameFilter = checkfilters[1];
         checkSpecificationFilter = checkfilters[2];
 
-        checkIdFilter.addActionListener(checkBoxFiltersHandler);
+        checkItemIdFilter.addActionListener(checkBoxFiltersHandler);
         checkNameFilter.addActionListener(checkBoxFiltersHandler);
         checkSpecificationFilter.addActionListener(checkBoxFiltersHandler);
 
-        this.checkIdFilter.setSelected(prefs.getBoolean(PREFS_CODE_FILTER, false));
+        this.checkItemIdFilter.setSelected(prefs.getBoolean(PREFS_ITEM_ID_FILTER, false));
         this.checkNameFilter.setSelected(prefs.getBoolean(PREFS_NAME_FILTER, false));
         this.checkSpecificationFilter.setSelected(prefs.getBoolean(PREFS_SPECIFICATION_FILTER, false));
     }
@@ -303,11 +303,11 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     }
 
     private void checkBoxidFilterReact() {
-        boolean isIdSelected = checkIdFilter.isSelected();
+        boolean isIdSelected = checkItemIdFilter.isSelected();
         checkNameFilter.setEnabled(!isIdSelected);
         checkSpecificationFilter.setEnabled(!isIdSelected);
         searchFilters.setIdFilter(isIdSelected);
-        if (checkIdFilter.isSelected()) {
+        if (checkItemIdFilter.isSelected()) {
             checkNameFilter.setSelected(false);
             checkSpecificationFilter.setSelected(false);
             searchFilters.setNameFilter(false);
@@ -319,23 +319,23 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         boolean isNameORSpecificationSelected = (checkNameFilter.isSelected() || checkSpecificationFilter.isSelected());
         boolean isNameANDSpecificationBothDeselected = !checkNameFilter.isSelected() && !checkSpecificationFilter.isSelected();
         if (isNameORSpecificationSelected) {
-            checkIdFilter.setEnabled(false);
-            checkIdFilter.setSelected(false);
+            checkItemIdFilter.setEnabled(false);
+            checkItemIdFilter.setSelected(false);
             searchFilters.setIdFilter(false);
         }
         if (isNameANDSpecificationBothDeselected) {
-            checkIdFilter.setEnabled(true);
+            checkItemIdFilter.setEnabled(true);
         }
         searchFilters.setNameFilter(checkNameFilter.isSelected());
         searchFilters.setSpecificationFilter(checkSpecificationFilter.isSelected());
     }
 
     private void checkBoxFiltersAlwaysInvoke() {
-        isAnyTextRelatedCheckboxesSelected = checkIdFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
+        isAnyTextRelatedCheckboxesSelected = checkItemIdFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
         btnSearch.setText(isAnyTextRelatedCheckboxesSelected ? "Search" : "Get all");
         tfSearchQuery.setEnabled(isAnyTextRelatedCheckboxesSelected);
         searchFilters.enableDateRangeFilter(dateRange.getCheckDateFilter().isSelected());
-        isIdChecked = checkIdFilter.isSelected();
+        isIdChecked = checkItemIdFilter.isSelected();
         isSourceSelected = !tfSourceFilter.getText().isBlank();
         isDateRangeCheckSelected = dateRange.getCheckDateFilter().isSelected();
         boolean boolSum = isAnyTextRelatedCheckboxesSelected || isSourceSelected || isDateRangeCheckSelected;
@@ -349,7 +349,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         public void actionPerformed(ActionEvent e) {
             JCheckBox source = (JCheckBox) e.getSource();
 
-            if (source == checkIdFilter) {
+            if (source == checkItemIdFilter) {
                 checkBoxidFilterReact();
             } else if (source == checkNameFilter || source == checkSpecificationFilter) {
                 checkBoxesNameAndSpecificationFiltersReact();
@@ -359,7 +359,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                 btnSearch.setText(boolSum ? "Search" : "Get all");
             }
             checkBoxFiltersAlwaysInvoke();
-            prefs.putBoolean(PREFS_CODE_FILTER, checkIdFilter.isSelected());
+            prefs.putBoolean(PREFS_ITEM_ID_FILTER, checkItemIdFilter.isSelected());
             prefs.putBoolean(PREFS_NAME_FILTER, checkNameFilter.isSelected());
             prefs.putBoolean(PREFS_SPECIFICATION_FILTER, checkSpecificationFilter.isSelected());
             prefs.putBoolean(PREFS_DATE_RANGE_FILTER, dateRange.getCheckDateFilter().isSelected());
