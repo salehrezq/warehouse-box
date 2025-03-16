@@ -303,6 +303,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     }
 
     protected void initializeFiltersReactToRetrievedPreferences() {
+        checkBoxInBoundIdFilterReact();
         checkBoxItemIdFilterReact();
         checkBoxesNameAndSpecificationFiltersReact();
         checkBoxFiltersAlwaysInvoke();
