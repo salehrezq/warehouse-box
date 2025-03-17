@@ -47,7 +47,8 @@ public class ItemsSearchPane {
     private ScrollBarThin scrollBarThinTfSearchQuery, scrollBarThinTfRecipientFilter;
     private JButton btnSearchQuery, btnRecipientFilter;
     private JLabel btnRemoveRecipient;
-    private JCheckBox checkItemIdFilter,
+    private JCheckBox checkOutboundIdFilter,
+            checkItemIdFilter,
             checkNameFilter,
             checkSpecificationFilter,
             checkNoteFilter;
@@ -66,6 +67,7 @@ public class ItemsSearchPane {
         boxSearchQueryField.add(scrollBarThinTfSearchQuery);
 
         btnSearchQuery = new JButton("Search");
+        checkOutboundIdFilter = new JCheckBox("Outbound Id");
         checkItemIdFilter = new JCheckBox("Item Id");
         checkNameFilter = new JCheckBox("Name");
         checkSpecificationFilter = new JCheckBox("Specification");
@@ -93,6 +95,8 @@ public class ItemsSearchPane {
         boxSearch.add(boxSearchQueryField);
         boxSearch.add(btnSearchQuery);
         Box boxFilters = Box.createHorizontalBox();
+        boxFilters.add(checkOutboundIdFilter);
+        boxFilters.add(Box.createHorizontalStrut(5));
         boxFilters.add(checkItemIdFilter);
         boxFilters.add(Box.createHorizontalStrut(5));
         boxFilters.add(checkNameFilter);
@@ -146,6 +150,10 @@ public class ItemsSearchPane {
 
     protected ImageIcon getImageIconRemovePress() {
         return imageIconRemovePress;
+    }
+
+    protected JCheckBox getCheckOutboundIdFilter() {
+        return checkOutboundIdFilter;
     }
 
     protected JCheckBox getCheckItemIdFilter() {
