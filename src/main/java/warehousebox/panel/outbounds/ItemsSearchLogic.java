@@ -265,7 +265,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-            } else if (searchFilters.isItemIdFilter()) {
+            } else if (searchFilters.isOutboundIdFiler() || searchFilters.isItemIdFilter()) {
                 if (!pattern.matcher(searchFilters.getSearchQuery()).matches()) {
                     btnLoadMore.setEnabled(false);
                     JOptionPane.showMessageDialog(

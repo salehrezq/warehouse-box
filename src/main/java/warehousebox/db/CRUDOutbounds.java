@@ -76,13 +76,14 @@ public class CRUDOutbounds {
     private static String formulateSearchFilters(SearchFilters searchFilters) {
         String sqlFilter = " WHERE ";
         boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
+        boolean isOutboundFilter = searchFilters.isOutboundIdFiler();
         boolean isItemIdFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isNoteFilter = searchFilters.isNoteFilter();
         boolean isRecipientFilter = searchFilters.isRecipientFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
-        boolean isAnyFilterOn = isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter;
+        boolean isAnyFilterOn = isOutboundFilter || isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter;
 
         if ((!isAnyFilterOn || isSearchisQueryBlank) && !(isDateRangeFilter || isRecipientFilter)) {
             sqlFilter = "";
@@ -90,18 +91,22 @@ public class CRUDOutbounds {
         }
         if (isDateRangeFilter) {
             sqlFilter += "(date >= ? AND date <= ?)";
-            if (isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter) {
+            if (isOutboundFilter || isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter) {
                 sqlFilter += " AND";
             }
         }
         if (isRecipientFilter) {
             sqlFilter += isDateRangeFilter ? " " : "";
             sqlFilter += "(recipient_id = ?)";
-            if (isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter) {
+            if (isOutboundFilter || isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter) {
                 sqlFilter += " AND";
             }
         }
-        if (isItemIdFilter) {
+        if (isOutboundFilter) {
+            sqlFilter += (isDateRangeFilter || isRecipientFilter) ? " " : "";
+            sqlFilter += "(o.id = ?)";
+            return sqlFilter;
+        } else if (isItemIdFilter) {
             sqlFilter += (isDateRangeFilter || isRecipientFilter) ? " " : "";
             sqlFilter += "(i.id = ?)";
             return sqlFilter;
@@ -137,6 +142,7 @@ public class CRUDOutbounds {
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         String searchQuery = searchFilters.getSearchQuery();
+        boolean isOutboundFilter = searchFilters.isOutboundIdFiler();
         boolean isItemIdFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
@@ -145,7 +151,7 @@ public class CRUDOutbounds {
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn = isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter;
+        boolean isAnyFilterOn = isOutboundFilter || isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter;
 
         if ((!isAnyFilterOn || searchQuery.isBlank()) && !(isDateRangeFilter || isRecipientFilter)) {
             return preparedStatementWrapper;
@@ -157,7 +163,7 @@ public class CRUDOutbounds {
         if (isRecipientFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), searchFilters.getRecipient().getId());
         }
-        if (isItemIdFilter) {
+        if (isOutboundFilter || isItemIdFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
         } else if (isNameFilter || isSpecificationFilter || isNoteFilter) {
             for (int i = 0; i < wordsLength; i++) {
@@ -220,9 +226,9 @@ public class CRUDOutbounds {
     public static int searchResultRowsCount(SearchFilters searchFilters) {
         int searchResultRowsCount = 0;
 
-        String sql = "SELECT COUNT(outbounds.id) AS search_result_rows_count"
-                + " FROM outbounds JOIN items AS i"
-                + " ON outbounds.item_id = i.id"
+        String sql = "SELECT COUNT(o.id) AS search_result_rows_count"
+                + " FROM outbounds AS o JOIN items AS i"
+                + " ON o.item_id = i.id"
                 + formulateSearchFilters(searchFilters);
 
         try (Connection con = Connect.getConnection()) {
