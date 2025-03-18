@@ -76,13 +76,13 @@ public class CRUDOutbounds {
     private static String formulateSearchFilters(SearchFilters searchFilters) {
         String sqlFilter = " WHERE ";
         boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
-        boolean isIdFilter = searchFilters.isItemIdFilter();
+        boolean isItemIdFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isNoteFilter = searchFilters.isNoteFilter();
         boolean isRecipientFilter = searchFilters.isRecipientFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
-        boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter;
+        boolean isAnyFilterOn = isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter;
 
         if ((!isAnyFilterOn || isSearchisQueryBlank) && !(isDateRangeFilter || isRecipientFilter)) {
             sqlFilter = "";
@@ -90,18 +90,18 @@ public class CRUDOutbounds {
         }
         if (isDateRangeFilter) {
             sqlFilter += "(date >= ? AND date <= ?)";
-            if (isIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter) {
+            if (isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter) {
                 sqlFilter += " AND";
             }
         }
         if (isRecipientFilter) {
             sqlFilter += isDateRangeFilter ? " " : "";
             sqlFilter += "(recipient_id = ?)";
-            if (isIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter) {
+            if (isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter) {
                 sqlFilter += " AND";
             }
         }
-        if (isIdFilter) {
+        if (isItemIdFilter) {
             sqlFilter += (isDateRangeFilter || isRecipientFilter) ? " " : "";
             sqlFilter += "(i.id = ?)";
             return sqlFilter;
@@ -137,7 +137,7 @@ public class CRUDOutbounds {
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         String searchQuery = searchFilters.getSearchQuery();
-        boolean isIdFilter = searchFilters.isItemIdFilter();
+        boolean isItemIdFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isNoteFilter = searchFilters.isNoteFilter();
@@ -145,7 +145,7 @@ public class CRUDOutbounds {
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter;
+        boolean isAnyFilterOn = isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter;
 
         if ((!isAnyFilterOn || searchQuery.isBlank()) && !(isDateRangeFilter || isRecipientFilter)) {
             return preparedStatementWrapper;
@@ -157,7 +157,7 @@ public class CRUDOutbounds {
         if (isRecipientFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), searchFilters.getRecipient().getId());
         }
-        if (isIdFilter) {
+        if (isItemIdFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
         } else if (isNameFilter || isSpecificationFilter || isNoteFilter) {
             for (int i = 0; i < wordsLength; i++) {
