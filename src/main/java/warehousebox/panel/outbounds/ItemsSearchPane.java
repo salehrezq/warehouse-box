@@ -51,7 +51,10 @@ public class ItemsSearchPane {
             checkItemIdFilter,
             checkNameFilter,
             checkSpecificationFilter,
-            checkNoteFilter;
+            checkNoteFilter,
+            checkConsumableFilter,
+            checkReturnableFilter,
+            checkScrapFilter;
     private DateRange dateRange;
     private final Color colorTextField = new Color(84, 84, 84);
 
@@ -72,6 +75,9 @@ public class ItemsSearchPane {
         checkNameFilter = new JCheckBox("Name");
         checkSpecificationFilter = new JCheckBox("Specification");
         checkNoteFilter = new JCheckBox("Note");
+        checkConsumableFilter = new JCheckBox("Consumables");
+        checkReturnableFilter = new JCheckBox("Returnables");
+        checkScrapFilter = new JCheckBox("Scrap");
 
         btnRecipientFilter = new JButton("Recipient...");
         tfRecipientFilter = new JTextField(15);
@@ -110,9 +116,17 @@ public class ItemsSearchPane {
         boxFilters.add(boxRecipientFilterField);
         boxFilters.add(Box.createHorizontalStrut(2));
         boxFilters.add(btnRemoveRecipient);
+        Box boxIssuanceTypesFilters = Box.createHorizontalBox();
+        boxIssuanceTypesFilters.add(checkConsumableFilter);
+        boxIssuanceTypesFilters.add(Box.createHorizontalStrut(2));
+        boxIssuanceTypesFilters.add(checkReturnableFilter);
+        boxIssuanceTypesFilters.add(Box.createHorizontalStrut(2));
+        boxIssuanceTypesFilters.add(checkScrapFilter);
+        boxIssuanceTypesFilters.add(Box.createHorizontalStrut(155));
         Box boxContainer = Box.createVerticalBox();
         boxContainer.add(boxSearch);
         boxContainer.add(boxFilters);
+        boxContainer.add(boxIssuanceTypesFilters);
         boxContainer.add(dateRange.getContainer());
         container.add(boxContainer);
     }
@@ -170,6 +184,18 @@ public class ItemsSearchPane {
 
     protected JCheckBox getCheckNoteFilter() {
         return checkNoteFilter;
+    }
+
+    protected JCheckBox getCheckConsumableFilter() {
+        return checkConsumableFilter;
+    }
+
+    protected JCheckBox getCheckReturnableFilter() {
+        return checkReturnableFilter;
+    }
+
+    protected JCheckBox getCheckScrapFilter() {
+        return checkScrapFilter;
     }
 
     protected JButton getBtnRecipientFilter() {
