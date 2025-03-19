@@ -38,6 +38,10 @@ public class SearchFilters {
     private boolean nameFilter;
     private boolean specificationFilter;
     private boolean noteFilter;
+    private boolean consumableFilter;
+    private boolean returnableFilter;
+    private boolean scrapFilter;
+
     private Recipient recipient;
     // Date range
     private boolean enableDateRangeFilter;
@@ -59,6 +63,9 @@ public class SearchFilters {
         this.nameFilter = searchFilters.nameFilter;
         this.specificationFilter = searchFilters.specificationFilter;
         this.noteFilter = searchFilters.noteFilter;
+        this.consumableFilter = searchFilters.consumableFilter;
+        this.returnableFilter = searchFilters.returnableFilter;
+        this.scrapFilter = searchFilters.scrapFilter;
         this.recipient = searchFilters.recipient;
         this.enableDateRangeFilter = searchFilters.enableDateRangeFilter;
         this.dateRangeStart = searchFilters.dateRangeStart;
@@ -111,6 +118,30 @@ public class SearchFilters {
 
     public void setNoteFilter(boolean noteFilter) {
         this.noteFilter = noteFilter;
+    }
+
+    public boolean isConsumableFilter() {
+        return consumableFilter;
+    }
+
+    public void setConsumableFilter(boolean consumableFilter) {
+        this.consumableFilter = consumableFilter;
+    }
+
+    public boolean isReturnableFilter() {
+        return returnableFilter;
+    }
+
+    public void setReturnableFilter(boolean returnableFilter) {
+        this.returnableFilter = returnableFilter;
+    }
+
+    public boolean isScrapFilter() {
+        return scrapFilter;
+    }
+
+    public void setScrapFilter(boolean scrapFilter) {
+        this.scrapFilter = scrapFilter;
     }
 
     public boolean isRecipientFilter() {

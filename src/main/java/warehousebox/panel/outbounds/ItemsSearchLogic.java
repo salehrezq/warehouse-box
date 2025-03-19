@@ -71,7 +71,10 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             checkItemIdFilter,
             checkNameFilter,
             checkSpecificationFilter,
-            checkNoteFilter;
+            checkNoteFilter,
+            checkConsumableFilter,
+            checkReturnableFilter,
+            checkScrapFilter;
     private JButton btnRecipientFilter;
     private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
     private RecipientFilterDialog recipientFilterDialog;
@@ -91,6 +94,9 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private static final String PREFS_NAME_FILTER = "checkNameFilter";
     private static final String PREFS_SPECIFICATION_FILTER = "checkSpecificationFilter";
     private static final String PREFS_NOTE_FILTER = "checkNoteFilter";
+    private static final String PREFS_CONSUMABLE_FILTER = "checkConsumableFilter";
+    private static final String PREFS_RETURNABLE_FILTER = "checkReturnableFilter";
+    private static final String PREFS_SCRAP_FILTER = "checkScrapFilter";
     private static final String PREFS_DATE_RANGE_FILTER = "checkDateRangeFilter";
     private static final String PREFS_DATE_START_FILTER = "checkDateStartFilter";
     private static final String PREFS_DATE_END_FILTER = "checkDateEndFilter";
@@ -113,6 +119,9 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         searchFilters.setNameFilter(true);
         searchFilters.setSpecificationFilter(true);
         searchFilters.setNoteFilter(true);
+        searchFilters.setConsumableFilter(true);
+        searchFilters.setReturnableFilter(true);
+        searchFilters.setScrapFilter(true);
         searchFilters.enableDateRangeFilter(false);
     }
 
@@ -153,18 +162,27 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         checkNameFilter = checkfilters[2];
         checkSpecificationFilter = checkfilters[3];
         checkNoteFilter = checkfilters[4];
+        checkConsumableFilter = checkfilters[5];
+        checkReturnableFilter = checkfilters[6];
+        checkScrapFilter = checkfilters[7];
 
         checkOutboundIdFilter.addActionListener(checkBoxFiltersHandler);
         checkItemIdFilter.addActionListener(checkBoxFiltersHandler);
         checkNameFilter.addActionListener(checkBoxFiltersHandler);
         checkSpecificationFilter.addActionListener(checkBoxFiltersHandler);
         checkNoteFilter.addActionListener(checkBoxFiltersHandler);
+        checkConsumableFilter.addActionListener(checkBoxFiltersHandler);
+        checkReturnableFilter.addActionListener(checkBoxFiltersHandler);
+        checkScrapFilter.addActionListener(checkBoxFiltersHandler);
 
         this.checkOutboundIdFilter.setSelected(prefs.getBoolean(PREFS_OUTBOUND_ID_FILTER, false));
         this.checkItemIdFilter.setSelected(prefs.getBoolean(PREFS_ITEM_ID_FILTER, false));
         this.checkNameFilter.setSelected(prefs.getBoolean(PREFS_NAME_FILTER, false));
         this.checkSpecificationFilter.setSelected(prefs.getBoolean(PREFS_SPECIFICATION_FILTER, false));
         this.checkNoteFilter.setSelected(prefs.getBoolean(PREFS_NOTE_FILTER, false));
+        this.checkConsumableFilter.setSelected(prefs.getBoolean(PREFS_CONSUMABLE_FILTER, false));
+        this.checkReturnableFilter.setSelected(prefs.getBoolean(PREFS_RETURNABLE_FILTER, false));
+        this.checkScrapFilter.setSelected(prefs.getBoolean(PREFS_SCRAP_FILTER, false));
     }
 
     protected void setBtnRecipientFilter(JButton btnRecipientFilter) {
@@ -312,6 +330,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         checkBoxOutboundIdFilterReact();
         checkBoxItemIdFilterReact();
         checkBoxesNameAndSpecificationFiltersReact();
+        checkBoxesIssuanceTypesFiltersReact();
         checkBoxFiltersAlwaysInvoke();
     }
 
@@ -320,16 +339,25 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         checkNameFilter.setEnabled(!isIdSelected);
         checkSpecificationFilter.setEnabled(!isIdSelected);
         checkNoteFilter.setEnabled(!isIdSelected);
+        checkConsumableFilter.setEnabled(!isIdSelected);
+        checkReturnableFilter.setEnabled(!isIdSelected);
+        checkScrapFilter.setEnabled(!isIdSelected);
         searchFilters.setOutboundIdFiler(isIdSelected);
         if (checkOutboundIdFilter.isSelected()) {
             checkItemIdFilter.setSelected(false);
             checkNameFilter.setSelected(false);
             checkSpecificationFilter.setSelected(false);
             checkNoteFilter.setSelected(false);
+            checkConsumableFilter.setSelected(false);
+            checkReturnableFilter.setSelected(false);
+            checkScrapFilter.setSelected(false);
             searchFilters.setItemIdFilter(false);
             searchFilters.setNameFilter(false);
             searchFilters.setSpecificationFilter(false);
             searchFilters.setNoteFilter(false);
+            searchFilters.setConsumableFilter(false);
+            searchFilters.setReturnableFilter(false);
+            searchFilters.setScrapFilter(false);
         }
     }
 
@@ -338,6 +366,9 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         checkNameFilter.setEnabled(!isIdSelected);
         checkSpecificationFilter.setEnabled(!isIdSelected);
         checkNoteFilter.setEnabled(!isIdSelected);
+        checkConsumableFilter.setEnabled(true);
+        checkReturnableFilter.setEnabled(true);
+        checkScrapFilter.setEnabled(true);
         searchFilters.setItemIdFilter(isIdSelected);
         if (checkItemIdFilter.isSelected()) {
             checkOutboundIdFilter.setSelected(false);
@@ -371,8 +402,37 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         searchFilters.setNoteFilter(checkNoteFilter.isSelected());
     }
 
+    private void checkBoxesIssuanceTypesFiltersReact() {
+        boolean isAnyIssuanceTypesSelected = checkConsumableFilter.isSelected()
+                || checkReturnableFilter.isSelected()
+                || checkScrapFilter.isSelected();
+        boolean isAllIssuanceTypesSelected = !checkConsumableFilter.isSelected()
+                && !checkReturnableFilter.isSelected()
+                && !checkScrapFilter.isSelected();
+
+        if (isAnyIssuanceTypesSelected) {
+            checkOutboundIdFilter.setEnabled(false);
+            checkOutboundIdFilter.setSelected(false);
+            searchFilters.setOutboundIdFiler(false);
+        }
+        if (isAllIssuanceTypesSelected) {
+            checkOutboundIdFilter.setEnabled(true);
+        }
+        searchFilters.setConsumableFilter(checkConsumableFilter.isSelected());
+        searchFilters.setReturnableFilter(checkReturnableFilter.isSelected());
+        searchFilters.setScrapFilter(checkScrapFilter.isSelected());
+    }
+
     private void checkBoxFiltersAlwaysInvoke() {
-        isAnyTextRelatedCheckboxesSelected = checkOutboundIdFilter.isSelected() || checkItemIdFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected() || checkNoteFilter.isSelected();
+        isAnyTextRelatedCheckboxesSelected
+                = checkOutboundIdFilter.isSelected()
+                || checkItemIdFilter.isSelected()
+                || checkNameFilter.isSelected()
+                || checkSpecificationFilter.isSelected()
+                || checkNoteFilter.isSelected()
+                || checkConsumableFilter.isSelected()
+                || checkReturnableFilter.isSelected()
+                || checkScrapFilter.isSelected();
         btnSearch.setText(isAnyTextRelatedCheckboxesSelected ? "Search" : "Get all");
         tfSearchQuery.setEnabled(isAnyTextRelatedCheckboxesSelected);
         searchFilters.enableDateRangeFilter(dateRange.getCheckDateFilter().isSelected());
@@ -396,6 +456,10 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                 checkBoxItemIdFilterReact();
             } else if (source == checkNameFilter || source == checkSpecificationFilter || source == checkNoteFilter) {
                 checkBoxesNameAndSpecificationFiltersReact();
+            } else if (source == checkConsumableFilter
+                    || source == checkReturnableFilter
+                    || source == checkScrapFilter) {
+                checkBoxesIssuanceTypesFiltersReact();
             } else if (source == dateRange.getCheckDateFilter()) {
                 isDateRangeCheckSelected = dateRange.getCheckDateFilter().isSelected();
                 boolean boolSum = isAnyTextRelatedCheckboxesSelected || isRecipientSelected || isDateRangeCheckSelected;
@@ -407,6 +471,9 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             prefs.putBoolean(PREFS_NAME_FILTER, checkNameFilter.isSelected());
             prefs.putBoolean(PREFS_SPECIFICATION_FILTER, checkSpecificationFilter.isSelected());
             prefs.putBoolean(PREFS_NOTE_FILTER, checkNoteFilter.isSelected());
+            prefs.putBoolean(PREFS_CONSUMABLE_FILTER, checkConsumableFilter.isSelected());
+            prefs.putBoolean(PREFS_RETURNABLE_FILTER, checkReturnableFilter.isSelected());
+            prefs.putBoolean(PREFS_SCRAP_FILTER, checkScrapFilter.isSelected());
             prefs.putBoolean(PREFS_DATE_RANGE_FILTER, dateRange.getCheckDateFilter().isSelected());
         }
     }
