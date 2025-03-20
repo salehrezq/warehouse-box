@@ -103,6 +103,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private static final String PREFS_RECIPIENT_OK = "recipientOk";
     private Preferences prefs;
     private final Color colorError = new Color(255, 255, 0);
+    private Recipient recipient;
 
     public ItemsSearchLogic() {
         prefs = Preferences.userRoot().node(getClass().getName());
@@ -143,6 +144,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             recipient = (Recipient) CRUDListable.getById(new Recipient(), recipientId);
         }
         searchFilters.setRecipient(recipient);
+        this.recipient = recipient;
         this.tfRecipientFilter.setText((recipient != null) ? recipient.getName() : "");
     }
 
@@ -259,6 +261,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             searchFilters.setRecipient(null);
             isRecipientSelected = false;
         }
+        this.recipient = (Recipient) listable;
         boolean boolSum = isAnyTextRelatedCheckboxesSelected || isRecipientSelected || isDateRangeCheckSelected;
         btnSearch.setText(boolSum ? "Search" : "Get all");
     }
@@ -342,6 +345,11 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         checkConsumableFilter.setEnabled(!isIdSelected);
         checkReturnableFilter.setEnabled(!isIdSelected);
         checkScrapFilter.setEnabled(!isIdSelected);
+        btnRecipientFilter.setEnabled(!isIdSelected);
+        if (recipient != null && !isIdSelected) {
+            tfRecipientFilter.setText(recipient.getName());
+            searchFilters.setRecipient(recipient);
+        }
         searchFilters.setOutboundIdFiler(isIdSelected);
         if (checkOutboundIdFilter.isSelected()) {
             checkItemIdFilter.setSelected(false);
@@ -358,6 +366,8 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             searchFilters.setConsumableFilter(false);
             searchFilters.setReturnableFilter(false);
             searchFilters.setScrapFilter(false);
+            tfRecipientFilter.setText("");
+            searchFilters.setRecipient(null);
         }
     }
 
@@ -558,12 +568,19 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            searchFilters.setRecipient(null);
-            tfRecipientFilter.setText("");
-            isRecipientSelected = false;
-            boolean boolSum = isAnyTextRelatedCheckboxesSelected || isRecipientSelected || isDateRangeCheckSelected;
-            btnSearch.setText(boolSum ? "Search" : "Get all");
-            prefs.putInt(PREFS_RECIPIENT_OK, 0);
+            /**
+             * checkOutboundIdFilter.isSelected. If true then disable the
+             * button, otherwise it is enabled.
+             */
+            if (!checkOutboundIdFilter.isSelected()) {
+                searchFilters.setRecipient(null);
+                tfRecipientFilter.setText("");
+                recipient = null;
+                isRecipientSelected = false;
+                boolean boolSum = isAnyTextRelatedCheckboxesSelected || isRecipientSelected || isDateRangeCheckSelected;
+                btnSearch.setText(boolSum ? "Search" : "Get all");
+                prefs.putInt(PREFS_RECIPIENT_OK, 0);
+            }
         }
 
         @Override
