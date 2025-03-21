@@ -416,7 +416,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         boolean isAnyIssuanceTypesSelected = checkConsumableFilter.isSelected()
                 || checkReturnableFilter.isSelected()
                 || checkScrapFilter.isSelected();
-        boolean isAllIssuanceTypesSelected = !checkConsumableFilter.isSelected()
+        boolean isAllIssuanceTypesDeselected = !checkConsumableFilter.isSelected()
                 && !checkReturnableFilter.isSelected()
                 && !checkScrapFilter.isSelected();
 
@@ -425,7 +425,10 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             checkOutboundIdFilter.setSelected(false);
             searchFilters.setOutboundIdFiler(false);
         }
-        if (isAllIssuanceTypesSelected) {
+        if (isAllIssuanceTypesDeselected
+                && !checkNameFilter.isSelected()
+                && !checkSpecificationFilter.isSelected()
+                && !checkNoteFilter.isSelected()) {
             checkOutboundIdFilter.setEnabled(true);
         }
         searchFilters.setConsumableFilter(checkConsumableFilter.isSelected());
