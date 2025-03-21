@@ -376,6 +376,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         checkNameFilter.setEnabled(!isIdSelected);
         checkSpecificationFilter.setEnabled(!isIdSelected);
         checkNoteFilter.setEnabled(!isIdSelected);
+        btnRecipientFilter.setEnabled(true && !checkOutboundIdFilter.isSelected());
         checkConsumableFilter.setEnabled(true);
         checkReturnableFilter.setEnabled(true);
         checkScrapFilter.setEnabled(true);
@@ -389,6 +390,13 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             searchFilters.setNameFilter(false);
             searchFilters.setSpecificationFilter(false);
             searchFilters.setNoteFilter(false);
+            // Recipient filter control
+            btnRecipientFilter.setEnabled(true);
+            if (recipient != null) {
+                tfRecipientFilter.setText(recipient.getName());
+                searchFilters.setRecipient(recipient);
+            }
+
         }
     }
 
