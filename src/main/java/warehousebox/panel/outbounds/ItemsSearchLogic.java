@@ -82,7 +82,8 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     boolean isIdChecked,
             isAnyTextRelatedCheckboxesSelected,
             isRecipientSelected,
-            isDateRangeCheckSelected;
+            isDateRangeCheckSelected,
+            isDateRangeCheckSelectedCopy;
     private MatchDigitsOnlyHandler matchDigitsOnly;
     private final Pattern pattern = Pattern.compile("\\d+");
     private DateRange dateRange;
@@ -350,6 +351,8 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             tfRecipientFilter.setText(recipient.getName());
             searchFilters.setRecipient(recipient);
         }
+        dateRange.setEnabled(!isIdSelected);
+        dateRange.setSelected(isDateRangeCheckSelectedCopy && !isIdSelected);
         searchFilters.setOutboundIdFiler(isIdSelected);
         if (checkOutboundIdFilter.isSelected()) {
             checkItemIdFilter.setSelected(false);
@@ -377,6 +380,8 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         checkSpecificationFilter.setEnabled(!isIdSelected);
         checkNoteFilter.setEnabled(!isIdSelected);
         btnRecipientFilter.setEnabled(true && !checkOutboundIdFilter.isSelected());
+        dateRange.setEnabled(!checkOutboundIdFilter.isSelected() || isIdSelected);
+        dateRange.setSelected(isDateRangeCheckSelectedCopy);
         checkConsumableFilter.setEnabled(true);
         checkReturnableFilter.setEnabled(true);
         checkScrapFilter.setEnabled(true);
@@ -483,6 +488,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                 checkBoxesIssuanceTypesFiltersReact();
             } else if (source == dateRange.getCheckDateFilter()) {
                 isDateRangeCheckSelected = dateRange.getCheckDateFilter().isSelected();
+                isDateRangeCheckSelectedCopy = isDateRangeCheckSelected;
                 boolean boolSum = isAnyTextRelatedCheckboxesSelected || isRecipientSelected || isDateRangeCheckSelected;
                 btnSearch.setText(boolSum ? "Search" : "Get all");
             }
