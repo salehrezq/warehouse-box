@@ -376,18 +376,20 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
     private void checkBoxItemIdFilterReact() {
         boolean isIdSelected = checkItemIdFilter.isSelected();
-        checkNameFilter.setEnabled(!isIdSelected);
-        checkSpecificationFilter.setEnabled(!isIdSelected);
-        checkNoteFilter.setEnabled(!isIdSelected);
+        if (isIdSelected) {
+            checkOutboundIdFilter.setSelected(false);
+        }
+        checkNameFilter.setEnabled(!isIdSelected && !checkOutboundIdFilter.isSelected());
+        checkSpecificationFilter.setEnabled(!isIdSelected && !checkOutboundIdFilter.isSelected());
+        checkNoteFilter.setEnabled(!isIdSelected && !checkOutboundIdFilter.isSelected());
         btnRecipientFilter.setEnabled(true && !checkOutboundIdFilter.isSelected());
         dateRange.setEnabled(!checkOutboundIdFilter.isSelected() || isIdSelected);
         dateRange.setSelected(isDateRangeCheckSelectedCopy);
-        checkConsumableFilter.setEnabled(true);
-        checkReturnableFilter.setEnabled(true);
-        checkScrapFilter.setEnabled(true);
+        checkConsumableFilter.setEnabled(true && !checkOutboundIdFilter.isSelected());
+        checkReturnableFilter.setEnabled(true && !checkOutboundIdFilter.isSelected());
+        checkScrapFilter.setEnabled(true && !checkOutboundIdFilter.isSelected());
         searchFilters.setItemIdFilter(isIdSelected);
         if (checkItemIdFilter.isSelected()) {
-            checkOutboundIdFilter.setSelected(false);
             checkNameFilter.setSelected(false);
             checkSpecificationFilter.setSelected(false);
             checkNoteFilter.setSelected(false);
