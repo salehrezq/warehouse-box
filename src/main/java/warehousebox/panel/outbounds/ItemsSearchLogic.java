@@ -213,8 +213,8 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
     protected void setDateRangeFilter(DateRange dateRange) {
         this.dateRange = dateRange;
-
-        this.dateRange.getCheckDateFilter().setSelected(prefs.getBoolean(PREFS_DATE_RANGE_FILTER, false));
+        isDateRangeCheckSelectedCopy = prefs.getBoolean(PREFS_DATE_RANGE_FILTER, false);
+        this.dateRange.setSelected(isDateRangeCheckSelectedCopy);
         this.dateRange.getDatePickerStart().setDate(LocalDate.parse(prefs.get(PREFS_DATE_START_FILTER, this.dateRange.getTodayDate().toString())));
         this.dateRange.getDatePickerEnd().setDate(LocalDate.parse(prefs.get(PREFS_DATE_END_FILTER, this.dateRange.getTodayDate().toString())));
 
