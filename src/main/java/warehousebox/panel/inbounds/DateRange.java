@@ -95,4 +95,14 @@ public class DateRange {
     protected LocalDate getTodayDate() {
         return LocalDate.now();
     }
+
+    protected void setEnabled(boolean enable) {
+        datePickerStart.setEnabled(enable);
+        datePickerEnd.setEnabled(enable);
+        checkDateFilter.setEnabled(enable);
+    }
+
+    protected void setSelected(boolean selected) {
+        checkDateFilter.setSelected(selected);
+    }
 }

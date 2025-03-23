@@ -78,7 +78,8 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     boolean isIdChecked,
             isAnyTextRelatedCheckboxesSelected,
             isSourceSelected,
-            isDateRangeCheckSelected;
+            isDateRangeCheckSelected,
+            isDateRangeCheckSelectedCopy;
     private MatchDigitsOnlyHandler matchDigitsOnly;
     private final Pattern pattern = Pattern.compile("\\d+");
     private DateRange dateRange;
@@ -189,7 +190,8 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     protected void setDateRangeFilter(DateRange dateRange) {
         this.dateRange = dateRange;
 
-        this.dateRange.getCheckDateFilter().setSelected(prefs.getBoolean(PREFS_DATE_RANGE_FILTER, false));
+        isDateRangeCheckSelectedCopy = prefs.getBoolean(PREFS_DATE_RANGE_FILTER, false);
+        this.dateRange.getCheckDateFilter().setSelected(isDateRangeCheckSelectedCopy);
         this.dateRange.getDatePickerStart().setDate(LocalDate.parse(prefs.get(PREFS_DATE_START_FILTER, this.dateRange.getTodayDate().toString())));
         this.dateRange.getDatePickerEnd().setDate(LocalDate.parse(prefs.get(PREFS_DATE_END_FILTER, this.dateRange.getTodayDate().toString())));
 
@@ -323,6 +325,8 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             tfSourceFilter.setText(source.getName());
             searchFilters.setSource(source);
         }
+        dateRange.setEnabled(!isInboundIdCheckBoxSelected);
+        dateRange.setSelected(isDateRangeCheckSelectedCopy && !isInboundIdCheckBoxSelected);
         if (checkInboundIdFilter.isSelected()) {
             checkItemIdFilter.setSelected(false);
             checkNameFilter.setSelected(false);
@@ -342,6 +346,8 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         checkSpecificationFilter.setEnabled(!isItemIdCheckBoxSelected && !isInboundIdCheckBoxSelected);
         searchFilters.setItemIdFilter(isItemIdCheckBoxSelected);
         btnSourceFilter.setEnabled(true && !isInboundIdCheckBoxSelected);
+        dateRange.setEnabled(!isInboundIdCheckBoxSelected || isItemIdCheckBoxSelected);
+        dateRange.setSelected(isDateRangeCheckSelectedCopy);
         if (checkItemIdFilter.isSelected()) {
             checkInboundIdFilter.setSelected(false);
             checkNameFilter.setSelected(false);
@@ -408,6 +414,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                 checkBoxesNameAndSpecificationFiltersReact();
             } else if (source == dateRange.getCheckDateFilter()) {
                 isDateRangeCheckSelected = dateRange.getCheckDateFilter().isSelected();
+                isDateRangeCheckSelectedCopy = isDateRangeCheckSelected;
                 boolean boolSum = isAnyTextRelatedCheckboxesSelected || isSourceSelected || isDateRangeCheckSelected;
                 btnSearch.setText(boolSum ? "Search" : "Get all");
             }
