@@ -95,6 +95,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private static final String PREFS_SOURCE_OK = "sourceOk";
     private Preferences prefs;
     private final Color colorError = new Color(255, 255, 0);
+    private Source source;
 
     public ItemsSearchLogic() {
         prefs = Preferences.userRoot().node(getClass().getName());
@@ -130,6 +131,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         if (sourceId > 0) {
             source = (Source) CRUDListable.getById(new Source(), sourceId);
         }
+        this.source = source;
         searchFilters.setSource(source);
         this.tfSourceFilter.setText((source != null) ? source.getName() : "");
     }
@@ -235,6 +237,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             searchFilters.setSource(null);
             isSourceSelected = false;
         }
+        this.source = (Source) listable;
         boolean boolSum = isAnyTextRelatedCheckboxesSelected || isSourceSelected || isDateRangeCheckSelected;
         btnSearch.setText(boolSum ? "Search" : "Get all");
     }
@@ -315,6 +318,11 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         checkNameFilter.setEnabled(!isInboundIdCheckBoxSelected && !isItemIdCheckBoxSelected);
         checkSpecificationFilter.setEnabled(!isInboundIdCheckBoxSelected && !isItemIdCheckBoxSelected);
         searchFilters.setInboundIdFilter(isInboundIdCheckBoxSelected);
+        btnSourceFilter.setEnabled(!isInboundIdCheckBoxSelected);
+        if (source != null && !isInboundIdCheckBoxSelected) {
+            tfSourceFilter.setText(source.getName());
+            searchFilters.setSource(source);
+        }
         if (checkInboundIdFilter.isSelected()) {
             checkItemIdFilter.setSelected(false);
             checkNameFilter.setSelected(false);
@@ -322,6 +330,8 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             searchFilters.setItemIdFilter(false);
             searchFilters.setNameFilter(false);
             searchFilters.setSpecificationFilter(false);
+            tfSourceFilter.setText("");
+            searchFilters.setSource(null);
         }
     }
 
@@ -331,6 +341,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         checkNameFilter.setEnabled(!isItemIdCheckBoxSelected && !isInboundIdCheckBoxSelected);
         checkSpecificationFilter.setEnabled(!isItemIdCheckBoxSelected && !isInboundIdCheckBoxSelected);
         searchFilters.setItemIdFilter(isItemIdCheckBoxSelected);
+        btnSourceFilter.setEnabled(true && !isInboundIdCheckBoxSelected);
         if (checkItemIdFilter.isSelected()) {
             checkInboundIdFilter.setSelected(false);
             checkNameFilter.setSelected(false);
@@ -338,6 +349,12 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             searchFilters.setInboundIdFilter(false);
             searchFilters.setNameFilter(false);
             searchFilters.setSpecificationFilter(false);
+            // Source filter control
+            btnSourceFilter.setEnabled(true);
+            if (source != null) {
+                tfSourceFilter.setText(source.getName());
+                searchFilters.setSource(source);
+            }
         }
     }
 
@@ -481,12 +498,18 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            searchFilters.setSource(null);
-            tfSourceFilter.setText("");
-            isSourceSelected = false;
-            boolean boolSum = isAnyTextRelatedCheckboxesSelected || isSourceSelected || isDateRangeCheckSelected;
-            btnSearch.setText(boolSum ? "Search" : "Get all");
-            prefs.putInt(PREFS_SOURCE_OK, 0);
+            /**
+             * checkInboundIdFilter.isSelected. If true then disable the button,
+             * otherwise it is enabled.
+             */
+            if (!checkInboundIdFilter.isSelected()) {
+                searchFilters.setSource(null);
+                tfSourceFilter.setText("");
+                isSourceSelected = false;
+                boolean boolSum = isAnyTextRelatedCheckboxesSelected || isSourceSelected || isDateRangeCheckSelected;
+                btnSearch.setText(boolSum ? "Search" : "Get all");
+                prefs.putInt(PREFS_SOURCE_OK, 0);
+            }
         }
 
         @Override
