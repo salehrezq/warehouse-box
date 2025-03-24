@@ -89,24 +89,24 @@ public class CRUDOutbounds {
             sqlFilter = "";
             return sqlFilter;
         }
+        if (isOutboundIdFilter) {
+            sqlFilter += "(o.id = ?)";
+            return sqlFilter;
+        }
         if (isDateRangeFilter) {
             sqlFilter += "(date >= ? AND date <= ?)";
-            if (isOutboundIdFilter || isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter) {
+            if (isRecipientFilter || isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter) {
                 sqlFilter += " AND";
             }
         }
         if (isRecipientFilter) {
             sqlFilter += isDateRangeFilter ? " " : "";
             sqlFilter += "(recipient_id = ?)";
-            if (isOutboundIdFilter || isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter) {
+            if (isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter) {
                 sqlFilter += " AND";
             }
         }
-        if (isOutboundIdFilter) {
-            sqlFilter += (isDateRangeFilter || isRecipientFilter) ? " " : "";
-            sqlFilter += "(o.id = ?)";
-            return sqlFilter;
-        } else if (isItemIdFilter) {
+        if (isItemIdFilter) {
             sqlFilter += (isDateRangeFilter || isRecipientFilter) ? " " : "";
             sqlFilter += "(i.id = ?)";
             return sqlFilter;
