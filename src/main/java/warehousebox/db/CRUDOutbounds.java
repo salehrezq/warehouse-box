@@ -82,10 +82,24 @@ public class CRUDOutbounds {
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isNoteFilter = searchFilters.isNoteFilter();
         boolean isRecipientFilter = searchFilters.isRecipientFilter();
+        boolean isConsumableFilter = searchFilters.isConsumableFilter();
+        boolean isReturnableFilter = searchFilters.isReturnableFilter();
+        boolean isScrapFilter = searchFilters.isScrapFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
-        boolean isAnyFilterOn = isOutboundIdFilter || isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter;
+        boolean isAnyFilterOn
+                = isOutboundIdFilter
+                || isItemIdFilter
+                || isNameFilter
+                || isSpecificationFilter
+                || isNoteFilter
+                || isRecipientFilter;
 
-        if ((!isAnyFilterOn || isSearchisQueryBlank) && !(isDateRangeFilter || isRecipientFilter)) {
+        if ((!isAnyFilterOn || isSearchisQueryBlank)
+                && !(isDateRangeFilter
+                || isRecipientFilter
+                || isConsumableFilter
+                || isReturnableFilter
+                || isScrapFilter)) {
             sqlFilter = "";
             return sqlFilter;
         }
@@ -95,22 +109,77 @@ public class CRUDOutbounds {
         }
         if (isDateRangeFilter) {
             sqlFilter += "(date >= ? AND date <= ?)";
-            if (isRecipientFilter || isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter) {
-                sqlFilter += " AND";
-            }
+            sqlFilter += (isRecipientFilter
+                    || isConsumableFilter
+                    || isReturnableFilter
+                    || isScrapFilter
+                    || isItemIdFilter
+                    || isNameFilter
+                    || isSpecificationFilter
+                    || isNoteFilter) ? " AND" : "";
         }
         if (isRecipientFilter) {
             sqlFilter += isDateRangeFilter ? " " : "";
             sqlFilter += "(recipient_id = ?)";
-            if (isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter) {
+            sqlFilter += (isConsumableFilter
+                    || isReturnableFilter
+                    || isScrapFilter
+                    || isItemIdFilter
+                    || isNameFilter
+                    || isSpecificationFilter
+                    || isNoteFilter) ? " AND" : "";
+        }
+        if (isConsumableFilter) {
+            sqlFilter += (isDateRangeFilter || isRecipientFilter) ? " " : "";
+            sqlFilter += (isReturnableFilter || isScrapFilter) ? "(" : "";
+            sqlFilter += "(o.issuance_type = ?)";
+            if (isReturnableFilter || isScrapFilter) {
+                sqlFilter += " OR";
+            } else if (isItemIdFilter
+                    || isNameFilter
+                    || isSpecificationFilter
+                    || isNoteFilter) {
                 sqlFilter += " AND";
             }
         }
+        if (isReturnableFilter) {
+            sqlFilter += (isDateRangeFilter
+                    || isRecipientFilter
+                    || isConsumableFilter) ? " " : "";
+            sqlFilter += (!isConsumableFilter && isScrapFilter) ? "(" : "";
+            sqlFilter += "(o.issuance_type = ?)";
+            sqlFilter += (isConsumableFilter && !isScrapFilter) ? ")" : "";
+            if (isScrapFilter) {
+                sqlFilter += " OR";
+            } else if (isItemIdFilter
+                    || isNameFilter
+                    || isSpecificationFilter
+                    || isNoteFilter) {
+                sqlFilter += " AND";
+            }
+        }
+        if (isScrapFilter) {
+            sqlFilter += (isDateRangeFilter
+                    || isRecipientFilter
+                    || isConsumableFilter
+                    || isReturnableFilter) ? " " : "";
+            sqlFilter += "(o.issuance_type = ?)";
+            sqlFilter += (isConsumableFilter || isReturnableFilter) ? ")" : "";
+            sqlFilter += (isItemIdFilter
+                    || isNameFilter
+                    || isSpecificationFilter
+                    || isNoteFilter) ? " AND" : "";
+        }
         if (isItemIdFilter) {
-            sqlFilter += (isDateRangeFilter || isRecipientFilter) ? " " : "";
+            sqlFilter += (isDateRangeFilter
+                    || isRecipientFilter
+                    || isConsumableFilter
+                    || isReturnableFilter
+                    || isScrapFilter) ? " " : "";
             sqlFilter += "(i.id = ?)";
-            return sqlFilter;
-        } else if (isNameFilter || isSpecificationFilter || isNoteFilter) {
+        }
+
+        if (isNameFilter || isSpecificationFilter || isNoteFilter) {
             searchedWords = SearchFormatter.getArrayOfWords(searchFilters.getSearchQuery());
             wordsLength = searchedWords.length;
 
@@ -130,8 +199,13 @@ public class CRUDOutbounds {
             } else {
                 query = "((i.name || ' ' || i.specification || ' ' || note) LIKE ?)";
             }
-
-            sqlFilter += (isRecipientFilter || isDateRangeFilter) ? " " : "";
+            if (isDateRangeFilter
+                    || isRecipientFilter
+                    || isConsumableFilter
+                    || isReturnableFilter
+                    || isScrapFilter) {
+                sqlFilter += " ";
+            }
             for (var i = 0; i < wordsLength; i++) {
                 sqlFilter += query;
                 sqlFilter += (i < (wordsLength - 1)) ? " AND " : "";
@@ -148,12 +222,26 @@ public class CRUDOutbounds {
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isNoteFilter = searchFilters.isNoteFilter();
         boolean isRecipientFilter = searchFilters.isRecipientFilter();
+        boolean isConsumableFilter = searchFilters.isConsumableFilter();
+        boolean isReturnableFilter = searchFilters.isReturnableFilter();
+        boolean isScrapFilter = searchFilters.isScrapFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn = isOutboundIdFilter || isItemIdFilter || isNameFilter || isSpecificationFilter || isNoteFilter || isRecipientFilter;
+        boolean isAnyFilterOn
+                = isOutboundIdFilter
+                || isItemIdFilter
+                || isNameFilter
+                || isSpecificationFilter
+                || isNoteFilter
+                || isRecipientFilter;
 
-        if ((!isAnyFilterOn || searchQuery.isBlank()) && !(isDateRangeFilter || isRecipientFilter)) {
+        if ((!isAnyFilterOn || searchQuery.isBlank())
+                && !(isDateRangeFilter
+                || isRecipientFilter
+                || isConsumableFilter
+                || isReturnableFilter
+                || isScrapFilter)) {
             return preparedStatementWrapper;
         }
         if (isDateRangeFilter) {
@@ -162,6 +250,15 @@ public class CRUDOutbounds {
         }
         if (isRecipientFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), searchFilters.getRecipient().getId());
+        }
+        if (isConsumableFilter) {
+            p.setShort(preparedStatementWrapper.incrementParameterIndex(), (short) 1);
+        }
+        if (isReturnableFilter) {
+            p.setShort(preparedStatementWrapper.incrementParameterIndex(), (short) 2);
+        }
+        if (isScrapFilter) {
+            p.setShort(preparedStatementWrapper.incrementParameterIndex(), (short) 3);
         }
         if (isOutboundIdFilter || isItemIdFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
