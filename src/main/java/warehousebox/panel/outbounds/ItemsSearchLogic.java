@@ -82,6 +82,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     boolean isIdChecked,
             isAnyTextRelatedCheckboxesSelected,
             isRecipientSelected,
+            isAnyIssuanceTypesCheckboxesSelected,
             isDateRangeCheckSelected,
             isDateRangeCheckSelectedCopy;
     private MatchDigitsOnlyHandler matchDigitsOnly;
@@ -263,7 +264,11 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             isRecipientSelected = false;
         }
         this.recipient = (Recipient) listable;
-        boolean boolSum = isAnyTextRelatedCheckboxesSelected || isRecipientSelected || isDateRangeCheckSelected;
+        boolean boolSum
+                = isAnyTextRelatedCheckboxesSelected
+                || isRecipientSelected
+                || isAnyIssuanceTypesCheckboxesSelected
+                || isDateRangeCheckSelected;
         btnSearch.setText(boolSum ? "Search" : "Get all");
     }
 
@@ -457,17 +462,23 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                 || checkItemIdFilter.isSelected()
                 || checkNameFilter.isSelected()
                 || checkSpecificationFilter.isSelected()
-                || checkNoteFilter.isSelected()
-                || checkConsumableFilter.isSelected()
+                || checkNoteFilter.isSelected();
+
+        isAnyIssuanceTypesCheckboxesSelected
+                = checkConsumableFilter.isSelected()
                 || checkReturnableFilter.isSelected()
                 || checkScrapFilter.isSelected();
-        btnSearch.setText(isAnyTextRelatedCheckboxesSelected ? "Search" : "Get all");
+
         tfSearchQuery.setEnabled(isAnyTextRelatedCheckboxesSelected);
         searchFilters.enableDateRangeFilter(dateRange.getCheckDateFilter().isSelected());
         isIdChecked = checkOutboundIdFilter.isSelected() || checkItemIdFilter.isSelected();
         isRecipientSelected = !tfRecipientFilter.getText().isBlank();
         isDateRangeCheckSelected = dateRange.getCheckDateFilter().isSelected();
-        boolean boolSum = isAnyTextRelatedCheckboxesSelected || isRecipientSelected || isDateRangeCheckSelected;
+        boolean boolSum
+                = isAnyTextRelatedCheckboxesSelected
+                || isRecipientSelected
+                || isAnyIssuanceTypesCheckboxesSelected
+                || isDateRangeCheckSelected;
         btnSearch.setText(boolSum ? "Search" : "Get all");
         tfSearchQueryIdChecker();
     }
@@ -491,7 +502,11 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             } else if (source == dateRange.getCheckDateFilter()) {
                 isDateRangeCheckSelected = dateRange.getCheckDateFilter().isSelected();
                 isDateRangeCheckSelectedCopy = isDateRangeCheckSelected;
-                boolean boolSum = isAnyTextRelatedCheckboxesSelected || isRecipientSelected || isDateRangeCheckSelected;
+                boolean boolSum
+                        = isAnyTextRelatedCheckboxesSelected
+                        || isRecipientSelected
+                        || isAnyIssuanceTypesCheckboxesSelected
+                        || isDateRangeCheckSelected;
                 btnSearch.setText(boolSum ? "Search" : "Get all");
             }
             checkBoxFiltersAlwaysInvoke();
@@ -596,7 +611,11 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                 tfRecipientFilter.setText("");
                 recipient = null;
                 isRecipientSelected = false;
-                boolean boolSum = isAnyTextRelatedCheckboxesSelected || isRecipientSelected || isDateRangeCheckSelected;
+                boolean boolSum
+                        = isAnyTextRelatedCheckboxesSelected
+                        || isRecipientSelected
+                        || isAnyIssuanceTypesCheckboxesSelected
+                        || isDateRangeCheckSelected;
                 btnSearch.setText(boolSum ? "Search" : "Get all");
                 prefs.putInt(PREFS_RECIPIENT_OK, 0);
             }
