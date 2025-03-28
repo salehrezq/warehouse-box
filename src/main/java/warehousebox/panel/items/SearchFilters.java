@@ -23,13 +23,17 @@
  */
 package warehousebox.panel.items;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  *
  * @author Saleh
  */
 public class SearchFilters {
 
-    private String searchQuery;
+    private String[] searchQuery;
     private boolean idFilter;
     private boolean nameFilter;
     private boolean specificationFilter;
@@ -49,12 +53,12 @@ public class SearchFilters {
         this.specificationFilter = searchFilters.specificationFilter;
     }
 
-    public String getSearchQuery() {
+    public String[] getSearchQuery() {
         return searchQuery;
     }
 
     public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
+        this.searchQuery = getArrayOfWords(searchQuery);
     }
 
     public Boolean isIdFilter() {
@@ -79,5 +83,25 @@ public class SearchFilters {
 
     public void setSpecificationFilter(boolean specificationFilter) {
         this.specificationFilter = specificationFilter;
+    }
+
+    protected static String trimExtraSpaces(String text) {
+        return text.trim().replaceAll("\\s+", " ");
+    }
+
+    protected static String[] getUniqueArrayOfWords(String[] words) {
+        ArrayList<String> uniqueWords = new ArrayList<>();
+        Set<String> set = new LinkedHashSet<>();
+
+        for (String word : words) {
+            if (set.add(word)) {
+                uniqueWords.add(word);
+            }
+        }
+        return uniqueWords.toArray(String[]::new);
+    }
+
+    protected static String[] getArrayOfWords(String text) {
+        return getUniqueArrayOfWords(trimExtraSpaces(text).toLowerCase().split("\\W+"));
     }
 }

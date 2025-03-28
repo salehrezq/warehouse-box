@@ -149,7 +149,7 @@ public class ItemsSearchLogic {
             notifyOFFSET(OFFSET);
             if (searchFilters.isNameFilter() || searchFilters.isSpecificationFilter()) {
                 btnLoadMore.setEnabled(false);
-                if (searchQuery.isBlank()) {
+                if (searchQuery.isBlank() || searchFilters.getSearchQuery().length < 1) {
                     JOptionPane.showMessageDialog(
                             null,
                             "Write some search query.",
@@ -158,7 +158,7 @@ public class ItemsSearchLogic {
                     return;
                 }
             } else if (searchFilters.isIdFilter()) {
-                if (!pattern.matcher(searchFilters.getSearchQuery()).matches()) {
+                if (!pattern.matcher(searchQuery).matches()) {
                     btnLoadMore.setEnabled(false);
                     JOptionPane.showMessageDialog(
                             null,

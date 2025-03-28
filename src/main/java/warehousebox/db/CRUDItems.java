@@ -132,7 +132,7 @@ public class CRUDItems {
 
     private static String formulateSearchFilters(SearchFilters searchFilters) {
         String sqlFilter = " WHERE ";
-        boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
+        boolean isSearchisQueryBlank = searchFilters.getSearchQuery().length < 1;
         boolean isIdFilter = searchFilters.isIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
@@ -147,9 +147,8 @@ public class CRUDItems {
             sqlFilter += "it.id = ?";
             return sqlFilter;
         } else {
-            searchedWords = SearchFormatter.getArrayOfWords(searchFilters.getSearchQuery());
+            searchedWords = searchFilters.getSearchQuery();
             wordsLength = searchedWords.length;
-
             String query;
             if (isNameFilter && !isSpecificationFilter) {
                 query = "it.name LIKE ?";
@@ -171,7 +170,7 @@ public class CRUDItems {
     }
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
-        String searchQuery = searchFilters.getSearchQuery();
+        String[] searchQuery = searchFilters.getSearchQuery();
         boolean isIdFilter = searchFilters.isIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
@@ -179,11 +178,11 @@ public class CRUDItems {
 
         boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter;
 
-        if (!isAnyFilterOn || searchQuery.isBlank()) {
+        if (!isAnyFilterOn || searchQuery.length < 1) {
             return preparedStatementWrapper;
         }
         if (isIdFilter) {
-            p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
+            p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery[0]));
         } else {
             for (int i = 0; i < wordsLength; i++) {
                 p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
