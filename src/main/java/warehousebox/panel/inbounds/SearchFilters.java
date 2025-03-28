@@ -24,6 +24,9 @@
 package warehousebox.panel.inbounds;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import warehousebox.db.model.Source;
 
 /**
@@ -32,7 +35,7 @@ import warehousebox.db.model.Source;
  */
 public class SearchFilters {
 
-    private String searchQuery;
+    private String[] searchQuery;
     private boolean idInboundFilter;
     private boolean idItemFilter;
     private boolean nameFilter;
@@ -63,12 +66,12 @@ public class SearchFilters {
         this.dateRangeEnd = searchFilters.dateRangeEnd;
     }
 
-    public String getSearchQuery() {
+    public String[] getSearchQuery() {
         return searchQuery;
     }
 
     public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
+        this.searchQuery = getArrayOfWords(searchQuery);
     }
 
     public Boolean isInboundIdFilter() {
@@ -139,4 +142,23 @@ public class SearchFilters {
         this.dateRangeEnd = dateRangeEnd;
     }
 
+    protected static String trimExtraSpaces(String text) {
+        return text.trim().replaceAll("\\s+", " ");
+    }
+
+    protected static String[] getUniqueArrayOfWords(String[] words) {
+        ArrayList<String> uniqueWords = new ArrayList<>();
+        Set<String> set = new LinkedHashSet<>();
+
+        for (String word : words) {
+            if (set.add(word)) {
+                uniqueWords.add(word);
+            }
+        }
+        return uniqueWords.toArray(String[]::new);
+    }
+
+    protected static String[] getArrayOfWords(String text) {
+        return getUniqueArrayOfWords(trimExtraSpaces(text).toLowerCase().split("\\W+"));
+    }
 }

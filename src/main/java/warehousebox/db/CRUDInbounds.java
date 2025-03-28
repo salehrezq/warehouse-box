@@ -73,7 +73,7 @@ public class CRUDInbounds {
 
     private static String formulateSearchFilters(SearchFilters searchFilters) {
         String sqlFilter = " WHERE ";
-        boolean isSearchisQueryBlank = searchFilters.getSearchQuery().isBlank();
+        boolean isSearchisQueryBlank = searchFilters.getSearchQuery().length < 1;
         boolean isIdInboundFilter = searchFilters.isInboundIdFilter();
         boolean isIdItemFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
@@ -109,7 +109,7 @@ public class CRUDInbounds {
             sqlFilter += "(i.id = ?)";
             return sqlFilter;
         } else if (isNameFilter || isSpecificationFilter) {
-            searchedWords = SearchFormatter.getArrayOfWords(searchFilters.getSearchQuery());
+            searchedWords = searchFilters.getSearchQuery();
             wordsLength = searchedWords.length;
 
             String query;
@@ -130,7 +130,7 @@ public class CRUDInbounds {
     }
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
-        String searchQuery = searchFilters.getSearchQuery();
+        String[] searchQuery = searchFilters.getSearchQuery();
         boolean isIdInboundFilter = searchFilters.isInboundIdFilter();
         boolean isIdItemFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
@@ -141,7 +141,7 @@ public class CRUDInbounds {
 
         boolean isAnyFilterOn = isIdInboundFilter || isIdItemFilter || isNameFilter || isSpecificationFilter || isSourceFilter;
 
-        if ((!isAnyFilterOn || searchQuery.isBlank()) && !(isDateRangeFilter || isSourceFilter)) {
+        if ((!isAnyFilterOn || searchQuery.length < 1) && !(isDateRangeFilter || isSourceFilter)) {
             return preparedStatementWrapper;
         }
         if (isDateRangeFilter) {
@@ -152,7 +152,7 @@ public class CRUDInbounds {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), searchFilters.getSource().getId());
         }
         if (isIdInboundFilter || isIdItemFilter) {
-            p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery));
+            p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery[0]));
         } else if (isNameFilter || isSpecificationFilter) {
             for (int i = 0; i < wordsLength; i++) {
                 p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");

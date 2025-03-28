@@ -255,7 +255,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             OFFSET = 0;
             notifyOFFSET(OFFSET);
             if (searchFilters.isNameFilter() || searchFilters.isSpecificationFilter()) {
-                if (searchQuery.isBlank()) {
+                if (searchQuery.isBlank() || searchFilters.getSearchQuery().length < 1) {
                     btnLoadMore.setEnabled(false);
                     JOptionPane.showMessageDialog(
                             null,
@@ -265,7 +265,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                     return;
                 }
             } else if (searchFilters.isInboundIdFilter() || searchFilters.isItemIdFilter()) {
-                if (!pattern.matcher(searchFilters.getSearchQuery()).matches()) {
+                if (!pattern.matcher(searchQuery).matches()) {
                     btnLoadMore.setEnabled(false);
                     JOptionPane.showMessageDialog(
                             null,
