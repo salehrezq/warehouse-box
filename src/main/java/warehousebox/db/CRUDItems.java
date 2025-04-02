@@ -139,7 +139,7 @@ public class CRUDItems {
 
         boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter;
 
-        if (!isAnyFilterOn || isSearchisQueryBlank) {
+        if (!isAnyFilterOn && isSearchisQueryBlank) {
             sqlFilter = "";
             return sqlFilter;
         }
@@ -178,7 +178,7 @@ public class CRUDItems {
 
         boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter;
 
-        if (!isAnyFilterOn || searchQuery.length < 1) {
+        if (!isAnyFilterOn && searchQuery.length < 1) {
             return preparedStatementWrapper;
         }
         if (isIdFilter) {

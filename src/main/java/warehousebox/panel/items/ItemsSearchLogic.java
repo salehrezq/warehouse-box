@@ -58,7 +58,7 @@ public class ItemsSearchLogic {
             checkSpecificationFilter;
     private SearchFilters searchFilters, searchFiltersImmutableCopy;
     boolean isIdChecked;
-    private MatchDigitsOnlyHandler matchDigitsOnly;
+    private DocumentListener matchDigitsOnly, textFieldContentReactHandler;
     private final Pattern pattern = Pattern.compile("\\d+");
     private Preferences prefs;
     private static final String PREFS_CODE_FILTER = "checkIdFilter";
@@ -72,6 +72,7 @@ public class ItemsSearchLogic {
         itemsSearchListeners = new ArrayList<>();
         searchFilters = new SearchFilters();
         matchDigitsOnly = new MatchDigitsOnlyHandler();
+        textFieldContentReactHandler = new TextFieldContentReactHandler();
         searchFilters.setIdFilter(false);
         searchFilters.setNameFilter(true);
         searchFilters.setSpecificationFilter(true);
@@ -82,10 +83,12 @@ public class ItemsSearchLogic {
         this.tfSearchQuery = tfSearchQuery;
         isIdChecked = false;
         this.tfSearchQuery.getDocument().addDocumentListener(matchDigitsOnly);
+        this.tfSearchQuery.getDocument().addDocumentListener(textFieldContentReactHandler);
     }
 
     protected void setBtnSearch(JButton btnSearch) {
         this.btnSearch = btnSearch;
+        this.btnSearch.setText("Get all");
         this.btnSearch.addActionListener(new SearchHandler());
     }
 
@@ -167,6 +170,17 @@ public class ItemsSearchLogic {
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+            } else if (!searchFilters.isIdFilter()
+                    && !searchFilters.isNameFilter()
+                    && !searchFilters.isSpecificationFilter()) {
+                if ((!searchQuery.isEmpty() && searchQuery.isBlank()) || searchFilters.getSearchQuery().length < 1) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Search query is not valid for search",
+                            "Write some search query.",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
             notifySearchResultTotalRowsCount(CRUDItems.searchResultRowsCount(searchFilters));
             LIMIT = ResultLimitSizePreference.getResultLimitSize();
@@ -215,10 +229,13 @@ public class ItemsSearchLogic {
         checkSpecificationFilter.setEnabled(!isIdSelected);
         searchFilters.setIdFilter(isIdSelected);
         if (checkIdFilter.isSelected()) {
+            btnSearch.setText("Get");
             checkNameFilter.setSelected(false);
             checkSpecificationFilter.setSelected(false);
             searchFilters.setNameFilter(false);
             searchFilters.setSpecificationFilter(false);
+        } else {
+            btnSearch.setText((tfSearchQuery.getText().equals("")) ? "Get all" : "Search");
         }
     }
 
@@ -229,18 +246,17 @@ public class ItemsSearchLogic {
             checkIdFilter.setEnabled(false);
             checkIdFilter.setSelected(false);
             searchFilters.setIdFilter(false);
+            btnSearch.setText("Search");
         }
         if (isNameANDSpecificationBothDeselected) {
             checkIdFilter.setEnabled(true);
+            btnSearch.setText((tfSearchQuery.getText().equals("")) ? "Get all" : "Search");
         }
         searchFilters.setNameFilter(checkNameFilter.isSelected());
         searchFilters.setSpecificationFilter(checkSpecificationFilter.isSelected());
     }
 
     private void checkBoxFiltersAlwaysInvoke() {
-        boolean isAnyChecked = checkIdFilter.isSelected() || checkNameFilter.isSelected() || checkSpecificationFilter.isSelected();
-        btnSearch.setText(isAnyChecked ? "Search" : "Get all");
-        tfSearchQuery.setEnabled(isAnyChecked);
         isIdChecked = checkIdFilter.isSelected();
         tfSearchQueryIdChecker();
     }
@@ -285,6 +301,30 @@ public class ItemsSearchLogic {
         @Override
         public void changedUpdate(DocumentEvent e) {
             check(e);
+        }
+    }
+
+    private class TextFieldContentReactHandler implements DocumentListener {
+
+        public void changed() {
+            if (!isIdChecked) {
+                btnSearch.setText((tfSearchQuery.getText().equals("")) ? "Get all" : "Search");
+            }
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            changed();
         }
     }
 
