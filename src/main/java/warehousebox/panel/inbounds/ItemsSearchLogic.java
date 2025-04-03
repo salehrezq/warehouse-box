@@ -75,7 +75,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
     private SourceFilterDialog sourceFilterDialog;
     private SearchFilters searchFilters, searchFiltersImmutableCopy;
-    boolean isIdChecked,
+    boolean isItemOrInboundIDChecked,
             isAnyTextRelatedCheckboxesSelected,
             isSourceSelected,
             isDateRangeCheckSelected,
@@ -121,7 +121,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
 
     protected void setTfSearchQuery(JTextField tfSearchQuery) {
         this.tfSearchQuery = tfSearchQuery;
-        isIdChecked = false;
+        isItemOrInboundIDChecked = false;
         this.tfSearchQuery.getDocument().addDocumentListener(matchDigitsOnly);
     }
 
@@ -296,13 +296,13 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     }
 
     private void tfSearchQueryIdChecker() {
-        if (isIdChecked) {
+        if (isItemOrInboundIDChecked) {
             if (pattern.matcher(tfSearchQuery.getText()).matches()) {
                 tfSearchQuery.setBackground(Color.WHITE);
             } else {
                 tfSearchQuery.setBackground(colorError);
             }
-        } else if (!isIdChecked) {
+        } else if (!isItemOrInboundIDChecked) {
             tfSearchQuery.setBackground(Color.WHITE);
         }
     }
@@ -392,7 +392,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         btnSearch.setText(isAnyTextRelatedCheckboxesSelected ? "Search" : "Get all");
         tfSearchQuery.setEnabled(isAnyTextRelatedCheckboxesSelected);
         searchFilters.enableDateRangeFilter(dateRange.getCheckDateFilter().isSelected());
-        isIdChecked = checkInboundIdFilter.isSelected() || checkItemIdFilter.isSelected();
+        isItemOrInboundIDChecked = checkInboundIdFilter.isSelected() || checkItemIdFilter.isSelected();
         isSourceSelected = !tfSourceFilter.getText().isBlank();
         isDateRangeCheckSelected = dateRange.getCheckDateFilter().isSelected();
         boolean boolSum = isAnyTextRelatedCheckboxesSelected || isSourceSelected || isDateRangeCheckSelected;
