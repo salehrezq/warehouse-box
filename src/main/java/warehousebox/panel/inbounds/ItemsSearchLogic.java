@@ -520,6 +520,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
              * otherwise it is enabled.
              */
             if (!checkInboundIdFilter.isSelected()) {
+                source = null;
                 searchFilters.setSource(null);
                 tfSourceFilter.setText("");
                 isSourceSelected = false;
