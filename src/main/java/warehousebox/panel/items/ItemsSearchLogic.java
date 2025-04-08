@@ -92,6 +92,20 @@ public class ItemsSearchLogic {
         this.btnSearch.addActionListener(new SearchHandler());
     }
 
+    private boolean isTfSearchQueryEmpty() {
+        return tfSearchQuery.getText().equals("");
+    }
+
+    /**
+     * Return true if any search filter is selected. Check all search filters
+     * except the item id filter.
+     */
+    private boolean isAnySearchFiltersSelected() {
+        return !isTfSearchQueryEmpty()
+                || checkNameFilter.isSelected()
+                || checkSpecificationFilter.isSelected();
+    }
+
     protected void setBtnLoadMore(JButton btnLoadMore) {
         this.btnLoadMore = btnLoadMore;
         this.btnLoadMore.addActionListener(new LoadMoreHandler());
@@ -221,6 +235,7 @@ public class ItemsSearchLogic {
         checkBoxidFilterReact();
         checkBoxesNameAndSpecificationFiltersReact();
         checkBoxFiltersAlwaysInvoke();
+        btnSearchText();
     }
 
     private void checkBoxidFilterReact() {
@@ -229,13 +244,10 @@ public class ItemsSearchLogic {
         checkSpecificationFilter.setEnabled(!isIdSelected);
         searchFilters.setIdFilter(isIdSelected);
         if (checkIdFilter.isSelected()) {
-            btnSearch.setText("Get");
             checkNameFilter.setSelected(false);
             checkSpecificationFilter.setSelected(false);
             searchFilters.setNameFilter(false);
             searchFilters.setSpecificationFilter(false);
-        } else {
-            btnSearch.setText((tfSearchQuery.getText().equals("")) ? "Get all" : "Search");
         }
     }
 
@@ -246,11 +258,9 @@ public class ItemsSearchLogic {
             checkIdFilter.setEnabled(false);
             checkIdFilter.setSelected(false);
             searchFilters.setIdFilter(false);
-            btnSearch.setText("Search");
         }
         if (isNameANDSpecificationBothDeselected) {
             checkIdFilter.setEnabled(true);
-            btnSearch.setText((tfSearchQuery.getText().equals("")) ? "Get all" : "Search");
         }
         searchFilters.setNameFilter(checkNameFilter.isSelected());
         searchFilters.setSpecificationFilter(checkSpecificationFilter.isSelected());
@@ -259,6 +269,20 @@ public class ItemsSearchLogic {
     private void checkBoxFiltersAlwaysInvoke() {
         isIdChecked = checkIdFilter.isSelected();
         tfSearchQueryIdChecker();
+    }
+
+    private void btnSearchText() {
+        boolean isItemIdSelected = checkIdFilter.isSelected();
+        String btnSearchText = "Not Set";
+
+        if (isAnySearchFiltersSelected()) {
+            btnSearchText = "Search";
+        } else if (!isItemIdSelected && !isAnySearchFiltersSelected()) {
+            btnSearchText = "Get all";
+        } else if (isItemIdSelected) {
+            btnSearchText = "Get";
+        }
+        btnSearch.setText(btnSearchText);
     }
 
     private class CheckBoxFiltersHandler implements ActionListener {
@@ -274,6 +298,7 @@ public class ItemsSearchLogic {
                 }
             }
             checkBoxFiltersAlwaysInvoke();
+            btnSearchText();
             prefs.putBoolean(PREFS_CODE_FILTER, checkIdFilter.isSelected());
             prefs.putBoolean(PREFS_NAME_FILTER, checkNameFilter.isSelected());
             prefs.putBoolean(PREFS_SPECIFICATION_FILTER, checkSpecificationFilter.isSelected());
@@ -307,8 +332,10 @@ public class ItemsSearchLogic {
     private class TextFieldContentReactHandler implements DocumentListener {
 
         public void changed() {
-            if (!isIdChecked) {
-                btnSearch.setText((tfSearchQuery.getText().equals("")) ? "Get all" : "Search");
+            if (checkIdFilter.isSelected()) {
+                btnSearch.setText("Get");
+            } else {
+                btnSearch.setText(isAnySearchFiltersSelected() ? "Search" : "Get all");
             }
         }
 
