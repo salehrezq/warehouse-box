@@ -73,7 +73,7 @@ public class CRUDInbounds {
 
     private static String formulateSearchFilters(SearchFilters searchFilters) {
         String sqlFilter = " WHERE ";
-        boolean isSearchisQueryBlank = searchFilters.getSearchQuery().length < 1;
+        boolean isSearchisQueryBlank = searchFilters.getSearchQuery()[0].isBlank();
         boolean isIdInboundFilter = searchFilters.isInboundIdFilter();
         boolean isIdItemFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
@@ -82,20 +82,32 @@ public class CRUDInbounds {
         boolean isSourceFilter = searchFilters.isSourceFilter();
         boolean isAnyFilterOn = isIdInboundFilter || isIdItemFilter || isNameFilter || isSpecificationFilter || isSourceFilter;
 
-        if ((!isAnyFilterOn || isSearchisQueryBlank) && !(isDateRangeFilter || isSourceFilter)) {
+        if (!isAnyFilterOn
+                && isSearchisQueryBlank
+                && !isDateRangeFilter
+                && !isSourceFilter) {
             sqlFilter = "";
             return sqlFilter;
         }
         if (isDateRangeFilter) {
             sqlFilter += "(date >= ? AND date <= ?)";
-            if (isIdInboundFilter || isIdItemFilter || isNameFilter || isSpecificationFilter || isSourceFilter) {
+            if (!isSearchisQueryBlank
+                    || isIdInboundFilter
+                    || isIdItemFilter
+                    || isNameFilter
+                    || isSpecificationFilter
+                    || isSourceFilter) {
                 sqlFilter += " AND";
             }
         }
         if (isSourceFilter) {
             sqlFilter += (isDateRangeFilter) ? " " : "";
             sqlFilter += "(source_id = ?)";
-            if (isIdInboundFilter || isIdItemFilter || isNameFilter || isSpecificationFilter) {
+            if (!isSearchisQueryBlank
+                    || isIdInboundFilter
+                    || isIdItemFilter
+                    || isNameFilter
+                    || isSpecificationFilter) {
                 sqlFilter += " AND";
             }
         }
@@ -108,7 +120,7 @@ public class CRUDInbounds {
             sqlFilter += (isDateRangeFilter || isSourceFilter) ? " " : "";
             sqlFilter += "(i.id = ?)";
             return sqlFilter;
-        } else if (isNameFilter || isSpecificationFilter) {
+        } else if (isNameFilter || isSpecificationFilter || !isSearchisQueryBlank) {
             searchedWords = searchFilters.getSearchQuery();
             wordsLength = searchedWords.length;
 
@@ -131,6 +143,7 @@ public class CRUDInbounds {
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         String[] searchQuery = searchFilters.getSearchQuery();
+        boolean isSearchisQueryBlank = searchFilters.getSearchQuery()[0].isBlank();
         boolean isIdInboundFilter = searchFilters.isInboundIdFilter();
         boolean isIdItemFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
@@ -141,7 +154,10 @@ public class CRUDInbounds {
 
         boolean isAnyFilterOn = isIdInboundFilter || isIdItemFilter || isNameFilter || isSpecificationFilter || isSourceFilter;
 
-        if ((!isAnyFilterOn || searchQuery.length < 1) && !(isDateRangeFilter || isSourceFilter)) {
+        if (!isAnyFilterOn
+                && isSearchisQueryBlank
+                && !isDateRangeFilter
+                && !isSourceFilter) {
             return preparedStatementWrapper;
         }
         if (isDateRangeFilter) {
@@ -153,7 +169,7 @@ public class CRUDInbounds {
         }
         if (isIdInboundFilter || isIdItemFilter) {
             p.setInt(preparedStatementWrapper.incrementParameterIndex(), Integer.parseInt(searchQuery[0]));
-        } else if (isNameFilter || isSpecificationFilter) {
+        } else if (isNameFilter || isSpecificationFilter || !isSearchisQueryBlank) {
             for (int i = 0; i < wordsLength; i++) {
                 p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
             }
