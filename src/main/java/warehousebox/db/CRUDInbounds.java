@@ -80,10 +80,12 @@ public class CRUDInbounds {
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
         boolean isSourceFilter = searchFilters.isSourceFilter();
-        boolean isAnyFilterOn = isIdInboundFilter || isIdItemFilter || isNameFilter || isSpecificationFilter || isSourceFilter;
 
-        if (!isAnyFilterOn
-                && isSearchisQueryBlank
+        if (isSearchisQueryBlank
+                && !isIdInboundFilter
+                && !isIdItemFilter
+                && !isNameFilter
+                && !isSpecificationFilter
                 && !isDateRangeFilter
                 && !isSourceFilter) {
             sqlFilter = "";
@@ -143,7 +145,7 @@ public class CRUDInbounds {
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         String[] searchQuery = searchFilters.getSearchQuery();
-        boolean isSearchisQueryBlank = searchFilters.getSearchQuery()[0].isBlank();
+        boolean isSearchisQueryBlank = searchQuery[0].isBlank();
         boolean isIdInboundFilter = searchFilters.isInboundIdFilter();
         boolean isIdItemFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
@@ -152,10 +154,11 @@ public class CRUDInbounds {
         boolean isSourceFilter = searchFilters.isSourceFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn = isIdInboundFilter || isIdItemFilter || isNameFilter || isSpecificationFilter || isSourceFilter;
-
-        if (!isAnyFilterOn
-                && isSearchisQueryBlank
+        if (isSearchisQueryBlank
+                && !isIdInboundFilter
+                && !isIdItemFilter
+                && !isNameFilter
+                && !isSpecificationFilter
                 && !isDateRangeFilter
                 && !isSourceFilter) {
             return preparedStatementWrapper;

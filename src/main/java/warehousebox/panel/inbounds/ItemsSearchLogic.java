@@ -127,16 +127,12 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         this.tfSearchQuery.getDocument().addDocumentListener(textFieldContentReactHandler);
     }
 
-    private boolean isTfSearchQueryEmpty() {
-        return tfSearchQuery.getText().equals("");
-    }
-
     /**
      * Return true if any search filter is selected. Check all search filters
      * except the inbound id filter.
      */
     private boolean isAnySearchFiltersSelected() {
-        return !isTfSearchQueryEmpty()
+        return !tfSearchQuery.getText().equals("")
                 || isAnyTextRelatedCheckboxesSelected
                 || isSourceSelected
                 || isDateRangeCheckSelected;
@@ -350,6 +346,13 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         if (isInboundIdCheckBoxSelected) {
             checkItemIdFilter.setSelected(false);
             checkItemIdFilter.setEnabled(false);
+            checkNameFilter.setSelected(false);
+            checkSpecificationFilter.setSelected(false);
+            searchFilters.setItemIdFilter(false);
+            searchFilters.setNameFilter(false);
+            searchFilters.setSpecificationFilter(false);
+            tfSourceFilter.setText("");
+            searchFilters.setSource(null);
         } else {
             checkItemIdFilter.setEnabled(true);
         }
@@ -364,20 +367,22 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         }
         dateRange.setEnabled(!isInboundIdCheckBoxSelected);
         dateRange.setSelected(isDateRangeCheckSelectedCopy && !isInboundIdCheckBoxSelected);
-        if (checkInboundIdFilter.isSelected()) {
-            checkNameFilter.setSelected(false);
-            checkSpecificationFilter.setSelected(false);
-            searchFilters.setItemIdFilter(false);
-            searchFilters.setNameFilter(false);
-            searchFilters.setSpecificationFilter(false);
-            tfSourceFilter.setText("");
-            searchFilters.setSource(null);
-        }
     }
 
     private void checkBoxItemIdFilterReact() {
         boolean isItemIdCheckBoxSelected = checkItemIdFilter.isSelected();
         if (isItemIdCheckBoxSelected) {
+            checkNameFilter.setSelected(false);
+            checkSpecificationFilter.setSelected(false);
+            searchFilters.setInboundIdFilter(false);
+            searchFilters.setNameFilter(false);
+            searchFilters.setSpecificationFilter(false);
+            // Source filter control
+            btnSourceFilter.setEnabled(true);
+            if (source != null) {
+                tfSourceFilter.setText(source.getName());
+                searchFilters.setSource(source);
+            }
             checkInboundIdFilter.setSelected(false);
             checkInboundIdFilter.setEnabled(false);
         } else {
@@ -390,19 +395,6 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         btnSourceFilter.setEnabled(!isInboundIdCheckBoxSelected);
         dateRange.setEnabled(!isInboundIdCheckBoxSelected || isItemIdCheckBoxSelected);
         dateRange.setSelected(isDateRangeCheckSelectedCopy);
-        if (checkItemIdFilter.isSelected()) {
-            checkNameFilter.setSelected(false);
-            checkSpecificationFilter.setSelected(false);
-            searchFilters.setInboundIdFilter(false);
-            searchFilters.setNameFilter(false);
-            searchFilters.setSpecificationFilter(false);
-            // Source filter control
-            btnSourceFilter.setEnabled(true);
-            if (source != null) {
-                tfSourceFilter.setText(source.getName());
-                searchFilters.setSource(source);
-            }
-        }
     }
 
     private void checkBoxesNameAndSpecificationFiltersReact() {

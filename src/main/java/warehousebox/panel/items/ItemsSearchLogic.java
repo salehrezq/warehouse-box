@@ -243,7 +243,7 @@ public class ItemsSearchLogic {
         checkNameFilter.setEnabled(!isIdSelected);
         checkSpecificationFilter.setEnabled(!isIdSelected);
         searchFilters.setIdFilter(isIdSelected);
-        if (checkIdFilter.isSelected()) {
+        if (isIdSelected) {
             checkNameFilter.setSelected(false);
             checkSpecificationFilter.setSelected(false);
             searchFilters.setNameFilter(false);

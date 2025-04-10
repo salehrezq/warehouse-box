@@ -132,21 +132,22 @@ public class CRUDItems {
 
     private static String formulateSearchFilters(SearchFilters searchFilters) {
         String sqlFilter = " WHERE ";
-        boolean isSearchisQueryBlank = searchFilters.getSearchQuery().length < 1;
+        boolean isSearchisQueryBlank = searchFilters.getSearchQuery()[0].isBlank();
         boolean isIdFilter = searchFilters.isIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
 
-        boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter;
-
-        if (!isAnyFilterOn && isSearchisQueryBlank) {
+        if (isSearchisQueryBlank
+                && !isIdFilter
+                && !isNameFilter
+                && !isSpecificationFilter) {
             sqlFilter = "";
             return sqlFilter;
         }
         if (isIdFilter) {
             sqlFilter += "it.id = ?";
             return sqlFilter;
-        } else {
+        } else if (isNameFilter || isSpecificationFilter || !isSearchisQueryBlank) {
             searchedWords = searchFilters.getSearchQuery();
             wordsLength = searchedWords.length;
             String query;
@@ -171,14 +172,16 @@ public class CRUDItems {
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         String[] searchQuery = searchFilters.getSearchQuery();
+        boolean isSearchisQueryBlank = searchQuery[0].isBlank();
         boolean isIdFilter = searchFilters.isIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
         boolean isSpecificationFilter = searchFilters.isSpecificationFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn = isIdFilter || isNameFilter || isSpecificationFilter;
-
-        if (!isAnyFilterOn && searchQuery.length < 1) {
+        if (isSearchisQueryBlank
+                && !isIdFilter
+                && !isNameFilter
+                && !isSpecificationFilter) {
             return preparedStatementWrapper;
         }
         if (isIdFilter) {

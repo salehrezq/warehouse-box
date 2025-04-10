@@ -86,20 +86,18 @@ public class CRUDOutbounds {
         boolean isReturnableFilter = searchFilters.isReturnableFilter();
         boolean isScrapFilter = searchFilters.isScrapFilter();
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
-        boolean isAnyFilterOn
-                = !isSearchisQueryBlank
-                || isOutboundIdFilter
-                || isItemIdFilter
-                || isNameFilter
-                || isSpecificationFilter
-                || isNoteFilter
-                || isRecipientFilter
-                || isConsumableFilter
-                || isReturnableFilter
-                || isScrapFilter
-                || isDateRangeFilter;
 
-        if (!isAnyFilterOn) {
+        if (isSearchisQueryBlank
+                && !isOutboundIdFilter
+                && !isItemIdFilter
+                && !isNameFilter
+                && !isSpecificationFilter
+                && !isNoteFilter
+                && !isRecipientFilter
+                && !isConsumableFilter
+                && !isReturnableFilter
+                && !isScrapFilter
+                && !isDateRangeFilter) {
             sqlFilter = "";
             return sqlFilter;
         }
@@ -222,7 +220,7 @@ public class CRUDOutbounds {
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(SearchFilters searchFilters, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         String[] searchQuery = searchFilters.getSearchQuery();
-        boolean isSearchisQueryBlank = searchFilters.getSearchQuery()[0].isBlank();
+        boolean isSearchisQueryBlank = searchQuery[0].isBlank();
         boolean isOutboundIdFilter = searchFilters.isOutboundIdFiler();
         boolean isItemIdFilter = searchFilters.isItemIdFilter();
         boolean isNameFilter = searchFilters.isNameFilter();
@@ -235,20 +233,17 @@ public class CRUDOutbounds {
         boolean isDateRangeFilter = searchFilters.isEnabledDateRangeFilter();
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
 
-        boolean isAnyFilterOn
-                = !isSearchisQueryBlank
-                || isOutboundIdFilter
-                || isItemIdFilter
-                || isNameFilter
-                || isSpecificationFilter
-                || isNoteFilter
-                || isRecipientFilter
-                || isConsumableFilter
-                || isReturnableFilter
-                || isScrapFilter
-                || isDateRangeFilter;
-
-        if (!isAnyFilterOn) {
+        if (isSearchisQueryBlank
+                && !isOutboundIdFilter
+                && !isItemIdFilter
+                && !isNameFilter
+                && !isSpecificationFilter
+                && !isNoteFilter
+                && !isRecipientFilter
+                && !isConsumableFilter
+                && !isReturnableFilter
+                && !isScrapFilter
+                && !isDateRangeFilter) {
             return preparedStatementWrapper;
         }
         if (isDateRangeFilter) {
