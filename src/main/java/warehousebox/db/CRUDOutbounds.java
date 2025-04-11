@@ -200,8 +200,13 @@ public class CRUDOutbounds {
                 query = "((i.name || ' ' || note) LIKE ?)";
             } else if (!isNameFilter && isSpecificationFilter && isNoteFilter) {
                 query = "((i.specification || ' ' || note) LIKE ?)";
-            } else {
+            } else if (isNameFilter && isSpecificationFilter && isNoteFilter) {
                 query = "((i.name || ' ' || i.specification || ' ' || note) LIKE ?)";
+            } else {
+                // Case of no filters have been selected,
+                // but search query is not empty,
+                // then use these default filters.
+                query = "((i.name || ' ' || i.specification) LIKE ?)";
             }
             if (isDateRangeFilter
                     || isRecipientFilter
