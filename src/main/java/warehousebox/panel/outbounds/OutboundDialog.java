@@ -130,8 +130,8 @@ public class OutboundDialog extends JDialog {
         container.add(tfNote, "grow, span 3, wrap");
         container.add(formFieldRecipient, "span 4,wrap");
         container.add(comboIssuanceType, "span 2");
-        container.add(lbDate, "span 1, gapx 222");
-        container.add(datePicker, "span 1, wrap");
+        container.add(lbDate, "span 2, split 2, align right");
+        container.add(datePicker, "wrap");
         container.add(btnSubmit, "span 4, center, gapy 10");
         add(container);
         this.setMinimumSize(new Dimension(520, 540));
