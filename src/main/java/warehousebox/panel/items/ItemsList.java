@@ -524,7 +524,7 @@ public class ItemsList extends JPanel
                         if (deleted) {
                             model.removeItemMeta(selectedModelRow);
                             relatedImagesToBeRemoved.forEach(imageTobeRemoved
-                                    -> ImageFileManager.delete(imageTobeRemoved.getImageName()));
+                                    -> ImageFileManager.delete(imageTobeRemoved.getImageName(), CRUDImages.DIRECTORYNAME));
                             notifySelectedRowHasBeenDeleted();
                             nameAndSpecDisplayFields.setTfItemNameText("");
                             nameAndSpecDisplayFields.setTfItemSpecificationsText("");

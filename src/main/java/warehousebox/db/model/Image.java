@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import warehousebox.db.CRUDImages;
 import warehousebox.utility.filemanage.ImageFileManager;
 
 /**
@@ -73,7 +74,7 @@ public class Image {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
-        this.setBufferedImage(ImageFileManager.loadImage(imageName));
+        this.setBufferedImage(ImageFileManager.loadImage(imageName, CRUDImages.DIRECTORYNAME));
     }
 
     public int getPosition() {

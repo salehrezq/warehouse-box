@@ -47,10 +47,11 @@ public class ImageFileManager {
     private static final String slash = File.separator;
     private static final String appImagesPath = HOME + slash + "warehouse-box-images";
 
-    public static void copyFileUsingJava7Files(File file, String newGeneratedName) {
-        Path destPath = Paths.get(appImagesPath);
+    public static void copyFileUsingJava7Files(File file, String newGeneratedName, String directoryName) {
+        String path = appImagesPath + slash + directoryName;
+        Path destPath = Paths.get(path);
         Optional<String> extension = getExtensionByStringHandling(file.getName());
-        Path destFile = Paths.get(appImagesPath + slash + newGeneratedName);
+        Path destFile = Paths.get(path + slash + newGeneratedName);
         try {
             Files.createDirectories(destPath);
             Files.copy(file.toPath(), destFile, StandardCopyOption.REPLACE_EXISTING);
@@ -59,9 +60,10 @@ public class ImageFileManager {
         }
     }
 
-    public static void delete(String filename) {
+    public static void delete(String filename, String directoryName) {
+        String path = appImagesPath + slash + directoryName;
         try {
-            Path destFile = Paths.get(appImagesPath + slash + filename);
+            Path destFile = Paths.get(path + slash + filename);
             Files.delete(destFile);
         } catch (IOException ex) {
             Logger.getLogger(ImageFileManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -102,10 +104,11 @@ public class ImageFileManager {
         return new UUID(most64SigBits, least64SigBits);
     }
 
-    public static BufferedImage loadImage(String imageName) {
+    public static BufferedImage loadImage(String imageName, String directoryName) {
+        String path = appImagesPath + slash + directoryName;
         BufferedImage image = null;
         try {
-            image = ImageIO.read(new File(appImagesPath + slash + imageName));
+            image = ImageIO.read(new File(path + slash + imageName));
         } catch (IOException ex) {
             System.err.println("Issue image name " + imageName);
             Logger.getLogger(ImageFileManager.class.getName()).log(Level.SEVERE, null, ex);

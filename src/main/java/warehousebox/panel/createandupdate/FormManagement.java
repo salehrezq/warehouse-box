@@ -231,7 +231,7 @@ public class FormManagement extends JPanel {
 
                     // Delete actual files from file system of deselected images
                     deselectedImages.forEach(imageTobeRemoved
-                            -> ImageFileManager.delete(imageTobeRemoved.getImageName()));
+                            -> ImageFileManager.delete(imageTobeRemoved.getImageName(), CRUDImages.DIRECTORYNAME));
 
                     // Delete operation for DB image records using file names.
                     if (!deselectedImages.isEmpty()) {

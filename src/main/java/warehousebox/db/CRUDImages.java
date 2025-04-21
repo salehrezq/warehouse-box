@@ -42,6 +42,8 @@ import warehousebox.db.model.Item;
  */
 public class CRUDImages {
 
+    public static final String DIRECTORYNAME = "items";
+
     public static int create(List<Image> images, int itemId) {
         int[] patchArray = null;
         String sql = "INSERT INTO images (item_id, position, name, default_image, scale) VALUES (?, ?, ?, ?, ?)";
@@ -59,7 +61,7 @@ public class CRUDImages {
                 pstmt.setBigDecimal(5, image.getScale());
                 pstmt.addBatch();
                 // Copy image to app directory
-                ImageFileManager.copyFileUsingJava7Files(image.getImageFile(), newImageName);
+                ImageFileManager.copyFileUsingJava7Files(image.getImageFile(), newImageName, DIRECTORYNAME);
             }
             patchArray = pstmt.executeBatch();
         } catch (SQLException ex) {
