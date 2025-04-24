@@ -23,6 +23,7 @@ name VARCHAR(255) NOT NULL,
 position INT NOT NULL,
 default_image BOOLEAN NOT NULL,
 scale DECIMAL(3,2) NOT NULL DEFAULT 0.6,
+UNIQUE (name),
 
 CONSTRAINT fk_images_item_id_references_items_id
 FOREIGN KEY (item_id) REFERENCES items(id)
