@@ -35,6 +35,17 @@ name VARCHAR(255) NOT NULL,
 UNIQUE (name)
 );
 
+CREATE TABLE recipients_images (
+id INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+recipient_id INT NOT NULL,
+name VARCHAR(255) NOT NULL,
+UNIQUE (recipient_id),
+UNIQUE (name),
+CONSTRAINT fk_recipients_images_recipient_id_references_recipients_id
+FOREIGN KEY (recipient_id) REFERENCES recipients(id)
+ON DELETE CASCADE
+);
+
 CREATE TABLE source (
 id INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 information VARCHAR(255) NOT NULL,
