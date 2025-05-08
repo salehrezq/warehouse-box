@@ -29,7 +29,6 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import warehousebox.db.Connect;
 import warehousebox.db.model.QuantityUnit;
-import warehousebox.db.model.Recipient;
 import warehousebox.db.model.Source;
 import warehousebox.panel.menus.Menu;
 import warehousebox.panel.tabs.Tabs;
@@ -94,9 +93,10 @@ public class MainRun {
         ListableItemEditDialog editDialogeForSource = listableItemManageDialogeSource.getListableItemEditDialog();
         editDialogeForSource.addListableUpdateListener(tabs.getInboundsList());
 
-        ListableItemManage listableItemManageDialogeRecipient = menu.getListableItemManage(new Recipient());
-        ListableItemEditDialog editDialogeForRecipient = listableItemManageDialogeRecipient.getListableItemEditDialog();
-        editDialogeForRecipient.addListableUpdateListener(tabs.getOutboundsList());
+        // To be updated later
+//        ListableItemManage listableItemManageDialogeRecipient = menu.getListableItemManage(new Recipient());
+//        ListableItemEditDialog editDialogeForRecipient = listableItemManageDialogeRecipient.getListableItemEditDialog();
+//        editDialogeForRecipient.addListableUpdateListener(tabs.getOutboundsList());
     }
 
     public static void main(String[] args) {
