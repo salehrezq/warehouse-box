@@ -38,6 +38,7 @@ public class RecipientsControls {
     private JPanel controls;
     private JButton btnAdd, btnSearchQuery;
     private JTextField tfSearch;
+    private RecipientsList recipientsList;
 
     public RecipientsControls() {
         container = new JPanel(new BorderLayout());
@@ -45,10 +46,12 @@ public class RecipientsControls {
         btnAdd = new JButton("Add");
         btnSearchQuery = new JButton("Get all");
         tfSearch = new JTextField(20);
+        recipientsList = new RecipientsList();
         controls.add(btnAdd);
         controls.add(tfSearch);
         controls.add(btnSearchQuery);
         container.add(controls, BorderLayout.PAGE_START);
+        container.add(recipientsList.getListScrolledPane(), BorderLayout.CENTER);
     }
 
     protected JPanel getContainer() {
