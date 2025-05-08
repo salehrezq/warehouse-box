@@ -35,9 +35,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import warehousebox.db.model.QuantityUnit;
-import warehousebox.db.model.Recipient;
 import warehousebox.db.model.Source;
 import warehousebox.panel.createandupdate.FormManagement;
+import warehousebox.panel.menus.recipients.RecipientsDialog;
 import warehousebox.utility.singularlisting.Listable;
 
 /**
@@ -54,8 +54,8 @@ public class Menu {
             menuItemSearchResultSize;
     private JFrame target;
     private ListableItemManage manageQuantityUnitDialog,
-            manageSourceDialog,
-            manageRecipientDialog;
+            manageSourceDialog;
+    private RecipientsDialog recipientsDialog;
     private ItemCreateUpdateDialog createItemDialog;
     private ResultLimitSizePreference resultSizeDialog;
     private MenuItemsListener menuItemsListener;
@@ -98,8 +98,7 @@ public class Menu {
         //manageQuantityUnitDialog.get
         manageSourceDialog = new ListableItemManage(target, "Manage Sources", true);
         manageSourceDialog.setListableImpl(new Source());
-        manageRecipientDialog = new ListableItemManage(target, "Manage Recipients", true);
-        manageRecipientDialog.setListableImpl(new Recipient());
+        recipientsDialog = new RecipientsDialog(target, "Manage Recipients", true);
         menuItemMangeQuantityUnit.addActionListener(menuItemsListener);
         menuItemMangeSources.addActionListener(menuItemsListener);
         menuCreateItem.addActionListener(menuItemsListener);
@@ -132,8 +131,6 @@ public class Menu {
             listableItemManage = manageQuantityUnitDialog;
         } else if (listable instanceof Source) {
             listableItemManage = manageSourceDialog;
-        } else if (listable instanceof Recipient) {
-            listableItemManage = manageRecipientDialog;
         }
         return listableItemManage;
     }
@@ -150,7 +147,7 @@ public class Menu {
             } else if (source == menuItemMangeSources) {
                 manageSourceDialog.setVisible(true);
             } else if (source == menuItemManageRecipients) {
-                manageRecipientDialog.setVisible(true);
+                recipientsDialog.setVisible(true);
             } else if (source == menuItemSearchResultSize) {
                 resultSizeDialog.initializeWithSavedLimitSize();
                 resultSizeDialog.setVisible(true);
