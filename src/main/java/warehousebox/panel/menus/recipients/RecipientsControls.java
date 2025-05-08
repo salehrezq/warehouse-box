@@ -23,10 +23,36 @@
  */
 package warehousebox.panel.menus.recipients;
 
+import java.awt.BorderLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 /**
  *
  * @author Saleh
  */
 public class RecipientsControls {
+
+    private JPanel container;
+    private JPanel controls;
+    private JButton btnAdd, btnSearchQuery;
+    private JTextField tfSearch;
+
+    public RecipientsControls() {
+        container = new JPanel(new BorderLayout());
+        controls = new JPanel();
+        btnAdd = new JButton("Add");
+        btnSearchQuery = new JButton("Get all");
+        tfSearch = new JTextField(20);
+        controls.add(btnAdd);
+        controls.add(tfSearch);
+        controls.add(btnSearchQuery);
+        container.add(controls, BorderLayout.PAGE_START);
+    }
+
+    protected JPanel getContainer() {
+        return container;
+    }
 
 }
