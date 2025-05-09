@@ -37,7 +37,7 @@ import javax.swing.JMenuItem;
 import warehousebox.db.model.QuantityUnit;
 import warehousebox.db.model.Source;
 import warehousebox.panel.createandupdate.FormManagement;
-import warehousebox.panel.menus.recipients.RecipientsDialog;
+import warehousebox.panel.menus.recipients.RecipientsMenuDialog;
 import warehousebox.utility.singularlisting.Listable;
 
 /**
@@ -55,7 +55,7 @@ public class Menu {
     private JFrame target;
     private ListableItemManage manageQuantityUnitDialog,
             manageSourceDialog;
-    private RecipientsDialog recipientsDialog;
+    private RecipientsMenuDialog recipientsDialog;
     private ItemCreateUpdateDialog createItemDialog;
     private ResultLimitSizePreference resultSizeDialog;
     private MenuItemsListener menuItemsListener;
@@ -98,7 +98,7 @@ public class Menu {
         //manageQuantityUnitDialog.get
         manageSourceDialog = new ListableItemManage(target, "Manage Sources", true);
         manageSourceDialog.setListableImpl(new Source());
-        recipientsDialog = new RecipientsDialog(target, "Manage Recipients", true);
+        recipientsDialog = new RecipientsMenuDialog(target, "Manage Recipients", true);
         menuItemMangeQuantityUnit.addActionListener(menuItemsListener);
         menuItemMangeSources.addActionListener(menuItemsListener);
         menuCreateItem.addActionListener(menuItemsListener);

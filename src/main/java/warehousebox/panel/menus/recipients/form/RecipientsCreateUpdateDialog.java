@@ -21,28 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehousebox.panel.menus.recipients;
-
-import java.awt.Dimension;
-import java.awt.Frame;
-import javax.swing.JDialog;
+package warehousebox.panel.menus.recipients.form;
 
 /**
  *
  * @author Saleh
  */
-public class RecipientsDialog extends JDialog {
-
-    private RecipientsControls recipientsControls;
-    private RecipientsLogic recipientsLogic;
-
-    public RecipientsDialog(Frame owner, String title, boolean modal) {
-        super(owner, title, modal);
-
-        recipientsControls = new RecipientsControls();
-        recipientsLogic = new RecipientsLogic();
-        add(recipientsControls.getContainer());
-        setMinimumSize(new Dimension(700, 400));
-    }
+public class RecipientsCreateUpdateDialog {
 
 }
