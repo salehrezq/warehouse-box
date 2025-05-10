@@ -23,49 +23,25 @@
  */
 package warehousebox.panel.menus.recipients.form;
 
-import java.awt.Adjustable;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import java.awt.Color;
+import java.awt.Dimension;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import net.miginfocom.swing.MigLayout;
-import warehousebox.utility.scrollbarthin.ScrollBarThin;
 
 /**
  *
  * @author Saleh
  */
-public class RecipientsFormControls {
+public class RecipientsImagePanel {
 
     private JPanel container;
-    private JLabel lbName;
-    private JTextField tfName;
-    private RecipientsImagePanel recipientsImagePanel;
-    private JButton btnBrowse;
-    private ScrollBarThin scrollBarThinTfName;
 
-    public RecipientsFormControls() {
+    public RecipientsImagePanel() {
         container = new JPanel();
-        container.setLayout(new MigLayout("center center"));
-        lbName = new JLabel("Name");
-        tfName = new JTextField(30);
-        recipientsImagePanel = new RecipientsImagePanel();
-        btnBrowse = new JButton("Browse...");
-        scrollBarThinTfName = new ScrollBarThin(Adjustable.HORIZONTAL);
-        scrollBarThinTfName.setModel(tfName.getHorizontalVisibility());
-        Box boxNameField = Box.createVerticalBox();
-        boxNameField.add(tfName);
-        boxNameField.add(scrollBarThinTfName);
-        container.add(lbName);
-        container.add(boxNameField, "wrap 15");
-        container.add(recipientsImagePanel.getContainer(), "span 2, center, wrap 5");
-        container.add(btnBrowse, "span 2, center");
-        container.setSize(500, 700);
+        container.setBackground(new Color(217, 215, 249));
+        container.setMinimumSize(new Dimension(150, 200));
     }
 
     protected JPanel getContainer() {
         return container;
     }
-
 }
