@@ -23,10 +23,34 @@
  */
 package warehousebox.panel.menus.recipients;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import warehousebox.panel.menus.recipients.form.RecipientsCreateUpdateDialog;
+
 /**
  *
  * @author Saleh
  */
 public class RecipientsLogic {
 
+    private JButton btnAdd, btnSearchQuery;
+    private JTextField tfSearch;
+    private RecipientsCreateUpdateDialog recipientsCreateUpdateDialog;
+
+    public RecipientsLogic(RecipientsControls rc) {
+        btnAdd = rc.getBtnAdd();
+        recipientsCreateUpdateDialog = rc.getRecipientsCreateUpdateDialog();
+        btnAdd.addActionListener(new AddRecipientHandler());
+    }
+
+    private class AddRecipientHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            recipientsCreateUpdateDialog.setVisible(true);
+        }
+
+    }
 }

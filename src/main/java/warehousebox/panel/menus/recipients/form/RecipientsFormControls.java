@@ -23,10 +23,42 @@
  */
 package warehousebox.panel.menus.recipients.form;
 
+import java.awt.Adjustable;
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import net.miginfocom.swing.MigLayout;
+import warehousebox.utility.scrollbarthin.ScrollBarThin;
+
 /**
  *
  * @author Saleh
  */
 public class RecipientsFormControls {
+
+    private JPanel container;
+    private JLabel lbName;
+    private JTextField tfName;
+    private ScrollBarThin scrollBarThinTfName;
+
+    public RecipientsFormControls() {
+        container = new JPanel();
+        container.setLayout(new MigLayout("center center"));
+        lbName = new JLabel("Name");
+        tfName = new JTextField(30);
+        scrollBarThinTfName = new ScrollBarThin(Adjustable.HORIZONTAL);
+        scrollBarThinTfName.setModel(tfName.getHorizontalVisibility());
+        Box boxNameField = Box.createVerticalBox();
+        boxNameField.add(tfName);
+        boxNameField.add(scrollBarThinTfName);
+        container.add(lbName);
+        container.add(boxNameField);
+        container.setSize(500, 700);
+    }
+
+    protected JPanel getContainer() {
+        return container;
+    }
 
 }

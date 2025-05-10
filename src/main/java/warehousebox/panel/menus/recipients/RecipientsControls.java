@@ -24,9 +24,13 @@
 package warehousebox.panel.menus.recipients;
 
 import java.awt.BorderLayout;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import warehousebox.panel.menus.recipients.form.RecipientsCreateUpdateDialog;
 
 /**
  *
@@ -39,11 +43,13 @@ public class RecipientsControls {
     private JButton btnAdd, btnSearchQuery;
     private JTextField tfSearch;
     private RecipientsList recipientsList;
+    private RecipientsCreateUpdateDialog recipientsCreateUpdateDialog;
 
-    public RecipientsControls() {
+    public RecipientsControls(Frame owner) {
         container = new JPanel(new BorderLayout());
         controls = new JPanel();
         btnAdd = new JButton("Add");
+        recipientsCreateUpdateDialog = new RecipientsCreateUpdateDialog(owner, "Create", true);
         btnSearchQuery = new JButton("Get all");
         tfSearch = new JTextField(20);
         recipientsList = new RecipientsList();
@@ -56,6 +62,35 @@ public class RecipientsControls {
 
     protected JPanel getContainer() {
         return container;
+    }
+
+    public JButton getBtnAdd() {
+        return btnAdd;
+    }
+
+    public JButton getBtnSearchQuery() {
+        return btnSearchQuery;
+    }
+
+    public JTextField getTfSearch() {
+        return tfSearch;
+    }
+
+    public RecipientsCreateUpdateDialog getRecipientsCreateUpdateDialog() {
+        return recipientsCreateUpdateDialog;
+    }
+
+    public void setRecipientsCreateUpdateDialog(RecipientsCreateUpdateDialog recipientsCreateUpdateDialog) {
+        this.recipientsCreateUpdateDialog = recipientsCreateUpdateDialog;
+    }
+
+    private class AddRecipientHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            recipientsCreateUpdateDialog.setVisible(true);
+        }
+
     }
 
 }

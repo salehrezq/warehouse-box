@@ -38,9 +38,8 @@ public class RecipientsMenuDialog extends JDialog {
 
     public RecipientsMenuDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
-
-        recipientsControls = new RecipientsControls();
-        recipientsLogic = new RecipientsLogic();
+        recipientsControls = new RecipientsControls(owner);
+        recipientsLogic = new RecipientsLogic(recipientsControls);
         add(recipientsControls.getContainer());
         setMinimumSize(new Dimension(700, 400));
     }

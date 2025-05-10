@@ -23,10 +23,22 @@
  */
 package warehousebox.panel.menus.recipients.form;
 
+import java.awt.Frame;
+import javax.swing.JDialog;
+
 /**
  *
  * @author Saleh
  */
-public class RecipientsCreateUpdateDialog {
+public class RecipientsCreateUpdateDialog extends JDialog {
+
+    private RecipientsFormControls recipientsFormControls;
+
+    public RecipientsCreateUpdateDialog(Frame owner, String title, boolean modal) {
+        super(owner, title, modal);
+        recipientsFormControls = new RecipientsFormControls();
+        add(recipientsFormControls.getContainer());
+        setSize(400, 600);
+    }
 
 }
