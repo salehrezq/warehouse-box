@@ -33,10 +33,12 @@ import javax.swing.JDialog;
 public class RecipientsCreateUpdateDialog extends JDialog {
 
     private RecipientsFormControls recipientsFormControls;
+    private RecipientsFormLogic recipientsFormLogic;
 
     public RecipientsCreateUpdateDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         recipientsFormControls = new RecipientsFormControls();
+        recipientsFormLogic = new RecipientsFormLogic(recipientsFormControls);
         add(recipientsFormControls.getContainer());
         setSize(400, 600);
     }

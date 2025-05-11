@@ -23,10 +23,18 @@
  */
 package warehousebox.panel.menus.recipients.form;
 
+import javax.swing.JButton;
+
 /**
  *
  * @author Saleh
  */
 public class RecipientsFormLogic {
+
+    private JButton btnBrowse;
+
+    public RecipientsFormLogic(RecipientsFormControls rc) {
+        btnBrowse = rc.getBtnBrowse();
+    }
 
 }

@@ -68,4 +68,8 @@ public class RecipientsFormControls {
         return container;
     }
 
+    protected JButton getBtnBrowse() {
+        return btnBrowse;
+    }
+
 }
