@@ -23,10 +23,83 @@
  */
 package warehousebox.panel.menus.recipients.form.imagefilechooser;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.Preferences;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import warehousebox.db.model.RecipientImage;
+
 /**
  *
  * @author Saleh
  */
-public class IMGFileChooser {
+public class IMGFileChooser implements ActionListener {
+
+    private JFileChooser fileChooser;
+    private Preferences prefs;
+    private static final String LAST_USED_FOLDER = "lastusedfolder";
+    private Component parent;
+    private List<ImageSelectedListener> imageSelectedListeners;
+
+    public IMGFileChooser() {
+        imageSelectedListeners = new ArrayList<>();
+    }
+
+    public void setParentComponent(Component parent) {
+        this.parent = parent;
+    }
+
+    public void addImageSelectedListener(ImageSelectedListener imageSelectedListener) {
+        this.imageSelectedListeners.add(imageSelectedListener);
+    }
+
+    public void notifyImageSelected(RecipientImage recipientImage) {
+        this.imageSelectedListeners.forEach((imageSelectedListener) -> {
+            imageSelectedListener.imageSelected(recipientImage);
+        });
+    }
+
+    private void clearFileChooserCurrentSelection() {
+        File f = new File("");
+        File[] filesf = {f};
+        fileChooser.setSelectedFile(f);
+        fileChooser.setSelectedFiles(filesf);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (fileChooser == null) {
+            prefs = Preferences.userRoot().node(getClass().getName());
+            fileChooser = new JFileChooser(prefs.get(LAST_USED_FOLDER, new File(".").getAbsolutePath()));
+            fileChooser.setMultiSelectionEnabled(false);
+            fileChooser.addChoosableFileFilter(new ImageFilter());
+            fileChooser.setAcceptAllFileFilterUsed(false);
+        }
+        int returnedValue = fileChooser.showDialog(parent, "Select image");
+        if (returnedValue == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            RecipientImage recipientImage = new RecipientImage();
+            BufferedImage bufferedImage;
+            try {
+                bufferedImage = ImageIO.read(file);
+                recipientImage.setBufferedImage(bufferedImage);
+            } catch (IOException ex) {
+                Logger.getLogger(IMGFileChooser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            recipientImage.setImageFile(file);
+            notifyImageSelected(recipientImage);
+            prefs.put(LAST_USED_FOLDER, fileChooser.getSelectedFile().getParent());
+        }
+        clearFileChooserCurrentSelection();
+    }
 
 }
