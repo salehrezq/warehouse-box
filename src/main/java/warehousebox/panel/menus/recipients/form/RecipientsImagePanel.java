@@ -26,12 +26,14 @@ package warehousebox.panel.menus.recipients.form;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
+import warehousebox.db.model.RecipientImage;
+import warehousebox.panel.menus.recipients.form.imagefilechooser.ImageSelectedListener;
 
 /**
  *
  * @author Saleh
  */
-public class RecipientsImagePanel {
+public class RecipientsImagePanel implements ImageSelectedListener {
 
     private JPanel container;
 
@@ -43,5 +45,10 @@ public class RecipientsImagePanel {
 
     protected JPanel getContainer() {
         return container;
+    }
+
+    @Override
+    public void imageSelected(RecipientImage recipientImage) {
+        System.out.println("Image has been selected");
     }
 }
