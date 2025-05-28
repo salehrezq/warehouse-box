@@ -23,9 +23,15 @@
  */
 package warehousebox.panel.menus.recipients.form;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import net.coobird.thumbnailator.Thumbnails;
 import warehousebox.db.model.RecipientImage;
 import warehousebox.panel.menus.recipients.form.imagefilechooser.ImageSelectedListener;
 
@@ -36,11 +42,15 @@ import warehousebox.panel.menus.recipients.form.imagefilechooser.ImageSelectedLi
 public class RecipientsImagePanel implements ImageSelectedListener {
 
     private JPanel container;
+    private JLabel lbImage;
+    BufferedImage bufferedImage;
 
     public RecipientsImagePanel() {
         container = new JPanel();
-        container.setBackground(new Color(217, 215, 249));
-        container.setMinimumSize(new Dimension(150, 200));
+        lbImage = new JLabel();
+        lbImage.setHorizontalAlignment(JLabel.CENTER);
+        lbImage.setVerticalAlignment(JLabel.CENTER);
+        container.add(lbImage);
     }
 
     protected JPanel getContainer() {
@@ -49,6 +59,19 @@ public class RecipientsImagePanel implements ImageSelectedListener {
 
     @Override
     public void imageSelected(RecipientImage recipientImage) {
-        System.out.println("Image has been selected");
+        try {
+            BufferedImage originalImage = ImageIO.read(recipientImage.getImageFile());
+            bufferedImage = Thumbnails.of(originalImage)
+                    .size(190, 200)
+                    .asBufferedImage();
+
+            if (bufferedImage == null) {
+                lbImage.setIcon(null);
+                return;
+            }
+            lbImage.setIcon(new ImageIcon(bufferedImage));
+        } catch (IOException ex) {
+            Logger.getLogger(RecipientsImagePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
