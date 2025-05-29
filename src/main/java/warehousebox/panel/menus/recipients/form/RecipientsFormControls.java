@@ -30,7 +30,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
-import warehousebox.panel.menus.recipients.form.imagefilechooser.IMGFileChooser;
 import warehousebox.utility.scrollbarthin.ScrollBarThin;
 
 /**
@@ -44,7 +43,6 @@ public class RecipientsFormControls {
     private JTextField tfName;
     private RecipientsImagePanel recipientsImagePanel;
     private JButton btnBrowse;
-    private IMGFileChooser iMGFileChooser;
     private ScrollBarThin scrollBarThinTfName;
 
     public RecipientsFormControls() {
@@ -53,10 +51,7 @@ public class RecipientsFormControls {
         lbName = new JLabel("Name");
         tfName = new JTextField(30);
         recipientsImagePanel = new RecipientsImagePanel();
-        iMGFileChooser = new IMGFileChooser();
         btnBrowse = new JButton("Browse...");
-        iMGFileChooser.addImageSelectedListener(recipientsImagePanel);
-        btnBrowse.addActionListener(iMGFileChooser);
         scrollBarThinTfName = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarThinTfName.setModel(tfName.getHorizontalVisibility());
         Box boxNameField = Box.createVerticalBox();
@@ -75,6 +70,10 @@ public class RecipientsFormControls {
 
     protected JButton getBtnBrowse() {
         return btnBrowse;
+    }
+
+    protected RecipientsImagePanel getRecipientsImagePanel() {
+        return recipientsImagePanel;
     }
 
 }
