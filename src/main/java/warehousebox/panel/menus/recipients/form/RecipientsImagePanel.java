@@ -23,6 +23,7 @@
  */
 package warehousebox.panel.menus.recipients.form;
 
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -48,6 +49,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
     public RecipientsImagePanel() {
         container = new JPanel();
         lbImage = new JLabel();
+        lbImage.setMinimumSize(new Dimension(190, 200));
         lbImage.setHorizontalAlignment(JLabel.CENTER);
         lbImage.setVerticalAlignment(JLabel.CENTER);
         container.add(lbImage);
