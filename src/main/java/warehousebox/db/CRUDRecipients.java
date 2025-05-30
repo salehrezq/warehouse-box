@@ -58,4 +58,23 @@ public class CRUDRecipients {
         }
         return recipient;
     }
+
+    public static boolean isExist(Recipient recipient) {
+        boolean exist = false;
+        String sql = "SELECT COUNT(name) AS count FROM recipients WHERE name = ?";
+
+        try (Connection con = Connect.getConnection()) {
+            PreparedStatement isExistStatement = con.prepareStatement(sql);
+            isExistStatement.setString(1, recipient.getName());
+
+            try (ResultSet result = isExistStatement.executeQuery()) {
+                if (result.next()) {
+                    exist = result.getInt("count") == 1;
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDRecipients.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return exist;
+    }
 }
