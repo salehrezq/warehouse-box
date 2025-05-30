@@ -25,7 +25,9 @@ package warehousebox.panel.menus.recipients.form;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -44,7 +46,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
 
     private JPanel container;
     private JLabel lbImage;
-    BufferedImage bufferedImage;
+    BufferedImage bufferedImageThumbnailed;
 
     public RecipientsImagePanel() {
         container = new JPanel();
@@ -52,6 +54,9 @@ public class RecipientsImagePanel implements ImageSelectedListener {
         lbImage.setMinimumSize(new Dimension(190, 200));
         lbImage.setHorizontalAlignment(JLabel.CENTER);
         lbImage.setVerticalAlignment(JLabel.CENTER);
+        bufferedImageThumbnailed
+                = thumbnail(readImageFromResource(getClass().getResource("/images/avatar-placeholder/avatar.png")));
+        lbImage.setIcon(new ImageIcon(bufferedImageThumbnailed));
         container.add(lbImage);
     }
 
@@ -59,21 +64,47 @@ public class RecipientsImagePanel implements ImageSelectedListener {
         return container;
     }
 
-    @Override
-    public void imageSelected(RecipientImage recipientImage) {
+    private BufferedImage thumbnail(BufferedImage image) {
         try {
-            BufferedImage originalImage = ImageIO.read(recipientImage.getImageFile());
-            bufferedImage = Thumbnails.of(originalImage)
+            return Thumbnails.of(image)
                     .size(190, 200)
                     .asBufferedImage();
-
-            if (bufferedImage == null) {
-                lbImage.setIcon(null);
-                return;
-            }
-            lbImage.setIcon(new ImageIcon(bufferedImage));
         } catch (IOException ex) {
             Logger.getLogger(RecipientsImagePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
+    }
+
+    private BufferedImage readImageFromFile(File file) {
+        BufferedImage bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read(file);
+        } catch (IOException ex) {
+            Logger.getLogger(RecipientsImagePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return bufferedImage;
+    }
+
+    private BufferedImage readImageFromResource(URL url) {
+        BufferedImage bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read(url);
+            return bufferedImage;
+        } catch (IOException ex) {
+            Logger.getLogger(RecipientsImagePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return bufferedImage;
+    }
+
+    @Override
+    public void imageSelected(RecipientImage recipientImage) {
+        BufferedImage originalImage = readImageFromFile(recipientImage.getImageFile());
+        bufferedImageThumbnailed = thumbnail(originalImage);
+
+        if (bufferedImageThumbnailed == null) {
+            lbImage.setIcon(null);
+            return;
+        }
+        lbImage.setIcon(new ImageIcon(bufferedImageThumbnailed));
     }
 }
