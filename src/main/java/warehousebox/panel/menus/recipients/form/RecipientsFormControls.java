@@ -42,7 +42,7 @@ public class RecipientsFormControls {
     private JLabel lbName;
     private JTextField tfName;
     private RecipientsImagePanel recipientsImagePanel;
-    private JButton btnBrowse;
+    private JButton btnBrowse, btnSubmit;
     private ScrollBarThin scrollBarThinTfName;
 
     public RecipientsFormControls() {
@@ -52,6 +52,7 @@ public class RecipientsFormControls {
         tfName = new JTextField(30);
         recipientsImagePanel = new RecipientsImagePanel();
         btnBrowse = new JButton("Browse...");
+        btnSubmit = new JButton("Submit");
         scrollBarThinTfName = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarThinTfName.setModel(tfName.getHorizontalVisibility());
         Box boxNameField = Box.createVerticalBox();
@@ -74,6 +75,10 @@ public class RecipientsFormControls {
 
     protected RecipientsImagePanel getRecipientsImagePanel() {
         return recipientsImagePanel;
+    }
+
+    protected JButton getBtnSubmit() {
+        return btnSubmit;
     }
 
 }
