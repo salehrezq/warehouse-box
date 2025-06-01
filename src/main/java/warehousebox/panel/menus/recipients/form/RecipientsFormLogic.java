@@ -24,6 +24,7 @@
 package warehousebox.panel.menus.recipients.form;
 
 import javax.swing.JButton;
+import javax.swing.JTextField;
 import warehousebox.panel.menus.recipients.form.imagefilechooser.IMGFileChooser;
 
 /**
@@ -32,13 +33,16 @@ import warehousebox.panel.menus.recipients.form.imagefilechooser.IMGFileChooser;
  */
 public class RecipientsFormLogic {
 
-    private JButton btnBrowse;
+    private JTextField tfName;
+    private JButton btnBrowse, btnSubmit;
     private IMGFileChooser iMGFileChooser;
     private RecipientsImagePanel recipientsImagePanel;
 
     public RecipientsFormLogic(RecipientsFormControls rc) {
         btnBrowse = rc.getBtnBrowse();
         recipientsImagePanel = rc.getRecipientsImagePanel();
+        btnSubmit = rc.getBtnSubmit();
+        tfName = rc.getTfName();
 
         iMGFileChooser = new IMGFileChooser();
         iMGFileChooser.addImageSelectedListener(recipientsImagePanel);
