@@ -69,6 +69,10 @@ public class RecipientsFormControls {
         return container;
     }
 
+    protected JTextField getTfName() {
+        return tfName;
+    }
+
     protected JButton getBtnBrowse() {
         return btnBrowse;
     }
