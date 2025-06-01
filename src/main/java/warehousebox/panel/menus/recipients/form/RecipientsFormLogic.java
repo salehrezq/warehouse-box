@@ -23,8 +23,13 @@
  */
 package warehousebox.panel.menus.recipients.form;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import warehousebox.db.CRUDRecipients;
+import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.recipients.form.imagefilechooser.IMGFileChooser;
 
 /**
@@ -47,6 +52,28 @@ public class RecipientsFormLogic {
         iMGFileChooser = new IMGFileChooser();
         iMGFileChooser.addImageSelectedListener(recipientsImagePanel);
         btnBrowse.addActionListener(iMGFileChooser);
+    }
+
+    private class SubmitHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (tfName.getText().isBlank()) {
+                JOptionPane.showMessageDialog(null,
+                        "Recipient name is missing!",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Recipient recipient = new Recipient();
+            recipient.setName(tfName.getText());
+            if (CRUDRecipients.isExist(recipient)) {
+                JOptionPane.showMessageDialog(null,
+                        "The recipient is already exist!",
+                        "Duplicate entry", JOptionPane.ERROR_MESSAGE);
+            } else {
+                CRUDRecipients.create(recipient);
+            }
+        }
     }
 
 }
