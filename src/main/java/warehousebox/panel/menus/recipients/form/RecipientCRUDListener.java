@@ -23,10 +23,15 @@
  */
 package warehousebox.panel.menus.recipients.form;
 
+import warehousebox.db.model.Recipient;
+
 /**
  *
  * @author Saleh
  */
 public interface RecipientCRUDListener {
 
+    public void created(Recipient recipient);
+
+    public void updated(Recipient recipient);
 }
