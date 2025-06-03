@@ -25,8 +25,6 @@ package warehousebox.panel.menus.recipients;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -78,19 +76,6 @@ public class RecipientsControls {
 
     public RecipientsCreateUpdateDialog getRecipientsCreateUpdateDialog() {
         return recipientsCreateUpdateDialog;
-    }
-
-    public void setRecipientsCreateUpdateDialog(RecipientsCreateUpdateDialog recipientsCreateUpdateDialog) {
-        this.recipientsCreateUpdateDialog = recipientsCreateUpdateDialog;
-    }
-
-    private class AddRecipientHandler implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            recipientsCreateUpdateDialog.setVisible(true);
-        }
-
     }
 
 }
