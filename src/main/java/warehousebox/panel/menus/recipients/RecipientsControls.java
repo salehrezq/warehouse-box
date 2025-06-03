@@ -48,6 +48,7 @@ public class RecipientsControls {
         controls = new JPanel();
         btnAdd = new JButton("Add");
         recipientsCreateUpdateDialog = new RecipientsCreateUpdateDialog(owner, "Create", true);
+        recipientsCreateUpdateDialog.addThisToRecipientCRUDListener();
         btnSearchQuery = new JButton("Get all");
         tfSearch = new JTextField(20);
         recipientsList = new RecipientsList();

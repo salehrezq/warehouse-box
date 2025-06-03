@@ -61,7 +61,8 @@ public class RecipientsFormControls {
         container.add(lbName);
         container.add(boxNameField, "wrap 15");
         container.add(recipientsImagePanel.getContainer(), "span 2, center, wrap 5");
-        container.add(btnBrowse, "span 2, center");
+        container.add(btnBrowse, "span 2, center, wrap 10");
+        container.add(btnSubmit, "span 2, center");
         container.setSize(500, 700);
     }
 

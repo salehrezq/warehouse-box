@@ -25,12 +25,13 @@ package warehousebox.panel.menus.recipients.form;
 
 import java.awt.Frame;
 import javax.swing.JDialog;
+import warehousebox.db.model.Recipient;
 
 /**
  *
  * @author Saleh
  */
-public class RecipientsCreateUpdateDialog extends JDialog {
+public class RecipientsCreateUpdateDialog extends JDialog implements RecipientCRUDListener {
 
     private RecipientsFormControls recipientsFormControls;
     private RecipientsFormLogic recipientsFormLogic;
@@ -41,6 +42,20 @@ public class RecipientsCreateUpdateDialog extends JDialog {
         recipientsFormLogic = new RecipientsFormLogic(recipientsFormControls);
         add(recipientsFormControls.getContainer());
         setSize(400, 600);
+    }
+
+    @Override
+    public void created(Recipient recipient) {
+        this.setVisible(false);
+    }
+
+    @Override
+    public void updated(Recipient recipient) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void addThisToRecipientCRUDListener() {
+        recipientsFormLogic.addRecipientCRUDListener(this);
     }
 
 }

@@ -25,6 +25,8 @@ package warehousebox.panel.menus.recipients.form;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -42,6 +44,7 @@ public class RecipientsFormLogic {
     private JButton btnBrowse, btnSubmit;
     private IMGFileChooser iMGFileChooser;
     private RecipientsImagePanel recipientsImagePanel;
+    private List<RecipientCRUDListener> recipientCRUDListeners;
 
     public RecipientsFormLogic(RecipientsFormControls rc) {
         btnBrowse = rc.getBtnBrowse();
@@ -49,9 +52,21 @@ public class RecipientsFormLogic {
         btnSubmit = rc.getBtnSubmit();
         tfName = rc.getTfName();
 
+        recipientCRUDListeners = new ArrayList<>();
         iMGFileChooser = new IMGFileChooser();
         iMGFileChooser.addImageSelectedListener(recipientsImagePanel);
         btnBrowse.addActionListener(iMGFileChooser);
+        btnSubmit.addActionListener(new SubmitHandler());
+    }
+
+    public void addRecipientCRUDListener(RecipientCRUDListener recipientCRUDListener) {
+        this.recipientCRUDListeners.add(recipientCRUDListener);
+    }
+
+    public void notifyRecipientCreated(Recipient recipient) {
+        this.recipientCRUDListeners.forEach((recipientCRUDListener) -> {
+            recipientCRUDListener.created(recipient);
+        });
     }
 
     private class SubmitHandler implements ActionListener {
@@ -71,7 +86,15 @@ public class RecipientsFormLogic {
                         "The recipient is already exist!",
                         "Duplicate entry", JOptionPane.ERROR_MESSAGE);
             } else {
-                CRUDRecipients.create(recipient);
+                recipient = CRUDRecipients.create(recipient);
+                if (recipient != null) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Recipient created successfully. You can find it on a next search",
+                            "Created",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+                notifyRecipientCreated(recipient);
             }
         }
     }
