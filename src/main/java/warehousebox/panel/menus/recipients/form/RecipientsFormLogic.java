@@ -35,7 +35,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import warehousebox.db.CRUDRecipients;
+import warehousebox.db.CRUDRecipientsImages;
 import warehousebox.db.model.Recipient;
+import warehousebox.db.model.RecipientImage;
 import warehousebox.panel.menus.recipients.form.imagefilechooser.IMGFileChooser;
 
 /**
@@ -99,6 +101,10 @@ public class RecipientsFormLogic {
             } else {
                 recipient = CRUDRecipients.create(recipient);
                 if (recipient != null) {
+                    RecipientImage recipientImage = recipientsImagePanel.getRecipientImage();
+                    if (recipientImage != null) {
+                        CRUDRecipientsImages.create(recipientImage, recipient.getId());
+                    }
                     JOptionPane.showMessageDialog(
                             null,
                             "Recipient created successfully. You can find it on a next search",

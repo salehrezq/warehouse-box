@@ -48,6 +48,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
     private JLabel lbImage;
     private BufferedImage bufferedImageThumbnailed;
     private final BufferedImage bufferedImagePlaceholder;
+    private RecipientImage recipientImage;
 
     public RecipientsImagePanel() {
         container = new JPanel();
@@ -63,6 +64,10 @@ public class RecipientsImagePanel implements ImageSelectedListener {
 
     protected JPanel getContainer() {
         return container;
+    }
+
+    protected RecipientImage getRecipientImage() {
+        return recipientImage;
     }
 
     private BufferedImage thumbnail(BufferedImage image) {
@@ -87,6 +92,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
     }
 
     public void removeSelectedImage() {
+        recipientImage = null;
         bufferedImageThumbnailed = null;
         lbImage.setIcon(new ImageIcon(bufferedImagePlaceholder));
     }
@@ -104,6 +110,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
 
     @Override
     public void imageSelected(RecipientImage recipientImage) {
+        this.recipientImage = recipientImage;
         BufferedImage originalImage = readImageFromFile(recipientImage.getImageFile());
         bufferedImageThumbnailed = thumbnail(originalImage);
 
