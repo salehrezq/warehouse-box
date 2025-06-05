@@ -47,6 +47,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
     private JPanel container;
     private JLabel lbImage;
     private BufferedImage bufferedImageThumbnailed;
+    private final BufferedImage bufferedImagePlaceholder;
 
     public RecipientsImagePanel() {
         container = new JPanel();
@@ -54,9 +55,9 @@ public class RecipientsImagePanel implements ImageSelectedListener {
         lbImage.setMinimumSize(new Dimension(190, 200));
         lbImage.setHorizontalAlignment(JLabel.CENTER);
         lbImage.setVerticalAlignment(JLabel.CENTER);
-        bufferedImageThumbnailed
+        bufferedImagePlaceholder
                 = thumbnail(readImageFromResource(getClass().getResource("/images/avatar-placeholder/avatar.png")));
-        lbImage.setIcon(new ImageIcon(bufferedImageThumbnailed));
+        lbImage.setIcon(new ImageIcon(bufferedImagePlaceholder));
         container.add(lbImage);
     }
 
@@ -83,6 +84,11 @@ public class RecipientsImagePanel implements ImageSelectedListener {
             Logger.getLogger(RecipientsImagePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
         return bufferedImage;
+    }
+
+    public void removeSelectedImage() {
+        bufferedImageThumbnailed = null;
+        lbImage.setIcon(new ImageIcon(bufferedImagePlaceholder));
     }
 
     private BufferedImage readImageFromResource(URL url) {

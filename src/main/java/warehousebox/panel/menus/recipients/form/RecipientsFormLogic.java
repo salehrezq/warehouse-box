@@ -116,7 +116,7 @@ public class RecipientsFormLogic {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            System.out.println("Remove image placholder");
+            recipientsImagePanel.removeSelectedImage();
         }
 
         @Override
