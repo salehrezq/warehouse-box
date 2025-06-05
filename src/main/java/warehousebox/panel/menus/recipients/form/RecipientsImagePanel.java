@@ -46,7 +46,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
 
     private JPanel container;
     private JLabel lbImage;
-    BufferedImage bufferedImageThumbnailed;
+    private BufferedImage bufferedImageThumbnailed;
 
     public RecipientsImagePanel() {
         container = new JPanel();
