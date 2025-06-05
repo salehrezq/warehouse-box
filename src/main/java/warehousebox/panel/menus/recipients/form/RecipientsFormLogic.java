@@ -25,9 +25,13 @@ package warehousebox.panel.menus.recipients.form;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import warehousebox.db.CRUDRecipients;
@@ -42,16 +46,23 @@ public class RecipientsFormLogic {
 
     private JTextField tfName;
     private JButton btnBrowse, btnSubmit;
+    private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
+    private JLabel btnRemove;
     private IMGFileChooser iMGFileChooser;
     private RecipientsImagePanel recipientsImagePanel;
     private List<RecipientCRUDListener> recipientCRUDListeners;
 
     public RecipientsFormLogic(RecipientsFormControls rc) {
         btnBrowse = rc.getBtnBrowse();
+        imageIconRemoveNormal = rc.getImageIconRemoveNormal();
+        imageIconRemoveHover = rc.getImageIconRemoveHover();
+        imageIconRemovePress = rc.getImageIconRemovePress();
+        btnRemove = rc.getBtnRemove();
         recipientsImagePanel = rc.getRecipientsImagePanel();
         btnSubmit = rc.getBtnSubmit();
         tfName = rc.getTfName();
 
+        btnRemove.addMouseListener(new BtnRemoveHandler());
         recipientCRUDListeners = new ArrayList<>();
         iMGFileChooser = new IMGFileChooser();
         iMGFileChooser.addImageSelectedListener(recipientsImagePanel);
@@ -97,6 +108,39 @@ public class RecipientsFormLogic {
                 notifyRecipientCreated(recipient);
             }
         }
+    }
+
+    private class BtnRemoveHandler extends MouseAdapter {
+
+        private boolean hovered = false;
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            System.out.println("Remove image placholder");
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            btnRemove.setIcon(imageIconRemovePress);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            btnRemove.setIcon((hovered) ? imageIconRemoveHover : imageIconRemoveNormal);
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            hovered = true;
+            btnRemove.setIcon(imageIconRemoveHover);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            hovered = false;
+            btnRemove.setIcon(imageIconRemoveNormal);
+        }
+
     }
 
 }

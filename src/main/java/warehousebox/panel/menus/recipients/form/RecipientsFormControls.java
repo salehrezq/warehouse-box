@@ -25,6 +25,7 @@ package warehousebox.panel.menus.recipients.form;
 
 import java.awt.Adjustable;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,6 +44,8 @@ public class RecipientsFormControls {
     private JTextField tfName;
     private RecipientsImagePanel recipientsImagePanel;
     private JButton btnBrowse, btnSubmit;
+    private JLabel btnRemove;
+    private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
     private ScrollBarThin scrollBarThinTfName;
 
     public RecipientsFormControls() {
@@ -52,6 +55,12 @@ public class RecipientsFormControls {
         tfName = new JTextField(30);
         recipientsImagePanel = new RecipientsImagePanel();
         btnBrowse = new JButton("Browse...");
+        imageIconRemoveNormal = new ImageIcon(getClass().getResource("/images/remove-icon/remove-normal.png"));
+        imageIconRemoveHover = new ImageIcon(getClass().getResource("/images/remove-icon/remove-hovered.png"));
+        imageIconRemovePress = new ImageIcon(getClass().getResource("/images/remove-icon/remove-pressed.png"));
+        btnRemove = new JLabel();
+        btnRemove.setOpaque(false);
+        btnRemove.setIcon(imageIconRemoveNormal);
         btnSubmit = new JButton("Submit");
         scrollBarThinTfName = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarThinTfName.setModel(tfName.getHorizontalVisibility());
@@ -61,7 +70,8 @@ public class RecipientsFormControls {
         container.add(lbName);
         container.add(boxNameField, "wrap 15");
         container.add(recipientsImagePanel.getContainer(), "span 2, center, wrap 5");
-        container.add(btnBrowse, "span 2, center, wrap 10");
+        container.add(btnBrowse, "span 2, center, split 2");
+        container.add(btnRemove, "center, wrap 10");
         container.add(btnSubmit, "span 2, center");
         container.setSize(500, 700);
     }
@@ -80,6 +90,22 @@ public class RecipientsFormControls {
 
     protected RecipientsImagePanel getRecipientsImagePanel() {
         return recipientsImagePanel;
+    }
+
+    protected JLabel getBtnRemove() {
+        return btnRemove;
+    }
+
+    protected ImageIcon getImageIconRemoveNormal() {
+        return imageIconRemoveNormal;
+    }
+
+    protected ImageIcon getImageIconRemoveHover() {
+        return imageIconRemoveHover;
+    }
+
+    protected ImageIcon getImageIconRemovePress() {
+        return imageIconRemovePress;
     }
 
     protected JButton getBtnSubmit() {
