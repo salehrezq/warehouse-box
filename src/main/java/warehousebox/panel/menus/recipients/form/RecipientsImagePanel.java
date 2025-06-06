@@ -91,7 +91,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
         return bufferedImage;
     }
 
-    public void removeSelectedImage() {
+    protected void removeSelectedImage() {
         recipientImage = null;
         bufferedImageThumbnailed = null;
         lbImage.setIcon(new ImageIcon(bufferedImagePlaceholder));

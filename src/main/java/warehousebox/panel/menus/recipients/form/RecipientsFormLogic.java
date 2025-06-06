@@ -82,6 +82,11 @@ public class RecipientsFormLogic {
         });
     }
 
+    private void resetFields() {
+        tfName.setText("");
+        recipientsImagePanel.removeSelectedImage();
+    }
+
     private class SubmitHandler implements ActionListener {
 
         @Override
@@ -112,6 +117,7 @@ public class RecipientsFormLogic {
                             JOptionPane.INFORMATION_MESSAGE);
                 }
                 notifyRecipientCreated(recipient);
+                resetFields();
             }
         }
     }
