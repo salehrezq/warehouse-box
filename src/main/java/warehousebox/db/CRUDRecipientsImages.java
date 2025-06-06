@@ -23,6 +23,7 @@
  */
 package warehousebox.db;
 
+import java.awt.image.BufferedImage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,7 +55,11 @@ public class CRUDRecipientsImages {
             insert = pstmt.executeUpdate();
             if (insert > 0) {
                 // Copy image to app directory
-                ImageFileManager.copyFileUsingJava7Files(image.getImageFile(), newImageName, DIRECTORYNAME);
+                BufferedImage bufferedImage = image.getBufferedImageThumbnailed();
+                ImageFileManager.saveBufferedImageToFileSystem(
+                        bufferedImage,
+                        newImageName,
+                        DIRECTORYNAME);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDRecipientsImages.class.getName()).log(Level.SEVERE, null, ex);

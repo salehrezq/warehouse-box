@@ -118,6 +118,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
             lbImage.setIcon(null);
             return;
         }
+        this.recipientImage.setBufferedImageThumbnailed(bufferedImageThumbnailed);
         lbImage.setIcon(new ImageIcon(bufferedImageThumbnailed));
     }
 }

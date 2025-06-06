@@ -42,6 +42,7 @@ public class RecipientImage {
      * Following members are helper to the program, not mapped in the database.
      */
     private BufferedImage bufferedImage;
+    private BufferedImage bufferedImageThumbnailed;
     private File imageFile;
 
     public int getId() {
@@ -85,4 +86,11 @@ public class RecipientImage {
         this.bufferedImage = bufferedImage;
     }
 
+    public BufferedImage getBufferedImageThumbnailed() {
+        return bufferedImageThumbnailed;
+    }
+
+    public void setBufferedImageThumbnailed(BufferedImage bufferedImageThumbnailed) {
+        this.bufferedImageThumbnailed = bufferedImageThumbnailed;
+    }
 }

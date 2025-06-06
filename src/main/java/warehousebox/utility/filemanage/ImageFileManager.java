@@ -60,6 +60,21 @@ public class ImageFileManager {
         }
     }
 
+    public static void saveBufferedImageToFileSystem(
+            BufferedImage bufferedImage,
+            String newGeneratedName,
+            String directoryName) {
+        String path = appImagesPath + slash + directoryName;
+        Path destPath = Paths.get(path);
+        try {
+            Files.createDirectories(destPath);
+            File outputfile = new File(path + slash + newGeneratedName);
+            ImageIO.write(bufferedImage, getExtensionByStringHandling(newGeneratedName).get(), outputfile);
+        } catch (IOException ex) {
+            Logger.getLogger(ImageFileManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public static void delete(String filename, String directoryName) {
         String path = appImagesPath + slash + directoryName;
         try {
