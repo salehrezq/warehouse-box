@@ -53,7 +53,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
     public RecipientsImagePanel() {
         container = new JPanel();
         lbImage = new JLabel();
-        lbImage.setMinimumSize(new Dimension(190, 200));
+        lbImage.setMinimumSize(new Dimension(128, 128));
         lbImage.setHorizontalAlignment(JLabel.CENTER);
         lbImage.setVerticalAlignment(JLabel.CENTER);
         bufferedImagePlaceholder
@@ -73,7 +73,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
     private BufferedImage thumbnail(BufferedImage image) {
         try {
             return Thumbnails.of(image)
-                    .size(190, 200)
+                    .size(128, 128)
                     .asBufferedImage();
         } catch (IOException ex) {
             Logger.getLogger(RecipientsImagePanel.class.getName()).log(Level.SEVERE, null, ex);
