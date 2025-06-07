@@ -40,6 +40,9 @@ import warehousebox.db.model.Recipient;
  */
 public class CRUDRecipients {
 
+    private static String[] searchedWords;
+    private static int wordsLength;
+
     public static Recipient create(Recipient recipient) {
         String sql = "INSERT INTO recipients (name) VALUES (?)";
 
@@ -80,21 +83,37 @@ public class CRUDRecipients {
         return exist;
     }
 
-    private static String formulateSearchFilters(String query) {
-        String sqlFilter = "";
-        if (query.isBlank()) {
+    private static String formulateSearchFilters(String searchQuery) {
+        String sqlFilter = " WHERE ";
+
+        if (searchQuery.isBlank()) {
+            sqlFilter = "";
             return sqlFilter;
         }
-        sqlFilter = " WHERE name LIKE ?";
+
+        searchedWords = QueryWordsProcessor.getArrayOfWords(searchQuery);
+        wordsLength = searchedWords.length;
+
+        String dbQuerySQL = "name LIKE ?";
+        sqlFilter += wordsLength > 1 ? "(" : "";
+        for (var i = 0; i < wordsLength; i++) {
+            sqlFilter += dbQuerySQL;
+            sqlFilter += (wordsLength > 1 && i == 0) ? ")" : "";
+            sqlFilter += (i > 0) ? ")" : "";
+            sqlFilter += (i < (wordsLength - 1)) ? " AND (" : "";
+        }
         return sqlFilter;
     }
 
-    private static PreparedStatementWrapper formulateSearchPreparedStatement(String query, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
+    private static PreparedStatementWrapper formulateSearchPreparedStatement(String searchQuery, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
-        if (query.isBlank()) {
+        if (searchQuery.isBlank()) {
             return preparedStatementWrapper;
+        } else {
+            for (int i = 0; i < wordsLength; i++) {
+                p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
+            }
         }
-        p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + query + "%");
         return preparedStatementWrapper;
     }
 
