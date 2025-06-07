@@ -25,8 +25,13 @@ package warehousebox.panel.menus.recipients;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import warehousebox.db.CRUDRecipients;
+import warehousebox.db.model.Recipient;
+import warehousebox.panel.menus.ResultLimitSizePreference;
 import warehousebox.panel.menus.recipients.form.RecipientsCreateUpdateDialog;
 
 /**
@@ -35,14 +40,25 @@ import warehousebox.panel.menus.recipients.form.RecipientsCreateUpdateDialog;
  */
 public class RecipientsLogic {
 
-    private JButton btnAdd, btnSearchQuery;
+    private JButton btnAdd, btnSearchQuery, btnLoadMore;
     private JTextField tfSearch;
+    private RecipientsList recipientsList;
     private RecipientsCreateUpdateDialog recipientsCreateUpdateDialog;
+    private int searchResultTotalRowsCount, incrementedReturnedRowsCount;
+    private static int LIMIT, OFFSET;
+    private String searchQueryImmutableCopy;
 
     public RecipientsLogic(RecipientsControls rc) {
         btnAdd = rc.getBtnAdd();
         recipientsCreateUpdateDialog = rc.getRecipientsCreateUpdateDialog();
+        tfSearch = rc.getTfSearch();
+        btnSearchQuery = rc.getBtnSearchQuery();
         btnAdd.addActionListener(new AddRecipientHandler());
+        recipientsList = rc.getRecipientsList();
+        btnLoadMore = rc.getBtnLoadMore();
+
+        btnSearchQuery.addActionListener(new SearchHandler());
+        btnLoadMore.addActionListener(new LoadMoreHandler());
     }
 
     private class AddRecipientHandler implements ActionListener {
@@ -53,4 +69,42 @@ public class RecipientsLogic {
         }
 
     }
+
+    private class SearchHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            searchQueryImmutableCopy = tfSearch.getText();
+            searchResultTotalRowsCount = CRUDRecipients.searchResultRowsCount(tfSearch.getText());
+            LIMIT = ResultLimitSizePreference.getResultLimitSize();
+            btnLoadMore.setEnabled(!(LIMIT >= searchResultTotalRowsCount));
+            recipientsList.removeAllElements();
+            OFFSET = 0;
+            incrementedReturnedRowsCount = 0;
+            List<Recipient> recipients = CRUDRecipients.search(tfSearch.getText(), LIMIT, OFFSET);
+            if (recipients.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "No matched results!", "Info",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+            incrementedReturnedRowsCount += recipients.size();
+            recipients.forEach(recipient -> {
+                recipientsList.addElement(recipient);
+            });
+        }
+    }
+
+    private class LoadMoreHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            OFFSET += LIMIT;
+            List<Recipient> recipients = CRUDRecipients.search(searchQueryImmutableCopy, LIMIT, OFFSET);
+            incrementedReturnedRowsCount += recipients.size();
+            recipients.forEach(listable -> {
+                recipientsList.addElement(listable);
+            });
+            btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
+        }
+    }
+
 }

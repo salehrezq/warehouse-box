@@ -28,6 +28,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import warehousebox.db.model.Recipient;
@@ -76,5 +78,72 @@ public class CRUDRecipients {
             Logger.getLogger(CRUDRecipients.class.getName()).log(Level.SEVERE, null, ex);
         }
         return exist;
+    }
+
+    private static String formulateSearchFilters(String query) {
+        String sqlFilter = "";
+        if (query.isBlank()) {
+            return sqlFilter;
+        }
+        sqlFilter = " WHERE name LIKE ?";
+        return sqlFilter;
+    }
+
+    private static PreparedStatementWrapper formulateSearchPreparedStatement(String query, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
+        PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
+        if (query.isBlank()) {
+            return preparedStatementWrapper;
+        }
+        p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + query + "%");
+        return preparedStatementWrapper;
+    }
+
+    public static int searchResultRowsCount(String query) {
+        int searchResultRowsCount = 0;
+        String sql = "SELECT COUNT(id) AS search_result_rows_count"
+                + " FROM recipients" + formulateSearchFilters(query);
+
+        try (Connection con = Connect.getConnection()) {
+            PreparedStatement p;
+            p = con.prepareStatement(sql);
+            formulateSearchPreparedStatement(query, new PreparedStatementWrapper(p));
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    searchResultRowsCount = result.getInt("search_result_rows_count");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return searchResultRowsCount;
+    }
+
+    public static List<Recipient> search(String query, int LIMIT, int OFFSET) {
+        List<Recipient> recipients = new ArrayList<>();
+        String sql = "SELECT * FROM recipients" + formulateSearchFilters(query)
+                + " ORDER BY name ASC"
+                + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (Connection con = Connect.getConnection()) {
+            PreparedStatement p = con.prepareStatement(sql);
+            PreparedStatementWrapper preparedStatementWrapper
+                    = formulateSearchPreparedStatement(query, new PreparedStatementWrapper(p));
+            int parameterIndex = preparedStatementWrapper.getParameterIndex();
+            p.setInt(++parameterIndex, OFFSET);
+            p.setInt(++parameterIndex, LIMIT);
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    Recipient recipient = new Recipient();
+                    recipient.setId(result.getInt("id"));
+                    recipient.setName(result.getString("name"));
+                    recipients.add(recipient);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return recipients;
     }
 }

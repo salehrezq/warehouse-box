@@ -38,7 +38,7 @@ public class RecipientsControls {
 
     private JPanel container;
     private JPanel controls;
-    private JButton btnAdd, btnSearchQuery;
+    private JButton btnAdd, btnSearchQuery, btnLoadMore;
     private JTextField tfSearch;
     private RecipientsList recipientsList;
     private RecipientsCreateUpdateDialog recipientsCreateUpdateDialog;
@@ -50,6 +50,7 @@ public class RecipientsControls {
         recipientsCreateUpdateDialog = new RecipientsCreateUpdateDialog(owner, "Create", true);
         recipientsCreateUpdateDialog.addThisToRecipientCRUDListener();
         btnSearchQuery = new JButton("Get all");
+        btnLoadMore = new JButton("Load more");
         tfSearch = new JTextField(20);
         recipientsList = new RecipientsList();
         controls.add(btnAdd);
@@ -57,6 +58,7 @@ public class RecipientsControls {
         controls.add(btnSearchQuery);
         container.add(controls, BorderLayout.PAGE_START);
         container.add(recipientsList.getListScrolledPane(), BorderLayout.CENTER);
+        container.add(btnLoadMore, BorderLayout.PAGE_END);
     }
 
     protected JPanel getContainer() {
@@ -69,6 +71,14 @@ public class RecipientsControls {
 
     public JButton getBtnSearchQuery() {
         return btnSearchQuery;
+    }
+
+    public RecipientsList getRecipientsList() {
+        return recipientsList;
+    }
+
+    public JButton getBtnLoadMore() {
+        return btnLoadMore;
     }
 
     public JTextField getTfSearch() {
