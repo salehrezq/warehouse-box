@@ -36,15 +36,18 @@ import warehousebox.panel.menus.recipients.form.RecipientsCreateUpdateDialog;
  */
 public class RecipientsControls {
 
-    private JPanel container;
+    private JPanel container, panelLeft;
     private JPanel controls;
     private JButton btnAdd, btnSearchQuery, btnLoadMore;
     private JTextField tfSearch;
     private RecipientsList recipientsList;
     private RecipientsCreateUpdateDialog recipientsCreateUpdateDialog;
+    private RecipientsImagePanel recipientsImagePanel;
 
     public RecipientsControls(Frame owner) {
         container = new JPanel(new BorderLayout());
+        panelLeft = new JPanel(new BorderLayout());
+        recipientsImagePanel = new RecipientsImagePanel();
         controls = new JPanel();
         btnAdd = new JButton("Add");
         recipientsCreateUpdateDialog = new RecipientsCreateUpdateDialog(owner, "Create", true);
@@ -56,9 +59,11 @@ public class RecipientsControls {
         controls.add(btnAdd);
         controls.add(tfSearch);
         controls.add(btnSearchQuery);
-        container.add(controls, BorderLayout.PAGE_START);
-        container.add(recipientsList.getListScrolledPane(), BorderLayout.CENTER);
-        container.add(btnLoadMore, BorderLayout.PAGE_END);
+        panelLeft.add(controls, BorderLayout.PAGE_START);
+        panelLeft.add(recipientsList.getListScrolledPane(), BorderLayout.CENTER);
+        panelLeft.add(btnLoadMore, BorderLayout.PAGE_END);
+        container.add(panelLeft, BorderLayout.CENTER);
+        container.add(recipientsImagePanel.getContainer(), BorderLayout.LINE_END);
     }
 
     protected JPanel getContainer() {
@@ -87,6 +92,10 @@ public class RecipientsControls {
 
     public RecipientsCreateUpdateDialog getRecipientsCreateUpdateDialog() {
         return recipientsCreateUpdateDialog;
+    }
+
+    protected RecipientsImagePanel getRecipientsImagePanel() {
+        return recipientsImagePanel;
     }
 
 }

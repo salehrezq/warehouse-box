@@ -25,8 +25,11 @@ package warehousebox.panel.menus.recipients;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import warehousebox.db.CRUDRecipients;
@@ -47,6 +50,7 @@ public class RecipientsLogic {
     private int searchResultTotalRowsCount, incrementedReturnedRowsCount;
     private static int LIMIT, OFFSET;
     private String searchQueryImmutableCopy;
+    private RecipientsImagePanel recipientsImagePanel;
 
     public RecipientsLogic(RecipientsControls rc) {
         btnAdd = rc.getBtnAdd();
@@ -56,9 +60,11 @@ public class RecipientsLogic {
         btnAdd.addActionListener(new AddRecipientHandler());
         recipientsList = rc.getRecipientsList();
         btnLoadMore = rc.getBtnLoadMore();
+        recipientsImagePanel = rc.getRecipientsImagePanel();
 
         btnSearchQuery.addActionListener(new SearchHandler());
         btnLoadMore.addActionListener(new LoadMoreHandler());
+        recipientsList.getJList().addMouseListener(new ListDoubleClickHandler());
     }
 
     private class AddRecipientHandler implements ActionListener {
@@ -107,4 +113,16 @@ public class RecipientsLogic {
         }
     }
 
+    private class ListDoubleClickHandler extends MouseAdapter {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            JList list = (JList) e.getSource();
+            if (e.getClickCount() == 2) {
+                int index = list.locationToIndex(e.getPoint());
+                Recipient recipient = (Recipient) list.getModel().getElementAt(index);
+                recipientsImagePanel.setImagesOfSelectedItem(recipient.getId());
+            }
+        }
+    }
 }

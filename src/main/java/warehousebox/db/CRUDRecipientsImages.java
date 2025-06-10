@@ -74,6 +74,7 @@ public class CRUDRecipientsImages {
         try (Connection con = Connect.getConnection()) {
             PreparedStatement p;
             p = con.prepareStatement(sql);
+            p.setInt(1, recipientId);
             try (ResultSet result = p.executeQuery()) {
                 if (result.next()) {
                     recipientImage = new RecipientImage();
