@@ -30,8 +30,11 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import warehousebox.db.CRUDRecipients;
 import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.ResultLimitSizePreference;
@@ -46,11 +49,16 @@ public class RecipientsLogic {
     private JButton btnAdd, btnSearchQuery, btnLoadMore;
     private JTextField tfSearch;
     private RecipientsList recipientsList;
+    private JList listing;
     private RecipientsCreateUpdateDialog recipientsCreateUpdateDialog;
     private int searchResultTotalRowsCount, incrementedReturnedRowsCount;
     private static int LIMIT, OFFSET;
     private String searchQueryImmutableCopy;
     private RecipientsImagePanel recipientsImagePanel;
+    private final JPopupMenu popupMenu;
+    private final JMenuItem menuRecipientRemove;
+    private final JMenuItem menuRecipientEdit;
+    private PopupMenuHandler popupMenuHandler;
 
     public RecipientsLogic(RecipientsControls rc) {
         btnAdd = rc.getBtnAdd();
@@ -62,9 +70,22 @@ public class RecipientsLogic {
         btnLoadMore = rc.getBtnLoadMore();
         recipientsImagePanel = rc.getRecipientsImagePanel();
 
+        listing = recipientsList.getJList();
         btnSearchQuery.addActionListener(new SearchHandler());
         btnLoadMore.addActionListener(new LoadMoreHandler());
-        recipientsList.getJList().addMouseListener(new ListDoubleClickHandler());
+        listing.addMouseListener(new ListDoubleClickHandler());
+
+        popupMenuHandler = new PopupMenuHandler();
+        menuRecipientEdit = new JMenuItem("Edit");
+        menuRecipientEdit.addActionListener(popupMenuHandler);
+        menuRecipientRemove = new JMenuItem("Remove");
+        menuRecipientRemove.addActionListener(popupMenuHandler);
+
+        popupMenu = new JPopupMenu();
+        popupMenu.add(menuRecipientEdit);
+        popupMenu.addSeparator();
+        popupMenu.add(menuRecipientRemove);
+        listing.addMouseListener(new RightClickJListPopupHandler());
     }
 
     private class AddRecipientHandler implements ActionListener {
@@ -118,11 +139,30 @@ public class RecipientsLogic {
         @Override
         public void mouseClicked(MouseEvent e) {
             JList list = (JList) e.getSource();
-            if (e.getClickCount() == 2) {
+            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
                 int index = list.locationToIndex(e.getPoint());
                 Recipient recipient = (Recipient) list.getModel().getElementAt(index);
                 recipientsImagePanel.setImagesOfSelectedItem(recipient.getId());
             }
+        }
+    }
+
+    private class RightClickJListPopupHandler extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (SwingUtilities.isRightMouseButton(e)) {
+                listing.setSelectedIndex(listing.locationToIndex(e.getPoint()));
+                popupMenu.show(listing, e.getPoint().x, e.getPoint().y);
+            }
+        }
+    }
+
+    private class PopupMenuHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("PopupMenuHandler");
         }
     }
 }
