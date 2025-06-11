@@ -30,9 +30,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import warehousebox.db.CRUDRecipients;
@@ -55,9 +53,6 @@ public class RecipientsLogic {
     private static int LIMIT, OFFSET;
     private String searchQueryImmutableCopy;
     private RecipientsImagePanel recipientsImagePanel;
-    private final JPopupMenu popupMenu;
-    private final JMenuItem menuRecipientRemove;
-    private final JMenuItem menuRecipientEdit;
     private PopupMenuHandler popupMenuHandler;
 
     public RecipientsLogic(RecipientsControls rc) {
@@ -75,17 +70,8 @@ public class RecipientsLogic {
         btnLoadMore.addActionListener(new LoadMoreHandler());
         listing.addMouseListener(new ListDoubleClickHandler());
 
-        popupMenuHandler = new PopupMenuHandler();
-        menuRecipientEdit = new JMenuItem("Edit");
-        menuRecipientEdit.addActionListener(popupMenuHandler);
-        menuRecipientRemove = new JMenuItem("Remove");
-        menuRecipientRemove.addActionListener(popupMenuHandler);
-
-        popupMenu = new JPopupMenu();
-        popupMenu.add(menuRecipientEdit);
-        popupMenu.addSeparator();
-        popupMenu.add(menuRecipientRemove);
-        listing.addMouseListener(new RightClickJListPopupHandler());
+        popupMenuHandler = new PopupMenuHandler(rc);
+        popupMenuHandler.setUp();
     }
 
     private class AddRecipientHandler implements ActionListener {
@@ -144,25 +130,6 @@ public class RecipientsLogic {
                 Recipient recipient = (Recipient) list.getModel().getElementAt(index);
                 recipientsImagePanel.setImagesOfSelectedItem(recipient.getId());
             }
-        }
-    }
-
-    private class RightClickJListPopupHandler extends MouseAdapter {
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            if (SwingUtilities.isRightMouseButton(e)) {
-                listing.setSelectedIndex(listing.locationToIndex(e.getPoint()));
-                popupMenu.show(listing, e.getPoint().x, e.getPoint().y);
-            }
-        }
-    }
-
-    private class PopupMenuHandler implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("PopupMenuHandler");
         }
     }
 }

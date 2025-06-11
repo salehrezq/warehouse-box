@@ -25,6 +25,13 @@ package warehousebox.panel.menus.recipients;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+import warehousebox.panel.menus.recipients.form.RecipientsCreateUpdateDialog;
 
 /**
  *
@@ -32,8 +39,50 @@ import java.awt.event.ActionListener;
  */
 public class PopupMenuHandler implements ActionListener {
 
+    private RecipientsCreateUpdateDialog recipientsCreateUpdateDialog;
+    private final JPopupMenu popupMenu;
+    private final JMenuItem menuRecipientRemove;
+    private final JMenuItem menuRecipientEdit;
+    private JList listing;
+
+    public PopupMenuHandler(RecipientsControls rc) {
+        recipientsCreateUpdateDialog = rc.getRecipientsCreateUpdateDialog();
+        listing = rc.getRecipientsList().getJList();
+        listing.addMouseListener(new RightClickJListPopupHandler());
+
+        menuRecipientEdit = new JMenuItem("Edit");
+        menuRecipientRemove = new JMenuItem("Remove");
+
+        popupMenu = new JPopupMenu();
+        popupMenu.add(menuRecipientEdit);
+        popupMenu.addSeparator();
+        popupMenu.add(menuRecipientRemove);
+    }
+
+    public void setUp() {
+        menuRecipientEdit.addActionListener(this);
+        menuRecipientRemove.addActionListener(this);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        JMenuItem source = (JMenuItem) e.getSource();
+        if (source == menuRecipientEdit) {
+            System.out.println("Editing");
+        } else if (source == menuRecipientRemove) {
+            System.out.println("Removing");
+        }
     }
+
+    private class RightClickJListPopupHandler extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (SwingUtilities.isRightMouseButton(e)) {
+                listing.setSelectedIndex(listing.locationToIndex(e.getPoint()));
+                popupMenu.show(listing, e.getPoint().x, e.getPoint().y);
+            }
+        }
+    }
+
 }
