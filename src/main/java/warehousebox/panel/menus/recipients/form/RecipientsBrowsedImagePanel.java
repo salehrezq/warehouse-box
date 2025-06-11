@@ -42,7 +42,7 @@ import warehousebox.panel.menus.recipients.form.imagefilechooser.ImageSelectedLi
  *
  * @author Saleh
  */
-public class RecipientsImagePanel implements ImageSelectedListener {
+public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
 
     private JPanel container;
     private JLabel lbImage;
@@ -50,7 +50,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
     private final BufferedImage bufferedImagePlaceholder;
     private RecipientImage recipientImage;
 
-    public RecipientsImagePanel() {
+    public RecipientsBrowsedImagePanel() {
         container = new JPanel();
         lbImage = new JLabel();
         lbImage.setMinimumSize(new Dimension(128, 128));
@@ -76,7 +76,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
                     .size(128, 128)
                     .asBufferedImage();
         } catch (IOException ex) {
-            Logger.getLogger(RecipientsImagePanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RecipientsBrowsedImagePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -86,7 +86,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
         try {
             bufferedImage = ImageIO.read(file);
         } catch (IOException ex) {
-            Logger.getLogger(RecipientsImagePanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RecipientsBrowsedImagePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
         return bufferedImage;
     }
@@ -103,7 +103,7 @@ public class RecipientsImagePanel implements ImageSelectedListener {
             bufferedImage = ImageIO.read(url);
             return bufferedImage;
         } catch (IOException ex) {
-            Logger.getLogger(RecipientsImagePanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RecipientsBrowsedImagePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
         return bufferedImage;
     }

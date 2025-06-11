@@ -42,7 +42,7 @@ public class RecipientsFormControls {
     private JPanel container;
     private JLabel lbName;
     private JTextField tfName;
-    private RecipientsImagePanel recipientsImagePanel;
+    private RecipientsBrowsedImagePanel recipientsBrowsedImagePanel;
     private JButton btnBrowse, btnSubmit;
     private JLabel btnRemove;
     private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
@@ -53,7 +53,7 @@ public class RecipientsFormControls {
         container.setLayout(new MigLayout("center center"));
         lbName = new JLabel("Name");
         tfName = new JTextField(30);
-        recipientsImagePanel = new RecipientsImagePanel();
+        recipientsBrowsedImagePanel = new RecipientsBrowsedImagePanel();
         btnBrowse = new JButton("Browse...");
         imageIconRemoveNormal = new ImageIcon(getClass().getResource("/images/remove-icon/remove-normal.png"));
         imageIconRemoveHover = new ImageIcon(getClass().getResource("/images/remove-icon/remove-hovered.png"));
@@ -69,7 +69,7 @@ public class RecipientsFormControls {
         boxNameField.add(scrollBarThinTfName);
         container.add(lbName);
         container.add(boxNameField, "wrap 15");
-        container.add(recipientsImagePanel.getContainer(), "span 2, center, wrap 5");
+        container.add(recipientsBrowsedImagePanel.getContainer(), "span 2, center, wrap 5");
         container.add(btnBrowse, "span 2, center, split 2");
         container.add(btnRemove, "center, wrap 10");
         container.add(btnSubmit, "span 2, center");
@@ -88,8 +88,8 @@ public class RecipientsFormControls {
         return btnBrowse;
     }
 
-    protected RecipientsImagePanel getRecipientsImagePanel() {
-        return recipientsImagePanel;
+    protected RecipientsBrowsedImagePanel getRecipientsImagePanel() {
+        return recipientsBrowsedImagePanel;
     }
 
     protected JLabel getBtnRemove() {

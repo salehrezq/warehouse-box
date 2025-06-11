@@ -51,7 +51,7 @@ public class RecipientsFormLogic {
     private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
     private JLabel btnRemove;
     private IMGFileChooser iMGFileChooser;
-    private RecipientsImagePanel recipientsImagePanel;
+    private RecipientsBrowsedImagePanel recipientsImagePanel;
     private List<RecipientCRUDListener> recipientCRUDListeners;
 
     public RecipientsFormLogic(RecipientsFormControls rc) {
