@@ -80,7 +80,7 @@ public class RecipientsFormControls {
         return container;
     }
 
-    protected JTextField getTfName() {
+    public JTextField getTfName() {
         return tfName;
     }
 
@@ -88,7 +88,7 @@ public class RecipientsFormControls {
         return btnBrowse;
     }
 
-    protected RecipientsBrowsedImagePanel getRecipientsBrowsedImagePanel() {
+    public RecipientsBrowsedImagePanel getRecipientsBrowsedImagePanel() {
         return recipientsBrowsedImagePanel;
     }
 
