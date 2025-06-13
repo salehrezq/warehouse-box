@@ -58,4 +58,7 @@ public class RecipientsCreateUpdateDialog extends JDialog implements RecipientCR
         recipientsFormLogic.addRecipientCRUDListener(this);
     }
 
+    public RecipientsFormControls getRecipientsFormControls() {
+        return recipientsFormControls;
+    }
 }
