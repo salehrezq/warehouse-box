@@ -31,7 +31,11 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+import warehousebox.db.CRUDRecipientsImages;
+import warehousebox.db.model.Recipient;
+import warehousebox.db.model.RecipientImage;
 import warehousebox.panel.menus.recipients.form.RecipientsCreateUpdateDialog;
+import warehousebox.panel.menus.recipients.form.RecipientsFormControls;
 
 /**
  *
@@ -44,11 +48,14 @@ public class PopupMenuHandler implements ActionListener {
     private final JMenuItem menuRecipientRemove;
     private final JMenuItem menuRecipientEdit;
     private JList listing;
+    private RecipientsFormControls recipientsFormControls;
+    private Recipient recipient;
 
     public PopupMenuHandler(RecipientsControls rc) {
         recipientsCreateUpdateDialog = rc.getRecipientsCreateUpdateDialog();
         listing = rc.getRecipientsList().getJList();
         listing.addMouseListener(new RightClickJListPopupHandler());
+        recipientsFormControls = recipientsCreateUpdateDialog.getRecipientsFormControls();
 
         menuRecipientEdit = new JMenuItem("Edit");
         menuRecipientRemove = new JMenuItem("Remove");
@@ -67,8 +74,14 @@ public class PopupMenuHandler implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JMenuItem source = (JMenuItem) e.getSource();
+        recipient = (Recipient) listing.getSelectedValue();
+        recipientsFormControls.getTfName().setText(recipient.getName());
+        RecipientImage recipientImage = CRUDRecipientsImages.getImageByRecipientId(recipient.getId());
+        if (recipientImage != null) {
+            recipientsFormControls.getRecipientsBrowsedImagePanel().imageLoaded(recipientImage);
+        }
         if (source == menuRecipientEdit) {
-            System.out.println("Editing");
+            recipientsCreateUpdateDialog.setVisible(true);
         } else if (source == menuRecipientRemove) {
             System.out.println("Removing");
         }

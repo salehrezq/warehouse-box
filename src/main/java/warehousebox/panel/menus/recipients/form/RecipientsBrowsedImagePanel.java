@@ -108,6 +108,18 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
         return bufferedImage;
     }
 
+    public void imageLoaded(RecipientImage recipientImage) {
+        this.recipientImage = recipientImage;
+        bufferedImageThumbnailed = this.recipientImage.getBufferedImage();
+        
+        if (bufferedImageThumbnailed == null) {
+            lbImage.setIcon(null);
+            return;
+        }
+        this.recipientImage.setBufferedImageThumbnailed(bufferedImageThumbnailed);
+        lbImage.setIcon(new ImageIcon(bufferedImageThumbnailed));
+    }
+
     @Override
     public void imageSelected(RecipientImage recipientImage) {
         this.recipientImage = recipientImage;
