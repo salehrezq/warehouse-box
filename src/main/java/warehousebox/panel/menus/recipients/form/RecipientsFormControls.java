@@ -88,7 +88,7 @@ public class RecipientsFormControls {
         return btnBrowse;
     }
 
-    protected RecipientsBrowsedImagePanel getRecipientsImagePanel() {
+    protected RecipientsBrowsedImagePanel getRecipientsBrowsedImagePanel() {
         return recipientsBrowsedImagePanel;
     }
 

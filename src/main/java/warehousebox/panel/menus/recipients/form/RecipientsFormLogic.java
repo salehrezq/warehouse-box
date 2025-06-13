@@ -60,7 +60,7 @@ public class RecipientsFormLogic {
         imageIconRemoveHover = rc.getImageIconRemoveHover();
         imageIconRemovePress = rc.getImageIconRemovePress();
         btnRemove = rc.getBtnRemove();
-        recipientsImagePanel = rc.getRecipientsImagePanel();
+        recipientsImagePanel = rc.getRecipientsBrowsedImagePanel();
         btnSubmit = rc.getBtnSubmit();
         tfName = rc.getTfName();
 
