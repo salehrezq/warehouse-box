@@ -39,6 +39,7 @@ import warehousebox.db.CRUDRecipientsImages;
 import warehousebox.db.model.Recipient;
 import warehousebox.db.model.RecipientImage;
 import warehousebox.panel.menus.recipients.form.imagefilechooser.IMGFileChooser;
+import warehousebox.utility.filemanage.ImageFileManager;
 
 /**
  *
@@ -51,23 +52,26 @@ public class RecipientsFormLogic {
     private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
     private JLabel btnRemove;
     private IMGFileChooser iMGFileChooser;
-    private RecipientsBrowsedImagePanel recipientsImagePanel;
+    private RecipientsBrowsedImagePanel recipientsBrowsedImagePanel;
     private List<RecipientCRUDListener> recipientCRUDListeners;
+    private RecipientsFormControls recipientsFormControls;
+    private String recipientNameOld;
 
     public RecipientsFormLogic(RecipientsFormControls rc) {
+        recipientsFormControls = rc;
         btnBrowse = rc.getBtnBrowse();
         imageIconRemoveNormal = rc.getImageIconRemoveNormal();
         imageIconRemoveHover = rc.getImageIconRemoveHover();
         imageIconRemovePress = rc.getImageIconRemovePress();
         btnRemove = rc.getBtnRemove();
-        recipientsImagePanel = rc.getRecipientsBrowsedImagePanel();
+        recipientsBrowsedImagePanel = rc.getRecipientsBrowsedImagePanel();
         btnSubmit = rc.getBtnSubmit();
         tfName = rc.getTfName();
 
         btnRemove.addMouseListener(new BtnRemoveHandler());
         recipientCRUDListeners = new ArrayList<>();
         iMGFileChooser = new IMGFileChooser();
-        iMGFileChooser.addImageSelectedListener(recipientsImagePanel);
+        iMGFileChooser.addImageSelectedListener(recipientsBrowsedImagePanel);
         btnBrowse.addActionListener(iMGFileChooser);
         btnSubmit.addActionListener(new SubmitHandler());
     }
@@ -82,9 +86,23 @@ public class RecipientsFormLogic {
         });
     }
 
+    public void notifyRecipientUpdated(Recipient recipient) {
+        this.recipientCRUDListeners.forEach((recipientCRUDListener) -> {
+            recipientCRUDListener.updated(recipient);
+        });
+    }
+
+    public void notifyNoCRUD() {
+        this.recipientCRUDListeners.forEach((recipientCRUDListener) -> {
+            recipientCRUDListener.noCRUD();
+        });
+    }
+
     private void resetFields() {
+        recipientsFormControls.setRecipient(null);
         tfName.setText("");
-        recipientsImagePanel.removeSelectedImage();
+        recipientsBrowsedImagePanel.removeSelectedImage();
+        recipientsBrowsedImagePanel.setRecipientImage(null);
     }
 
     private class SubmitHandler implements ActionListener {
@@ -97,27 +115,70 @@ public class RecipientsFormLogic {
                         "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            Recipient recipient = new Recipient();
-            recipient.setName(tfName.getText());
-            if (CRUDRecipients.isExist(recipient)) {
+            if (tfName.getText().length() > 255) {
                 JOptionPane.showMessageDialog(null,
-                        "The recipient is already exist!",
-                        "Duplicate entry", JOptionPane.ERROR_MESSAGE);
-            } else {
-                recipient = CRUDRecipients.create(recipient);
-                if (recipient != null) {
-                    RecipientImage recipientImage = recipientsImagePanel.getRecipientImage();
-                    if (recipientImage != null) {
-                        CRUDRecipientsImages.create(recipientImage, recipient.getId());
+                        "Recipient name exeeds the limit of 255 charachters",
+                        "Exceeded the limit",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Recipient recipient = recipientsFormControls.getRecipient();
+            if (recipient != null) {
+                // Update operation
+                recipientNameOld = recipient.getName();
+                String recipientNameCurrent = tfName.getText();
+                boolean isCurrentNameDifferentFromOldName = !recipientNameOld.equals(recipientNameCurrent);
+                boolean isRecipientImageChanged = recipientsBrowsedImagePanel.getImagePresence() && recipientsBrowsedImagePanel.getImageSelected();
+                boolean isRecipientImageUpdated = false;
+                if (!isCurrentNameDifferentFromOldName && !isRecipientImageChanged) {
+                    notifyNoCRUD();
+                } else {
+                    if (isCurrentNameDifferentFromOldName) {
+                        recipient.setName(tfName.getText());
+                        CRUDRecipients.update(recipient);
                     }
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Recipient created successfully. You can find it on a next search",
-                            "Created",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    if (isRecipientImageChanged) {
+                        if (recipientsBrowsedImagePanel.getRecipientImageFromDB() != null) {
+                            CRUDRecipientsImages.delete(recipientsBrowsedImagePanel.getRecipientImageFromDB());
+                            ImageFileManager.delete(recipientsBrowsedImagePanel
+                                    .getRecipientImageFromDB()
+                                    .getImageName(),
+                                    CRUDRecipientsImages.DIRECTORYNAME);
+                        }
+                        isRecipientImageUpdated = CRUDRecipientsImages.create(recipientsBrowsedImagePanel.getRecipientImage(), recipient.getId()) > 0;
+                        if (!isRecipientImageUpdated) {
+                            JOptionPane.showMessageDialog(null,
+                                    "The recipient <<image>> cannot be updated due to some unkown failur!",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
                 }
-                notifyRecipientCreated(recipient);
+                notifyRecipientUpdated(recipient);
                 resetFields();
+            } else {
+                // Create operation
+                recipient = new Recipient();
+                recipient.setName(tfName.getText());
+                if (CRUDRecipients.isExist(recipient)) {
+                    JOptionPane.showMessageDialog(null,
+                            "The recipient is already exist!",
+                            "Duplicate entry", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    recipient = CRUDRecipients.create(recipient);
+                    if (recipient != null) {
+                        RecipientImage recipientImage = recipientsBrowsedImagePanel.getRecipientImage();
+                        if (recipientImage != null) {
+                            CRUDRecipientsImages.create(recipientImage, recipient.getId());
+                        }
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Recipient created successfully. You can find it on a next search",
+                                "Created",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    notifyRecipientCreated(recipient);
+                    resetFields();
+                }
             }
         }
     }
@@ -128,7 +189,7 @@ public class RecipientsFormLogic {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            recipientsImagePanel.removeSelectedImage();
+            recipientsBrowsedImagePanel.removeSelectedImage();
         }
 
         @Override

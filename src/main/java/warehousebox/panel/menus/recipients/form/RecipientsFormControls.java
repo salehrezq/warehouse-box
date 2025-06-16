@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
+import warehousebox.db.model.Recipient;
 import warehousebox.utility.scrollbarthin.ScrollBarThin;
 
 /**
@@ -47,6 +48,7 @@ public class RecipientsFormControls {
     private JLabel btnRemove;
     private ImageIcon imageIconRemoveNormal, imageIconRemoveHover, imageIconRemovePress;
     private ScrollBarThin scrollBarThinTfName;
+    private Recipient recipient;
 
     public RecipientsFormControls() {
         container = new JPanel();
@@ -110,6 +112,14 @@ public class RecipientsFormControls {
 
     protected JButton getBtnSubmit() {
         return btnSubmit;
+    }
+
+    public void setRecipient(Recipient recipient) {
+        this.recipient = recipient;
+    }
+
+    public Recipient getRecipient() {
+        return recipient;
     }
 
 }

@@ -46,12 +46,17 @@ public class RecipientsCreateUpdateDialog extends JDialog implements RecipientCR
 
     @Override
     public void created(Recipient recipient) {
-        this.setVisible(false);
+        this.dispose();
     }
 
     @Override
     public void updated(Recipient recipient) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.dispose();
+    }
+
+    @Override
+    public void noCRUD() {
+        this.dispose();
     }
 
     public void addThisToRecipientCRUDListener() {

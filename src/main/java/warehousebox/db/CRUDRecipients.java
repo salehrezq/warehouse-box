@@ -165,4 +165,20 @@ public class CRUDRecipients {
         }
         return recipients;
     }
+
+    public static boolean update(Recipient recipient) {
+        int update = 0;
+
+        String sql = "UPDATE recipients SET name = ? WHERE id =?";
+
+        try (Connection con = Connect.getConnection()) {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setString(1, recipient.getName());
+            p.setInt(2, recipient.getId());
+            update = p.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDRecipients.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return (update > 0);
+    }
 }

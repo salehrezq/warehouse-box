@@ -45,6 +45,19 @@ public class RecipientImage {
     private BufferedImage bufferedImageThumbnailed;
     private File imageFile;
 
+    public RecipientImage() {
+
+    }
+
+    public RecipientImage(RecipientImage recipientImage) {
+        this.id = recipientImage.getId();
+        this.recipientId = recipientImage.getRecipientId();
+        this.imageName = recipientImage.getImageName();
+        this.bufferedImage = recipientImage.getBufferedImage();
+        this.bufferedImageThumbnailed = recipientImage.getBufferedImageThumbnailed();
+        this.imageFile = recipientImage.getImageFile();
+    }
+
     public int getId() {
         return id;
     }

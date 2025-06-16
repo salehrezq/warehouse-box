@@ -89,10 +89,6 @@ public class CRUDRecipientsImages {
         return recipientImage;
     }
 
-    public static int update(RecipientImage recipientImage) {
-        return 0;
-    }
-
     public static int delete(RecipientImage recipientImage) {
         int delete = 0;
         String sql = "DELETE FROM recipients_images WHERE id = ?";

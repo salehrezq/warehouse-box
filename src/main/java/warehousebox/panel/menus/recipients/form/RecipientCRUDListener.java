@@ -34,4 +34,6 @@ public interface RecipientCRUDListener {
     public void created(Recipient recipient);
 
     public void updated(Recipient recipient);
+
+    public void noCRUD();
 }
