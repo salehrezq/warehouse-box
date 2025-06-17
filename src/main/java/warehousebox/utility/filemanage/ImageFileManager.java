@@ -119,7 +119,7 @@ public class ImageFileManager {
         return new UUID(most64SigBits, least64SigBits);
     }
 
-    public static BufferedImage loadImage(String imageName, String directoryName) {
+    public static BufferedImage loadImageToBufferedImage(String imageName, String directoryName) {
         String path = appImagesPath + slash + directoryName;
         BufferedImage image = null;
         try {

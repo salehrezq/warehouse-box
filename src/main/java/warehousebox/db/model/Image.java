@@ -74,7 +74,7 @@ public class Image {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
-        this.setBufferedImage(ImageFileManager.loadImage(imageName, CRUDImages.DIRECTORYNAME));
+        this.setBufferedImage(ImageFileManager.loadImageToBufferedImage(imageName, CRUDImages.DIRECTORYNAME));
     }
 
     public int getPosition() {
