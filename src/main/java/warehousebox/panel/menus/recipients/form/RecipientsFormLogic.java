@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
@@ -166,9 +167,17 @@ public class RecipientsFormLogic {
                 } else {
                     recipient = CRUDRecipients.create(recipient);
                     if (recipient != null) {
-                        RecipientImage recipientImage = recipientsBrowsedImagePanel.getRecipientImage();
-                        if (recipientImage != null) {
-                            CRUDRecipientsImages.create(recipientImage, recipient.getId());
+                        RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
+                        if (recipientImageSelected != null) {
+                            String newImageName = ImageFileManager.generateImageName(recipientImageSelected.getImageFile());
+                            recipientImageSelected.setImageName(newImageName);
+                            // Copy image to app directory
+                            BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
+                            ImageFileManager.saveBufferedImageToFileSystem(
+                                    bufferedImage,
+                                    newImageName,
+                                    CRUDRecipientsImages.DIRECTORYNAME);
+                            CRUDRecipientsImages.create(recipientImageSelected, recipient.getId());
                         }
                         JOptionPane.showMessageDialog(
                                 null,

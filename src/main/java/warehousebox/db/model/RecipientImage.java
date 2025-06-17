@@ -80,7 +80,6 @@ public class RecipientImage {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
-        this.setBufferedImage(ImageFileManager.loadImage(imageName, CRUDRecipientsImages.DIRECTORYNAME));
     }
 
     public File getImageFile() {
@@ -97,6 +96,12 @@ public class RecipientImage {
 
     public void setBufferedImage(BufferedImage bufferedImage) {
         this.bufferedImage = bufferedImage;
+    }
+
+    public void setBufferedImageFromImageName() {
+        if (this.imageName != null) {
+            this.bufferedImage = ImageFileManager.loadImageToBufferedImage(this.getImageName(), CRUDRecipientsImages.DIRECTORYNAME);
+        }
     }
 
     public BufferedImage getBufferedImageThumbnailed() {

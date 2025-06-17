@@ -23,7 +23,6 @@
  */
 package warehousebox.db;
 
-import java.awt.image.BufferedImage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,7 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import warehousebox.db.model.Recipient;
 import warehousebox.db.model.RecipientImage;
-import warehousebox.utility.filemanage.ImageFileManager;
 
 /**
  *
@@ -46,21 +44,10 @@ public class CRUDRecipientsImages {
         int insert = 0;
         String sql = "INSERT INTO recipients_images (recipient_id, name) VALUES (?, ?)";
         try (Connection con = Connect.getConnection()) {
-            String newImageName = "";
-            newImageName = ImageFileManager.generateImageName(image.getImageFile());
-
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, recipientId);
-            pstmt.setString(2, newImageName);
+            pstmt.setString(2, image.getImageName());
             insert = pstmt.executeUpdate();
-            if (insert > 0) {
-                // Copy image to app directory
-                BufferedImage bufferedImage = image.getBufferedImageThumbnailed();
-                ImageFileManager.saveBufferedImageToFileSystem(
-                        bufferedImage,
-                        newImageName,
-                        DIRECTORYNAME);
-            }
         } catch (SQLException ex) {
             Logger.getLogger(CRUDRecipientsImages.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -81,6 +68,7 @@ public class CRUDRecipientsImages {
                     recipientImage.setId(result.getInt("id"));
                     recipientImage.setRecipientId(result.getInt("recipient_id"));
                     recipientImage.setImageName(result.getString("name"));
+                    recipientImage.setBufferedImageFromImageName();
                 }
             }
         } catch (SQLException ex) {
