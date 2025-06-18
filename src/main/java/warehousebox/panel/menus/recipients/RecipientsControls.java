@@ -52,6 +52,7 @@ public class RecipientsControls {
         btnAdd = new JButton("Add");
         recipientsCreateUpdateDialog = new RecipientsCreateUpdateDialog(owner, "Create", true);
         recipientsCreateUpdateDialog.addThisToRecipientCRUDListener();
+        recipientsCreateUpdateDialog.getRecipientsFormLogic().addRecipientCRUDListener(recipientsImagePanel);
         btnSearchQuery = new JButton("Get all");
         btnLoadMore = new JButton("Load more");
         tfSearch = new JTextField(20);

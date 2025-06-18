@@ -66,4 +66,8 @@ public class RecipientsCreateUpdateDialog extends JDialog implements RecipientCR
     public RecipientsFormControls getRecipientsFormControls() {
         return recipientsFormControls;
     }
+
+    public RecipientsFormLogic getRecipientsFormLogic() {
+        return recipientsFormLogic;
+    }
 }
