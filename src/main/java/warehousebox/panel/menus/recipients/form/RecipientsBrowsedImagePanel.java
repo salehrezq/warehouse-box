@@ -54,13 +54,13 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
      * Image presence either loaded from db or selected through browsing; both
      * is true state, otherwise it is false state
      */
-    private boolean imagePresence;
+    private boolean isImagePresence;
     /**
      * When image is selected through browsing it is true state, and when image
      * loaded from db, or removed where placeholder image is placed instead it
      * is false state
      */
-    private boolean imageSelected;
+    private boolean isImageSelected;
 
     public RecipientsBrowsedImagePanel() {
         container = new JPanel();
@@ -71,8 +71,8 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
         bufferedImagePlaceholder
                 = thumbnail(readImageFromResource(getClass().getResource("/images/avatar-placeholder/avatar.png")));
         lbImage.setIcon(new ImageIcon(bufferedImagePlaceholder));
-        imagePresence = false;
-        imageSelected = false;
+        isImagePresence = false;
+        isImageSelected = false;
         container.add(lbImage);
     }
 
@@ -92,12 +92,12 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
         return recipientImageFromDB;
     }
 
-    protected boolean getImagePresence() {
-        return imagePresence;
+    public boolean isImagePresence() {
+        return isImagePresence;
     }
 
-    protected boolean getImageSelected() {
-        return imageSelected;
+    public boolean isImageSelected() {
+        return isImageSelected;
     }
 
     private BufferedImage thumbnail(BufferedImage image) {
@@ -125,8 +125,8 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
         recipientImage = null;
         bufferedImageThumbnailed = null;
         lbImage.setIcon(new ImageIcon(bufferedImagePlaceholder));
-        imagePresence = false;
-        imageSelected = false;
+        isImagePresence = false;
+        isImageSelected = false;
     }
 
     private BufferedImage readImageFromResource(URL url) {
@@ -149,8 +149,8 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
             lbImage.setIcon(null);
             return;
         }
-        imagePresence = true;
-        imageSelected = false;
+        isImagePresence = true;
+        isImageSelected = false;
         this.recipientImage.setBufferedImageThumbnailed(bufferedImageThumbnailed);
         lbImage.setIcon(new ImageIcon(bufferedImageThumbnailed));
     }
@@ -165,8 +165,8 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
             lbImage.setIcon(null);
             return;
         }
-        imagePresence = true;
-        imageSelected = true;
+        isImagePresence = true;
+        isImageSelected = true;
         this.recipientImage.setBufferedImageThumbnailed(bufferedImageThumbnailed);
         lbImage.setIcon(new ImageIcon(bufferedImageThumbnailed));
     }

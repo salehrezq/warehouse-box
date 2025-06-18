@@ -129,7 +129,7 @@ public class RecipientsFormLogic {
                 recipientNameOld = recipient.getName();
                 String recipientNameCurrent = tfName.getText();
                 boolean isCurrentNameDifferentFromOldName = !recipientNameOld.equals(recipientNameCurrent);
-                boolean isRecipientImageChanged = recipientsBrowsedImagePanel.getImagePresence() && recipientsBrowsedImagePanel.getImageSelected();
+                boolean isRecipientImageChanged = recipientsBrowsedImagePanel.isImagePresence() && recipientsBrowsedImagePanel.isImageSelected();
                 boolean isRecipientImageUpdated = false;
                 if (!isCurrentNameDifferentFromOldName && !isRecipientImageChanged) {
                     notifyNoCRUD();
