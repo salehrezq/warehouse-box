@@ -128,7 +128,7 @@ public class RecipientsLogic {
             if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
                 int index = list.locationToIndex(e.getPoint());
                 Recipient recipient = (Recipient) list.getModel().getElementAt(index);
-                recipientsImagePanel.setImagesOfSelectedItem(recipient.getId());
+                recipientsImagePanel.setImageOfSelectedItem(recipient.getId());
             }
         }
     }

@@ -65,7 +65,7 @@ public class RecipientsImagePanel {
         imagePane.setImage(null);
     }
 
-    protected void setImagesOfSelectedItem(int recipientId) {
+    protected void setImageOfSelectedItem(int recipientId) {
         imagePane.setImage(null);
         /**
          * Cancel swingWorker. This is the case that a new item row is selected,
@@ -134,7 +134,7 @@ public class RecipientsImagePanel {
 
 //    @Override
 //    public void selectedRowId(int rowId) {
-//        setImagesOfSelectedItem(rowId);
+//        setImageOfSelectedItem(rowId);
 //    }
 //
 //    @Override
@@ -149,6 +149,6 @@ public class RecipientsImagePanel {
 //
 //    @Override
 //    public void updated(Item updatedItem) {
-//        setImagesOfSelectedItem(updatedItem.getId());
+//        setImageOfSelectedItem(updatedItem.getId());
 //    }
 }
