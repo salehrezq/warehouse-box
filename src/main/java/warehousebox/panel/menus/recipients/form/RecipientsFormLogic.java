@@ -146,7 +146,18 @@ public class RecipientsFormLogic {
                                     .getImageName(),
                                     CRUDRecipientsImages.DIRECTORYNAME);
                         }
-                        isRecipientImageUpdated = CRUDRecipientsImages.create(recipientsBrowsedImagePanel.getRecipientImage(), recipient.getId()) > 0;
+                        RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
+                        if (recipientImageSelected != null) {
+                            String newImageName = ImageFileManager.generateImageName(recipientImageSelected.getImageFile());
+                            recipientImageSelected.setImageName(newImageName);
+                            // Copy image to app directory
+                            BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
+                            ImageFileManager.saveBufferedImageToFileSystem(
+                                    bufferedImage,
+                                    newImageName,
+                                    CRUDRecipientsImages.DIRECTORYNAME);
+                            isRecipientImageUpdated = CRUDRecipientsImages.create(recipientImageSelected, recipient.getId()) > 0;
+                        }
                         if (!isRecipientImageUpdated) {
                             JOptionPane.showMessageDialog(null,
                                     "The recipient <<image>> cannot be updated due to some unkown failur!",
