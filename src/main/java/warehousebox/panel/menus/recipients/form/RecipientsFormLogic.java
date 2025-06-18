@@ -130,7 +130,7 @@ public class RecipientsFormLogic {
                 String recipientNameCurrent = tfName.getText();
                 boolean isCurrentNameDifferentFromOldName = !recipientNameOld.equals(recipientNameCurrent);
                 boolean isRecipientImageChanged = recipientsBrowsedImagePanel.isImagePresence() && recipientsBrowsedImagePanel.isImageSelected();
-                boolean isRecipientImageUpdated = false;
+                String recipientImageNameOld = "";
                 if (!isCurrentNameDifferentFromOldName && !isRecipientImageChanged) {
                     notifyNoCRUD();
                 } else {
@@ -139,29 +139,27 @@ public class RecipientsFormLogic {
                         CRUDRecipients.update(recipient);
                     }
                     if (isRecipientImageChanged) {
-                        if (recipientsBrowsedImagePanel.getRecipientImageFromDB() != null) {
-                            CRUDRecipientsImages.delete(recipientsBrowsedImagePanel.getRecipientImageFromDB());
+                        RecipientImage recipientImageFromDB = recipientsBrowsedImagePanel.getRecipientImageFromDB();
+                        if (recipientImageFromDB != null) {
+                            // Get name of current loaded image
+                            recipientImageNameOld = recipientImageFromDB.getImageName();
+                            // Delete the current image from file system
                             ImageFileManager.delete(recipientsBrowsedImagePanel
                                     .getRecipientImageFromDB()
                                     .getImageName(),
                                     CRUDRecipientsImages.DIRECTORYNAME);
                         }
+                        // Get selected image through browsing
                         RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
                         if (recipientImageSelected != null) {
-                            String newImageName = ImageFileManager.generateImageName(recipientImageSelected.getImageFile());
-                            recipientImageSelected.setImageName(newImageName);
-                            // Copy image to app directory
+                            // Set name of the selected image to be the same as the old one
+                            recipientImageSelected.setImageName(recipientImageNameOld);
+                            // Copy the selected image to the app directory using the same old image name
                             BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
                             ImageFileManager.saveBufferedImageToFileSystem(
                                     bufferedImage,
-                                    newImageName,
+                                    recipientImageNameOld,
                                     CRUDRecipientsImages.DIRECTORYNAME);
-                            isRecipientImageUpdated = CRUDRecipientsImages.create(recipientImageSelected, recipient.getId()) > 0;
-                        }
-                        if (!isRecipientImageUpdated) {
-                            JOptionPane.showMessageDialog(null,
-                                    "The recipient <<image>> cannot be updated due to some unkown failur!",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
