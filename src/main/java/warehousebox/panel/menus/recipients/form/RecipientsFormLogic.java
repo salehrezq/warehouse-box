@@ -162,8 +162,8 @@ public class RecipientsFormLogic {
                                     CRUDRecipientsImages.DIRECTORYNAME);
                         }
                     }
+                    notifyRecipientUpdated(recipient);
                 }
-                notifyRecipientUpdated(recipient);
                 resetFields();
             } else {
                 // Create operation
