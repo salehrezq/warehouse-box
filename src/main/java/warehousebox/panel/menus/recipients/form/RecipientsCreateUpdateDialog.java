@@ -24,6 +24,8 @@
 package warehousebox.panel.menus.recipients.form;
 
 import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
 import warehousebox.db.model.Recipient;
 
@@ -41,6 +43,7 @@ public class RecipientsCreateUpdateDialog extends JDialog implements RecipientCR
         recipientsFormControls = new RecipientsFormControls();
         recipientsFormLogic = new RecipientsFormLogic(recipientsFormControls);
         add(recipientsFormControls.getContainer());
+        addWindowListener(new ClosingWindowHandler());
         setSize(400, 600);
     }
 
@@ -69,5 +72,13 @@ public class RecipientsCreateUpdateDialog extends JDialog implements RecipientCR
 
     public RecipientsFormLogic getRecipientsFormLogic() {
         return recipientsFormLogic;
+    }
+
+    private class ClosingWindowHandler extends WindowAdapter {
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+            recipientsFormLogic.resetFields();
+        }
     }
 }

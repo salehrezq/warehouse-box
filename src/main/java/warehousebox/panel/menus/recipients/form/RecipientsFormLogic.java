@@ -99,7 +99,7 @@ public class RecipientsFormLogic {
         });
     }
 
-    private void resetFields() {
+    protected void resetFields() {
         recipientsFormControls.setRecipient(null);
         tfName.setText("");
         recipientsBrowsedImagePanel.removeSelectedImage();
