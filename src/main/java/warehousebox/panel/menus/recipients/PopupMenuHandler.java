@@ -79,9 +79,7 @@ public class PopupMenuHandler implements ActionListener {
             recipientsFormControls.setRecipient(recipient);
             recipientsFormControls.getTfName().setText(recipient.getName());
             RecipientImage recipientImage = CRUDRecipientsImages.getImageByRecipientId(recipient.getId());
-            if (recipientImage != null) {
-                recipientsFormControls.getRecipientsBrowsedImagePanel().imageLoaded(recipientImage);
-            }
+            recipientsFormControls.getRecipientsBrowsedImagePanel().imageLoaded(recipientImage);
             recipientsCreateUpdateDialog.setVisible(true);
         } else if (source == menuRecipientRemove) {
             System.out.println("Removing");

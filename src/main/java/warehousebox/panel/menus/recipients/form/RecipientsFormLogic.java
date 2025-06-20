@@ -103,6 +103,7 @@ public class RecipientsFormLogic {
         recipientsFormControls.setRecipient(null);
         tfName.setText("");
         recipientsBrowsedImagePanel.removeSelectedImage();
+        recipientsBrowsedImagePanel.resetBooleans();
         recipientsBrowsedImagePanel.setRecipientImage(null);
     }
 
@@ -129,16 +130,45 @@ public class RecipientsFormLogic {
                 recipientNameOld = recipient.getName();
                 String recipientNameCurrent = tfName.getText();
                 boolean isCurrentNameDifferentFromOldName = !recipientNameOld.equals(recipientNameCurrent);
-                boolean isRecipientImageChanged = recipientsBrowsedImagePanel.isImagePresence() && recipientsBrowsedImagePanel.isImageSelected();
+                boolean noLoadedNoSelectedImage = !recipientsBrowsedImagePanel.isImageLoaded() && !recipientsBrowsedImagePanel.isImageSelected();
                 String recipientImageNameOld = "";
-                if (!isCurrentNameDifferentFromOldName && !isRecipientImageChanged) {
+                if (!isCurrentNameDifferentFromOldName && noLoadedNoSelectedImage) {
                     notifyNoCRUD();
                 } else {
                     if (isCurrentNameDifferentFromOldName) {
                         recipient.setName(tfName.getText());
                         CRUDRecipients.update(recipient);
                     }
-                    if (isRecipientImageChanged) {
+                    if (recipientsBrowsedImagePanel.isImageLoaded()
+                            && !recipientsBrowsedImagePanel.isImageRemoved()
+                            && !recipientsBrowsedImagePanel.isImageSelected()) {
+                        System.out.println("case image loaded then no change");
+                        // case image loaded then no change
+                        notifyNoCRUD();
+                    } else if (recipientsBrowsedImagePanel.isImageLoaded()
+                            && recipientsBrowsedImagePanel.isImageRemoved()) {
+                        // case image loaded then deleted, no another selected
+                        System.out.println("case image loaded then deleted, no another selected");
+                        RecipientImage recipientImageFromDB = recipientsBrowsedImagePanel.getRecipientImageFromDB();
+                        if (recipientImageFromDB != null) {
+                            // Delete RecipientImage from database
+                            if (CRUDRecipientsImages.delete(recipientImageFromDB) > 0) {
+                                // Delete the current image from file system
+                                ImageFileManager.delete(recipientsBrowsedImagePanel
+                                        .getRecipientImageFromDB()
+                                        .getImageName(),
+                                        CRUDRecipientsImages.DIRECTORYNAME);
+                            } else {
+                                JOptionPane.showMessageDialog(null,
+                                        "The RecipientImage cannot be deleted due to some unknown issue!",
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    } else if (recipientsBrowsedImagePanel.isImageLoaded()
+                            && recipientsBrowsedImagePanel.isImageSelected()) {
+                        // case image loaded then another selected
+                        System.out.println("case image loaded then another selected");
+                        // Get loaded image on recipient select
                         RecipientImage recipientImageFromDB = recipientsBrowsedImagePanel.getRecipientImageFromDB();
                         if (recipientImageFromDB != null) {
                             // Get name of current loaded image
@@ -160,6 +190,23 @@ public class RecipientsFormLogic {
                                     bufferedImage,
                                     recipientImageNameOld,
                                     CRUDRecipientsImages.DIRECTORYNAME);
+                        }
+                    } else if (!recipientsBrowsedImagePanel.isImageLoaded()
+                            && recipientsBrowsedImagePanel.isImageSelected()) {
+                        System.out.println("case no image loaded, but image selected");
+                        // case no image loaded, but image selected
+                        // Get selected image through browsing
+                        RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
+                        if (recipientImageSelected != null) {
+                            String newImageName = ImageFileManager.generateImageName(recipientImageSelected.getImageFile());
+                            recipientImageSelected.setImageName(newImageName);
+                            // Copy image to app directory
+                            BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
+                            ImageFileManager.saveBufferedImageToFileSystem(
+                                    bufferedImage,
+                                    newImageName,
+                                    CRUDRecipientsImages.DIRECTORYNAME);
+                            CRUDRecipientsImages.create(recipientImageSelected, recipient.getId());
                         }
                     }
                     notifyRecipientUpdated(recipient);

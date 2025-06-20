@@ -83,7 +83,7 @@ public class CRUDRecipientsImages {
         try (Connection con = Connect.getConnection()) {
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, recipientImage.getId());
-            pstmt.executeUpdate();
+            delete = pstmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(CRUDRecipientsImages.class.getName()).log(Level.SEVERE, null, ex);
         }

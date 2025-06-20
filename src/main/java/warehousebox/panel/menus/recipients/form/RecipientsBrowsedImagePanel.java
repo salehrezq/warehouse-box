@@ -61,6 +61,13 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
      * is false state
      */
     private boolean isImageSelected;
+    /**
+     * Image loaded through database name; the image is already available in the
+     * app directory with its name recorded in the database
+     */
+    private boolean isImageLoaded;
+
+    private boolean isImageRemoved;
 
     public RecipientsBrowsedImagePanel() {
         container = new JPanel();
@@ -100,6 +107,14 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
         return isImageSelected;
     }
 
+    public boolean isImageLoaded() {
+        return isImageLoaded;
+    }
+
+    public boolean isImageRemoved() {
+        return isImageRemoved;
+    }
+
     private BufferedImage thumbnail(BufferedImage image) {
         try {
             return Thumbnails.of(image)
@@ -125,8 +140,15 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
         recipientImage = null;
         bufferedImageThumbnailed = null;
         lbImage.setIcon(new ImageIcon(bufferedImagePlaceholder));
+        isImageRemoved = true;
         isImagePresence = false;
         isImageSelected = false;
+    }
+
+    protected void resetBooleans() {
+        isImageLoaded = false;
+        isImageSelected = false;
+        isImageRemoved = false;
     }
 
     private BufferedImage readImageFromResource(URL url) {
@@ -140,19 +162,28 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
         return bufferedImage;
     }
 
+    /**
+     * Load image through its name in the database. The image itself was stored
+     * previously in the app directory.
+     *
+     * @param recipientImage
+     */
     public void imageLoaded(RecipientImage recipientImage) {
-        recipientImageFromDB = new RecipientImage(recipientImage);
-        this.recipientImage = recipientImage;
-        bufferedImageThumbnailed = this.recipientImage.getBufferedImage();
+        if (recipientImage != null) {
+            recipientImageFromDB = new RecipientImage(recipientImage);
+            this.recipientImage = recipientImage;
+            bufferedImageThumbnailed = this.recipientImage.getBufferedImage();
 
-        if (bufferedImageThumbnailed == null) {
-            lbImage.setIcon(null);
-            return;
+            if (bufferedImageThumbnailed == null) {
+                lbImage.setIcon(null);
+                return;
+            }
+            isImageLoaded = true;
+            this.recipientImage.setBufferedImageThumbnailed(bufferedImageThumbnailed);
+            lbImage.setIcon(new ImageIcon(bufferedImageThumbnailed));
+        } else {
+            isImageLoaded = false;
         }
-        isImagePresence = true;
-        isImageSelected = false;
-        this.recipientImage.setBufferedImageThumbnailed(bufferedImageThumbnailed);
-        lbImage.setIcon(new ImageIcon(bufferedImageThumbnailed));
     }
 
     @Override
@@ -165,7 +196,7 @@ public class RecipientsBrowsedImagePanel implements ImageSelectedListener {
             lbImage.setIcon(null);
             return;
         }
-        isImagePresence = true;
+        isImageRemoved = false;
         isImageSelected = true;
         this.recipientImage.setBufferedImageThumbnailed(bufferedImageThumbnailed);
         lbImage.setIcon(new ImageIcon(bufferedImageThumbnailed));
