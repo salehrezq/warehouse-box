@@ -130,25 +130,38 @@ public class RecipientsFormLogic {
                 recipientNameOld = recipient.getName();
                 String recipientNameCurrent = tfName.getText();
                 boolean isCurrentNameDifferentFromOldName = !recipientNameOld.equals(recipientNameCurrent);
-                boolean noLoadedNoSelectedImage = !recipientsBrowsedImagePanel.isImageLoaded() && !recipientsBrowsedImagePanel.isImageSelected();
                 String recipientImageNameOld = "";
-                if (!isCurrentNameDifferentFromOldName && noLoadedNoSelectedImage) {
+
+                boolean imageLoadedButNoChange = recipientsBrowsedImagePanel.isImageLoaded()
+                        && !recipientsBrowsedImagePanel.isImageRemoved()
+                        && !recipientsBrowsedImagePanel.isImageSelected();
+                boolean noImageToLoadAndNoChange = !recipientsBrowsedImagePanel.isImageLoaded()
+                        && !recipientsBrowsedImagePanel.isImageSelected();
+                // Case: image loaded then deleted, no another selected
+                boolean imageLoadedThenRemoved = recipientsBrowsedImagePanel.isImageLoaded()
+                        && recipientsBrowsedImagePanel.isImageRemoved();
+                // Case: image loaded then another selected
+                boolean imageLoadedThenReplaced = recipientsBrowsedImagePanel.isImageLoaded()
+                        && recipientsBrowsedImagePanel.isImageSelected();
+                // Case: no image loaded, but image selected
+                boolean noImageToLoadButImageSelected = !recipientsBrowsedImagePanel.isImageLoaded()
+                        && recipientsBrowsedImagePanel.isImageSelected();
+
+                if (!isCurrentNameDifferentFromOldName && (imageLoadedButNoChange || noImageToLoadAndNoChange)) {
+                    /**
+                     * No change case. - Recipient name not changed - Image
+                     * loaded but not no change; not deleted, not replaced - No
+                     * image to load, and no image selected
+                     */
                     notifyNoCRUD();
                 } else {
                     if (isCurrentNameDifferentFromOldName) {
+                        // Case: recipient name changed
                         recipient.setName(tfName.getText());
                         CRUDRecipients.update(recipient);
                     }
-                    if (recipientsBrowsedImagePanel.isImageLoaded()
-                            && !recipientsBrowsedImagePanel.isImageRemoved()
-                            && !recipientsBrowsedImagePanel.isImageSelected()) {
-                        System.out.println("case image loaded then no change");
-                        // case image loaded then no change
-                        notifyNoCRUD();
-                    } else if (recipientsBrowsedImagePanel.isImageLoaded()
-                            && recipientsBrowsedImagePanel.isImageRemoved()) {
-                        // case image loaded then deleted, no another selected
-                        System.out.println("case image loaded then deleted, no another selected");
+                    if (imageLoadedThenRemoved) {
+                        // Case: image loaded then deleted, no another selected
                         RecipientImage recipientImageFromDB = recipientsBrowsedImagePanel.getRecipientImageFromDB();
                         if (recipientImageFromDB != null) {
                             // Delete RecipientImage from database
@@ -164,10 +177,8 @@ public class RecipientsFormLogic {
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         }
-                    } else if (recipientsBrowsedImagePanel.isImageLoaded()
-                            && recipientsBrowsedImagePanel.isImageSelected()) {
-                        // case image loaded then another selected
-                        System.out.println("case image loaded then another selected");
+                    } else if (imageLoadedThenReplaced) {
+                        // Case: image loaded then another selected
                         // Get loaded image on recipient select
                         RecipientImage recipientImageFromDB = recipientsBrowsedImagePanel.getRecipientImageFromDB();
                         if (recipientImageFromDB != null) {
@@ -191,10 +202,8 @@ public class RecipientsFormLogic {
                                     recipientImageNameOld,
                                     CRUDRecipientsImages.DIRECTORYNAME);
                         }
-                    } else if (!recipientsBrowsedImagePanel.isImageLoaded()
-                            && recipientsBrowsedImagePanel.isImageSelected()) {
-                        System.out.println("case no image loaded, but image selected");
-                        // case no image loaded, but image selected
+                    } else if (noImageToLoadButImageSelected) {
+                        // Case: no image loaded, but image selected
                         // Get selected image through browsing
                         RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
                         if (recipientImageSelected != null) {
