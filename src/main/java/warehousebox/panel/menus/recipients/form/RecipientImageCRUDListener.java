@@ -23,10 +23,19 @@
  */
 package warehousebox.panel.menus.recipients.form;
 
+import warehousebox.db.model.RecipientImage;
+
 /**
  *
  * @author Saleh
  */
 public interface RecipientImageCRUDListener {
 
+    public void created(RecipientImage recipientImage);
+
+    public void updated(RecipientImage recipientImage);
+
+    public void deleted();
+
+    public void noCRUD();
 }
