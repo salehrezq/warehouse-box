@@ -210,15 +210,24 @@ public class RecipientsFormLogic {
                     } else if (imageLoadedThenReplaced) {
                         // Case: image loaded then another selected
                         // Get loaded image on recipient select
+                        boolean isImageDeleted = false;
+                        boolean isImageSaved = false;
                         RecipientImage recipientImageFromDB = recipientsBrowsedImagePanel.getRecipientImageFromDB();
                         if (recipientImageFromDB != null) {
                             // Get name of current loaded image
                             recipientImageNameOld = recipientImageFromDB.getImageName();
                             // Delete the current image from file system
-                            ImageFileManager.delete(recipientsBrowsedImagePanel
+                            isImageDeleted = ImageFileManager.delete(recipientsBrowsedImagePanel
                                     .getRecipientImageFromDB()
                                     .getImageName(),
                                     CRUDRecipientsImages.DIRECTORYNAME);
+
+                            if (!isImageDeleted) {
+                                JOptionPane.showMessageDialog(null,
+                                        "Some issue while deleting old image for replace!",
+                                        "Issue", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
                         }
                         // Get selected image through browsing
                         RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
@@ -227,25 +236,40 @@ public class RecipientsFormLogic {
                             recipientImageSelected.setImageName(recipientImageNameOld);
                             // Copy the selected image to the app directory using the same old image name
                             BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
-                            ImageFileManager.saveBufferedImageToFileSystem(
+                            isImageSaved = ImageFileManager.saveBufferedImageToFileSystem(
                                     bufferedImage,
                                     recipientImageNameOld,
                                     CRUDRecipientsImages.DIRECTORYNAME);
+
+                            if (!isImageSaved) {
+                                JOptionPane.showMessageDialog(null,
+                                        "Some issue while saving the new selected image!",
+                                        "Issue", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
                         }
                     } else if (noImageToLoadButImageSelected) {
                         // Case: no image loaded, but image selected
                         // Get selected image through browsing
+                        boolean isImageSaved = false;
                         RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
                         if (recipientImageSelected != null) {
                             String newImageName = ImageFileManager.generateImageName(recipientImageSelected.getImageFile());
                             recipientImageSelected.setImageName(newImageName);
                             // Copy image to app directory
                             BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
-                            ImageFileManager.saveBufferedImageToFileSystem(
+                            isImageSaved = ImageFileManager.saveBufferedImageToFileSystem(
                                     bufferedImage,
                                     newImageName,
                                     CRUDRecipientsImages.DIRECTORYNAME);
                             CRUDRecipientsImages.create(recipientImageSelected, recipient.getId());
+
+                            if (!isImageSaved) {
+                                JOptionPane.showMessageDialog(null,
+                                        "Some issue while saving the new selected image!",
+                                        "Issue", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
                         }
                     }
                     notifyRecipientUpdated(recipient);
@@ -268,10 +292,16 @@ public class RecipientsFormLogic {
                             recipientImageSelected.setImageName(newImageName);
                             // Copy image to app directory
                             BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
-                            ImageFileManager.saveBufferedImageToFileSystem(
+                            boolean isImageSaved = ImageFileManager.saveBufferedImageToFileSystem(
                                     bufferedImage,
                                     newImageName,
                                     CRUDRecipientsImages.DIRECTORYNAME);
+                            if (!isImageSaved) {
+                                JOptionPane.showMessageDialog(null,
+                                        "Some issue while saving the new selected image!",
+                                        "Issue", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
                             CRUDRecipientsImages.create(recipientImageSelected, recipient.getId());
                         }
                         JOptionPane.showMessageDialog(
