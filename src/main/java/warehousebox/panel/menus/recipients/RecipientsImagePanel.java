@@ -34,16 +34,15 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import warehousebox.db.CRUDRecipientsImages;
-import warehousebox.db.model.Recipient;
 import warehousebox.db.model.RecipientImage;
-import warehousebox.panel.menus.recipients.form.RecipientCRUDListener;
+import warehousebox.panel.menus.recipients.form.RecipientImageCRUDListener;
 import warehousebox.panel.menus.recipients.utility.imagepane.ImagePane;
 
 /**
  *
  * @author Saleh
  */
-public class RecipientsImagePanel implements RecipientCRUDListener {
+public class RecipientsImagePanel implements RecipientImageCRUDListener {
 
     private JPanel panelContainer, panelContols;
     private ImagePane imagePane;
@@ -135,13 +134,18 @@ public class RecipientsImagePanel implements RecipientCRUDListener {
     }
 
     @Override
-    public void created(Recipient recipient) {
+    public void created(RecipientImage recipient) {
         System.out.println("created response in RecipientsImagePanel");
     }
 
     @Override
-    public void updated(Recipient recipient) {
+    public void updated(RecipientImage recipient) {
         System.out.println("updated response in RecipientsImagePanel");
+    }
+
+    @Override
+    public void deleted() {
+        System.out.println("deleted response in RecipientsImagePanel");
     }
 
     @Override

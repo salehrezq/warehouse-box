@@ -55,6 +55,7 @@ public class RecipientsFormLogic {
     private IMGFileChooser iMGFileChooser;
     private RecipientsBrowsedImagePanel recipientsBrowsedImagePanel;
     private List<RecipientCRUDListener> recipientCRUDListeners;
+    private List<RecipientImageCRUDListener> recipientImageCRUDListeners;
     private RecipientsFormControls recipientsFormControls;
     private String recipientNameOld;
 
@@ -71,6 +72,7 @@ public class RecipientsFormLogic {
 
         btnRemove.addMouseListener(new BtnRemoveHandler());
         recipientCRUDListeners = new ArrayList<>();
+        recipientImageCRUDListeners = new ArrayList<>();
         iMGFileChooser = new IMGFileChooser();
         iMGFileChooser.addImageSelectedListener(recipientsBrowsedImagePanel);
         btnBrowse.addActionListener(iMGFileChooser);
@@ -93,9 +95,37 @@ public class RecipientsFormLogic {
         });
     }
 
-    public void notifyNoCRUD() {
+    public void notifyNoRecipientCRUD() {
         this.recipientCRUDListeners.forEach((recipientCRUDListener) -> {
             recipientCRUDListener.noCRUD();
+        });
+    }
+
+    public void addRecipientImageCRUDListener(RecipientImageCRUDListener recipientImageCRUDListener) {
+        this.recipientImageCRUDListeners.add(recipientImageCRUDListener);
+    }
+
+    public void notifyRecipientImageCreated(RecipientImage recipientImage) {
+        this.recipientImageCRUDListeners.forEach((recipientImageCRUDListener) -> {
+            recipientImageCRUDListener.created(recipientImage);
+        });
+    }
+
+    public void notifyRecipientImageUpdated(RecipientImage recipient) {
+        this.recipientImageCRUDListeners.forEach((recipientImageCRUDListener) -> {
+            recipientImageCRUDListener.updated(recipient);
+        });
+    }
+
+    public void notifyRecipientImageDeleted() {
+        this.recipientImageCRUDListeners.forEach((recipientImageCRUDListener) -> {
+            recipientImageCRUDListener.deleted();
+        });
+    }
+
+    public void notifyNoRecipientImageCRUD() {
+        this.recipientImageCRUDListeners.forEach((recipientImageCRUDListener) -> {
+            recipientImageCRUDListener.noCRUD();
         });
     }
 
@@ -153,7 +183,7 @@ public class RecipientsFormLogic {
                      * loaded but not no change; not deleted, not replaced - No
                      * image to load, and no image selected
                      */
-                    notifyNoCRUD();
+                    notifyNoRecipientCRUD();
                 } else {
                     if (isCurrentNameDifferentFromOldName) {
                         // Case: recipient name changed
