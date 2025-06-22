@@ -47,7 +47,8 @@ public class ImageFileManager {
     private static final String slash = File.separator;
     private static final String appImagesPath = HOME + slash + "warehouse-box-images";
 
-    public static void copyFileUsingJava7Files(File file, String newGeneratedName, String directoryName) {
+    public static boolean copyFileUsingJava7Files(File file, String newGeneratedName, String directoryName) {
+        boolean success = false;
         String path = appImagesPath + slash + directoryName;
         Path destPath = Paths.get(path);
         Optional<String> extension = getExtensionByStringHandling(file.getName());
@@ -55,34 +56,41 @@ public class ImageFileManager {
         try {
             Files.createDirectories(destPath);
             Files.copy(file.toPath(), destFile, StandardCopyOption.REPLACE_EXISTING);
+            success = !Files.exists(destFile);
         } catch (IOException ex) {
             Logger.getLogger(ImageFileManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return success;
     }
 
-    public static void saveBufferedImageToFileSystem(
+    public static boolean saveBufferedImageToFileSystem(
             BufferedImage bufferedImage,
             String newGeneratedName,
             String directoryName) {
+        boolean success = false;
         String path = appImagesPath + slash + directoryName;
         Path destPath = Paths.get(path);
         try {
             Files.createDirectories(destPath);
             File outputfile = new File(path + slash + newGeneratedName);
-            ImageIO.write(bufferedImage, getExtensionByStringHandling(newGeneratedName).get(), outputfile);
+            success = ImageIO.write(bufferedImage, getExtensionByStringHandling(newGeneratedName).get(), outputfile);
         } catch (IOException ex) {
             Logger.getLogger(ImageFileManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return success;
     }
 
-    public static void delete(String filename, String directoryName) {
+    public static boolean delete(String filename, String directoryName) {
+        boolean success = false;
         String path = appImagesPath + slash + directoryName;
         try {
             Path destFile = Paths.get(path + slash + filename);
             Files.delete(destFile);
+            success = !Files.exists(destFile);
         } catch (IOException ex) {
             Logger.getLogger(ImageFileManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return success;
     }
 
     public static String generateImageName(File file) {
