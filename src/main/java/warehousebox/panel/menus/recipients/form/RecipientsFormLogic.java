@@ -192,84 +192,114 @@ public class RecipientsFormLogic {
                     }
                     if (imageLoadedThenRemoved) {
                         // Case: image loaded then deleted, no another selected
+                        boolean isImageFileDeleted;
+                        boolean isImageRecordDeleted = false;
                         RecipientImage recipientImageFromDB = recipientsBrowsedImagePanel.getRecipientImageFromDB();
                         if (recipientImageFromDB != null) {
-                            // Delete RecipientImage from database
-                            if (CRUDRecipientsImages.delete(recipientImageFromDB) > 0) {
-                                // Delete the current image from file system
-                                ImageFileManager.delete(recipientsBrowsedImagePanel
-                                        .getRecipientImageFromDB()
-                                        .getImageName(),
-                                        CRUDRecipientsImages.DIRECTORYNAME);
-                            } else {
+                            // Delete the current image from file system
+                            isImageFileDeleted = ImageFileManager.delete(recipientsBrowsedImagePanel
+                                    .getRecipientImageFromDB()
+                                    .getImageName(),
+                                    CRUDRecipientsImages.DIRECTORYNAME);
+
+                            if (!isImageFileDeleted) {
                                 JOptionPane.showMessageDialog(null,
-                                        "The RecipientImage cannot be deleted due to some unknown issue!",
+                                        "The image file cannot be deleted due to some unknown issue!",
                                         "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                            if (isImageFileDeleted) {
+                                // Delete RecipientImage from database
+                                isImageRecordDeleted = CRUDRecipientsImages.delete(recipientImageFromDB) > 0;
+
+                                if (!isImageRecordDeleted) {
+                                    JOptionPane.showMessageDialog(null,
+                                            "The image database record cannot be deleted due to some unknown issue!",
+                                            "Error", JOptionPane.ERROR_MESSAGE);
+                                    return;
+                                }
+                                notifyRecipientImageDeleted();
                             }
                         }
                     } else if (imageLoadedThenReplaced) {
                         // Case: image loaded then another selected
                         // Get loaded image on recipient select
-                        boolean isImageDeleted = false;
-                        boolean isImageSaved = false;
+                        boolean isImageFileDeleted = false;
+                        boolean isImageFileSaved;
                         RecipientImage recipientImageFromDB = recipientsBrowsedImagePanel.getRecipientImageFromDB();
                         if (recipientImageFromDB != null) {
                             // Get name of current loaded image
                             recipientImageNameOld = recipientImageFromDB.getImageName();
                             // Delete the current image from file system
-                            isImageDeleted = ImageFileManager.delete(recipientsBrowsedImagePanel
+                            isImageFileDeleted = ImageFileManager.delete(recipientsBrowsedImagePanel
                                     .getRecipientImageFromDB()
                                     .getImageName(),
                                     CRUDRecipientsImages.DIRECTORYNAME);
 
-                            if (!isImageDeleted) {
+                            if (!isImageFileDeleted) {
                                 JOptionPane.showMessageDialog(null,
-                                        "Some issue while deleting old image for replace!",
+                                        "Some unknown issue while deleting old image file for replace!",
                                         "Issue", JOptionPane.ERROR_MESSAGE);
                                 return;
                             }
                         }
-                        // Get selected image through browsing
-                        RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
-                        if (recipientImageSelected != null) {
-                            // Set name of the selected image to be the same as the old one
-                            recipientImageSelected.setImageName(recipientImageNameOld);
-                            // Copy the selected image to the app directory using the same old image name
-                            BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
-                            isImageSaved = ImageFileManager.saveBufferedImageToFileSystem(
-                                    bufferedImage,
-                                    recipientImageNameOld,
-                                    CRUDRecipientsImages.DIRECTORYNAME);
+                        if (isImageFileDeleted) {
+                            // Get selected image through browsing
+                            RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
+                            if (recipientImageSelected != null) {
+                                // Set name of the selected image to be the same as the old one
+                                recipientImageSelected.setImageName(recipientImageNameOld);
+                                // Copy the selected image to the app directory using the same old image name
+                                BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
+                                isImageFileSaved = ImageFileManager.saveBufferedImageToFileSystem(
+                                        bufferedImage,
+                                        recipientImageNameOld,
+                                        CRUDRecipientsImages.DIRECTORYNAME);
 
-                            if (!isImageSaved) {
-                                JOptionPane.showMessageDialog(null,
-                                        "Some issue while saving the new selected image!",
-                                        "Issue", JOptionPane.ERROR_MESSAGE);
-                                return;
+                                if (!isImageFileSaved) {
+                                    /**
+                                     * Because the image file was already
+                                     * successfully deleted in a previous step,
+                                     * but saving a new image file with the same
+                                     * name failed, the RecipientImage record
+                                     * should be removed from the database since
+                                     * no actual image file exists to represent
+                                     * it.
+                                     */
+                                    CRUDRecipientsImages.delete(recipientImageFromDB);
+                                    // Message for the user
+                                    JOptionPane.showMessageDialog(null,
+                                            "Some issue while saving the new selected image!",
+                                            "Issue", JOptionPane.ERROR_MESSAGE);
+                                    notifyRecipientImageDeleted();
+                                } else {
+                                    notifyRecipientImageUpdated(recipientImageSelected);
+                                }
                             }
                         }
                     } else if (noImageToLoadButImageSelected) {
                         // Case: no image loaded, but image selected
                         // Get selected image through browsing
-                        boolean isImageSaved = false;
+                        boolean isImageFileSaved;
                         RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
                         if (recipientImageSelected != null) {
                             String newImageName = ImageFileManager.generateImageName(recipientImageSelected.getImageFile());
                             recipientImageSelected.setImageName(newImageName);
                             // Copy image to app directory
                             BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
-                            isImageSaved = ImageFileManager.saveBufferedImageToFileSystem(
+                            isImageFileSaved = ImageFileManager.saveBufferedImageToFileSystem(
                                     bufferedImage,
                                     newImageName,
                                     CRUDRecipientsImages.DIRECTORYNAME);
-                            CRUDRecipientsImages.create(recipientImageSelected, recipient.getId());
 
-                            if (!isImageSaved) {
+                            if (!isImageFileSaved) {
                                 JOptionPane.showMessageDialog(null,
                                         "Some issue while saving the new selected image!",
                                         "Issue", JOptionPane.ERROR_MESSAGE);
                                 return;
                             }
+                            CRUDRecipientsImages.create(recipientImageSelected, recipient.getId());
+                            notifyRecipientImageUpdated(recipientImageSelected);
                         }
                     }
                     notifyRecipientUpdated(recipient);
