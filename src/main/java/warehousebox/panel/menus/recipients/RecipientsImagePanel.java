@@ -134,13 +134,8 @@ public class RecipientsImagePanel implements RecipientImageCRUDListener {
     }
 
     @Override
-    public void created(RecipientImage recipient) {
-        System.out.println("created response in RecipientsImagePanel");
-    }
-
-    @Override
-    public void updated(RecipientImage recipient) {
-        System.out.println("updated response in RecipientsImagePanel");
+    public void updated(RecipientImage recipientImage) {
+        setImageOfSelectedItem(recipientImage.getRecipientId());
     }
 
     @Override
@@ -148,10 +143,6 @@ public class RecipientsImagePanel implements RecipientImageCRUDListener {
         System.out.println("deleted response in RecipientsImagePanel");
     }
 
-    @Override
-    public void noCRUD() {
-        System.out.println("noCRUD response in RecipientsImagePanel");
-    }
 //    @Override
 //    public void selectedRowId(int rowId) {
 //        setImageOfSelectedItem(rowId);

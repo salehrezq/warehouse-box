@@ -31,11 +31,7 @@ import warehousebox.db.model.RecipientImage;
  */
 public interface RecipientImageCRUDListener {
 
-    public void created(RecipientImage recipientImage);
-
     public void updated(RecipientImage recipientImage);
 
     public void deleted();
-
-    public void noCRUD();
 }

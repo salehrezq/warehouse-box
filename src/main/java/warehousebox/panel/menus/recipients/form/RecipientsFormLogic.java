@@ -105,12 +105,6 @@ public class RecipientsFormLogic {
         this.recipientImageCRUDListeners.add(recipientImageCRUDListener);
     }
 
-    public void notifyRecipientImageCreated(RecipientImage recipientImage) {
-        this.recipientImageCRUDListeners.forEach((recipientImageCRUDListener) -> {
-            recipientImageCRUDListener.created(recipientImage);
-        });
-    }
-
     public void notifyRecipientImageUpdated(RecipientImage recipient) {
         this.recipientImageCRUDListeners.forEach((recipientImageCRUDListener) -> {
             recipientImageCRUDListener.updated(recipient);
@@ -120,12 +114,6 @@ public class RecipientsFormLogic {
     public void notifyRecipientImageDeleted() {
         this.recipientImageCRUDListeners.forEach((recipientImageCRUDListener) -> {
             recipientImageCRUDListener.deleted();
-        });
-    }
-
-    public void notifyNoRecipientImageCRUD() {
-        this.recipientImageCRUDListeners.forEach((recipientImageCRUDListener) -> {
-            recipientImageCRUDListener.noCRUD();
         });
     }
 
