@@ -140,7 +140,8 @@ public class RecipientsImagePanel implements RecipientImageCRUDListener {
 
     @Override
     public void deleted() {
-        System.out.println("deleted response in RecipientsImagePanel");
+        imagePane.setImage(null);
+        imagePane.noImageResponseAnimated();
     }
 
 //    @Override
