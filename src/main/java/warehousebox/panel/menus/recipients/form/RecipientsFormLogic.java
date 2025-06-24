@@ -306,6 +306,11 @@ public class RecipientsFormLogic {
                                 return;
                             }
                             CRUDRecipientsImages.create(recipientImageSelected, recipient.getId());
+                            /**
+                             * Setting the recipient id to the RecipientImage to
+                             * be used in the next call.
+                             */
+                            recipientImageSelected.setRecipientId(recipient.getId());
                             notifyRecipientImageUpdated(recipientImageSelected);
                         }
                     }
