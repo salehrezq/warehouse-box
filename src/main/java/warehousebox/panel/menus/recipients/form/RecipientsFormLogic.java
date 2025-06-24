@@ -242,38 +242,45 @@ public class RecipientsFormLogic {
                                         "Issue", JOptionPane.ERROR_MESSAGE);
                                 return;
                             }
-                        }
-                        if (isImageFileDeleted) {
-                            // Get selected image through browsing
-                            RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
-                            if (recipientImageSelected != null) {
-                                // Set name of the selected image to be the same as the old one
-                                recipientImageSelected.setImageName(recipientImageNameOld);
-                                // Copy the selected image to the app directory using the same old image name
-                                BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
-                                isImageFileSaved = ImageFileManager.saveBufferedImageToFileSystem(
-                                        bufferedImage,
-                                        recipientImageNameOld,
-                                        CRUDRecipientsImages.DIRECTORYNAME);
+                            if (isImageFileDeleted) {
+                                // Get selected image through browsing
+                                RecipientImage recipientImageSelected = recipientsBrowsedImagePanel.getRecipientImage();
+                                if (recipientImageSelected != null) {
+                                    // Set name of the selected image to be the same as the old one
+                                    recipientImageSelected.setImageName(recipientImageNameOld);
+                                    // Copy the selected image to the app directory using the same old image name
+                                    BufferedImage bufferedImage = recipientImageSelected.getBufferedImageThumbnailed();
+                                    isImageFileSaved = ImageFileManager.saveBufferedImageToFileSystem(
+                                            bufferedImage,
+                                            recipientImageNameOld,
+                                            CRUDRecipientsImages.DIRECTORYNAME);
 
-                                if (!isImageFileSaved) {
-                                    /**
-                                     * Because the image file was already
-                                     * successfully deleted in a previous step,
-                                     * but saving a new image file with the same
-                                     * name failed, the RecipientImage record
-                                     * should be removed from the database since
-                                     * no actual image file exists to represent
-                                     * it.
-                                     */
-                                    CRUDRecipientsImages.delete(recipientImageFromDB);
-                                    // Message for the user
-                                    JOptionPane.showMessageDialog(null,
-                                            "Some issue while saving the new selected image!",
-                                            "Issue", JOptionPane.ERROR_MESSAGE);
-                                    notifyRecipientImageDeleted();
-                                } else {
-                                    notifyRecipientImageUpdated(recipientImageSelected);
+                                    if (!isImageFileSaved) {
+                                        /**
+                                         * Because the image file was already
+                                         * successfully deleted in a previous
+                                         * step, but saving a new image file
+                                         * with the same name failed, the
+                                         * RecipientImage record should be
+                                         * removed from the database since no
+                                         * actual image file exists to represent
+                                         * it.
+                                         */
+                                        CRUDRecipientsImages.delete(recipientImageFromDB);
+                                        // Message for the user
+                                        JOptionPane.showMessageDialog(null,
+                                                "Some issue while saving the new selected image!",
+                                                "Issue", JOptionPane.ERROR_MESSAGE);
+                                        notifyRecipientImageDeleted();
+                                    } else {
+                                        /**
+                                         * Setting the recipient id to the
+                                         * RecipientImage to be used in the next
+                                         * call.
+                                         */
+                                        recipientImageSelected.setRecipientId(recipientImageFromDB.getRecipientId());
+                                        notifyRecipientImageUpdated(recipientImageSelected);
+                                    }
                                 }
                             }
                         }
