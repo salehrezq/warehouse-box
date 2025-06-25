@@ -83,6 +83,25 @@ public class CRUDRecipients {
         return exist;
     }
 
+    public static boolean isInUse(Recipient recipient) {
+        boolean isUsed = false;
+        String sql = "SELECT id FROM outbounds WHERE recipient_id = ? FETCH FIRST 1 ROW ONLY";
+
+        try (Connection con = Connect.getConnection()) {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setInt(1, recipient.getId());
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    isUsed = true;
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDRecipients.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return isUsed;
+    }
+
     private static String formulateSearchFilters(String searchQuery) {
         String sqlFilter = " WHERE ";
 
