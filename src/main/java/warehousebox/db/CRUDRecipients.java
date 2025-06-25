@@ -200,4 +200,18 @@ public class CRUDRecipients {
         }
         return (update > 0);
     }
+
+    public static boolean delete(Recipient recipient) {
+        int delete = 0;
+        String sql = "DELETE FROM recipients WHERE id = ?";
+
+        try (Connection con = Connect.getConnection()) {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setInt(1, recipient.getId());
+            delete = p.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDRecipients.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return (delete > 0);
+    }
 }
