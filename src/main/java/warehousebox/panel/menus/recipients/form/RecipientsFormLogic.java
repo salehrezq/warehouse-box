@@ -125,6 +125,10 @@ public class RecipientsFormLogic {
         recipientsBrowsedImagePanel.setRecipientImage(null);
     }
 
+    public void setRecipientNameOld(String recipientNameOld) {
+        this.recipientNameOld = recipientNameOld;
+    }
+
     private class SubmitHandler implements ActionListener {
 
         @Override
@@ -145,7 +149,6 @@ public class RecipientsFormLogic {
             Recipient recipient = recipientsFormControls.getRecipient();
             if (recipient != null) {
                 // Update operation
-                recipientNameOld = recipient.getName();
                 String recipientNameCurrent = tfName.getText();
                 boolean isCurrentNameDifferentFromOldName = !recipientNameOld.equals(recipientNameCurrent);
                 String recipientImageNameOld = "";
@@ -176,7 +179,15 @@ public class RecipientsFormLogic {
                     if (isCurrentNameDifferentFromOldName) {
                         // Case: recipient name changed
                         recipient.setName(tfName.getText());
-                        CRUDRecipients.update(recipient);
+                        if (CRUDRecipients.isExist(recipient)) {
+                            recipient.setName(recipientNameOld);
+                            JOptionPane.showMessageDialog(null,
+                                    "The recipient is already exist!",
+                                    "Duplicate entry", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        } else {
+                            CRUDRecipients.update(recipient);
+                        }
                     }
                     if (imageLoadedThenRemoved) {
                         // Case: image loaded then deleted, no another selected
