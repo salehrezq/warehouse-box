@@ -29,13 +29,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+import warehousebox.db.CRUDRecipients;
 import warehousebox.db.CRUDRecipientsImages;
 import warehousebox.db.model.Recipient;
 import warehousebox.db.model.RecipientImage;
 import warehousebox.panel.menus.recipients.form.RecipientsCreateUpdateDialog;
 import warehousebox.panel.menus.recipients.form.RecipientsFormControls;
+import warehousebox.utility.filemanage.ImageFileManager;
 
 /**
  *
@@ -47,13 +50,15 @@ public class PopupMenuHandler implements ActionListener {
     private final JPopupMenu popupMenu;
     private final JMenuItem menuRecipientRemove;
     private final JMenuItem menuRecipientEdit;
+    private RecipientsList recipientsList;
     private JList listing;
     private RecipientsFormControls recipientsFormControls;
     private Recipient recipient;
 
     public PopupMenuHandler(RecipientsControls rc) {
         recipientsCreateUpdateDialog = rc.getRecipientsCreateUpdateDialog();
-        listing = rc.getRecipientsList().getJList();
+        recipientsList = rc.getRecipientsList();
+        listing = recipientsList.getJList();
         listing.addMouseListener(new RightClickJListPopupHandler());
         recipientsFormControls = recipientsCreateUpdateDialog.getRecipientsFormControls();
 
@@ -74,8 +79,8 @@ public class PopupMenuHandler implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JMenuItem source = (JMenuItem) e.getSource();
+        recipient = (Recipient) listing.getSelectedValue();
         if (source == menuRecipientEdit) {
-            recipient = (Recipient) listing.getSelectedValue();
             recipientsFormControls.setRecipient(recipient);
             recipientsFormControls.getTfName().setText(recipient.getName());
             RecipientImage recipientImage = CRUDRecipientsImages.getImageByRecipientId(recipient.getId());
@@ -83,7 +88,45 @@ public class PopupMenuHandler implements ActionListener {
             recipientsCreateUpdateDialog.getRecipientsFormLogic().setRecipientNameOld(recipient.getName());
             recipientsCreateUpdateDialog.setVisible(true);
         } else if (source == menuRecipientRemove) {
-            System.out.println("Removing");
+            if (CRUDRecipients.isInUse(recipient)) {
+                JOptionPane.showMessageDialog(null,
+                        "Recipient cannot be deleted because it is in use.",
+                        "In use!",
+                        JOptionPane.WARNING_MESSAGE);
+            } else {
+                // `isImageFileDeleted` flags two cases as `true`:
+                // - The case that an image was deleted successfully.
+                // - The case that that there was no image in the first place.
+                // - The `false` case is set only when there was a file
+                //   but was not deleted due to some issue.
+                boolean isImageFileDeleted;
+                RecipientImage recipientImage = CRUDRecipientsImages.getImageByRecipientId(recipient.getId());
+                if (recipientImage != null) {
+                    isImageFileDeleted = ImageFileManager
+                            .delete(recipientImage.getImageName(),
+                                    CRUDRecipientsImages.DIRECTORYNAME);
+
+                    if (!isImageFileDeleted) {
+                        JOptionPane.showMessageDialog(null,
+                                "The image file cannot be deleted due to some unknown issue!",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                } else {
+                    /**
+                     * Set the boolean to true since there is no file to delete;
+                     * this boolean is used in a subsequent code to proceed with
+                     * the follow-up deletion process.
+                     */
+                    isImageFileDeleted = true;
+                }
+                if (isImageFileDeleted) {
+                    CRUDRecipientsImages.deleteByRecipient(recipient);
+                    if (CRUDRecipients.delete(recipient)) {
+                        recipientsList.removeElement(listing.getSelectedIndex());
+                    }
+                }
+            }
         }
     }
 
