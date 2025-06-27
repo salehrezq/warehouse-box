@@ -47,7 +47,7 @@ public class RecipientsControls {
     public RecipientsControls(Frame owner) {
         container = new JPanel(new BorderLayout());
         panelLeft = new JPanel(new BorderLayout());
-        recipientsImagePanel = new RecipientsImagePanel();
+        recipientsImagePanel = new RecipientsImagePanel(128, 128);
         controls = new JPanel();
         btnAdd = new JButton("Add");
         recipientsCreateUpdateDialog = new RecipientsCreateUpdateDialog(owner, "Create", true);

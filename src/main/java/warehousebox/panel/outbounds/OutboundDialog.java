@@ -43,18 +43,23 @@ import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.regex.Pattern;
 import javax.swing.JComboBox;
+import javax.swing.JList;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import warehousebox.db.CRUDOutbounds;
 import warehousebox.db.model.ItemMeta;
 import warehousebox.db.model.Outbound;
 import warehousebox.db.model.Recipient;
+import warehousebox.panel.menus.recipients.RecipientsImagePanel;
 
 /**
  *
@@ -82,6 +87,7 @@ public class OutboundDialog extends JDialog {
     private final IssuanceTypeItem issuanceTypeNotSetYet = new IssuanceTypeItem((short) 0, "Issuance type...");
     private final IssuanceTypeItem issuanceTypeConsumable = new IssuanceTypeItem((short) 1, "Consumable");
     private final IssuanceTypeItem issuanceTypeReturnable = new IssuanceTypeItem((short) 2, "Returnable");
+    private RecipientsImagePanel recipientsImagePanel;
 
     public OutboundDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -104,6 +110,7 @@ public class OutboundDialog extends JDialog {
         formFieldRecipient = new ListableItemForm();
         formFieldRecipient.setLabelText("Recipient");
         formFieldRecipient.setListableImpl(new Recipient());
+        formFieldRecipient.getlist().addMouseListener(new MouseJListHandler());
 
         issuanceTypeModel = new Vector();
         issuanceTypeModel.addElement(issuanceTypeNotSetYet);
@@ -117,6 +124,9 @@ public class OutboundDialog extends JDialog {
         dateChangeHandler = new DateChangeHandler();
         datePicker.addDateChangeListener(dateChangeHandler);
         this.setupDateField(datePicker);
+
+        recipientsImagePanel = new RecipientsImagePanel(64, 64);
+        recipientsImagePanel.setImagePlaceholder();
 
         btnSubmit = new JButton("Submit");
         btnSubmit.setEnabled(false);
@@ -132,9 +142,10 @@ public class OutboundDialog extends JDialog {
         container.add(comboIssuanceType, "span 2");
         container.add(lbDate, "span 2, split 2, align right");
         container.add(datePicker, "wrap");
-        container.add(btnSubmit, "span 4, center, gapy 10");
+        container.add(recipientsImagePanel.getContainer(), "span 4, center, wrap");
+        container.add(btnSubmit, "span 4, center, gapy 5");
         add(container);
-        this.setMinimumSize(new Dimension(520, 540));
+        this.setMinimumSize(new Dimension(520, 600));
         this.addWindowListener(new ClosingWindowHandler());
     }
 
@@ -348,6 +359,19 @@ public class OutboundDialog extends JDialog {
         @Override
         public String toString() {
             return description;
+        }
+    }
+
+    private class MouseJListHandler extends MouseAdapter {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            JList list = (JList) e.getSource();
+            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
+                int index = list.locationToIndex(e.getPoint());
+                Recipient recipient = (Recipient) list.getModel().getElementAt(index);
+                recipientsImagePanel.setImageOfSelectedItem(recipient.getId());
+            }
         }
     }
 }

@@ -26,13 +26,16 @@ package warehousebox.panel.menus.recipients;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
+import net.coobird.thumbnailator.Thumbnails;
 import warehousebox.db.CRUDRecipientsImages;
 import warehousebox.db.model.RecipientImage;
 import warehousebox.panel.menus.recipients.form.RecipientImageCRUDListener;
@@ -46,15 +49,18 @@ public class RecipientsImagePanel implements RecipientImageCRUDListener {
 
     private JPanel panelContainer, panelContols;
     private ImagePane imagePane;
-    private BufferedImage imageSelected;
+    private BufferedImage bufferedImagePlaceholder;
     private RecipientImage imagesSelected;
     private SwingWorker swingWorker;
     private ScheduledThreadPoolExecutor delayedSynchronousExecution;
+    private int width, height;
 
-    public RecipientsImagePanel() {
+    public RecipientsImagePanel(int width, int height) {
+        this.width = width;
+        this.height = height;
         panelContainer = new JPanel(new BorderLayout());
         panelContainer.setPreferredSize(new Dimension(130, 0));
-        imagePane = new ImagePane();
+        imagePane = new ImagePane(width, height);
         panelContainer.add(imagePane.getContainer(), BorderLayout.CENTER);
     }
 
@@ -62,11 +68,23 @@ public class RecipientsImagePanel implements RecipientImageCRUDListener {
         return panelContainer;
     }
 
+    public void setImagePlaceholder() {
+        try {
+            bufferedImagePlaceholder
+                    = Thumbnails.of(ImageIO.read(getClass().getResource("/images/avatar-placeholder/avatar.png")))
+                            .size(width, height)
+                            .asBufferedImage();
+        } catch (IOException ex) {
+            Logger.getLogger(RecipientsImagePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        imagePane.setImageIcone(bufferedImagePlaceholder);
+    }
+
     public void clearFields() {
         imagePane.setImage(null);
     }
 
-    protected void setImageOfSelectedItem(int recipientId) {
+    public void setImageOfSelectedItem(int recipientId) {
         imagePane.setImage(null);
         /**
          * Cancel swingWorker. This is the case that a new item row is selected,

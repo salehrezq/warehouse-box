@@ -25,8 +25,12 @@ package warehousebox.panel.menus.recipients.utility.imagepane;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import net.coobird.thumbnailator.Thumbnails;
 import warehousebox.db.model.RecipientImage;
 
 /**
@@ -40,10 +44,13 @@ public class ImagePane {
     public BufferedImage bufferedImage;
     private NoImageResponse noImageResponse;
     private LoadingFeedback loadingFeedback;
+    private int width, height;
 
-    public ImagePane() {
+    public ImagePane(int width, int height) {
+        this.width = width;
+        this.height = height;
         lbImage = new JLabel();
-        lbImage.setMaximumSize(new Dimension(128, 128));
+        lbImage.setMaximumSize(new Dimension(width, height));
         lbImage.setHorizontalAlignment(JLabel.CENTER);
         lbImage.setVerticalAlignment(JLabel.CENTER);
         noImageResponse = new NoImageResponse(lbImage);
@@ -56,12 +63,19 @@ public class ImagePane {
         setImageIcone(bufferedImage);
     }
 
-    private void setImageIcone(BufferedImage image) {
+    public void setImageIcone(BufferedImage image) {
         if (image == null) {
             lbImage.setIcon(null);
             return;
         }
-        lbImage.setIcon(new ImageIcon(image));
+        try {
+            image = Thumbnails.of(image)
+                    .size(width, height)
+                    .asBufferedImage();
+            lbImage.setIcon(new ImageIcon(image));
+        } catch (IOException ex) {
+            Logger.getLogger(ImagePane.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void noImageResponseAnimated() {
