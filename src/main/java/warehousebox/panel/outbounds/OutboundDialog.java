@@ -196,6 +196,7 @@ public class OutboundDialog extends JDialog {
         tfQuantity.setBackground(Color.WHITE);
         tfNote.setText("");
         formFieldRecipient.resetFields();
+        recipientsImagePanel.setImagePlaceholder();
         comboIssuanceType.setSelectedItem(issuanceTypeNotSetYet);
         datePicker.setDateToToday();
     }
