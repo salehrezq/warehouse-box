@@ -106,7 +106,7 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
         container.add(panelSearch, BorderLayout.PAGE_START);
         container.add(panelList, BorderLayout.CENTER);
         add(container, BorderLayout.CENTER);
-        this.setMinimumSize(new Dimension(480, 350));
+        this.setMinimumSize(new Dimension(480, 300));
     }
 
     @Override

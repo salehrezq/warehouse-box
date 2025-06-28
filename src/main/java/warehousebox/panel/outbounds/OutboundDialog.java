@@ -125,7 +125,7 @@ public class OutboundDialog extends JDialog {
         datePicker.addDateChangeListener(dateChangeHandler);
         this.setupDateField(datePicker);
 
-        recipientsImagePanel = new RecipientsImagePanel(64, 64);
+        recipientsImagePanel = new RecipientsImagePanel(128, 128);
         recipientsImagePanel.setImagePlaceholder();
 
         btnSubmit = new JButton("Submit");
