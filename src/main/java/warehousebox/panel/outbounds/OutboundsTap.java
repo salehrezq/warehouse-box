@@ -27,7 +27,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import warehousebox.db.model.QuantityUnit;
-import warehousebox.utility.singularlisting.ListableItemFormForFilters;
+import warehousebox.utility.recipientslisting.RecipientFormForFilters;
 
 /**
  *
@@ -81,7 +81,7 @@ public class OutboundsTap extends JPanel {
         outboundsSearchLogic.setBtnLoadMore(outboundsList.getBtnLoadMore());
         outboundsSearchLogic.setDateRangeFilter(outboundsSearchPane.getDateRange());
         outboundsSearchLogic.initializeFiltersReactToRetrievedPreferences();
-        ListableItemFormForFilters listableItemFormForFilters = outboundsSearchLogic.getListableItemFormForFilters();
+        RecipientFormForFilters listableItemFormForFilters = outboundsSearchLogic.getListableItemFormForFilters();
         listableItemFormForFilters.addListableItemFormForFiltersListener(outboundsSearchLogic);
 
         itemsImages = new ItemImage();

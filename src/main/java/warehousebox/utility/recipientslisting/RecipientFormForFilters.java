@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehousebox.utility.singularlisting;
+package warehousebox.utility.recipientslisting;
 
 import java.awt.Adjustable;
 import java.awt.BorderLayout;
@@ -46,40 +46,42 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import warehousebox.utility.scrollbarthin.ScrollBarThin;
-import warehousebox.db.CRUDListable;
+import warehousebox.db.CRUDRecipients;
+import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.ResultLimitSizePreference;
+import warehousebox.panel.menus.recipients.RecipientsImagePanel;
 
 /**
  *
  * @author Saleh
  */
-public class ListableItemFormForFilters extends JPanel implements ListableConsumer {
+public class RecipientFormForFilters extends JPanel {
 
     private JPanel container, panelSearch, panelControls, panelList;
     private JLabel label;
     private JTextField tfSearch;
     private ScrollBarThin scrollBarThinTfSearch;
     private JButton btnSearch, btnLoadMore, btnOK;
-    private ListOfListable listOfListable;
+    private ListOfRecipients listOfListable;
     private JList listing;
-    private Listable listableImplementation;
+    private RecipientsImagePanel recipientsImagePanel;
     // private ActionListener btnListener;
-    private ListableItemFormForFilters thisListableItemManageClass;
+    private RecipientFormForFilters thisListableItemManageClass;
     private int searchResultTotalRowsCount, incrementedReturnedRowsCount;
     private static int LIMIT,
             OFFSET;
     private String searchQueryImmutableCopy;
     private JDialog dialoge;
-    private ArrayList<ListableItemFormForFiltersListener> listableItemFormForFiltersListeners;
+    private ArrayList<RecipientFormForFiltersListener> listableItemFormForFiltersListeners;
     private Preferences prefs;
     private String prefsOK_key;
 
-    public ListableItemFormForFilters() {
+    public RecipientFormForFilters() {
         //   super(owner, title, modal);
 
         listableItemFormForFiltersListeners = new ArrayList<>();
 
-        thisListableItemManageClass = ListableItemFormForFilters.this;
+        thisListableItemManageClass = RecipientFormForFilters.this;
         setLayout(new BorderLayout());
         panelSearch = new JPanel();
         panelList = new JPanel(new BorderLayout());
@@ -97,7 +99,7 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         // Button search
         btnSearch = new JButton("Search");
         btnSearch.addActionListener(new BtnSearchHandler());
-        listOfListable = new ListOfListable();
+        listOfListable = new ListOfRecipients();
         listing = listOfListable.getJList();
         listing.addMouseListener(new MouseJListHandler());
         listing.addListSelectionListener(new ListSelectionHandler());
@@ -130,6 +132,10 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
 
         container.add(panelSearch, BorderLayout.PAGE_START);
         container.add(panelList, BorderLayout.CENTER);
+
+        recipientsImagePanel = new RecipientsImagePanel(128, 128);
+        recipientsImagePanel.setImagePlaceholder();
+        container.add(recipientsImagePanel.getContainer(), BorderLayout.LINE_END);
         add(container, BorderLayout.CENTER);
     }
 
@@ -145,21 +151,16 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         this.prefs = prefs;
     }
 
-    @Override
-    public void setListableImpl(Listable listable) {
-        this.listableImplementation = listable;
-    }
-
     /**
      * Used to add element preview selected for editing
      *
      * @param listable
      */
-    public void setPreviewSelected(Listable listable) {
+    public void setPreviewSelected(Recipient listable) {
         listOfListable.setPreviewSelected(listable);
     }
 
-    public Listable getSelectedValue() {
+    public Recipient getSelectedValue() {
         return this.listOfListable.getSelectedValue();
     }
 
@@ -171,11 +172,11 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         listOfListable.setPreferredSize(with, height);
     }
 
-    public void addListableItemFormForFiltersListener(ListableItemFormForFiltersListener listableItemFormForFiltersListener) {
+    public void addListableItemFormForFiltersListener(RecipientFormForFiltersListener listableItemFormForFiltersListener) {
         this.listableItemFormForFiltersListeners.add(listableItemFormForFiltersListener);
     }
 
-    public void notifySelectedListable(Listable listable) {
+    public void notifySelectedListable(Recipient listable) {
         this.listableItemFormForFiltersListeners.forEach((listableItemFormForFiltersListener) -> {
             listableItemFormForFiltersListener.selectedListable(listable);
         });
@@ -186,15 +187,15 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         @Override
         public void actionPerformed(ActionEvent e) {
             searchQueryImmutableCopy = tfSearch.getText();
-            searchResultTotalRowsCount = CRUDListable.searchResultRowsCount(listableImplementation, tfSearch.getText());
+            searchResultTotalRowsCount = CRUDRecipients.searchResultRowsCount(tfSearch.getText());
             LIMIT = ResultLimitSizePreference.getResultLimitSize();
             btnLoadMore.setEnabled(!(LIMIT >= searchResultTotalRowsCount));
             listOfListable.removeAllElements();
             OFFSET = 0;
             incrementedReturnedRowsCount = 0;
-            List<Listable> listables = CRUDListable.search(listableImplementation, tfSearch.getText(), LIMIT, OFFSET);
+            List<Recipient> listables = CRUDRecipients.search(tfSearch.getText(), LIMIT, OFFSET);
             if (listables.isEmpty()) {
-                JOptionPane.showMessageDialog(ListableItemFormForFilters.this, "No matched results!", "Info",
+                JOptionPane.showMessageDialog(RecipientFormForFilters.this, "No matched results!", "Info",
                         JOptionPane.PLAIN_MESSAGE);
             }
             incrementedReturnedRowsCount += listables.size();
@@ -209,7 +210,7 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         @Override
         public void actionPerformed(ActionEvent e) {
             OFFSET += LIMIT;
-            List<Listable> listables = CRUDListable.search(listableImplementation, searchQueryImmutableCopy, LIMIT, OFFSET);
+            List<Recipient> listables = CRUDRecipients.search(searchQueryImmutableCopy, LIMIT, OFFSET);
             incrementedReturnedRowsCount += listables.size();
             listables.forEach(listable -> {
                 listOfListable.addElement(listable);
@@ -240,6 +241,16 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
                 listing.setSelectedIndex(listing.locationToIndex(e.getPoint()));
             }
         }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            JList list = (JList) e.getSource();
+            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
+                int index = list.locationToIndex(e.getPoint());
+                Recipient recipient = (Recipient) list.getModel().getElementAt(index);
+                recipientsImagePanel.setImageOfSelectedItem(recipient.getId());
+            }
+        }
     }
 
     private class ListSelectionHandler implements ListSelectionListener {
@@ -248,7 +259,7 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         public void valueChanged(ListSelectionEvent event) {
             JList list = (JList) event.getSource();
             if (!event.getValueIsAdjusting()) {
-                Listable listable = (Listable) list.getSelectedValue();
+                Recipient listable = (Recipient) list.getSelectedValue();
                 if (listable != null) {
                     btnOK.setEnabled(true);
                 } else {

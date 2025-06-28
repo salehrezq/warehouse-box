@@ -21,65 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package warehousebox.utility.singularlisting;
+package warehousebox.utility.recipientslisting;
 
 import java.awt.Adjustable;
 import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.prefs.Preferences;
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import warehousebox.utility.scrollbarthin.ScrollBarThin;
-import warehousebox.db.CRUDListable;
+import warehousebox.db.CRUDRecipients;
+import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.ResultLimitSizePreference;
 
 /**
  *
  * @author Saleh
  */
-public class ListableItemFormForFilters extends JPanel implements ListableConsumer {
+public class RecipientForm extends JPanel {
 
-    private JPanel container, panelSearch, panelControls, panelList;
+    private JPanel container, panelSearch, panelList;
     private JLabel label;
     private JTextField tfSearch;
     private ScrollBarThin scrollBarThinTfSearch;
-    private JButton btnSearch, btnLoadMore, btnOK;
-    private ListOfListable listOfListable;
+    private JButton btnSearch, btnLoadMore;
+    private ListOfRecipients listOfListable;
     private JList listing;
-    private Listable listableImplementation;
     // private ActionListener btnListener;
-    private ListableItemFormForFilters thisListableItemManageClass;
+    private RecipientForm thisListableItemManageClass;
     private int searchResultTotalRowsCount, incrementedReturnedRowsCount;
     private static int LIMIT,
             OFFSET;
     private String searchQueryImmutableCopy;
-    private JDialog dialoge;
-    private ArrayList<ListableItemFormForFiltersListener> listableItemFormForFiltersListeners;
-    private Preferences prefs;
-    private String prefsOK_key;
+    private List<LoadMoreEnabledListener> loadMoreEnabledListeners;
 
-    public ListableItemFormForFilters() {
+    public RecipientForm() {
         //   super(owner, title, modal);
 
-        listableItemFormForFiltersListeners = new ArrayList<>();
-
-        thisListableItemManageClass = ListableItemFormForFilters.this;
+        loadMoreEnabledListeners = new ArrayList<>();
+        thisListableItemManageClass = RecipientForm.this;
         setLayout(new BorderLayout());
         panelSearch = new JPanel();
         panelList = new JPanel(new BorderLayout());
@@ -88,7 +79,7 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
 
         label = new JLabel();
         // Setup Text field search:
-        tfSearch = new JTextField(28);
+        tfSearch = new JTextField(25);
         scrollBarThinTfSearch = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarThinTfSearch.setModel(tfSearch.getHorizontalVisibility());
         Box boxSearchField = Box.createVerticalBox();
@@ -97,10 +88,9 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         // Button search
         btnSearch = new JButton("Search");
         btnSearch.addActionListener(new BtnSearchHandler());
-        listOfListable = new ListOfListable();
+        listOfListable = new ListOfRecipients();
         listing = listOfListable.getJList();
         listing.addMouseListener(new MouseJListHandler());
-        listing.addListSelectionListener(new ListSelectionHandler());
         //  btnClose.addActionListener(btnListener);
 
         panelSearch.add(label);
@@ -110,44 +100,17 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         btnLoadMore = new JButton("Load more");
         btnLoadMore.setEnabled(false);
         btnLoadMore.addActionListener(new BtnLoadMoreHandler());
-
-        btnOK = new JButton("OK");
-        btnOK.setEnabled(false);
-        btnOK.addActionListener(new BtnOKHandler());
-
-        panelControls = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        panelControls.add(btnLoadMore, c);
-        c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 0;
-        panelControls.add(btnOK, c);
-
         panelList.add(listOfListable.getListScrolledPane(), BorderLayout.CENTER);
-        panelList.add(panelControls, BorderLayout.PAGE_END);
+        panelList.add(btnLoadMore, BorderLayout.PAGE_END);
 
         container.add(panelSearch, BorderLayout.PAGE_START);
         container.add(panelList, BorderLayout.CENTER);
         add(container, BorderLayout.CENTER);
+        this.setMinimumSize(new Dimension(480, 300));
     }
 
-    public void setDialoge(JDialog dialog) {
-        this.dialoge = dialog;
-    }
-
-    public void setPreferencesKey(String prefskey) {
-        this.prefsOK_key = prefskey;
-    }
-
-    public void setPreferences(Preferences prefs) {
-        this.prefs = prefs;
-    }
-
-    @Override
-    public void setListableImpl(Listable listable) {
-        this.listableImplementation = listable;
+    public void setLabelText(String labelText) {
+        label.setText(labelText);
     }
 
     /**
@@ -155,29 +118,44 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
      *
      * @param listable
      */
-    public void setPreviewSelected(Listable listable) {
+    public void setPreviewSelected(Recipient listable) {
         listOfListable.setPreviewSelected(listable);
     }
 
-    public Listable getSelectedValue() {
-        return this.listOfListable.getSelectedValue();
+    public Recipient getSelectedValue() {
+        return listOfListable.getSelectedValue();
     }
 
-    public void clearFields() {
+    public void resetFields() {
         tfSearch.setText("");
+        btnLoadMore.setEnabled(false);
+        notifyloadMoreEnabled(btnLoadMore.isEnabled());
+        listOfListable.removeAllElements();
     }
 
-    public void setListablePreferredSize(int with, int height) {
-        listOfListable.setPreferredSize(with, height);
+    public JTextField getTfSearch() {
+        return tfSearch;
     }
 
-    public void addListableItemFormForFiltersListener(ListableItemFormForFiltersListener listableItemFormForFiltersListener) {
-        this.listableItemFormForFiltersListeners.add(listableItemFormForFiltersListener);
+    public JButton getBtnSearch() {
+        return btnSearch;
     }
 
-    public void notifySelectedListable(Listable listable) {
-        this.listableItemFormForFiltersListeners.forEach((listableItemFormForFiltersListener) -> {
-            listableItemFormForFiltersListener.selectedListable(listable);
+    public JButton getBtnLoadMore() {
+        return btnLoadMore;
+    }
+
+    public JList getlist() {
+        return listOfListable.getJList();
+    }
+
+    public void addLoadMoreEnabledListener(LoadMoreEnabledListener lmel) {
+        this.loadMoreEnabledListeners.add(lmel);
+    }
+
+    public void notifyloadMoreEnabled(boolean enabled) {
+        this.loadMoreEnabledListeners.forEach((lmel) -> {
+            lmel.loadMoreEnabled(enabled);
         });
     }
 
@@ -186,15 +164,16 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         @Override
         public void actionPerformed(ActionEvent e) {
             searchQueryImmutableCopy = tfSearch.getText();
-            searchResultTotalRowsCount = CRUDListable.searchResultRowsCount(listableImplementation, tfSearch.getText());
+            searchResultTotalRowsCount = CRUDRecipients.searchResultRowsCount(tfSearch.getText());
             LIMIT = ResultLimitSizePreference.getResultLimitSize();
             btnLoadMore.setEnabled(!(LIMIT >= searchResultTotalRowsCount));
+            notifyloadMoreEnabled(btnLoadMore.isEnabled());
             listOfListable.removeAllElements();
             OFFSET = 0;
             incrementedReturnedRowsCount = 0;
-            List<Listable> listables = CRUDListable.search(listableImplementation, tfSearch.getText(), LIMIT, OFFSET);
+            List<Recipient> listables = CRUDRecipients.search(tfSearch.getText(), LIMIT, OFFSET);
             if (listables.isEmpty()) {
-                JOptionPane.showMessageDialog(ListableItemFormForFilters.this, "No matched results!", "Info",
+                JOptionPane.showMessageDialog(RecipientForm.this, "No matched results!", "Info",
                         JOptionPane.PLAIN_MESSAGE);
             }
             incrementedReturnedRowsCount += listables.size();
@@ -209,26 +188,13 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         @Override
         public void actionPerformed(ActionEvent e) {
             OFFSET += LIMIT;
-            List<Listable> listables = CRUDListable.search(listableImplementation, searchQueryImmutableCopy, LIMIT, OFFSET);
+            List<Recipient> listables = CRUDRecipients.search(searchQueryImmutableCopy, LIMIT, OFFSET);
             incrementedReturnedRowsCount += listables.size();
             listables.forEach(listable -> {
                 listOfListable.addElement(listable);
             });
             btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
-        }
-    }
-
-    private class BtnOKHandler implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            notifySelectedListable(listOfListable.getSelectedValue());
-            dialoge.setVisible(false);
-            if (listOfListable.getSelectedValue() != null) {
-                prefs.putInt(prefsOK_key, listOfListable.getSelectedValue().getId());
-            } else {
-                prefs.putInt(prefsOK_key, 0);
-            }
+            notifyloadMoreEnabled(btnLoadMore.isEnabled());
         }
     }
 
@@ -238,22 +204,6 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         public void mousePressed(MouseEvent e) {
             if (SwingUtilities.isRightMouseButton(e)) {
                 listing.setSelectedIndex(listing.locationToIndex(e.getPoint()));
-            }
-        }
-    }
-
-    private class ListSelectionHandler implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            JList list = (JList) event.getSource();
-            if (!event.getValueIsAdjusting()) {
-                Listable listable = (Listable) list.getSelectedValue();
-                if (listable != null) {
-                    btnOK.setEnabled(true);
-                } else {
-                    btnOK.setEnabled(false);
-                }
             }
         }
     }

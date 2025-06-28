@@ -27,8 +27,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.prefs.Preferences;
 import javax.swing.JDialog;
-import warehousebox.db.model.Recipient;
-import warehousebox.utility.singularlisting.ListableItemFormForFilters;
+import warehousebox.utility.recipientslisting.RecipientFormForFilters;
 
 /**
  *
@@ -36,12 +35,12 @@ import warehousebox.utility.singularlisting.ListableItemFormForFilters;
  */
 public class RecipientFilterDialog extends JDialog {
 
-    private ListableItemFormForFilters listableItemFormForFilters;
+    private RecipientFormForFilters listableItemFormForFilters;
 
     public RecipientFilterDialog() {
         setLayout(new BorderLayout());
-        listableItemFormForFilters = new ListableItemFormForFilters();
-        listableItemFormForFilters.setListableImpl(new Recipient());
+        listableItemFormForFilters = new RecipientFormForFilters();
+        //listableItemFormForFilters.setListableImpl(new Recipient());
         add(listableItemFormForFilters, BorderLayout.CENTER);
         this.setMinimumSize(new Dimension(550, 400));
     }
@@ -58,7 +57,7 @@ public class RecipientFilterDialog extends JDialog {
         listableItemFormForFilters.setPreferences(preferences);
     }
 
-    protected ListableItemFormForFilters getListableItemFormForFilters() {
+    protected RecipientFormForFilters getListableItemFormForFilters() {
         return listableItemFormForFilters;
     }
 

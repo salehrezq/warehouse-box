@@ -49,15 +49,14 @@ import warehousebox.db.CRUDOutbounds;
 import warehousebox.db.model.Outbound;
 import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.ResultLimitSizePreference;
-import warehousebox.utility.singularlisting.Listable;
-import warehousebox.utility.singularlisting.ListableItemFormForFilters;
-import warehousebox.utility.singularlisting.ListableItemFormForFiltersListener;
+import warehousebox.utility.recipientslisting.RecipientFormForFilters;
+import warehousebox.utility.recipientslisting.RecipientFormForFiltersListener;
 
 /**
  *
  * @author Saleh
  */
-public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
+public class ItemsSearchLogic implements RecipientFormForFiltersListener {
 
     private List<ItemsSearchListener> itemsSearchListeners;
     private String searchQuery, previousSearchQuery;
@@ -129,7 +128,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         searchFilters.enableDateRangeFilter(false);
     }
 
-    protected ListableItemFormForFilters getListableItemFormForFilters() {
+    protected RecipientFormForFilters getListableItemFormForFilters() {
         return recipientFilterDialog.getListableItemFormForFilters();
     }
 
@@ -272,7 +271,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     }
 
     @Override
-    public void selectedListable(Listable listable) {
+    public void selectedListable(Recipient listable) {
         if (listable != null) {
             tfRecipientFilter.setText(listable.getName());
             searchFilters.setRecipient((Recipient) listable);
