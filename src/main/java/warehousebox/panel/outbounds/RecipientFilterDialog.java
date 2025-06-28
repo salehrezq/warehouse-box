@@ -43,7 +43,7 @@ public class RecipientFilterDialog extends JDialog {
         listableItemFormForFilters = new ListableItemFormForFilters();
         listableItemFormForFilters.setListableImpl(new Recipient());
         add(listableItemFormForFilters, BorderLayout.CENTER);
-        this.setMinimumSize(new Dimension(400, 400));
+        this.setMinimumSize(new Dimension(550, 400));
     }
 
     protected void setDialogeToListableItemFormForFilters() {

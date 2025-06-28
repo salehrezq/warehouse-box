@@ -25,7 +25,6 @@ package warehousebox.utility.singularlisting;
 
 import java.awt.Adjustable;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -48,7 +47,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import warehousebox.utility.scrollbarthin.ScrollBarThin;
 import warehousebox.db.CRUDListable;
+import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.ResultLimitSizePreference;
+import warehousebox.panel.menus.recipients.RecipientsImagePanel;
 
 /**
  *
@@ -64,6 +65,7 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
     private ListOfListable listOfListable;
     private JList listing;
     private Listable listableImplementation;
+    private RecipientsImagePanel recipientsImagePanel;
     // private ActionListener btnListener;
     private ListableItemFormForFilters thisListableItemManageClass;
     private int searchResultTotalRowsCount, incrementedReturnedRowsCount;
@@ -89,7 +91,7 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
 
         label = new JLabel();
         // Setup Text field search:
-        tfSearch = new JTextField(25);
+        tfSearch = new JTextField(28);
         scrollBarThinTfSearch = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarThinTfSearch.setModel(tfSearch.getHorizontalVisibility());
         Box boxSearchField = Box.createVerticalBox();
@@ -131,8 +133,11 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
 
         container.add(panelSearch, BorderLayout.PAGE_START);
         container.add(panelList, BorderLayout.CENTER);
+
+        recipientsImagePanel = new RecipientsImagePanel(128, 128);
+        recipientsImagePanel.setImagePlaceholder();
+        container.add(recipientsImagePanel.getContainer(), BorderLayout.LINE_END);
         add(container, BorderLayout.CENTER);
-        this.setMinimumSize(new Dimension(480, 350));
     }
 
     public void setDialoge(JDialog dialog) {
@@ -240,6 +245,16 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         public void mousePressed(MouseEvent e) {
             if (SwingUtilities.isRightMouseButton(e)) {
                 listing.setSelectedIndex(listing.locationToIndex(e.getPoint()));
+            }
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            JList list = (JList) e.getSource();
+            if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
+                int index = list.locationToIndex(e.getPoint());
+                Recipient recipient = (Recipient) list.getModel().getElementAt(index);
+                recipientsImagePanel.setImageOfSelectedItem(recipient.getId());
             }
         }
     }
