@@ -40,6 +40,9 @@ import warehousebox.utility.singularlisting.Listable;
  */
 public class CRUDListable {
 
+    private static String[] searchedWords;
+    private static int wordsLength;
+
     public static boolean create(Listable listable) {
         int insert = 0;
         String sql = "INSERT INTO "
@@ -123,23 +126,37 @@ public class CRUDListable {
         return exist;
     }
 
-    private static String formulateSearchFilters(Listable listableImplementation, String query) {
-        String sqlFilter = "";
-        if (query.isBlank()) {
+    private static String formulateSearchFilters(Listable listableImplementation, String searchQuery) {
+        String sqlFilter = " WHERE ";
+
+        if (searchQuery.isBlank()) {
+            sqlFilter = "";
             return sqlFilter;
         }
-        sqlFilter = " WHERE";
-        sqlFilter += " " + listableImplementation.getDBAttributeName() + "";
-        sqlFilter += " LIKE ?";
+
+        searchedWords = QueryWordsProcessor.getArrayOfWords(searchQuery);
+        wordsLength = searchedWords.length;
+
+        String dbQuerySQL = listableImplementation.getDBAttributeName() + " LIKE ?";
+        sqlFilter += wordsLength > 1 ? "(" : "";
+        for (var i = 0; i < wordsLength; i++) {
+            sqlFilter += dbQuerySQL;
+            sqlFilter += (wordsLength > 1 && i == 0) ? ")" : "";
+            sqlFilter += (i > 0) ? ")" : "";
+            sqlFilter += (i < (wordsLength - 1)) ? " AND (" : "";
+        }
         return sqlFilter;
     }
 
-    private static PreparedStatementWrapper formulateSearchPreparedStatement(String query, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
+    private static PreparedStatementWrapper formulateSearchPreparedStatement(String searchQuery, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
-        if (query.isBlank()) {
+        if (searchQuery.isBlank()) {
             return preparedStatementWrapper;
+        } else {
+            for (int i = 0; i < wordsLength; i++) {
+                p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
+            }
         }
-        p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + query + "%");
         return preparedStatementWrapper;
     }
 
