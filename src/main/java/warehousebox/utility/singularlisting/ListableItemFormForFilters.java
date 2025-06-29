@@ -43,6 +43,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import warehousebox.utility.scrollbarthin.ScrollBarThin;
@@ -89,13 +91,14 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         label = new JLabel();
         // Setup Text field search:
         tfSearch = new JTextField(28);
+        tfSearch.getDocument().addDocumentListener(new TextFieldContentReactHandler());
         scrollBarThinTfSearch = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarThinTfSearch.setModel(tfSearch.getHorizontalVisibility());
         Box boxSearchField = Box.createVerticalBox();
         boxSearchField.add(tfSearch);
         boxSearchField.add(scrollBarThinTfSearch);
         // Button search
-        btnSearch = new JButton("Search");
+        btnSearch = new JButton("Get all");
         btnSearch.addActionListener(new BtnSearchHandler());
         listOfListable = new ListOfListable();
         listing = listOfListable.getJList();
@@ -255,6 +258,28 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
                     btnOK.setEnabled(false);
                 }
             }
+        }
+    }
+
+    private class TextFieldContentReactHandler implements DocumentListener {
+
+        public void changed() {
+            btnSearch.setText(!tfSearch.getText().equals("") ? "Search" : "Get all");
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            changed();
         }
     }
 

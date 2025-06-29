@@ -40,6 +40,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import warehousebox.utility.scrollbarthin.ScrollBarThin;
 import warehousebox.db.CRUDListable;
 import warehousebox.panel.menus.ResultLimitSizePreference;
@@ -80,13 +82,14 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
         label = new JLabel();
         // Setup Text field search:
         tfSearch = new JTextField(25);
+        tfSearch.getDocument().addDocumentListener(new TextFieldContentReactHandler());
         scrollBarThinTfSearch = new ScrollBarThin(Adjustable.HORIZONTAL);
         scrollBarThinTfSearch.setModel(tfSearch.getHorizontalVisibility());
         Box boxSearchField = Box.createVerticalBox();
         boxSearchField.add(tfSearch);
         boxSearchField.add(scrollBarThinTfSearch);
         // Button search
-        btnSearch = new JButton("Search");
+        btnSearch = new JButton("Get all");
         btnSearch.addActionListener(new BtnSearchHandler());
         listOfListable = new ListOfListable();
         listing = listOfListable.getJList();
@@ -210,6 +213,28 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
             if (SwingUtilities.isRightMouseButton(e)) {
                 listing.setSelectedIndex(listing.locationToIndex(e.getPoint()));
             }
+        }
+    }
+
+    private class TextFieldContentReactHandler implements DocumentListener {
+
+        public void changed() {
+            btnSearch.setText(!tfSearch.getText().equals("") ? "Search" : "Get all");
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            changed();
         }
     }
 

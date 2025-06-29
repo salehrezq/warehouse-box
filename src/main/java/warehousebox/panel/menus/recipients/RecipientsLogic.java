@@ -33,6 +33,8 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import warehousebox.db.CRUDRecipients;
 import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.ResultLimitSizePreference;
@@ -66,6 +68,7 @@ public class RecipientsLogic {
         recipientsImagePanel = rc.getRecipientsImagePanel();
 
         listing = recipientsList.getJList();
+        tfSearch.getDocument().addDocumentListener(new TextFieldContentReactHandler());
         btnSearchQuery.addActionListener(new SearchHandler());
         btnLoadMore.addActionListener(new LoadMoreHandler());
         listing.addMouseListener(new ListDoubleClickHandler());
@@ -130,6 +133,28 @@ public class RecipientsLogic {
                 Recipient recipient = (Recipient) list.getModel().getElementAt(index);
                 recipientsImagePanel.setImageOfSelectedItem(recipient.getId());
             }
+        }
+    }
+
+    private class TextFieldContentReactHandler implements DocumentListener {
+
+        public void changed() {
+            btnSearchQuery.setText(!tfSearch.getText().equals("") ? "Search" : "Get all");
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            changed();
         }
     }
 }
