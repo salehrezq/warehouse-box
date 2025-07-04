@@ -44,6 +44,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import warehousebox.utility.scrollbarthin.ScrollBarThin;
 import warehousebox.db.CRUDListable;
+import warehousebox.db.QueryWordsProcessor;
 import warehousebox.panel.menus.ResultLimitSizePreference;
 
 /**
@@ -65,7 +66,7 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
     private int searchResultTotalRowsCount, incrementedReturnedRowsCount;
     private static int LIMIT,
             OFFSET;
-    private String searchQueryImmutableCopy;
+    private String[] searchedWordsImmutableCopy;
     private List<LoadMoreEnabledListener> loadMoreEnabledListeners;
 
     public ListableItemForm() {
@@ -171,15 +172,25 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            searchQueryImmutableCopy = tfSearch.getText();
-            searchResultTotalRowsCount = CRUDListable.searchResultRowsCount(listableImplementation, tfSearch.getText());
+            String[] searchedWords = QueryWordsProcessor.getArrayOfWords(tfSearch.getText());
+            searchedWordsImmutableCopy = searchedWords;
+
+            if (searchedWords.length < 1) {
+                JOptionPane.showMessageDialog(
+                        ListableItemForm.this,
+                        "Search query is not valid for search",
+                        "Write some search query.",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            searchResultTotalRowsCount = CRUDListable.searchResultRowsCount(listableImplementation, searchedWords);
             LIMIT = ResultLimitSizePreference.getResultLimitSize();
             btnLoadMore.setEnabled(!(LIMIT >= searchResultTotalRowsCount));
             notifyloadMoreEnabled(btnLoadMore.isEnabled());
             listOfListable.removeAllElements();
             OFFSET = 0;
             incrementedReturnedRowsCount = 0;
-            List<Listable> listables = CRUDListable.search(listableImplementation, tfSearch.getText(), LIMIT, OFFSET);
+            List<Listable> listables = CRUDListable.search(listableImplementation, searchedWords, LIMIT, OFFSET);
             if (listables.isEmpty()) {
                 JOptionPane.showMessageDialog(ListableItemForm.this, "No matched results!", "Info",
                         JOptionPane.PLAIN_MESSAGE);
@@ -196,7 +207,7 @@ public class ListableItemForm extends JPanel implements ListableConsumer {
         @Override
         public void actionPerformed(ActionEvent e) {
             OFFSET += LIMIT;
-            List<Listable> listables = CRUDListable.search(listableImplementation, searchQueryImmutableCopy, LIMIT, OFFSET);
+            List<Listable> listables = CRUDListable.search(listableImplementation, searchedWordsImmutableCopy, LIMIT, OFFSET);
             incrementedReturnedRowsCount += listables.size();
             listables.forEach(listable -> {
                 listOfListable.addElement(listable);

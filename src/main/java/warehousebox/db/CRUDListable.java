@@ -126,16 +126,16 @@ public class CRUDListable {
         return exist;
     }
 
-    private static String formulateSearchFilters(Listable listableImplementation, String searchQuery) {
+    private static String formulateSearchFilters(Listable listableImplementation, String[] searchQuery) {
         String sqlFilter = " WHERE ";
 
-        if (searchQuery.isBlank()) {
+        CRUDListable.searchedWords = searchQuery;
+        wordsLength = searchQuery.length;
+
+        if (wordsLength < 1) {
             sqlFilter = "";
             return sqlFilter;
         }
-
-        searchedWords = QueryWordsProcessor.getArrayOfWords(searchQuery);
-        wordsLength = searchedWords.length;
 
         String dbQuerySQL = listableImplementation.getDBAttributeName() + " LIKE ?";
         sqlFilter += wordsLength > 1 ? "(" : "";
@@ -148,9 +148,9 @@ public class CRUDListable {
         return sqlFilter;
     }
 
-    private static PreparedStatementWrapper formulateSearchPreparedStatement(String searchQuery, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
+    private static PreparedStatementWrapper formulateSearchPreparedStatement(String[] searchQuery, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
-        if (searchQuery.isBlank()) {
+        if (wordsLength < 1) {
             return preparedStatementWrapper;
         } else {
             for (int i = 0; i < wordsLength; i++) {
@@ -160,16 +160,16 @@ public class CRUDListable {
         return preparedStatementWrapper;
     }
 
-    public static int searchResultRowsCount(Listable listableImplementation, String query) {
+    public static int searchResultRowsCount(Listable listableImplementation, String[] searchQuery) {
         int searchResultRowsCount = 0;
         String sql = "SELECT COUNT(id) AS search_result_rows_count"
                 + " FROM " + "" + listableImplementation.getDBEntityName() + ""
-                + formulateSearchFilters(listableImplementation, query);
+                + formulateSearchFilters(listableImplementation, searchQuery);
 
         try (Connection con = Connect.getConnection()) {
             PreparedStatement p;
             p = con.prepareStatement(sql);
-            formulateSearchPreparedStatement(query, new PreparedStatementWrapper(p));
+            formulateSearchPreparedStatement(searchQuery, new PreparedStatementWrapper(p));
 
             try (ResultSet result = p.executeQuery()) {
                 while (result.next()) {
@@ -182,7 +182,7 @@ public class CRUDListable {
         return searchResultRowsCount;
     }
 
-    public static List<Listable> search(Listable listableImplementation, String query, int LIMIT, int OFFSET) {
+    public static List<Listable> search(Listable listableImplementation, String[] query, int LIMIT, int OFFSET) {
         List<Listable> listables = new ArrayList<>();
         String sql = "SELECT *"
                 + " FROM " + "" + listableImplementation.getDBEntityName() + ""

@@ -49,7 +49,7 @@ public class QueryWordsProcessor {
         return uniqueWords.toArray(String[]::new);
     }
 
-    protected static String[] getArrayOfWords(String text) {
+    public static String[] getArrayOfWords(String text) {
         return getUniqueArrayOfWords(trimExtraSpaces(text).toLowerCase().split("\\W+"));
     }
 }
