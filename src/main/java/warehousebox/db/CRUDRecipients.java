@@ -40,9 +40,6 @@ import warehousebox.db.model.Recipient;
  */
 public class CRUDRecipients {
 
-    private static String[] searchedWords;
-    private static int wordsLength;
-
     public static Recipient create(Recipient recipient) {
         String sql = "INSERT INTO recipients (name) VALUES (?)";
 
@@ -102,16 +99,14 @@ public class CRUDRecipients {
         return isUsed;
     }
 
-    private static String formulateSearchFilters(String searchQuery) {
+    private static String formulateSearchFilters(String[] searchedWords) {
         String sqlFilter = " WHERE ";
+        int wordsLength = searchedWords.length;
 
-        if (searchQuery.isBlank()) {
+        if (wordsLength < 1) {
             sqlFilter = "";
             return sqlFilter;
         }
-
-        searchedWords = QueryWordsProcessor.getArrayOfWords(searchQuery);
-        wordsLength = searchedWords.length;
 
         String dbQuerySQL = "name LIKE ?";
         sqlFilter += wordsLength > 1 ? "(" : "";
@@ -124,27 +119,27 @@ public class CRUDRecipients {
         return sqlFilter;
     }
 
-    private static PreparedStatementWrapper formulateSearchPreparedStatement(String searchQuery, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
+    private static PreparedStatementWrapper formulateSearchPreparedStatement(String[] searchedWords, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
-        if (searchQuery.isBlank()) {
+        if (searchedWords.length < 1) {
             return preparedStatementWrapper;
         } else {
-            for (int i = 0; i < wordsLength; i++) {
+            for (int i = 0; i < searchedWords.length; i++) {
                 p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
             }
         }
         return preparedStatementWrapper;
     }
 
-    public static int searchResultRowsCount(String query) {
+    public static int searchResultRowsCount(String[] searchedWords) {
         int searchResultRowsCount = 0;
         String sql = "SELECT COUNT(id) AS search_result_rows_count"
-                + " FROM recipients" + formulateSearchFilters(query);
+                + " FROM recipients" + formulateSearchFilters(searchedWords);
 
         try (Connection con = Connect.getConnection()) {
             PreparedStatement p;
             p = con.prepareStatement(sql);
-            formulateSearchPreparedStatement(query, new PreparedStatementWrapper(p));
+            formulateSearchPreparedStatement(searchedWords, new PreparedStatementWrapper(p));
 
             try (ResultSet result = p.executeQuery()) {
                 while (result.next()) {
@@ -157,16 +152,16 @@ public class CRUDRecipients {
         return searchResultRowsCount;
     }
 
-    public static List<Recipient> search(String query, int LIMIT, int OFFSET) {
+    public static List<Recipient> search(String[] searchedWords, int LIMIT, int OFFSET) {
         List<Recipient> recipients = new ArrayList<>();
-        String sql = "SELECT * FROM recipients" + formulateSearchFilters(query)
+        String sql = "SELECT * FROM recipients" + formulateSearchFilters(searchedWords)
                 + " ORDER BY name ASC"
                 + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try (Connection con = Connect.getConnection()) {
             PreparedStatement p = con.prepareStatement(sql);
             PreparedStatementWrapper preparedStatementWrapper
-                    = formulateSearchPreparedStatement(query, new PreparedStatementWrapper(p));
+                    = formulateSearchPreparedStatement(searchedWords, new PreparedStatementWrapper(p));
             int parameterIndex = preparedStatementWrapper.getParameterIndex();
             p.setInt(++parameterIndex, OFFSET);
             p.setInt(++parameterIndex, LIMIT);

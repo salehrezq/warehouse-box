@@ -42,6 +42,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import warehousebox.utility.scrollbarthin.ScrollBarThin;
 import warehousebox.db.CRUDRecipients;
+import warehousebox.db.QueryWordsProcessor;
 import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.ResultLimitSizePreference;
 
@@ -63,7 +64,7 @@ public class RecipientForm extends JPanel {
     private int searchResultTotalRowsCount, incrementedReturnedRowsCount;
     private static int LIMIT,
             OFFSET;
-    private String searchQueryImmutableCopy;
+    private String[] searchedWordsImmutableCopy;
     private List<LoadMoreEnabledListener> loadMoreEnabledListeners;
 
     public RecipientForm() {
@@ -163,15 +164,25 @@ public class RecipientForm extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            searchQueryImmutableCopy = tfSearch.getText();
-            searchResultTotalRowsCount = CRUDRecipients.searchResultRowsCount(tfSearch.getText());
+            String[] searchedWords = QueryWordsProcessor.getArrayOfWords(tfSearch.getText());
+            searchedWordsImmutableCopy = searchedWords;
+
+            if (searchedWords.length < 1) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Search query is not valid for search",
+                        "Write some search query.",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            searchResultTotalRowsCount = CRUDRecipients.searchResultRowsCount(searchedWords);
             LIMIT = ResultLimitSizePreference.getResultLimitSize();
             btnLoadMore.setEnabled(!(LIMIT >= searchResultTotalRowsCount));
             notifyloadMoreEnabled(btnLoadMore.isEnabled());
             listOfListable.removeAllElements();
             OFFSET = 0;
             incrementedReturnedRowsCount = 0;
-            List<Recipient> listables = CRUDRecipients.search(tfSearch.getText(), LIMIT, OFFSET);
+            List<Recipient> listables = CRUDRecipients.search(searchedWords, LIMIT, OFFSET);
             if (listables.isEmpty()) {
                 JOptionPane.showMessageDialog(RecipientForm.this, "No matched results!", "Info",
                         JOptionPane.PLAIN_MESSAGE);
@@ -188,7 +199,7 @@ public class RecipientForm extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             OFFSET += LIMIT;
-            List<Recipient> listables = CRUDRecipients.search(searchQueryImmutableCopy, LIMIT, OFFSET);
+            List<Recipient> listables = CRUDRecipients.search(searchedWordsImmutableCopy, LIMIT, OFFSET);
             incrementedReturnedRowsCount += listables.size();
             listables.forEach(listable -> {
                 listOfListable.addElement(listable);
