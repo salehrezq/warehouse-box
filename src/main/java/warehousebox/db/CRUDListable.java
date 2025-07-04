@@ -40,9 +40,6 @@ import warehousebox.utility.singularlisting.Listable;
  */
 public class CRUDListable {
 
-    private static String[] searchedWords;
-    private static int wordsLength;
-
     public static boolean create(Listable listable) {
         int insert = 0;
         String sql = "INSERT INTO "
@@ -126,11 +123,9 @@ public class CRUDListable {
         return exist;
     }
 
-    private static String formulateSearchFilters(Listable listableImplementation, String[] searchQuery) {
+    private static String formulateSearchFilters(Listable listableImplementation, String[] searchedWords) {
         String sqlFilter = " WHERE ";
-
-        CRUDListable.searchedWords = searchQuery;
-        wordsLength = searchQuery.length;
+        int wordsLength = searchedWords.length;
 
         if (wordsLength < 1) {
             sqlFilter = "";
@@ -148,28 +143,28 @@ public class CRUDListable {
         return sqlFilter;
     }
 
-    private static PreparedStatementWrapper formulateSearchPreparedStatement(String[] searchQuery, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
+    private static PreparedStatementWrapper formulateSearchPreparedStatement(String[] searchedWords, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
-        if (wordsLength < 1) {
+        if (searchedWords.length < 1) {
             return preparedStatementWrapper;
         } else {
-            for (int i = 0; i < wordsLength; i++) {
+            for (int i = 0; i < searchedWords.length; i++) {
                 p.setString(preparedStatementWrapper.incrementParameterIndex(), "%" + searchedWords[i] + "%");
             }
         }
         return preparedStatementWrapper;
     }
 
-    public static int searchResultRowsCount(Listable listableImplementation, String[] searchQuery) {
+    public static int searchResultRowsCount(Listable listableImplementation, String[] searchedWords) {
         int searchResultRowsCount = 0;
         String sql = "SELECT COUNT(id) AS search_result_rows_count"
                 + " FROM " + "" + listableImplementation.getDBEntityName() + ""
-                + formulateSearchFilters(listableImplementation, searchQuery);
+                + formulateSearchFilters(listableImplementation, searchedWords);
 
         try (Connection con = Connect.getConnection()) {
             PreparedStatement p;
             p = con.prepareStatement(sql);
-            formulateSearchPreparedStatement(searchQuery, new PreparedStatementWrapper(p));
+            formulateSearchPreparedStatement(searchedWords, new PreparedStatementWrapper(p));
 
             try (ResultSet result = p.executeQuery()) {
                 while (result.next()) {
