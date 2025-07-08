@@ -33,6 +33,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import net.miginfocom.swing.MigLayout;
 import warehousebox.panel.menus.recipients.RecipientsImagePanel;
 import warehousebox.utility.scrollbarthin.ScrollBarThin;
 
@@ -61,7 +62,7 @@ public class ItemsSearchPane {
     private final Color colorTextField = new Color(84, 84, 84);
 
     public ItemsSearchPane() {
-        container = new JPanel();
+        container = new JPanel(new MigLayout("fillx"));
 
         // Setup Text field search query
         tfSearchQuery = new JTextField(35);
@@ -101,9 +102,8 @@ public class ItemsSearchPane {
         recipientsImagePanel = new RecipientsImagePanel(64, 64);
         recipientsImagePanel.setImagePlaceholder();
 
-        Box boxSearch = Box.createHorizontalBox();
-        boxSearch.add(boxSearchQueryField);
-        boxSearch.add(btnSearchQuery);
+        container.add(boxSearchQueryField, "center, split 2");
+        container.add(btnSearchQuery, "wrap");
         Box boxFilters = Box.createHorizontalBox();
         boxFilters.add(checkOutboundIdFilter);
         boxFilters.add(Box.createHorizontalStrut(5));
@@ -120,6 +120,7 @@ public class ItemsSearchPane {
         boxFilters.add(boxRecipientFilterField);
         boxFilters.add(Box.createHorizontalStrut(2));
         boxFilters.add(btnRemoveRecipient);
+
         Box boxIssuanceTypesFilters = Box.createHorizontalBox();
         boxIssuanceTypesFilters.add(checkConsumableFilter);
         boxIssuanceTypesFilters.add(Box.createHorizontalStrut(2));
@@ -127,13 +128,9 @@ public class ItemsSearchPane {
         boxIssuanceTypesFilters.add(Box.createHorizontalStrut(2));
         boxIssuanceTypesFilters.add(checkScrapFilter);
         boxIssuanceTypesFilters.add(Box.createHorizontalStrut(155));
-        Box boxContainer = Box.createVerticalBox();
-        boxContainer.add(boxSearch);
-        boxContainer.add(boxFilters);
-        boxContainer.add(boxIssuanceTypesFilters);
-        boxContainer.add(dateRange.getContainer());
-        boxContainer.add(recipientsImagePanel.getContainer());
-        container.add(boxContainer);
+        container.add(boxIssuanceTypesFilters, "center, wrap");
+        container.add(boxFilters, "center, wrap");
+        container.add(dateRange.getContainer(), "center, wrap");
     }
 
     private ImageIcon getTransformedImageIcon(String resource) {
