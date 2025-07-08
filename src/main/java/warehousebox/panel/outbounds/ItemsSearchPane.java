@@ -33,6 +33,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import warehousebox.panel.menus.recipients.RecipientsImagePanel;
 import warehousebox.utility.scrollbarthin.ScrollBarThin;
 
 /**
@@ -56,6 +57,7 @@ public class ItemsSearchPane {
             checkReturnableFilter,
             checkScrapFilter;
     private DateRange dateRange;
+    private RecipientsImagePanel recipientsImagePanel;
     private final Color colorTextField = new Color(84, 84, 84);
 
     public ItemsSearchPane() {
@@ -96,6 +98,8 @@ public class ItemsSearchPane {
         boxRecipientFilterField.add(scrollBarThinTfRecipientFilter);
 
         dateRange = new DateRange();
+        recipientsImagePanel = new RecipientsImagePanel(64, 64);
+        recipientsImagePanel.setImagePlaceholder();
 
         Box boxSearch = Box.createHorizontalBox();
         boxSearch.add(boxSearchQueryField);
@@ -128,6 +132,7 @@ public class ItemsSearchPane {
         boxContainer.add(boxFilters);
         boxContainer.add(boxIssuanceTypesFilters);
         boxContainer.add(dateRange.getContainer());
+        boxContainer.add(recipientsImagePanel.getContainer());
         container.add(boxContainer);
     }
 
@@ -208,5 +213,9 @@ public class ItemsSearchPane {
 
     protected DateRange getDateRange() {
         return this.dateRange;
+    }
+
+    protected RecipientsImagePanel getRecipientsImagePanel() {
+        return recipientsImagePanel;
     }
 }

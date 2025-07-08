@@ -49,6 +49,7 @@ import warehousebox.db.CRUDOutbounds;
 import warehousebox.db.model.Outbound;
 import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.ResultLimitSizePreference;
+import warehousebox.panel.menus.recipients.RecipientsImagePanel;
 import warehousebox.utility.recipientslisting.RecipientFormForFilters;
 import warehousebox.utility.recipientslisting.RecipientFormForFiltersListener;
 
@@ -87,6 +88,7 @@ public class ItemsSearchLogic implements RecipientFormForFiltersListener {
     private DocumentListener matchDigitsOnly, textFieldContentReactHandler;
     private final Pattern pattern = Pattern.compile("\\d+");
     private DateRange dateRange;
+    private RecipientsImagePanel recipientsImagePanel;
     private LocalDate oldDateStart, oldDateEnd;
     private DateChangeHandler dateChangeHandler;
     private CheckBoxFiltersHandler checkBoxFiltersHandler;
@@ -106,7 +108,7 @@ public class ItemsSearchLogic implements RecipientFormForFiltersListener {
     private final Color colorError = new Color(255, 255, 0);
     private Recipient recipient;
 
-    public ItemsSearchLogic() {
+    public ItemsSearchLogic(ItemsSearchPane itemSearchPane) {
         prefs = Preferences.userRoot().node(getClass().getName());
         recipientFilterDialog = new RecipientFilterDialog();
         recipientFilterDialog.setDialogeToListableItemFormForFilters();
@@ -126,6 +128,8 @@ public class ItemsSearchLogic implements RecipientFormForFiltersListener {
         searchFilters.setReturnableFilter(true);
         searchFilters.setScrapFilter(true);
         searchFilters.enableDateRangeFilter(false);
+
+        recipientsImagePanel = itemSearchPane.getRecipientsImagePanel();
     }
 
     protected RecipientFormForFilters getListableItemFormForFilters() {
@@ -276,6 +280,7 @@ public class ItemsSearchLogic implements RecipientFormForFiltersListener {
             tfRecipientFilter.setText(listable.getName());
             searchFilters.setRecipient((Recipient) listable);
             isRecipientSelected = true;
+            recipientsImagePanel.setImageOfSelectedItem(listable.getId());
         } else {
             tfRecipientFilter.setText("");
             searchFilters.setRecipient(null);

@@ -59,7 +59,7 @@ public class OutboundsTap extends JPanel {
         outboundsList.setRowAttributesDisplay(rowAttributesDisplay);
         panelOutboundsList.add(rowAttributesDisplay.getContainer(), BorderLayout.PAGE_START);
         panelOutboundsList.add(outboundsList, BorderLayout.CENTER);
-        outboundsSearchLogic = new ItemsSearchLogic();
+        outboundsSearchLogic = new ItemsSearchLogic(outboundsSearchPane);
         outboundsSearchLogic.addItemSearchListener(outboundsList);
         outboundsSearchLogic.setTfSearchQuery(outboundsSearchPane.getTfSearchQuery());
         outboundsSearchLogic.setBtnSearch(outboundsSearchPane.getBtnSearchQuery());

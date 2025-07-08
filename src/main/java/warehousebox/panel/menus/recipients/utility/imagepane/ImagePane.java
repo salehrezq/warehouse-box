@@ -23,11 +23,13 @@
  */
 package warehousebox.panel.menus.recipients.utility.imagepane;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import net.coobird.thumbnailator.Thumbnails;
@@ -53,6 +55,7 @@ public class ImagePane {
         lbImage.setMaximumSize(new Dimension(width, height));
         lbImage.setHorizontalAlignment(JLabel.CENTER);
         lbImage.setVerticalAlignment(JLabel.CENTER);
+        lbImage.setBorder(BorderFactory.createLineBorder(Color.red, 1, true));
         noImageResponse = new NoImageResponse(lbImage);
         loadingFeedback = new LoadingFeedback(lbImage);
     }

@@ -59,8 +59,9 @@ public class RecipientsImagePanel implements RecipientImageCRUDListener {
         this.width = width;
         this.height = height;
         panelContainer = new JPanel(new BorderLayout());
-        panelContainer.setPreferredSize(new Dimension(130, 0));
+        panelContainer.setPreferredSize(new Dimension(width, width));
         imagePane = new ImagePane(width, height);
+
         panelContainer.add(imagePane.getContainer(), BorderLayout.CENTER);
     }
 
@@ -122,9 +123,7 @@ public class RecipientsImagePanel implements RecipientImageCRUDListener {
                              */
                             imagePane.stopAnimation();
                             imagePane.setImage(image);
-
                         } else {
-
                             imagePane.setImage(null);
                             imagePane.noImageResponseAnimated();
                         }
