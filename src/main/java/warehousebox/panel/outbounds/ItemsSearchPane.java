@@ -102,8 +102,6 @@ public class ItemsSearchPane {
         recipientsImagePanel = new RecipientsImagePanel(64, 64);
         recipientsImagePanel.setImagePlaceholder();
 
-        container.add(boxSearchQueryField, "center, split 2");
-        container.add(btnSearchQuery, "wrap");
         Box boxFilters = Box.createHorizontalBox();
         boxFilters.add(checkOutboundIdFilter);
         boxFilters.add(Box.createHorizontalStrut(5));
@@ -128,9 +126,22 @@ public class ItemsSearchPane {
         boxIssuanceTypesFilters.add(Box.createHorizontalStrut(2));
         boxIssuanceTypesFilters.add(checkScrapFilter);
         boxIssuanceTypesFilters.add(Box.createHorizontalStrut(155));
-        container.add(boxIssuanceTypesFilters, "center, wrap");
-        container.add(boxFilters, "center, wrap");
-        container.add(dateRange.getContainer(), "center, wrap");
+
+        /**
+         * Group boxIssuanceTypesFilters with date range with the recipient
+         * image.
+         */
+        Box leftGroup = Box.createVerticalBox();
+        leftGroup.add(boxIssuanceTypesFilters);
+        leftGroup.add(dateRange.getContainer());
+        Box group = Box.createHorizontalBox();
+        group.add(leftGroup);
+        group.add(recipientsImagePanel.getContainer());
+
+        container.add(boxSearchQueryField, "center, span 2, split 2");
+        container.add(btnSearchQuery, "wrap");
+        container.add(boxFilters, "center, span 2, wrap");
+        container.add(group, "center");
     }
 
     private ImageIcon getTransformedImageIcon(String resource) {
