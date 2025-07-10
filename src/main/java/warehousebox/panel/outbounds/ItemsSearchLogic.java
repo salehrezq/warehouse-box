@@ -57,7 +57,9 @@ import warehousebox.utility.recipientslisting.RecipientFormForFiltersListener;
  *
  * @author Saleh
  */
-public class ItemsSearchLogic implements RecipientFormForFiltersListener {
+public class ItemsSearchLogic implements
+        RecipientFormForFiltersListener,
+        RecipientIdOfOutboundSelectedRowListener {
 
     private List<ItemsSearchListener> itemsSearchListeners;
     private String searchQuery, previousSearchQuery;
@@ -288,6 +290,11 @@ public class ItemsSearchLogic implements RecipientFormForFiltersListener {
         }
         this.recipient = (Recipient) listable;
         btnSearch.setText(isAnySearchFiltersSelected() ? "Search" : "Get all");
+    }
+
+    @Override
+    public void selectedRecipientIdOfOutboundRow(int recipientId) {
+        recipientsImagePanel.setImageOfSelectedItem(recipientId);
     }
 
     private class SearchHandler implements ActionListener {

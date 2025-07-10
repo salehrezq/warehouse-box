@@ -80,6 +80,7 @@ public class OutboundsList extends JPanel
     private Integer selectedModelRow;
     private ArrayList<RowIdSelectionListener> rowIdSelectionListeners;
     private List<OutboundDeleteListener> outboundDeleteListeners;
+    private List<RecipientIdOfOutboundSelectedRowListener> recipientIdOfOutboundSelectedRowListeners;
     private Listable listableImplementation;
     private final JPopupMenu popupMenu;
     private final JMenuItem menuOutboundEdit,
@@ -99,6 +100,7 @@ public class OutboundsList extends JPanel
         setLayout(new BorderLayout());
         rowIdSelectionListeners = new ArrayList<>();
         outboundDeleteListeners = new ArrayList<>();
+        recipientIdOfOutboundSelectedRowListeners = new ArrayList<>();
         model = new OutboundTableModel();
 
         popupMenu = new JPopupMenu();
@@ -265,6 +267,16 @@ public class OutboundsList extends JPanel
         });
     }
 
+    public void addRecipientIdOfOutboundSelectedRowListener(RecipientIdOfOutboundSelectedRowListener recipientIdOfOutboundSelectedRowListener) {
+        this.recipientIdOfOutboundSelectedRowListeners.add(recipientIdOfOutboundSelectedRowListener);
+    }
+
+    public void notifySelectedRecipientIdOfOutboundRow(int id) {
+        this.recipientIdOfOutboundSelectedRowListeners.forEach((recipientIdOfOutboundSelectedRowListener) -> {
+            recipientIdOfOutboundSelectedRowListener.selectedRecipientIdOfOutboundRow(id);
+        });
+    }
+
     @Override
     public void listableUpdated(Listable listable, String oldlistableName) {
         String dbEntityName = listable.getDBEntityName();
@@ -350,6 +362,8 @@ public class OutboundsList extends JPanel
                 Object itemIdObject = table.getModel().getValueAt(selectedModelRow, itemIdColumnIndex);
                 Integer itemId = Integer.parseInt(itemIdObject.toString());
                 notifySelectedRowId(itemId);
+
+                notifySelectedRecipientIdOfOutboundRow(model.getOutbound(selectedModelRow).getRecipient().getId());
             }
         }
     }
