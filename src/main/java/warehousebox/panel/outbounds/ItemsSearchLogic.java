@@ -165,13 +165,17 @@ public class ItemsSearchLogic implements
     protected void setTfRecipientFilter(JTextField tfRecipientFilter) {
         this.tfRecipientFilter = tfRecipientFilter;
         int recipientId = prefs.getInt(PREFS_RECIPIENT_OK, 0);
-        Recipient recipient = null;
+        recipient = null;
         if (recipientId > 0) {
             recipient = (Recipient) CRUDListable.getById(new Recipient(), recipientId);
         }
         searchFilters.setRecipient(recipient);
-        this.recipient = recipient;
         this.tfRecipientFilter.setText((recipient != null) ? recipient.getName() : "");
+        if (searchFilters.isRecipientFilter()) {
+            recipientsImagePanel.setImageOfSelectedItem(recipientId);
+        } else {
+            recipientsImagePanel.setImagePlaceholder();
+        }
     }
 
     protected void setBtnSearch(JButton btnSearch) {
