@@ -65,6 +65,14 @@ public class RecipientsImagePanel implements RecipientImageCRUDListener {
         panelContainer.add(imagePane.getContainer(), BorderLayout.CENTER);
     }
 
+    public void setImageLoading128px() {
+        imagePane.setImageLoading128px();
+    }
+
+    public void setImageLoading64px() {
+        imagePane.setImageLoading64px();
+    }
+
     public JPanel getContainer() {
         return panelContainer;
     }

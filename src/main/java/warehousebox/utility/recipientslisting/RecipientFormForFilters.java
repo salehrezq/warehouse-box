@@ -139,6 +139,7 @@ public class RecipientFormForFilters extends JPanel {
 
         recipientsImagePanel = new RecipientsImagePanel(128, 128);
         recipientsImagePanel.setImagePlaceholder();
+        recipientsImagePanel.setImageLoading128px();
         container.add(recipientsImagePanel.getContainer(), BorderLayout.LINE_END);
         add(container, BorderLayout.CENTER);
     }

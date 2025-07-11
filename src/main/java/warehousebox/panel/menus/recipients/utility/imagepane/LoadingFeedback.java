@@ -37,7 +37,14 @@ public class LoadingFeedback {
 
     public LoadingFeedback(JLabel container) {
         this.container = container;
-        loading = new ImageIcon(getClass().getResource("/images/loading-gif/loading.gif"));
+    }
+
+    public void setImageLoading128px() {
+        loading = new ImageIcon(getClass().getResource("/images/loading-gif/loading-128px.gif"));
+    }
+
+    public void setImageLoading64px() {
+        loading = new ImageIcon(getClass().getResource("/images/loading-gif/loading-64px.gif"));
     }
 
     public void loading() {

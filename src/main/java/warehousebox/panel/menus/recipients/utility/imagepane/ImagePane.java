@@ -60,6 +60,14 @@ public class ImagePane {
         loadingFeedback = new LoadingFeedback(lbImage);
     }
 
+    public void setImageLoading128px() {
+        loadingFeedback.setImageLoading128px();
+    }
+
+    public void setImageLoading64px() {
+        loadingFeedback.setImageLoading64px();
+    }
+
     public void setImage(RecipientImage image) {
         this.recipientImage = image;
         bufferedImage = (recipientImage != null) ? recipientImage.getBufferedImage() : null;

@@ -48,6 +48,7 @@ public class RecipientsControls {
         container = new JPanel(new BorderLayout());
         panelLeft = new JPanel(new BorderLayout());
         recipientsImagePanel = new RecipientsImagePanel(128, 128);
+        recipientsImagePanel.setImageLoading128px();
         controls = new JPanel();
         btnAdd = new JButton("Add");
         recipientsCreateUpdateDialog = new RecipientsCreateUpdateDialog(owner, "Create", true);

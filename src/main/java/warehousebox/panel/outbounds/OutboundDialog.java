@@ -127,6 +127,7 @@ public class OutboundDialog extends JDialog {
 
         recipientsImagePanel = new RecipientsImagePanel(128, 128);
         recipientsImagePanel.setImagePlaceholder();
+        recipientsImagePanel.setImageLoading128px();
 
         btnSubmit = new JButton("Submit");
         btnSubmit.setEnabled(false);

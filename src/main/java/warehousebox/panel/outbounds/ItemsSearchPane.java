@@ -101,6 +101,7 @@ public class ItemsSearchPane {
         dateRange = new DateRange();
         recipientsImagePanel = new RecipientsImagePanel(64, 64);
         recipientsImagePanel.setImagePlaceholder();
+        recipientsImagePanel.setImageLoading64px();
 
         Box boxFilters = Box.createHorizontalBox();
         boxFilters.add(checkOutboundIdFilter);
