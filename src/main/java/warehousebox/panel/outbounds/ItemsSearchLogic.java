@@ -641,6 +641,7 @@ public class ItemsSearchLogic implements
                 isRecipientSelected = false;
                 btnSearch.setText(isAnySearchFiltersSelected() ? "Search" : "Get all");
                 prefs.putInt(PREFS_RECIPIENT_OK, 0);
+                recipientsImagePanel.setImagePlaceholder();
             }
         }
 
