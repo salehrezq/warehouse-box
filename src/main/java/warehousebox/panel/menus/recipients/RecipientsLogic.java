@@ -79,6 +79,11 @@ public class RecipientsLogic {
         popupMenuHandler.setUp();
     }
 
+    private void resetFields() {
+        btnLoadMore.setEnabled(false);
+        recipientsList.removeAllElements();
+    }
+
     private class AddRecipientHandler implements ActionListener {
 
         @Override
