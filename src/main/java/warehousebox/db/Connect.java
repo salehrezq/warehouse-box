@@ -31,7 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.flywaydb.core.Flyway;
 import warehousebox.db.model.Recipient;
-import warehousebox.utility.singularlisting.Listable;
 
 /**
  *
@@ -70,10 +69,10 @@ public class Connect {
      * recipient is assigned when the item is issued as scrap.
      */
     private static void createScrapperRecipient() {
-        Listable recipient = new Recipient();
+        Recipient recipient = new Recipient();
         recipient.setName("Scrapper");
-        if (!CRUDListable.isExist(recipient)) {
-            CRUDListable.create(recipient);
+        if (!CRUDRecipients.isExist(recipient)) {
+            CRUDRecipients.create(recipient);
         }
     }
 
