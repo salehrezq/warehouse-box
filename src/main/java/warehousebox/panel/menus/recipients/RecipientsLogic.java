@@ -72,6 +72,7 @@ public class RecipientsLogic {
         tfSearch.getDocument().addDocumentListener(new TextFieldContentReactHandler());
         btnSearchQuery.addActionListener(new SearchHandler());
         btnLoadMore.addActionListener(new LoadMoreHandler());
+        btnLoadMore.setEnabled(false);
         listing.addMouseListener(new ListDoubleClickHandler());
 
         popupMenuHandler = new PopupMenuHandler(rc);
