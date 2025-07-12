@@ -100,7 +100,8 @@ public class RecipientsLogic {
             String[] searchedWords = QueryWordsProcessor.getArrayOfWords(tfSearch.getText());
             searchedWordsImmutableCopy = searchedWords;
 
-            if (searchedWords.length < 1) {
+            if (searchedWords.length < 1 || (tfSearch.getText().isBlank() && tfSearch.getText().length() > 0)) {
+                resetFields();
                 JOptionPane.showMessageDialog(
                         null,
                         "Search query is not valid for search",
