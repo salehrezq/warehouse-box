@@ -50,8 +50,8 @@ import java.util.regex.Pattern;
 import javax.swing.JComboBox;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import warehousebox.db.CRUDListable;
 import warehousebox.db.CRUDOutbounds;
+import warehousebox.db.CRUDRecipients;
 import warehousebox.db.model.ItemMeta;
 import warehousebox.db.model.Outbound;
 import warehousebox.db.model.Recipient;
@@ -230,8 +230,8 @@ public class OutboundScrapDialog extends JDialog {
                 itemOutbound.setQuantity(quantity);
                 itemOutbound.setNote(tfNote.getText());
                 itemOutbound.setDate(selectedDate);
-                Recipient recipient = (Recipient) CRUDListable.getById(new Recipient(), 1);
-                if (recipient == null || !recipient.getName().equals("Scrapper")) {
+                Recipient recipient = CRUDRecipients.search(new String[]{"Scrapper"}, 1, 0).get(0);
+                if (recipient == null) {
                     JOptionPane.showMessageDialog(null, "Faulty recipient", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -257,8 +257,8 @@ public class OutboundScrapDialog extends JDialog {
                 BigDecimal bigDecimal = new BigDecimal(tfQuantity.getText());
                 BigDecimal oldQuantity = outbound.getQuantity();
                 outbound.setQuantity(bigDecimal);
-                Recipient recipient = (Recipient) CRUDListable.getById(new Recipient(), 1);
-                if (recipient == null || !recipient.getName().equals("Scrapper")) {
+                Recipient recipient = CRUDRecipients.search(new String[]{"Scrapper"}, 1, 0).get(0);
+                if (recipient == null) {
                     JOptionPane.showMessageDialog(null, "Faulty recipient", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
