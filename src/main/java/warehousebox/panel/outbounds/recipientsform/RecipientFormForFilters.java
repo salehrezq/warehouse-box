@@ -178,6 +178,11 @@ public class RecipientFormForFilters extends JPanel {
         listOfListable.removeAllElements();
     }
 
+    private void resetFieldsAfterValidation() {
+        btnLoadMore.setEnabled(false);
+        listOfListable.removeAllElements();
+    }
+
     private class BtnSearchHandler implements ActionListener {
 
         @Override
@@ -185,7 +190,8 @@ public class RecipientFormForFilters extends JPanel {
             String[] searchedWords = QueryWordsProcessor.getArrayOfWords(tfSearch.getText());
             searchedWordsImmutableCopy = searchedWords;
 
-            if (searchedWords.length < 1) {
+            if (searchedWords.length < 1 || (tfSearch.getText().isBlank() && tfSearch.getText().length() > 0)) {
+                resetFieldsAfterValidation();
                 JOptionPane.showMessageDialog(
                         null,
                         "Search query is not valid for search",

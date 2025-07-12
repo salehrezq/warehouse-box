@@ -185,6 +185,11 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
         });
     }
 
+    private void resetFieldsAfterValidation() {
+        btnLoadMore.setEnabled(false);
+        listOfListable.removeAllElements();
+    }
+
     private class BtnSearchHandler implements ActionListener {
 
         @Override
@@ -192,7 +197,8 @@ public class ListableItemFormForFilters extends JPanel implements ListableConsum
             String[] searchedWords = QueryWordsProcessor.getArrayOfWords(tfSearch.getText());
             searchedWordsImmutableCopy = searchedWords;
 
-            if (searchedWords.length < 1) {
+            if (searchedWords.length < 1 || (tfSearch.getText().isBlank() && tfSearch.getText().length() > 0)) {
+                resetFieldsAfterValidation();
                 JOptionPane.showMessageDialog(
                         ListableItemFormForFilters.this,
                         "Search query is not valid for search",

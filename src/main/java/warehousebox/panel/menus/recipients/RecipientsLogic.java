@@ -79,7 +79,7 @@ public class RecipientsLogic {
         popupMenuHandler.setUp();
     }
 
-    private void resetFields() {
+    private void resetFieldsAfterValidation() {
         btnLoadMore.setEnabled(false);
         recipientsList.removeAllElements();
     }
@@ -101,7 +101,7 @@ public class RecipientsLogic {
             searchedWordsImmutableCopy = searchedWords;
 
             if (searchedWords.length < 1 || (tfSearch.getText().isBlank() && tfSearch.getText().length() > 0)) {
-                resetFields();
+                resetFieldsAfterValidation();
                 JOptionPane.showMessageDialog(
                         null,
                         "Search query is not valid for search",

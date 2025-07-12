@@ -158,6 +158,11 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
         return listableItemEditDialog;
     }
 
+    private void resetFieldsAfterValidation() {
+        btnLoadMore.setEnabled(false);
+        listOfListable.removeAllElements();
+    }
+
     private class BtnSearchHandler implements ActionListener {
 
         @Override
@@ -165,7 +170,8 @@ public class ListableItemManage extends JDialog implements ListableConsumer {
             String[] searchedWords = QueryWordsProcessor.getArrayOfWords(tfSearch.getText());
             searchedWordsImmutableCopy = searchedWords;
 
-            if (searchedWords.length < 1) {
+            if (searchedWords.length < 1 || (tfSearch.getText().isBlank() && tfSearch.getText().length() > 0)) {
+                resetFieldsAfterValidation();
                 JOptionPane.showMessageDialog(
                         null,
                         "Search query is not valid for search",
