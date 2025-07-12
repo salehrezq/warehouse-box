@@ -36,7 +36,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
-import warehousebox.utility.singularlisting.ListableItemForm;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
@@ -60,6 +59,7 @@ import warehousebox.db.model.ItemMeta;
 import warehousebox.db.model.Outbound;
 import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.recipients.RecipientsImagePanel;
+import warehousebox.panel.outbounds.recipientsform.RecipientFormForFilters;
 
 /**
  *
@@ -69,7 +69,7 @@ public class OutboundDialog extends JDialog {
 
     private JPanel container;
     private JTextField tfQuantity, tfNote;
-    private ListableItemForm formFieldRecipient;
+    private RecipientFormForFilters formFieldRecipient;
     private JLabel lbQuantity, lbQuantityUnit, lbBalance, lbNote, lbSource, lbDate;
     private JButton btnSubmit;
     private DatePicker datePicker;
@@ -107,9 +107,7 @@ public class OutboundDialog extends JDialog {
         lbNote = new JLabel("Used for");
         tfNote = new JTextField(15);
 
-        formFieldRecipient = new ListableItemForm();
-        formFieldRecipient.setLabelText("Recipient");
-        formFieldRecipient.setListableImpl(new Recipient());
+        formFieldRecipient = new RecipientFormForFilters();
         formFieldRecipient.getlist().addMouseListener(new MouseJListHandler());
 
         issuanceTypeModel = new Vector();
