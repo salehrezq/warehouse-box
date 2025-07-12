@@ -180,6 +180,27 @@ public class CRUDRecipients {
         return recipients;
     }
 
+    public static Recipient getById(int id) {
+        Recipient recipient = null;
+        String sql = "SELECT * FROM Recipients WHERE id = ?";
+
+        try (Connection con = Connect.getConnection()) {
+            PreparedStatement p = con.prepareStatement(sql);
+            p.setInt(1, id);
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    recipient = new Recipient();
+                    recipient.setId(result.getInt("id"));
+                    recipient.setName(result.getString("name"));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDRecipients.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return recipient;
+    }
+
     public static boolean update(Recipient recipient) {
         int update = 0;
 

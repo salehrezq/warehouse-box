@@ -44,8 +44,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import warehousebox.db.CRUDListable;
 import warehousebox.db.CRUDOutbounds;
+import warehousebox.db.CRUDRecipients;
 import warehousebox.db.model.Outbound;
 import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.ResultLimitSizePreference;
@@ -167,7 +167,7 @@ public class ItemsSearchLogic implements
         int recipientId = prefs.getInt(PREFS_RECIPIENT_OK, 0);
         recipient = null;
         if (recipientId > 0) {
-            recipient = (Recipient) CRUDListable.getById(new Recipient(), recipientId);
+            recipient = CRUDRecipients.getById(recipientId);
         }
         searchFilters.setRecipient(recipient);
         this.tfRecipientFilter.setText((recipient != null) ? recipient.getName() : "");
