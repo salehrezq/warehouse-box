@@ -32,11 +32,9 @@ import warehousebox.db.model.Inbound;
  */
 public interface ItemsSearchListener {
 
-    public void notifyOFFSET(int OFFSET);
+    public void resetTableRows();
 
     public void notifySearchResultTotalRowsCount(int count);
 
     public void notifySearchResult(List<Inbound> data);
-
-    public void notifyResetFieldsAfterValidation();
 }

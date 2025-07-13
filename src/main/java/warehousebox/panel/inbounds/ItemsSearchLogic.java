@@ -223,9 +223,9 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         this.itemsSearchListeners.add(itemsSearchListener);
     }
 
-    public void notifyOFFSET(int OFFSET) {
+    public void notifyResetTableRows() {
         this.itemsSearchListeners.forEach((itemsSearchListener) -> {
-            itemsSearchListener.notifyOFFSET(OFFSET);
+            itemsSearchListener.resetTableRows();
         });
     }
 
@@ -238,12 +238,6 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
     public void notifySearchResult(List data) {
         this.itemsSearchListeners.forEach((itemsSearchListener) -> {
             itemsSearchListener.notifySearchResult(data);
-        });
-    }
-
-    public void notifyResetFieldsAfterValidation() {
-        this.itemsSearchListeners.forEach((itemsSearchListener) -> {
-            itemsSearchListener.notifyResetFieldsAfterValidation();
         });
     }
 
@@ -271,10 +265,19 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             searchFilters.setSearchQuery(searchQuery);
             searchFiltersImmutableCopy = new SearchFilters(searchFilters);
             OFFSET = 0;
-            notifyOFFSET(OFFSET);
+            notifyResetTableRows();
+
+            String[] searchedWords = searchFilters.getSearchQuery();
+            if (searchedWords.length < 1 || (tfSearchQuery.getText().isBlank() && tfSearchQuery.getText().length() > 0)) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Search query is not valid for search",
+                        "Write some search query.",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             if (searchFilters.isNameFilter() || searchFilters.isSpecificationFilter()) {
                 if (searchQuery.isBlank() || searchFilters.getSearchQuery().length < 1) {
-                    notifyResetFieldsAfterValidation();
                     JOptionPane.showMessageDialog(
                             null,
                             "Write some search query.",
@@ -284,7 +287,6 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                 }
             } else if (searchFilters.isInboundIdFilter() || searchFilters.isItemIdFilter()) {
                 if (!pattern.matcher(searchQuery).matches()) {
-                    notifyResetFieldsAfterValidation();
                     JOptionPane.showMessageDialog(
                             null,
                             "Input must be digits.",
@@ -299,7 +301,6 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                     && !searchFilters.isSourceFilter()
                     && !searchFilters.isEnabledDateRangeFilter()) {
                 if ((!searchQuery.isEmpty() && searchQuery.isBlank()) || searchFilters.getSearchQuery().length < 1) {
-                    notifyResetFieldsAfterValidation();
                     JOptionPane.showMessageDialog(
                             null,
                             "Search query is not valid for search",

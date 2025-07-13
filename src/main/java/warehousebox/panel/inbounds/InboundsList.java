@@ -201,14 +201,10 @@ public class InboundsList extends JPanel
     }
 
     @Override
-    public void notifyOFFSET(int OFFSET) {
-        if (OFFSET == 0) {
-            model = new InboundTableModel();
-            table.setModel(model);
-            table.removeColumn(table.getColumnModel().getColumn(7));
-            table.removeColumn(table.getColumnModel().getColumn(6));
-            incrementedReturnedRowsCount = 0;
-        }
+    public void resetTableRows() {
+        model.removeAllElements();
+        btnLoadMore.setEnabled(false);
+        incrementedReturnedRowsCount = 0;
     }
 
     @Override
@@ -243,12 +239,6 @@ public class InboundsList extends JPanel
             model.addInbound(inbound);
         }
         btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
-    }
-
-    @Override
-    public void notifyResetFieldsAfterValidation() {
-        model.removeAllElements();
-        btnLoadMore.setEnabled(false);
     }
 
     public void addInboundDeleteListener(InboundDeleteListener inboundDeleteListener) {

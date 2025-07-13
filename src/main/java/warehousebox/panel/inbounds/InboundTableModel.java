@@ -165,8 +165,10 @@ public class InboundTableModel extends AbstractTableModel {
     }
 
     public void removeAllElements() {
-        inbounds.clear();
-        fireTableDataChanged();
+        int oldRowCount = inbounds.size();
+        inbounds.clear(); // Clear the internal data structure
+        if (oldRowCount > 0) {
+            fireTableRowsDeleted(0, oldRowCount - 1); // Notify the table of deletion
+        }
     }
-
 }
