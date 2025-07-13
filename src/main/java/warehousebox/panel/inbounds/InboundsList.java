@@ -245,6 +245,12 @@ public class InboundsList extends JPanel
         btnLoadMore.setEnabled(!(incrementedReturnedRowsCount >= searchResultTotalRowsCount));
     }
 
+    @Override
+    public void notifyResetFieldsAfterValidation() {
+        model.removeAllElements();
+        btnLoadMore.setEnabled(false);
+    }
+
     public void addInboundDeleteListener(InboundDeleteListener inboundDeleteListener) {
         this.inboundDeleteListeners.add(inboundDeleteListener);
     }

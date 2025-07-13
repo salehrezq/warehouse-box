@@ -164,4 +164,9 @@ public class InboundTableModel extends AbstractTableModel {
         fireTableRowsDeleted(row, row);
     }
 
+    public void removeAllElements() {
+        inbounds.clear();
+        fireTableDataChanged();
+    }
+
 }

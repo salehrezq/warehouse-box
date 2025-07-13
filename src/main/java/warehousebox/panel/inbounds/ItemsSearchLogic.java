@@ -241,6 +241,12 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
         });
     }
 
+    public void notifyResetFieldsAfterValidation() {
+        this.itemsSearchListeners.forEach((itemsSearchListener) -> {
+            itemsSearchListener.notifyResetFieldsAfterValidation();
+        });
+    }
+
     @Override
     public void selectedListable(Listable listable) {
         if (listable != null) {
@@ -268,7 +274,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             notifyOFFSET(OFFSET);
             if (searchFilters.isNameFilter() || searchFilters.isSpecificationFilter()) {
                 if (searchQuery.isBlank() || searchFilters.getSearchQuery().length < 1) {
-                    btnLoadMore.setEnabled(false);
+                    notifyResetFieldsAfterValidation();
                     JOptionPane.showMessageDialog(
                             null,
                             "Write some search query.",
@@ -278,7 +284,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                 }
             } else if (searchFilters.isInboundIdFilter() || searchFilters.isItemIdFilter()) {
                 if (!pattern.matcher(searchQuery).matches()) {
-                    btnLoadMore.setEnabled(false);
+                    notifyResetFieldsAfterValidation();
                     JOptionPane.showMessageDialog(
                             null,
                             "Input must be digits.",
@@ -293,6 +299,7 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                     && !searchFilters.isSourceFilter()
                     && !searchFilters.isEnabledDateRangeFilter()) {
                 if ((!searchQuery.isEmpty() && searchQuery.isBlank()) || searchFilters.getSearchQuery().length < 1) {
+                    notifyResetFieldsAfterValidation();
                     JOptionPane.showMessageDialog(
                             null,
                             "Search query is not valid for search",

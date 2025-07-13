@@ -38,4 +38,5 @@ public interface ItemsSearchListener {
 
     public void notifySearchResult(List<Inbound> data);
 
+    public void notifyResetFieldsAfterValidation();
 }
