@@ -213,15 +213,10 @@ public class OutboundsList extends JPanel
     }
 
     @Override
-    public void notifyOFFSET(int OFFSET) {
-        if (OFFSET == 0) {
-            model = new OutboundTableModel();
-            table.setModel(model);
-            table.removeColumn(table.getColumnModel().getColumn(9));
-            table.removeColumn(table.getColumnModel().getColumn(8));
-            table.removeColumn(table.getColumnModel().getColumn(6));
-            incrementedReturnedRowsCount = 0;
-        }
+    public void resetTableRows() {
+        model.removeAllElements();
+        btnLoadMore.setEnabled(false);
+        incrementedReturnedRowsCount = 0;
     }
 
     @Override

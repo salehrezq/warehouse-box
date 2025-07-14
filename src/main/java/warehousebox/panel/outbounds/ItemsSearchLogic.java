@@ -262,9 +262,9 @@ public class ItemsSearchLogic implements
         this.itemsSearchListeners.add(itemsSearchListener);
     }
 
-    public void notifyOFFSET(int OFFSET) {
+    public void notifyResetTableRows() {
         this.itemsSearchListeners.forEach((itemsSearchListener) -> {
-            itemsSearchListener.notifyOFFSET(OFFSET);
+            itemsSearchListener.resetTableRows();
         });
     }
 
@@ -310,10 +310,9 @@ public class ItemsSearchLogic implements
             searchFilters.setSearchQuery(searchQuery);
             searchFiltersImmutableCopy = new SearchFilters(searchFilters);
             OFFSET = 0;
-            notifyOFFSET(OFFSET);
+            notifyResetTableRows();
             if (searchFilters.isNameFilter() || searchFilters.isSpecificationFilter() || searchFilters.isNoteFilter()) {
                 if (searchQuery.isBlank() || searchFilters.getSearchQuery().length < 1) {
-                    btnLoadMore.setEnabled(false);
                     JOptionPane.showMessageDialog(
                             null,
                             "Write some search query.",
@@ -323,7 +322,6 @@ public class ItemsSearchLogic implements
                 }
             } else if (searchFilters.isOutboundIdFiler() || searchFilters.isItemIdFilter()) {
                 if (!pattern.matcher(searchQuery).matches()) {
-                    btnLoadMore.setEnabled(false);
                     JOptionPane.showMessageDialog(
                             null,
                             "Input must be digits.",

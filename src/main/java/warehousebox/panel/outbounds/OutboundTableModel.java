@@ -199,4 +199,11 @@ public class OutboundTableModel extends AbstractTableModel {
         fireTableRowsDeleted(row, row);
     }
 
+    public void removeAllElements() {
+        int oldRowCount = outbounds.size();
+        outbounds.clear(); // Clear the internal data structure
+        if (oldRowCount > 0) {
+            fireTableRowsDeleted(0, oldRowCount - 1); // Notify the table of deletion
+        }
+    }
 }
