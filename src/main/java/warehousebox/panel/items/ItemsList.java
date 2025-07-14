@@ -224,12 +224,10 @@ public class ItemsList extends JPanel
     }
 
     @Override
-    public void notifyOFFSET(int OFFSET) {
-        if (OFFSET == 0) {
-            model = new ItemTableModel();
-            table.setModel(model);
-            incrementedReturnedRowsCount = 0;
-        }
+    public void resetTableRows() {
+        model.removeAllElements();
+        btnLoadMore.setEnabled(false);
+        incrementedReturnedRowsCount = 0;
     }
 
     @Override

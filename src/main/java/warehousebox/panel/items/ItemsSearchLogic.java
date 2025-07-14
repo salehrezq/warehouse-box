@@ -131,9 +131,9 @@ public class ItemsSearchLogic {
         this.itemsSearchListeners.add(itemsSearchListener);
     }
 
-    public void notifyOFFSET(int OFFSET) {
+    public void notifyResetTableRows() {
         this.itemsSearchListeners.forEach((itemsSearchListener) -> {
-            itemsSearchListener.notifyOFFSET(OFFSET);
+            itemsSearchListener.resetTableRows();
         });
     }
 
@@ -163,7 +163,7 @@ public class ItemsSearchLogic {
             searchFilters.setSearchQuery(searchQuery);
             searchFiltersImmutableCopy = new SearchFilters(searchFilters);
             OFFSET = 0;
-            notifyOFFSET(OFFSET);
+            notifyResetTableRows();
             if (searchFilters.isNameFilter() || searchFilters.isSpecificationFilter()) {
                 btnLoadMore.setEnabled(false);
                 if (searchQuery.isBlank() || searchFilters.getSearchQuery().length < 1) {

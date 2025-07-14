@@ -32,7 +32,7 @@ import warehousebox.db.model.ItemMeta;
  */
 public interface ItemsSearchListener {
 
-    public void notifyOFFSET(int OFFSET);
+    public void resetTableRows();
 
     public void notifySearchResultTotalRowsCount(int count);
 

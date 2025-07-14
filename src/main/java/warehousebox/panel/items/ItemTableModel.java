@@ -150,4 +150,12 @@ public class ItemTableModel extends AbstractTableModel {
     public ItemMeta getItemMetaById(int id) {
         return itemsMeta.stream().filter(itemMeta -> itemMeta.getId() == id).findFirst().orElse(null);
     }
+
+    public void removeAllElements() {
+        int oldRowCount = itemsMeta.size();
+        itemsMeta.clear(); // Clear the internal data structure
+        if (oldRowCount > 0) {
+            fireTableRowsDeleted(0, oldRowCount - 1); // Notify the table of deletion
+        }
+    }
 }
