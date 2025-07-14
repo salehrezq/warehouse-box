@@ -267,6 +267,16 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
             OFFSET = 0;
             notifyResetTableRows();
 
+            if (searchFilters.isInboundIdFilter() || searchFilters.isItemIdFilter()) {
+                if (!pattern.matcher(searchQuery).matches()) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Input must be digits.",
+                            "Invalide input",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
             String[] searchedWords = searchFilters.getSearchQuery();
             if (searchedWords.length < 1 || (tfSearchQuery.getText().isBlank() && tfSearchQuery.getText().length() > 0)) {
                 JOptionPane.showMessageDialog(
@@ -282,29 +292,6 @@ public class ItemsSearchLogic implements ListableItemFormForFiltersListener {
                             null,
                             "Write some search query.",
                             "Search query is empty",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            } else if (searchFilters.isInboundIdFilter() || searchFilters.isItemIdFilter()) {
-                if (!pattern.matcher(searchQuery).matches()) {
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Input must be digits.",
-                            "Invalide input",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            } else if (!searchFilters.isInboundIdFilter()
-                    && !searchFilters.isItemIdFilter()
-                    && !searchFilters.isNameFilter()
-                    && !searchFilters.isSpecificationFilter()
-                    && !searchFilters.isSourceFilter()
-                    && !searchFilters.isEnabledDateRangeFilter()) {
-                if ((!searchQuery.isEmpty() && searchQuery.isBlank()) || searchFilters.getSearchQuery().length < 1) {
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Search query is not valid for search",
-                            "Write some search query.",
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
