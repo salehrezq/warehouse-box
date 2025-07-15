@@ -151,7 +151,7 @@ public class CRUDRecipients {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDRecipients.class.getName()).log(Level.SEVERE, null, ex);
         }
         return searchResultRowsCount;
     }
@@ -179,7 +179,7 @@ public class CRUDRecipients {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDRecipients.class.getName()).log(Level.SEVERE, null, ex);
         }
         return recipients;
     }

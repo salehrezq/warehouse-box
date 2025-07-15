@@ -170,7 +170,7 @@ public class CRUDImages {
             p.setInt(1, item.getId());
             delete = p.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(CRUDListable.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDImages.class.getName()).log(Level.SEVERE, null, ex);
         }
         return delete;
     }

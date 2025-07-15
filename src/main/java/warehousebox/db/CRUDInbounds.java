@@ -225,7 +225,7 @@ public class CRUDInbounds {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDInbounds.class.getName()).log(Level.SEVERE, null, ex);
         }
         return inbounds;
     }
@@ -248,7 +248,7 @@ public class CRUDInbounds {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CRUDItems.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CRUDInbounds.class.getName()).log(Level.SEVERE, null, ex);
         }
         return searchResultRowsCount;
     }
