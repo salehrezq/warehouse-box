@@ -72,11 +72,12 @@ public class CRUDImages {
 
     public static List<Image> getImagesByItemId(int itemId) {
         List<Image> images = new ArrayList<>();
-        String sql = "SELECT * FROM images WHERE item_id =" + itemId + " ORDER BY position ASC";
+        String sql = "SELECT * FROM images WHERE item_id = ? ORDER BY position ASC";
 
         try (Connection con = Connect.getConnection()) {
             PreparedStatement p;
             p = con.prepareStatement(sql);
+            p.setInt(1, itemId);
 
             try (ResultSet result = p.executeQuery()) {
                 while (result.next()) {
