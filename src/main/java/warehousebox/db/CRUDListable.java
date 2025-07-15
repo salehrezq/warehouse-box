@@ -127,7 +127,7 @@ public class CRUDListable {
         String sqlFilter = " WHERE ";
         int wordsLength = searchedWords.length;
 
-        if (wordsLength < 1) {
+        if (wordsLength < 1 || wordsLength == 1 && searchedWords[0].isEmpty()) {
             sqlFilter = "";
             return sqlFilter;
         }
@@ -145,7 +145,7 @@ public class CRUDListable {
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(String[] searchedWords, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
-        if (searchedWords.length < 1) {
+        if (searchedWords.length < 1 || searchedWords.length == 1 && searchedWords[0].isEmpty()) {
             return preparedStatementWrapper;
         } else {
             for (int i = 0; i < searchedWords.length; i++) {
