@@ -103,25 +103,29 @@ public class CRUDRecipients {
         String sqlFilter = " WHERE ";
         int wordsLength = searchedWords.length;
 
-        if (wordsLength < 1) {
-            sqlFilter = "";
+        if (wordsLength < 1 || wordsLength == 1 && searchedWords[0].isEmpty()) {
+            /**
+             * Scrapper is not allowed to show up, because it is reserved for
+             * Scrap category outbounds.
+             */
+            sqlFilter += "name <> 'Scrapper'";
             return sqlFilter;
         }
 
         String dbQuerySQL = "name LIKE ?";
-        sqlFilter += wordsLength > 1 ? "(" : "";
         for (var i = 0; i < wordsLength; i++) {
-            sqlFilter += dbQuerySQL;
-            sqlFilter += (wordsLength > 1 && i == 0) ? ")" : "";
-            sqlFilter += (i > 0) ? ")" : "";
-            sqlFilter += (i < (wordsLength - 1)) ? " AND (" : "";
+            sqlFilter += "(" + dbQuerySQL + ")";
+            sqlFilter += (i < (wordsLength - 1)) ? " AND " : "";
         }
+        // Scrapper is not allowed to show up, because
+        // it is reserved for Scrap category outbounds.
+        sqlFilter += " AND (name <> 'Scrapper')";
         return sqlFilter;
     }
 
     private static PreparedStatementWrapper formulateSearchPreparedStatement(String[] searchedWords, PreparedStatementWrapper preparedStatementWrapper) throws SQLException {
         PreparedStatement p = preparedStatementWrapper.getPreparedStatement();
-        if (searchedWords.length < 1) {
+        if (searchedWords.length < 1 || searchedWords.length == 1 && searchedWords[0].isEmpty()) {
             return preparedStatementWrapper;
         } else {
             for (int i = 0; i < searchedWords.length; i++) {
