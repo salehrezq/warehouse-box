@@ -219,14 +219,11 @@ public class ItemsSearchLogic {
         if (isIdChecked) {
             if (pattern.matcher(tfSearchQuery.getText()).matches()) {
                 tfSearchQuery.setBackground(Color.WHITE);
-                btnSearch.setEnabled(true);
             } else {
                 tfSearchQuery.setBackground(colorError);
-                btnSearch.setEnabled(false);
             }
         } else if (!isIdChecked) {
             tfSearchQuery.setBackground(Color.WHITE);
-            btnSearch.setEnabled(true);
         }
     }
 
