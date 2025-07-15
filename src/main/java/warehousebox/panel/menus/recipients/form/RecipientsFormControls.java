@@ -75,7 +75,7 @@ public class RecipientsFormControls {
         container.add(btnBrowse, "span 2, center, split 2");
         container.add(btnRemove, "center, wrap 10");
         container.add(btnSubmit, "span 2, center");
-        container.setSize(500, 700);
+
     }
 
     protected JPanel getContainer() {

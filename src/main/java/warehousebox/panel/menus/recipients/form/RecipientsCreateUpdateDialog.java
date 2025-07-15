@@ -23,6 +23,7 @@
  */
 package warehousebox.panel.menus.recipients.form;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -44,7 +45,7 @@ public class RecipientsCreateUpdateDialog extends JDialog implements RecipientCR
         recipientsFormLogic = new RecipientsFormLogic(recipientsFormControls);
         add(recipientsFormControls.getContainer());
         addWindowListener(new ClosingWindowHandler());
-        setSize(400, 600);
+        setMinimumSize(new Dimension(400, 350));
     }
 
     @Override
