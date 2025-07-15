@@ -205,6 +205,26 @@ public class CRUDRecipients {
         return recipient;
     }
 
+    public static Recipient getScrapper() {
+        Recipient recipient = null;
+        String sql = "SELECT * FROM Recipients WHERE name = 'Scrapper'";
+
+        try (Connection con = Connect.getConnection()) {
+            PreparedStatement p = con.prepareStatement(sql);
+
+            try (ResultSet result = p.executeQuery()) {
+                while (result.next()) {
+                    recipient = new Recipient();
+                    recipient.setId(result.getInt("id"));
+                    recipient.setName(result.getString("name"));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CRUDRecipients.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return recipient;
+    }
+
     public static boolean update(Recipient recipient) {
         int update = 0;
 
