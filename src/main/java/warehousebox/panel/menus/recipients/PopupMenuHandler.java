@@ -94,36 +94,44 @@ public class PopupMenuHandler implements ActionListener {
                         "In use!",
                         JOptionPane.WARNING_MESSAGE);
             } else {
-                // `isImageFileDeleted` flags two cases as `true`:
-                // - The case that an image was deleted successfully.
-                // - The case that that there was no image in the first place.
-                // - The `false` case is set only when there was a file
-                //   but was not deleted due to some issue.
-                boolean isImageFileDeleted;
-                RecipientImage recipientImage = CRUDRecipientsImages.getImageByRecipientId(recipient.getId());
-                if (recipientImage != null) {
-                    isImageFileDeleted = ImageFileManager
-                            .delete(recipientImage.getImageName(),
-                                    CRUDRecipientsImages.DIRECTORYNAME);
+                int reply = JOptionPane.showConfirmDialog(
+                        null,
+                        "Are you sure to delete this Recipient",
+                        "DELETE!",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE);
+                if (reply == JOptionPane.YES_OPTION) {
+                    // `isImageFileDeleted` flags two cases as `true`:
+                    // - The case that an image was deleted successfully.
+                    // - The case that that there was no image in the first place.
+                    // - The `false` case is set only when there was a file
+                    //   but was not deleted due to some issue.
+                    boolean isImageFileDeleted;
+                    RecipientImage recipientImage = CRUDRecipientsImages.getImageByRecipientId(recipient.getId());
+                    if (recipientImage != null) {
+                        isImageFileDeleted = ImageFileManager
+                                .delete(recipientImage.getImageName(),
+                                        CRUDRecipientsImages.DIRECTORYNAME);
 
-                    if (!isImageFileDeleted) {
-                        JOptionPane.showMessageDialog(null,
-                                "The image file cannot be deleted due to some unknown issue!",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
+                        if (!isImageFileDeleted) {
+                            JOptionPane.showMessageDialog(null,
+                                    "The image file cannot be deleted due to some unknown issue!",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    } else {
+                        /**
+                         * Set the boolean to true since there is no file to
+                         * delete; this boolean is used in a subsequent code to
+                         * proceed with the follow-up deletion process.
+                         */
+                        isImageFileDeleted = true;
                     }
-                } else {
-                    /**
-                     * Set the boolean to true since there is no file to delete;
-                     * this boolean is used in a subsequent code to proceed with
-                     * the follow-up deletion process.
-                     */
-                    isImageFileDeleted = true;
-                }
-                if (isImageFileDeleted) {
-                    CRUDRecipientsImages.deleteByRecipient(recipient);
-                    if (CRUDRecipients.delete(recipient)) {
-                        recipientsList.removeElement(listing.getSelectedIndex());
+                    if (isImageFileDeleted) {
+                        CRUDRecipientsImages.deleteByRecipient(recipient);
+                        if (CRUDRecipients.delete(recipient)) {
+                            recipientsList.removeElement(listing.getSelectedIndex());
+                        }
                     }
                 }
             }
