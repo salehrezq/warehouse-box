@@ -30,4 +30,6 @@ package warehousebox.panel.outbounds;
 public interface RecipientIdOfOutboundSelectedRowListener {
 
     public void selectedRecipientIdOfOutboundRow(int recipientId);
+
+    public void selectedRecipientScrapperOfOutboundRow();
 }

@@ -31,11 +31,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -48,6 +52,7 @@ import warehousebox.db.CRUDOutbounds;
 import warehousebox.db.CRUDRecipients;
 import warehousebox.db.model.Outbound;
 import warehousebox.db.model.Recipient;
+import warehousebox.db.model.RecipientImage;
 import warehousebox.panel.menus.ResultLimitSizePreference;
 import warehousebox.panel.menus.recipients.RecipientsImagePanel;
 import warehousebox.utility.recipientslisting.RecipientFormForFilters;
@@ -109,6 +114,7 @@ public class ItemsSearchLogic implements
     private Preferences prefs;
     private final Color colorError = new Color(255, 255, 0);
     private Recipient recipient;
+    private RecipientImage recipientImageScrapper;
 
     public ItemsSearchLogic(ItemsSearchPane itemSearchPane) {
         prefs = Preferences.userRoot().node(getClass().getName());
@@ -131,6 +137,12 @@ public class ItemsSearchLogic implements
         searchFilters.setScrapFilter(true);
         searchFilters.enableDateRangeFilter(false);
 
+        recipientImageScrapper = new RecipientImage();
+        try {
+            recipientImageScrapper.setBufferedImage(ImageIO.read(getClass().getResource("/images/avatar-placeholder/scrapper.jpg")));
+        } catch (IOException ex) {
+            Logger.getLogger(ItemsSearchLogic.class.getName()).log(Level.SEVERE, null, ex);
+        }
         recipientsImagePanel = itemSearchPane.getRecipientsImagePanel();
     }
 
@@ -299,6 +311,11 @@ public class ItemsSearchLogic implements
     @Override
     public void selectedRecipientIdOfOutboundRow(int recipientId) {
         recipientsImagePanel.setImageOfSelectedItem(recipientId);
+    }
+
+    @Override
+    public void selectedRecipientScrapperOfOutboundRow() {
+        recipientsImagePanel.setScrapperImageOfSelectedOutbound(recipientImageScrapper);
     }
 
     private class SearchHandler implements ActionListener {

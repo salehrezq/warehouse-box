@@ -158,6 +158,10 @@ public class RecipientsImagePanel implements RecipientImageCRUDListener {
         }, 100, TimeUnit.MILLISECONDS);
     }
 
+    public void setScrapperImageOfSelectedOutbound(RecipientImage recipientImage) {
+        imagePane.setImage(recipientImage);
+    }
+
     @Override
     public void updated(RecipientImage recipientImage) {
         setImageOfSelectedItem(recipientImage.getRecipientId());

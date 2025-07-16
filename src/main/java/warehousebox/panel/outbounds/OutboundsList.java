@@ -58,6 +58,7 @@ import warehousebox.db.CRUDOutbounds;
 import warehousebox.db.model.Item;
 import warehousebox.db.model.Outbound;
 import warehousebox.db.model.QuantityUnit;
+import warehousebox.db.model.Recipient;
 import warehousebox.panel.menus.ListableUpdateListener;
 import warehousebox.panel.menus.ResultLimitSizePreference;
 import warehousebox.utility.singularlisting.Listable;
@@ -272,6 +273,12 @@ public class OutboundsList extends JPanel
         });
     }
 
+    public void notifySelectedRecipientScrapperOfOutboundRow() {
+        this.recipientIdOfOutboundSelectedRowListeners.forEach((recipientIdOfOutboundSelectedRowListener) -> {
+            recipientIdOfOutboundSelectedRowListener.selectedRecipientScrapperOfOutboundRow();
+        });
+    }
+
     @Override
     public void listableUpdated(Listable listable, String oldlistableName) {
         String dbEntityName = listable.getDBEntityName();
@@ -358,7 +365,14 @@ public class OutboundsList extends JPanel
                 Integer itemId = Integer.parseInt(itemIdObject.toString());
                 notifySelectedRowId(itemId);
 
-                notifySelectedRecipientIdOfOutboundRow(model.getOutbound(selectedModelRow).getRecipient().getId());
+                Recipient recipient = model.getOutbound(selectedModelRow).getRecipient();
+                if (recipient != null) {
+                    if (recipient.getName().equals("Scrapper")) {
+                        notifySelectedRecipientScrapperOfOutboundRow();
+                    } else {
+                        notifySelectedRecipientIdOfOutboundRow(recipient.getId());
+                    }
+                }
             }
         }
     }
